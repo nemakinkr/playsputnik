@@ -39,6 +39,7 @@
         activeCluster: "play",
         mood: "story",
         session: "short",
+        sessionMinutes: 0,
         difficulty: "normal",
         psPlus: true,
         budget: 35,

@@ -304,6 +304,19 @@
           <div class="onboarding-featured" id="onboarding-featured"></div>
         </section>
 
+        <section class="tonight-time" aria-label="Time available tonight" data-view-section="today">
+          <span class="tonight-time-label">Tonight I have:</span>
+          <div class="tonight-time-chips" role="group" aria-label="Pick your available time">
+            <button class="time-chip" data-session-minutes="30" type="button">30 min</button>
+            <button class="time-chip" data-session-minutes="45" type="button">45 min</button>
+            <button class="time-chip" data-session-minutes="60" type="button">1 hour</button>
+            <button class="time-chip" data-session-minutes="120" type="button">2 hours</button>
+            <button class="time-chip" data-session-minutes="180" type="button">Long evening</button>
+            <button class="time-chip is-active" data-session-minutes="0" type="button">Any</button>
+          </div>
+          <span class="tonight-time-hint" id="tonight-time-hint"></span>
+        </section>
+
         <section class="top-pick" id="top-pick" aria-label="Top recommendation" data-view-section="today"></section>
 
         <section class="first-run-panel" aria-labelledby="first-run-title" data-view-section="today taste">

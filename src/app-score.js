@@ -278,6 +278,52 @@
       return 2;
     }
 
+    // ── Session chunk model ──────────────────────────────────────────────────
+    // Estimates the natural "complete chunk" of a game in minutes: the shortest
+    // play session after which you stop with a sense of completion (a run, a
+    // race series, a story beat) rather than mid-task.
+    const RUN_BASED_ATOMS = new Set([
+      "roguelike", "arcade", "racing", "sports", "fighting", "puzzle",
+      "party", "card-battler", "deck-builder", "music", "platformer",
+    ]);
+    const SLOW_BURN_ATOMS = new Set(["open-world", "rpg", "simulation", "strategy", "grind"]);
+
+    function gameChunkProfile(game) {
+      const atoms = new Set(game.atoms || []);
+      const runBased = [...atoms].some((a) => RUN_BASED_ATOMS.has(a));
+      const slowBurn = [...atoms].some((a) => SLOW_BURN_ATOMS.has(a));
+      let minutes;
+      let label;
+      if (runBased && !slowBurn) {
+        minutes = 30;
+        label = "one full run";
+      } else if (game.session === "short") {
+        minutes = 40;
+        label = "a complete short session";
+      } else if (game.session === "medium" && !slowBurn) {
+        minutes = 60;
+        label = "a satisfying story beat";
+      } else if (slowBurn || game.length === "massive" || game.session === "long") {
+        minutes = 90;
+        label = "a proper deep session";
+      } else {
+        minutes = 60;
+        label = "a solid session";
+      }
+      if (game.commitment === "low") minutes = Math.min(minutes, 45);
+      if (game.commitment === "high") minutes = Math.max(minutes, 75);
+      return { minutes, label };
+    }
+
+    // Score how well the game's natural chunk fits the minutes available tonight.
+    function tonightFitScore(game, available) {
+      const { minutes } = gameChunkProfile(game);
+      if (minutes <= available && minutes >= available * 0.4) return 18; // perfect fit
+      if (minutes <= available) return 8;   // fits with room to spare
+      if (minutes <= available * 1.3) return 0; // tight but possible
+      return -14; // you'd have to stop mid-chunk
+    }
+
     function scoreBreakdown(game) {
       const state = getState();
       const tasteProfile = tasteEngineProfile();
@@ -302,7 +348,11 @@
                       : accessKind === "subscription" ? 10
                         : 0;
       const moodScore = game.atoms.includes(state.mood) || game.vibe.toLowerCase().includes(state.mood) ? 18 : 0;
-      const sessionScore = game.session === state.session ? 14 : 0;
+      // With an explicit minute budget, the precise chunk model replaces the
+      // coarse short/medium/long match (halved to avoid double counting).
+      const tonightMinutes = Number(state.sessionMinutes) || 0;
+      const tonightScore = tonightMinutes > 0 ? tonightFitScore(game, tonightMinutes) : 0;
+      const sessionScore = (game.session === state.session ? 14 : 0) * (tonightMinutes > 0 ? 0.5 : 1);
       const difficultyScore = game.difficulty === state.difficulty ? 12 : 0;
       const plusStatus = getSubscriptionStatus(game, state.activeRegion);
       const plusScore = state.psPlus && game.psPlus.includes(state.activeRegion)
@@ -339,6 +389,7 @@
         { label: "Access now", value: accessScore },
         { label: "Mood fit", value: moodScore },
         { label: "Session fit", value: sessionScore },
+        { label: "Tonight time fit", value: tonightScore },
         { label: "Difficulty fit", value: difficultyScore },
         { label: "Adult time fit", value: adultTimeScore },
         { label: "Low review burden", value: reviewBurdenScore },
@@ -393,6 +444,7 @@
       notebookTasteScore,
       scoreBreakdown,
       scoreGame,
+      gameChunkProfile,
       personalFitBand,
       rankRangeForScore,
     };

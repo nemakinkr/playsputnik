@@ -361,6 +361,7 @@ const {
   notebookTasteScore,
   scoreBreakdown,
   scoreGame,
+  gameChunkProfile,
   personalFitBand,
   rankRangeForScore,
 } = window.PlaySputnikScore.createScoreTools({
@@ -3259,6 +3260,23 @@ function renderGameDetail(shouldFocus = false) {
         <button class="${detailActionClass(game, "hidden")}" data-detail-state="hidden" type="button">Hide</button>
       </div>
     </section>
+    ${(() => {
+      const region = state.activeRegion;
+      const snap = priceSnapshots.find((s) => s.title === game.title && s.region === region);
+      const chunk = gameChunkProfile(game);
+      const links = [
+        snap?.storeUrl ? { href: snap.storeUrl, label: "PS Store", kind: "store" } : null,
+        game.coverMeta?.sourceUrl ? { href: game.coverMeta.sourceUrl, label: "Game info (RAWG)", kind: "info" } : null,
+        { href: `https://howlongtobeat.com/?q=${encodeURIComponent(game.title)}`, label: "HowLongToBeat", kind: "info" },
+      ].filter(Boolean);
+      return `<section class="game-detail-section">
+        <h3>Get it</h3>
+        <p class="detail-chunk-note">Natural session: ${chunk.label}, ~${chunk.minutes} min.</p>
+        <div class="detail-get-links">
+          ${links.map((l) => `<a class="detail-get-link detail-get-link--${l.kind}" href="${l.href}" target="_blank" rel="noopener noreferrer">${l.label} ↗</a>`).join("")}
+        </div>
+      </section>`;
+    })()}
   `;
   // Wire "Why this game?" AI explain button
   const aiBtn = els.gameDetailBody.querySelector("#detail-ai-btn");
@@ -3933,6 +3951,7 @@ function render() {
   const inView = (...views) => views.includes(state.activeView);
 
   if (inView("today", "taste")) renderFirstRunFlow(ranked);
+  if (inView("today")) renderTonightTime();
   if (inView("today")) renderCompanionAnswer(ranked);
   if (inView("today", "taste")) renderFirstValueReceipt(ranked);
   if (inView("today")) renderHero(primaryGame, els.topPick);
@@ -4026,6 +4045,40 @@ document.querySelectorAll("[data-catalog-sort]").forEach((btn) => {
     renderVisualCatalog(rankedGames());
   });
 });
+
+// ── Tonight time chips (session planner) ─────────────────────────────────────
+document.querySelectorAll("[data-session-minutes]").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    const minutes = Number(chip.dataset.sessionMinutes) || 0;
+    state.sessionMinutes = minutes;
+    // Keep the coarse session select coherent with the minute budget
+    if (minutes > 0) {
+      state.session = minutes <= 45 ? "short" : minutes <= 120 ? "medium" : "long";
+    }
+    render();
+  });
+});
+
+function renderTonightTime() {
+  const minutes = Number(state.sessionMinutes) || 0;
+  document.querySelectorAll("[data-session-minutes]").forEach((chip) => {
+    chip.classList.toggle("is-active", Number(chip.dataset.sessionMinutes) === minutes);
+  });
+  const hint = document.querySelector("#tonight-time-hint");
+  if (!hint) return;
+  if (!minutes) {
+    hint.textContent = "";
+    return;
+  }
+  const ranked = rankedGames();
+  const top = ranked[0];
+  if (top) {
+    const chunk = gameChunkProfile(top);
+    hint.textContent = chunk.minutes <= minutes
+      ? `${top.title}: ${chunk.label} in ~${chunk.minutes} min — fits.`
+      : `${top.title} wants ~${chunk.minutes} min for ${chunk.label}.`;
+  }
+}
 
 // ── Keyboard grid navigation in the visual catalog ────────────────────────────
 // Arrow keys move focus between cards; Home/End jump to first/last. The number
