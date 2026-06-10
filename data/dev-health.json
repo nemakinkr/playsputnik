@@ -1,0 +1,82 @@
+{
+  "updatedAt": "2026-06-06T08:52:16Z",
+  "mode": "local-prototype-health",
+  "summary": "Last known local health snapshot for the static prototype and CLI verification loop.",
+  "checks": [
+    {
+      "id": "preview_server",
+      "label": "Preview server",
+      "status": "pass",
+      "detail": "Client loads from 127.0.0.1:4190; CLI repair script checks GET / and restarts empty-response listeners.",
+      "command": "node scripts/preview-server.mjs --check",
+      "repairCommand": "node scripts/preview-server.mjs --restart"
+    },
+    {
+      "id": "data_health",
+      "label": "Data health",
+      "status": "pass",
+      "detail": "Last validation passed with 48 seed games and 0 issues.",
+      "command": "node scripts/validate-data.mjs"
+    },
+    {
+      "id": "browser_smoke",
+      "label": "Browser smoke",
+      "status": "pass",
+      "detail": "Last smoke covered first-run swipe: 0/30 to 1/30, next card advanced, undo rendered, no page errors.",
+      "command": "node scripts/browser-smoke-test.mjs"
+    },
+    {
+      "id": "app_view_smoke",
+      "label": "App view smoke",
+      "status": "pass",
+      "detail": "Today, Library, Discover, Wishlist, and Data navigation switch the expected panels, shelves, clusters, and persisted active view.",
+      "command": "node scripts/app-view-smoke-test.mjs"
+    },
+    {
+      "id": "library_wishlist_smoke",
+      "label": "Library/Wishlist smoke",
+      "status": "pass",
+      "detail": "Library/Wishlist dashboards render, queue filters work, Wishlist exposes 8 triage rows with 24 quick actions, and Bought persists the selected game as owned forever.",
+      "command": "node scripts/library-wishlist-smoke-test.mjs"
+    },
+    {
+      "id": "game_detail_smoke",
+      "label": "Game detail smoke",
+      "status": "pass",
+      "detail": "Detail drawer opens from the hero, renders status cards, facts, atoms, RAWG cover attribution, persists Play as playing, and closes cleanly.",
+      "command": "node scripts/game-detail-smoke-test.mjs"
+    },
+    {
+      "id": "design_smoke",
+      "label": "Design smoke",
+      "status": "pass",
+      "detail": "Desktop and mobile screenshots passed with the full 48 RAWG candidate cover set; visual smoke timeout now handles remote-image screenshots.",
+      "command": "node scripts/design-smoke-test.mjs"
+    },
+    {
+      "id": "visual_catalog_smoke",
+      "label": "Visual catalog smoke",
+      "status": "pass",
+      "detail": "Catalog shelf switched from Smart to Catalog, rendered 24 cards, and quick Play saved the selected game as Playing with active button state.",
+      "command": "node scripts/visual-catalog-smoke-test.mjs"
+    },
+    {
+      "id": "cover_resolver",
+      "label": "Cover resolver",
+      "status": "pass",
+      "detail": "RAWG key is loaded from .env.local. Resolver stored attributed cover candidates for all 48 seed records; future imports still fall back to generated posters until resolved.",
+      "command": "node scripts/resolve-cover-candidates.mjs --limit 3"
+    },
+    {
+      "id": "provider_endpoint",
+      "label": "Provider endpoint",
+      "status": "optional",
+      "detail": "Port 4191 is optional. Live RAWG UI check saved Stray to wishlist with coverUrl, sourceUrl, provider, and cover license note; fixture fallback keeps no-key search usable.",
+      "command": "node scripts/search-provider-server.mjs --once \"Grand Theft Auto\""
+    }
+  ],
+  "notes": [
+    "Browser UI can only show client-observable state and the last recorded CLI snapshot.",
+    "Run the listed commands from the project root when a row needs verification or repair."
+  ]
+}

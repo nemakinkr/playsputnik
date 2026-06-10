@@ -1,0 +1,51 @@
+name: Update PS Store Prices
+
+on:
+  schedule:
+    # Every day at 07:00 UTC (10:00 Moscow, 09:00 Istanbul)
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+    inputs:
+      region:
+        description: "Single region to update (US / GB / DE / TR), leave empty for all"
+        required: false
+        default: ""
+
+jobs:
+  update-prices:
+    name: Fetch prices from IsThereAnyDeal
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run price updater
+        env:
+          ITAD_API_KEY: ${{ secrets.ITAD_API_KEY }}
+        run: |
+          if [ -n "${{ github.event.inputs.region }}" ]; then
+            node scripts/update-prices.mjs --region ${{ github.event.inputs.region }}
+          else
+            node scripts/update-prices.mjs
+          fi
+
+      - name: Commit updated prices
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/price-snapshots.json
+          if git diff --cached --quiet; then
+            echo "No price changes — nothing to commit"
+          else
+            UPDATED=$(date -u +"%Y-%m-%d %H:%M UTC")
+            git commit -m "chore: update PS Store prices [${UPDATED}]"
+            git push
+          fi

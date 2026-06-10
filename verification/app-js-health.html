@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PlaySputnik App JS Health</title>
+  </head>
+  <body>
+    <main>
+      <h1>App JS health check</h1>
+      <output id="app-js-output">loading</output>
+    </main>
+    <script>
+      window.PLAYSPUTNIK_SKIP_INIT = true;
+    </script>
+    <script src="../app.js?v=20260603-onboarding-health"></script>
+    <script>
+      document.querySelector("#app-js-output").textContent =
+        window.__playsputnikBoot && window.__playsputnikBoot.skippedInit ? "app.js loaded" : "app.js missing boot marker";
+    </script>
+  </body>
+</html>

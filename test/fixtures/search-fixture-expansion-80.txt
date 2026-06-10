@@ -1,0 +1,96 @@
+Cinematic / Story
+L.A. Noire | platforms=PS4,PC,Xbox | atoms=crime,story,cinematic | priceNeed=warm
+Sleeping Dogs: Definitive Edition | platforms=PS4,PC,Xbox | atoms=crime,action,open-world | priceNeed=warm
+Watch Dogs 2 | platforms=PS4,PC,Xbox | atoms=open-world,action,systems | priceNeed=warm
+Max Payne 3 | platforms=PC,Xbox | atoms=crime,shooter,cinematic | priceNeed=warm
+Quantum Break | platforms=PC,Xbox | atoms=sci-fi,cinematic,shooter | priceNeed=warm
+The Order: 1886 | platforms=PS4 | atoms=cinematic,story,action | priceNeed=warm
+Sherlock Holmes: Chapter One | platforms=PS5,PS4,PC,Xbox | atoms=story,puzzle,crime | priceNeed=warm
+Sherlock Holmes: The Awakened | platforms=PS5,PS4,PC,Xbox | atoms=story,puzzle,horror | priceNeed=warm
+The Wolf Among Us 2 | platforms=PS5,PC,Xbox | atoms=story,choice,crime | priceNeed=watch_only
+Tomb Raider | platforms=PS4,PC,Xbox | atoms=action,cinematic,exploration | priceNeed=warm
+Rise of the Tomb Raider | platforms=PS4,PC,Xbox | atoms=action,cinematic,exploration | priceNeed=warm
+Shadow of the Tomb Raider | platforms=PS4,PC,Xbox | atoms=action,cinematic,exploration | priceNeed=warm
+Enslaved: Odyssey to the West | platforms=PC,Xbox | atoms=story,action,cinematic | priceNeed=warm
+
+RPG / Open World
+GreedFall | platforms=PS5,PS4,PC,Xbox | atoms=rpg,choice,story | priceNeed=warm
+GreedFall II: The Dying World | platforms=PS5,PC,Xbox | atoms=rpg,choice,story | priceNeed=watch_only
+Vampire: The Masquerade - Bloodlines 2 | platforms=PS5,PC,Xbox | atoms=rpg,choice,horror | priceNeed=watch_only
+The Blood of Dawnwalker | platforms=PS5,PC,Xbox | atoms=rpg,story,dark | priceNeed=watch_only
+Gothic 1 Remake | platforms=PS5,PC,Xbox | atoms=rpg,open-world,challenge | priceNeed=watch_only
+Dragon's Dogma 2 | platforms=PS5,PC,Xbox | atoms=rpg,action,open-world | priceNeed=warm
+The Elder Scrolls VI | platforms=PC,Xbox | atoms=rpg,open-world,systems | priceNeed=watch_only
+Kingdoms of Amalur: Re-Reckoning | platforms=PS4,PC,Xbox | atoms=rpg,action,open-world | priceNeed=warm
+Elex II | platforms=PS5,PS4,PC,Xbox | atoms=rpg,open-world,sci-fi | priceNeed=warm
+The Thaumaturge | platforms=PS5,PC,Xbox | atoms=rpg,story,strange | priceNeed=warm
+Wuchang: Fallen Feathers | platforms=PS5,PC,Xbox | atoms=action,soulslike,mythic | priceNeed=watch_only
+Where Winds Meet | platforms=PS5,PC | atoms=open-world,action,mythic | priceNeed=watch_only
+Lost Soul Aside | platforms=PS5,PC | atoms=action,cinematic,challenge | priceNeed=watch_only
+
+Action / Challenge
+DOOM: The Dark Ages | platforms=PS5,PC,Xbox | atoms=shooter,action,adrenaline | priceNeed=watch_only
+Ninja Gaiden 4 | platforms=PS5,PC,Xbox | atoms=action,challenge,adrenaline | priceNeed=watch_only
+Metal Gear Solid Delta: Snake Eater | platforms=PS5,PC,Xbox | atoms=stealth,story,action | priceNeed=watch_only
+Onimusha: Way of the Sword | platforms=PS5,PC,Xbox | atoms=action,mythic,challenge | priceNeed=watch_only
+The First Berserker: Khazan | platforms=PS5,PC,Xbox | atoms=action,challenge,soulslike | priceNeed=warm
+Stellar Blade | platforms=PS5,PC | atoms=action,challenge,sci-fi | priceNeed=warm
+Trek to Yomi | platforms=PS5,PS4,PC,Xbox | atoms=cinematic,action,short | priceNeed=warm
+Katana ZERO | platforms=PC,Switch,Xbox | atoms=action,indie,short | priceNeed=warm
+Ghostrunner 2 | platforms=PS5,PC,Xbox | atoms=action,challenge,sci-fi | priceNeed=warm
+Shadow Warrior 3 | platforms=PS4,PC,Xbox | atoms=shooter,action,funny | priceNeed=warm
+Trepang2 | platforms=PS5,PC,Xbox | atoms=shooter,adrenaline,action | priceNeed=warm
+Sniper Elite: Resistance | platforms=PS5,PS4,PC,Xbox | atoms=shooter,stealth,tactical | priceNeed=warm
+
+Horror / Tension
+Cronos: The New Dawn | platforms=PS5,PC,Xbox | atoms=horror,sci-fi,tension | priceNeed=watch_only
+The Sinking City 2 | platforms=PS5,PC,Xbox | atoms=horror,story,strange | priceNeed=watch_only
+Reanimal | platforms=PS5,PC,Xbox | atoms=horror,puzzle,co-op | priceNeed=watch_only
+ILL | platforms=PC | atoms=horror,realistic,tension | priceNeed=watch_only
+Tormented Souls 2 | platforms=PS5,PC,Xbox | atoms=horror,puzzle,tension | priceNeed=watch_only
+Slitterhead | platforms=PS5,PS4,PC,Xbox | atoms=horror,action,strange | priceNeed=warm
+The Callisto Protocol | platforms=PS5,PS4,PC,Xbox | atoms=horror,action,sci-fi | priceNeed=warm
+Amnesia: The Bunker | platforms=PS4,PC,Xbox | atoms=horror,survival,tension | priceNeed=warm
+Layers of Fear | platforms=PS5,PC,Xbox | atoms=horror,story,tension | priceNeed=warm
+Martha Is Dead | platforms=PS5,PS4,PC,Xbox | atoms=horror,story,slow | priceNeed=warm
+The Medium | platforms=PS5,PC,Xbox | atoms=horror,story,puzzle | priceNeed=warm
+
+Cozy / Short / Indie
+Mixtape | platforms=PS5,PC,Xbox | atoms=story,indie,short | priceNeed=warm
+Keeper | platforms=PC,Xbox | atoms=puzzle,strange,indie | priceNeed=warm
+Lost Records: Bloom & Rage | platforms=PS5,PC,Xbox | atoms=story,choice,indie | priceNeed=warm
+To a T | platforms=PS5,PC,Xbox | atoms=funny,indie,strange | priceNeed=warm
+Koira | platforms=PS5,PC | atoms=cozy,indie,short | priceNeed=warm
+Wanderstop | platforms=PS5,PC | atoms=cozy,story,routine | priceNeed=warm
+Karma: The Dark World | platforms=PS5,PC,Xbox | atoms=story,strange,sci-fi | priceNeed=watch_only
+Afterlove EP | platforms=PS5,PC,Switch | atoms=story,romance,indie | priceNeed=warm
+Open Roads | platforms=PS5,PS4,PC,Xbox | atoms=story,short,indie | priceNeed=warm
+Season: A Letter to the Future | platforms=PS5,PC | atoms=cozy,exploration,short | priceNeed=warm
+Tchia | platforms=PS5,PS4,PC | atoms=cozy,exploration,open-world | priceNeed=warm
+Chants of Sennaar | platforms=PS4,PC,Xbox,Switch | atoms=puzzle,indie,story | priceNeed=warm
+
+Co-op / Service / Multiplayer
+Borderlands 4 | platforms=PS5,PC,Xbox | atoms=shooter,co-op,systems | priceNeed=watch_only
+The First Descendant | platforms=PS5,PS4,PC,Xbox | atoms=shooter,service,co-op | priceNeed=none
+Remnant II | platforms=PS5,PC,Xbox | atoms=shooter,co-op,soulslike | priceNeed=warm
+Payday 3 | platforms=PS5,PC,Xbox | atoms=crime,co-op,shooter | priceNeed=warm
+Warhammer 40,000: Space Marine 2 | platforms=PS5,PC,Xbox | atoms=action,shooter,co-op | priceNeed=warm
+Killing Floor 3 | platforms=PS5,PC,Xbox | atoms=shooter,co-op,horror | priceNeed=watch_only
+Dune: Awakening | platforms=PS5,PC,Xbox | atoms=survival,service,sci-fi | priceNeed=watch_only
+Palworld | platforms=PS5,PC,Xbox | atoms=survival,co-op,systems | priceNeed=warm
+No Man's Sky | platforms=PS5,PS4,PC,Xbox | atoms=sci-fi,exploration,survival | priceNeed=warm
+Phasmophobia | platforms=PS5,PC,Xbox | atoms=horror,co-op,tension | priceNeed=warm
+Valheim | platforms=PC,Xbox | atoms=survival,co-op,systems | priceNeed=warm
+Subnautica 2 | platforms=PC,Xbox | atoms=survival,exploration,sci-fi | priceNeed=watch_only
+
+Strategy / Sports / Racing
+Anno 117: Pax Romana | platforms=PS5,PC,Xbox | atoms=strategy,management,systems | priceNeed=watch_only
+JDM: Japanese Drift Master | platforms=PC | atoms=sports,competitive,short | priceNeed=warm
+Wreckfest 2 | platforms=PS5,PC,Xbox | atoms=sports,adrenaline,competitive | priceNeed=watch_only
+Assetto Corsa Competizione | platforms=PS5,PS4,PC,Xbox | atoms=sports,competitive,realistic | priceNeed=warm
+Assetto Corsa EVO | platforms=PC | atoms=sports,competitive,realistic | priceNeed=watch_only
+Football Manager 2026 | platforms=PS5,PC,Xbox | atoms=sports,management,systems | priceNeed=watch_only
+Planet Coaster 2 | platforms=PS5,PC,Xbox | atoms=management,creative,systems | priceNeed=warm
+Manor Lords | platforms=PC,Xbox | atoms=strategy,management,systems | priceNeed=warm
+Ara: History Untold | platforms=PC | atoms=strategy,turn-based,systems | priceNeed=warm
+Commandos: Origins | platforms=PS5,PC,Xbox | atoms=strategy,tactical,stealth | priceNeed=warm

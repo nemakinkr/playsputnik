@@ -1,0 +1,494 @@
+{
+  "generatedAt": "2026-06-10T06:38:08.967Z",
+  "mode": "no-paid-provider-p0",
+  "gameCount": 456,
+  "regions": [
+    "US",
+    "GB",
+    "DE",
+    "TR"
+  ],
+  "status": "needs_attention",
+  "companionLayers": {
+    "tasteRadarCount": 5,
+    "monthlyDropCount": 4,
+    "dropCalendarCount": 2,
+    "catalogProviderCount": 5,
+    "catalogTierCount": 3,
+    "catalogWorkbenchCount": 6,
+    "catalogBackboneCount": 101,
+    "catalogBackboneReadyCount": 0,
+    "catalogBackbonePromotedCount": 24,
+    "searchSourceCount": 5,
+    "globalSearchFixtureCount": 117,
+    "titleAliasCount": 76,
+    "priceHistoryCount": 1967,
+    "priceHistoryGameCount": 437,
+    "libraryStates": [
+      "later",
+      "saved",
+      "owned",
+      "subscription",
+      "playing",
+      "completed",
+      "hidden"
+    ]
+  },
+  "catalogPlan": {
+    "mode": "pre-mvp-catalog-design",
+    "targetCatalog": {
+      "seed": 150,
+      "privateAlpha": 2000,
+      "publicBeta": 15000
+    },
+    "providers": [
+      {
+        "id": "rawg",
+        "layer": "metadata_and_images",
+        "fit": "p0_candidate"
+      },
+      {
+        "id": "igdb",
+        "layer": "metadata_and_images",
+        "fit": "research_candidate"
+      },
+      {
+        "id": "mobygames",
+        "layer": "metadata_covers_screenshots",
+        "fit": "paid_candidate"
+      },
+      {
+        "id": "steamgriddb",
+        "layer": "artwork",
+        "fit": "cover_repair_candidate"
+      },
+      {
+        "id": "official_store",
+        "layer": "store_identity",
+        "fit": "trust_anchor"
+      }
+    ]
+  },
+  "catalogWorkbench": {
+    "mode": "pre-mvp-import-sandbox",
+    "recordCount": 6,
+    "highConfidenceCount": 4,
+    "coverReadyCount": 5,
+    "atomReadyCount": 3,
+    "manualReviewCount": 4,
+    "hotPriceNeedCount": 2
+  },
+  "catalogBackbone": {
+    "mode": "pre-mvp-catalog-backbone",
+    "recordCount": 101,
+    "laneCount": 10,
+    "seedTarget": 150,
+    "currentSeed": 456,
+    "promotedCount": 24,
+    "readyForSeedCount": 0,
+    "atomReviewCount": 0,
+    "blockedIdentityCount": 1,
+    "coverMissingCount": 77,
+    "hotPriceNeedCount": 4,
+    "laneCounts": [
+      {
+        "id": "cinematic_story",
+        "label": "Cinematic story",
+        "target": 18,
+        "count": 10,
+        "promoted": 5,
+        "ready": 0
+      },
+      {
+        "id": "open_world_rpg",
+        "label": "Open-world / RPG",
+        "target": 18,
+        "count": 10,
+        "promoted": 4,
+        "ready": 0
+      },
+      {
+        "id": "systems_rpg",
+        "label": "Systems RPG",
+        "target": 16,
+        "count": 10,
+        "promoted": 2,
+        "ready": 0
+      },
+      {
+        "id": "action_challenge",
+        "label": "Action challenge",
+        "target": 16,
+        "count": 10,
+        "promoted": 2,
+        "ready": 0
+      },
+      {
+        "id": "horror_tension",
+        "label": "Horror / tension",
+        "target": 14,
+        "count": 10,
+        "promoted": 1,
+        "ready": 0
+      },
+      {
+        "id": "cozy_short",
+        "label": "Cozy / short",
+        "target": 14,
+        "count": 10,
+        "promoted": 1,
+        "ready": 0
+      },
+      {
+        "id": "co_op_multiplayer",
+        "label": "Co-op / multiplayer",
+        "target": 14,
+        "count": 10,
+        "promoted": 3,
+        "ready": 0
+      },
+      {
+        "id": "strategy_management",
+        "label": "Strategy / management",
+        "target": 12,
+        "count": 10,
+        "promoted": 1,
+        "ready": 0
+      },
+      {
+        "id": "sports_service",
+        "label": "Sports / service",
+        "target": 10,
+        "count": 10,
+        "promoted": 1,
+        "ready": 0
+      },
+      {
+        "id": "upcoming_watch",
+        "label": "Upcoming watch",
+        "target": 14,
+        "count": 11,
+        "promoted": 4,
+        "ready": 0
+      }
+    ]
+  },
+  "globalSearch": {
+    "mode": "prototype-global-search-p0",
+    "sourceCount": 5,
+    "fixtureMode": "prototype-external-index",
+    "fixtureCount": 117,
+    "wishlistCapableSources": 5,
+    "externalFixtureCount": 117,
+    "missingPriceCount": 117
+  },
+  "refreshPolicy": {
+    "mode": "intent-weighted-refresh-p0",
+    "dailySnapshotCap": 120,
+    "priorityBands": [
+      {
+        "id": "hot",
+        "label": "Hot intent",
+        "cadence": "6-12h"
+      },
+      {
+        "id": "warm",
+        "label": "Warm intent",
+        "cadence": "24-48h"
+      },
+      {
+        "id": "cold",
+        "label": "Cold catalog",
+        "cadence": "On demand"
+      }
+    ]
+  },
+  "regionCoverage": {
+    "US": {
+      "priceCount": 438,
+      "discountCount": 456,
+      "psPlusCount": 135,
+      "priceCoverage": 96,
+      "discountCoverage": 100
+    },
+    "GB": {
+      "priceCount": 434,
+      "discountCount": 456,
+      "psPlusCount": 126,
+      "priceCoverage": 95,
+      "discountCoverage": 100
+    },
+    "DE": {
+      "priceCount": 435,
+      "discountCount": 456,
+      "psPlusCount": 112,
+      "priceCoverage": 95,
+      "discountCoverage": 100
+    },
+    "TR": {
+      "priceCount": 437,
+      "discountCount": 456,
+      "psPlusCount": 115,
+      "priceCoverage": 96,
+      "discountCoverage": 100
+    }
+  },
+  "coverCoverage": {
+    "coverCount": 456,
+    "coverage": 100,
+    "realImageCount": 456,
+    "fallbackCount": 0,
+    "candidateCount": 456,
+    "verifiedCount": 0
+  },
+  "adultSignals": {
+    "commitment": 100,
+    "tone": 100,
+    "content": 100,
+    "reviewBurden": 100,
+    "adultTimeFit": 100
+  },
+  "topAtoms": [
+    {
+      "atom": "action",
+      "count": 270
+    },
+    {
+      "atom": "story",
+      "count": 248
+    },
+    {
+      "atom": "systems",
+      "count": 167
+    },
+    {
+      "atom": "indie",
+      "count": 145
+    },
+    {
+      "atom": "atmosphere",
+      "count": 123
+    },
+    {
+      "atom": "rpg",
+      "count": 121
+    },
+    {
+      "atom": "multiplayer",
+      "count": 111
+    },
+    {
+      "atom": "platformer",
+      "count": 55
+    },
+    {
+      "atom": "co-op",
+      "count": 50
+    },
+    {
+      "atom": "sci-fi",
+      "count": 42
+    },
+    {
+      "atom": "open-world",
+      "count": 38
+    },
+    {
+      "atom": "strategy",
+      "count": 37
+    }
+  ],
+  "issueCount": 80,
+  "issuesByGame": [
+    {
+      "title": "Alan Wake 2",
+      "issues": [
+        "Missing GB price",
+        "Missing DE price"
+      ]
+    },
+    {
+      "title": "The Outer Worlds",
+      "issues": [
+        "Missing GB price",
+        "Missing DE price"
+      ]
+    },
+    {
+      "title": "Doom (2016)",
+      "issues": [
+        "Missing GB price",
+        "Missing DE price"
+      ]
+    },
+    {
+      "title": "NBA 2K17",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "FIFA 14",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "MLB The Show 17",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "FIFA 17",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Tales of Arise",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Madden NFL 16",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Call of Duty: Black Ops 4",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Madden NFL 18",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Genshin Impact",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "DOOM II",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "MLB The Show 20",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Hitman 3",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Resident Evil Zero",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Crash Team Racing Nitro-Fueled",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "WORLD OF WARSHIPS: LEGENDS",
+      "issues": [
+        "Missing GB price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "FIFA 15",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Knockout City",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "eFootball PES 2020",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    },
+    {
+      "title": "Madden NFL 17",
+      "issues": [
+        "Missing US price",
+        "Missing GB price",
+        "Missing DE price",
+        "Missing TR price"
+      ]
+    }
+  ]
+}

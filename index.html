@@ -1,0 +1,1034 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PlaySputnik</title>
+    <meta name="description" content="Your PS-first gaming companion — find what to play next." />
+    <meta name="theme-color" content="#003791" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PlaySputnik" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Apply theme before first paint to avoid flash-of-light
+      (function () {
+        try {
+          var stored = localStorage.getItem("playsputnik-theme");
+          var theme = stored
+            || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+          if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
+        } catch (e) { /* localStorage blocked — default light */ }
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#decision-surface-main" class="skip-link">Skip to recommendations</a>
+    <main class="app-shell">
+      <aside class="setup-panel" id="setup-panel" aria-label="Player setup">
+        <div class="brand-row">
+          <span class="brand-logo" role="img" aria-label="PlaySputnik">
+            <span class="bl-play">Play</span><span class="bl-sputnik">Sputn<i class="bl-i" aria-hidden="true">ı</i>k</span>
+          </span>
+          <p class="brand-tagline">Your gaming companion</p>
+        </div>
+
+        <section class="control-section entry-section" aria-labelledby="entry-title">
+          <div class="section-heading">
+            <h2 id="entry-title">Start path</h2>
+            <span id="entry-status">30 sec value</span>
+          </div>
+          <div class="entry-grid">
+            <button class="entry-option" data-entry-path="quick" type="button">
+              <strong>Quick taste</strong>
+              <span>30-game swipe</span>
+              <small>First hypothesis after 3 taste signals</small>
+              <span class="entry-tags" aria-label="Quick taste strengths">
+                <em>Fastest</em>
+                <em>No account</em>
+              </span>
+            </button>
+            <button class="entry-option" data-entry-path="psn" type="button">
+              <strong>PSN library</strong>
+              <span>Demo import</span>
+              <small>Best playable game first, fewer duplicate buys</small>
+              <span class="entry-tags" aria-label="PSN library strengths">
+                <em>Library-first</em>
+                <em>Future sync</em>
+              </span>
+            </button>
+            <button class="entry-option" data-entry-path="deep" type="button">
+              <strong>Deep rating</strong>
+              <span>Paste text</span>
+              <small>Any rating list can sharpen the companion</small>
+              <span class="entry-tags" aria-label="Deep rating strengths">
+                <em>Strongest</em>
+                <em>Optional</em>
+              </span>
+            </button>
+          </div>
+          <div class="entry-route-proof" id="entry-route-proof"></div>
+          <div class="entry-result" id="entry-result"></div>
+        </section>
+
+        <section class="control-section psn-import-section" id="psn-import-section" aria-labelledby="psn-import-title" style="display:none">
+          <div class="section-heading">
+            <h2 id="psn-import-title">PSN library import</h2>
+            <span id="psn-import-status"></span>
+          </div>
+          <p class="panel-note">Paste your <code>npsso</code> cookie to import your PS5/PS4 library automatically.</p>
+          <details class="psn-npsso-howto">
+            <summary>How to find your NPSSO token</summary>
+            <ol>
+              <li>Open <strong>my.playstation.com</strong> in a browser and sign in.</li>
+              <li>Press <kbd>F12</kbd> to open DevTools → <strong>Application</strong> tab.</li>
+              <li>Under <strong>Storage → Cookies</strong>, find <code>npsso</code>.</li>
+              <li>Copy the value (64 characters) and paste below.</li>
+            </ol>
+            <p class="panel-note">The token is only sent to your local companion server (127.0.0.1) — never to any third party.</p>
+          </details>
+          <label class="field">
+            <span>NPSSO token</span>
+            <input id="psn-npsso-input" type="password" placeholder="Paste 64-character token" autocomplete="off" spellcheck="false" />
+          </label>
+          <div class="action-row">
+            <button class="secondary-action" id="psn-import-btn" type="button">Import from PSN</button>
+            <button class="secondary-action" id="psn-import-cancel" type="button">Cancel</button>
+          </div>
+          <div id="psn-import-result"></div>
+        </section>
+
+        <section class="control-section" aria-labelledby="liked-title">
+          <div class="section-heading">
+            <h2 id="liked-title">Known games</h2>
+            <span id="liked-count">0/30</span>
+          </div>
+          <div class="quick-swipe-deck" id="quick-swipe-deck"></div>
+          <div class="profile-grid" id="liked-games"></div>
+          <div class="taste-gate" id="taste-gate"></div>
+        </section>
+
+        <section class="control-section" id="taste-profile-section" aria-labelledby="taste-profile-title">
+          <div class="section-heading">
+            <h2 id="taste-profile-title">Taste profile</h2>
+            <span id="taste-profile-badge"></span>
+          </div>
+          <div id="taste-profile-summary"></div>
+        </section>
+
+        <section class="control-section" aria-labelledby="import-title">
+          <div class="section-heading">
+            <h2 id="import-title">Taste import</h2>
+            <span id="taste-summary">Manual profile</span>
+          </div>
+          <label class="field">
+            <span>Paste ratings</span>
+            <textarea id="rating-import" rows="5" placeholder="Hades - 5/5&#10;Elden Ring - 9/10&#10;Stray - 4/5"></textarea>
+          </label>
+          <div class="action-row">
+            <button class="secondary-action" id="sample-ratings" type="button">Use sample</button>
+            <button class="secondary-action" id="analyze-ratings" type="button">Analyze taste</button>
+          </div>
+          <div class="taste-atoms" id="taste-atoms"></div>
+        </section>
+
+        <section class="control-section" aria-labelledby="session-stats-title" id="session-stats-panel">
+          <div class="section-heading">
+            <h2 id="session-stats-title">Session</h2>
+            <span id="session-status"></span>
+          </div>
+          <div class="session-stats-grid" id="session-stats-grid">
+            <div class="session-stat"><span>Now</span><strong id="session-current">—</strong></div>
+            <div class="session-stat"><span>Total</span><strong id="session-total">—</strong></div>
+            <div class="session-stat"><span>Sessions</span><strong id="session-count">—</strong></div>
+            <div class="session-stat"><span>Avg</span><strong id="session-avg">—</strong></div>
+          </div>
+        </section>
+
+        <details class="control-section advanced-section">
+          <summary>
+            <span id="notebook-title">Advanced import</span>
+            <span id="notebook-summary">Optional</span>
+          </summary>
+          <label class="field">
+            <span>Power-user note</span>
+            <textarea id="notebook-import" rows="6" placeholder="Wishlist, access, prices, completed, ranked, upcoming"></textarea>
+          </label>
+          <div class="action-row">
+            <button class="secondary-action" id="parse-notebook" type="button">Parse note</button>
+            <button class="secondary-action" id="clear-notebook" type="button">Clear note</button>
+          </div>
+          <div class="taste-atoms" id="notebook-pills"></div>
+        </details>
+
+        <section class="control-section" aria-labelledby="context-title">
+          <h2 id="context-title">Current context</h2>
+          <label class="field">
+            <span>Mood</span>
+            <select id="mood">
+              <option value="story">Story-rich</option>
+              <option value="adrenaline">High energy</option>
+              <option value="cozy">Relaxed</option>
+              <option value="systems">Systems and tactics</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Session</span>
+            <select id="session">
+              <option value="short">Under 45 minutes</option>
+              <option value="medium">1-2 hours</option>
+              <option value="long">Long evening</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Difficulty</span>
+            <select id="difficulty">
+              <option value="normal">Normal</option>
+              <option value="low">Low friction</option>
+              <option value="high">Challenging</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="control-section" aria-labelledby="market-title">
+          <h2 id="market-title">Store signals</h2>
+          <div class="segmented" role="group" aria-label="Active PS Store region">
+            <button class="segment is-active" data-region="US" type="button">US</button>
+            <button class="segment" data-region="TR" type="button">TR</button>
+            <button class="segment" data-region="UK" type="button">UK</button>
+          </div>
+          <label class="toggle-row">
+            <input id="ps-plus" type="checkbox" checked />
+            <span>Use PS Plus Extra catalog</span>
+          </label>
+          <label class="field">
+            <span>Buy-later ceiling</span>
+            <input id="budget" type="range" min="10" max="70" value="35" step="5" />
+            <strong id="budget-label">$35</strong>
+          </label>
+        </section>
+
+        <button class="primary-action" id="refresh" type="button">
+          <span aria-hidden="true">R</span>
+          Refresh guidance
+        </button>
+        <button class="secondary-action" id="reset-state" type="button">Reset profile</button>
+      </aside>
+
+      <section class="decision-surface" id="decision-surface-main" aria-live="polite" tabindex="-1">
+        <header class="surface-header">
+          <div>
+            <p class="eyebrow">For players with money, not time</p>
+            <h2>What should I play tonight?</h2>
+          </div>
+          <div class="surface-header-right">
+            <div class="region-pill" id="active-region">US Store</div>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+            <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="setup-panel" title="Settings">⚙</button>
+          </div>
+        </header>
+
+        <nav class="app-view-nav" aria-label="Product areas">
+          <button class="app-view-tab is-active" data-app-view="today" type="button">
+            <strong>Today</strong>
+            <span>Play now</span>
+          </button>
+          <button class="app-view-tab" data-app-view="library" type="button">
+            <strong>Library</strong>
+            <span>Owned queue</span>
+          </button>
+          <button class="app-view-tab" data-app-view="discover" type="button">
+            <strong>Discover</strong>
+            <span>Find games</span>
+          </button>
+          <button class="app-view-tab" data-app-view="wishlist" type="button">
+            <strong>Wishlist</strong>
+            <span>Buy smarter</span>
+          </button>
+          <button class="app-view-tab" data-app-view="taste" type="button">
+            <strong>Taste</strong>
+            <span>Profile</span>
+          </button>
+          <button class="app-view-tab" data-app-view="deals" type="button">
+            <strong>Deals</strong>
+            <span>On sale</span>
+          </button>
+          <button class="app-view-tab" data-app-view="data" type="button">
+            <strong>Data</strong>
+            <span>Sources</span>
+          </button>
+          <button class="app-view-tab" data-app-view="stats" type="button">
+            <strong>Stats</strong>
+            <span>My library</span>
+          </button>
+        </nav>
+        <p class="app-view-copy" id="app-view-status">Tonight pick, first value proof, and the short plan.</p>
+
+        <section class="value-strip" aria-label="Decision metrics" data-view-section="today library discover wishlist taste">
+          <div>
+            <span>Screened</span>
+            <strong id="screened-count">0 games</strong>
+          </div>
+          <div>
+            <span>Radar</span>
+            <strong id="best-deal">0% off</strong>
+          </div>
+          <div>
+            <span>Time fit</span>
+            <strong id="time-fit">0 picks</strong>
+          </div>
+          <div>
+            <span>Library</span>
+            <strong id="library-count">0 states</strong>
+          </div>
+          <div>
+            <span>Guarded</span>
+            <strong id="guarded-count">0 skips</strong>
+          </div>
+        </section>
+
+        <section class="onboarding-hero is-hidden" id="onboarding-hero" aria-label="Welcome" data-view-section="today">
+          <div class="onboarding-hero-text">
+            <h2>Rate 3 games. Get tonight's pick.</h2>
+            <p>PlaySputnik learns what you love and recommends the right game for right now — your mood, your time, your budget.</p>
+          </div>
+          <div class="onboarding-progress" id="onboarding-progress">
+            <div class="onboarding-progress-bar">
+              <div class="onboarding-progress-fill" id="onboarding-progress-fill" style="width:0%"></div>
+            </div>
+            <span id="onboarding-progress-label">0 of 3 signals</span>
+          </div>
+          <div class="onboarding-featured" id="onboarding-featured"></div>
+        </section>
+
+        <section class="top-pick" id="top-pick" aria-label="Top recommendation" data-view-section="today"></section>
+
+        <section class="first-run-panel" aria-labelledby="first-run-title" data-view-section="today taste">
+          <div class="section-heading">
+            <h2 id="first-run-title">First 30 seconds</h2>
+            <span id="first-run-status">Loading</span>
+          </div>
+          <div class="first-run-grid" id="first-run-grid"></div>
+          <div class="first-run-bridge" id="first-run-bridge"></div>
+        </section>
+
+        <section class="answer-panel" aria-labelledby="answer-title" data-view-section="today">
+          <div class="section-heading">
+            <h2 id="answer-title">Companion answer</h2>
+            <span id="answer-status">Loading</span>
+          </div>
+          <div id="answer-copy"></div>
+        </section>
+
+        <section class="receipt-panel" aria-labelledby="receipt-title" data-view-section="today taste">
+          <div class="section-heading">
+            <h2 id="receipt-title">30-sec proof</h2>
+            <span id="receipt-summary">Loading</span>
+          </div>
+          <div class="receipt-grid" id="receipt-grid"></div>
+        </section>
+
+        <section class="plan-panel" aria-labelledby="plan-title" data-view-section="today">
+          <div class="section-heading">
+            <h2 id="plan-title">Companion plan</h2>
+            <span id="plan-summary">Loading</span>
+          </div>
+          <div id="plan-list"></div>
+        </section>
+
+        <section class="library-plan-panel" aria-labelledby="library-plan-title" data-view-section="today library">
+          <div class="section-heading">
+            <h2 id="library-plan-title">Library plan</h2>
+            <span id="library-plan-summary">Loading</span>
+          </div>
+          <div id="library-plan-list"></div>
+        </section>
+
+        <section class="memory-panel" aria-labelledby="memory-title" data-view-section="library taste">
+          <div class="section-heading">
+            <h2 id="memory-title">Taste memory</h2>
+            <span id="memory-status">Learning</span>
+          </div>
+          <div id="memory-grid"></div>
+        </section>
+
+        <section class="learning-panel" aria-labelledby="learning-title" data-view-section="taste">
+          <div class="section-heading">
+            <h2 id="learning-title">Recently learned</h2>
+            <span id="learning-status">Waiting</span>
+          </div>
+          <div id="learning-list"></div>
+        </section>
+
+        <section class="taste-share-panel" aria-labelledby="taste-share-title" data-view-section="taste" id="taste-share-panel">
+          <div class="section-heading">
+            <h2 id="taste-share-title">Share taste</h2>
+            <span id="taste-share-status"></span>
+          </div>
+          <p class="panel-note">Generate a link that encodes your atom weights and top reactions — a friend can import it to see what you'd both enjoy.</p>
+          <div class="taste-share-actions">
+            <button class="secondary-action" id="taste-share-btn" type="button">Generate share link</button>
+            <button class="secondary-action" id="taste-share-copy" type="button" style="display:none">Copy link</button>
+          </div>
+          <div class="taste-share-url" id="taste-share-url" style="display:none"></div>
+        </section>
+
+        <section class="taste-import-banner" id="taste-import-banner" style="display:none" aria-live="polite">
+          <div class="taste-import-banner-body">
+            <strong id="taste-import-banner-title">Someone shared their taste with you</strong>
+            <span id="taste-import-banner-desc"></span>
+            <div class="taste-import-banner-actions">
+              <button class="primary-action" id="taste-import-confirm" type="button">Merge into my profile</button>
+              <button class="secondary-action" id="taste-import-dismiss" type="button">Dismiss</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="my-games-panel" aria-labelledby="my-games-title" data-view-section="library taste">
+          <div class="section-heading">
+            <h2 id="my-games-title">My games</h2>
+            <span id="my-games-summary">Loading</span>
+          </div>
+          <div class="library-dashboard" id="my-games-dashboard"></div>
+          <div class="queue-toolbar" aria-label="Library queue filters">
+            <div class="queue-filter-tabs">
+              <button class="queue-filter is-active" data-library-filter="all" type="button">All</button>
+              <button class="queue-filter" data-library-filter="active" type="button">Active</button>
+              <button class="queue-filter" data-library-filter="access" type="button">Access</button>
+              <button class="queue-filter" data-library-filter="wishlist" type="button">Wishlist</button>
+              <button class="queue-filter" data-library-filter="finished" type="button">Done</button>
+            </div>
+            <span id="my-games-filter-summary">All queue</span>
+          </div>
+          <div id="my-games-list"></div>
+        </section>
+
+        <section class="game-search-panel" aria-labelledby="game-search-title" data-view-section="discover wishlist">
+          <div class="section-heading">
+            <h2 id="game-search-title">Game search</h2>
+            <span id="game-search-status">Local</span>
+          </div>
+          <div class="game-search-controls">
+            <input id="game-search-input" type="search" placeholder="Search a game" autocomplete="off" />
+            <button class="secondary-action" id="game-search-submit" type="button">Search</button>
+          </div>
+          <p class="panel-note" id="game-search-source">Seed, backbone, external index</p>
+          <div id="game-search-list"></div>
+        </section>
+
+        <section class="visual-catalog-panel" aria-labelledby="visual-catalog-title" data-view-section="today library discover wishlist">
+          <div class="section-heading">
+            <h2 id="visual-catalog-title">Visual catalog</h2>
+            <span id="visual-catalog-status">Loading</span>
+          </div>
+          <div class="visual-catalog-toolbar" role="tablist" aria-label="Visual catalog shelves">
+            <button class="visual-shelf is-active" data-visual-shelf="smart" type="button">Smart</button>
+            <button class="visual-shelf" data-visual-shelf="tonight" type="button">Tonight</button>
+            <button class="visual-shelf" data-visual-shelf="included" type="button">Included</button>
+            <button class="visual-shelf" data-visual-shelf="deals" type="button">Deals</button>
+            <button class="visual-shelf" data-visual-shelf="wishlist" type="button">Wishlist</button>
+            <button class="visual-shelf" data-visual-shelf="library" type="button">Library</button>
+            <button class="visual-shelf" data-visual-shelf="catalog" type="button">Catalog</button>
+          </div>
+          <div class="visual-catalog-filters" id="visual-catalog-filters">
+            <div class="catalog-filter-group" data-filter-group="atom">
+              <button class="catalog-filter-chip is-active" data-catalog-filter-atom="" type="button">All</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="action" type="button">Action</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="rpg" type="button">RPG</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="story" type="button">Story</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="indie" type="button">Indie</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="platformer" type="button">Platformer</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="roguelike" type="button">Roguelike</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="strategy" type="button">Strategy</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="horror" type="button">Horror</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="puzzle" type="button">Puzzle</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="open-world" type="button">Open world</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="souls-like" type="button">Souls-like</button>
+            </div>
+            <div class="catalog-filter-group" data-filter-group="length">
+              <button class="catalog-filter-chip catalog-filter-chip--meta is-active" data-catalog-filter-length="" type="button">Any length</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="short" type="button">Short</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="medium" type="button">Medium</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="long" type="button">Long</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="massive" type="button">Massive</button>
+            </div>
+            <div class="catalog-filter-group" data-filter-group="difficulty">
+              <button class="catalog-filter-chip catalog-filter-chip--meta is-active" data-catalog-filter-difficulty="" type="button">Any difficulty</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="easy" type="button">Easy</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="normal" type="button">Normal</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="hard" type="button">Hard</button>
+            </div>
+          </div>
+
+          <div class="visual-catalog-search">
+            <input
+              type="search"
+              id="catalog-search-input"
+              placeholder="Search catalog…"
+              autocomplete="off"
+              aria-label="Search games in catalog"
+            />
+            <span id="catalog-search-count"></span>
+          </div>
+          <div class="visual-catalog-sort" id="visual-catalog-sort" role="group" aria-label="Sort catalog">
+            <span class="sort-label">Sort:</span>
+            <button class="sort-btn is-active" data-catalog-sort="score" type="button">Best fit</button>
+            <button class="sort-btn" data-catalog-sort="alpha" type="button">A–Z</button>
+            <button class="sort-btn" data-catalog-sort="length" type="button">Length</button>
+            <button class="sort-btn" data-catalog-sort="price" type="button">Price</button>
+          </div>
+          <div class="visual-catalog-metrics" id="visual-catalog-metrics"></div>
+          <p class="panel-note" id="visual-catalog-summary"></p>
+          <div id="visual-catalog-list"></div>
+          <div id="visual-catalog-load-more"></div>
+        </section>
+
+        <nav class="tabs" aria-label="Recommendation groups" data-view-section="today library discover wishlist">
+          <button class="tab is-active" data-cluster="play" type="button">Play</button>
+          <button class="tab" data-cluster="plus" type="button">PS Plus</button>
+          <button class="tab" data-cluster="buy" type="button">Buy later</button>
+          <button class="tab" data-cluster="backlog" type="button">Backlog</button>
+          <button class="tab" data-cluster="library" type="button">Library</button>
+        </nav>
+
+        <section class="cluster-grid" id="cluster-grid" data-view-section="today library discover wishlist"></section>
+
+        <section class="library-panel" aria-labelledby="library-title" data-view-section="library">
+          <div class="section-heading">
+            <h2 id="library-title">Library / Backlog</h2>
+            <span id="library-summary">0 states</span>
+          </div>
+          <div class="library-grid" id="library-grid"></div>
+        </section>
+
+        <section class="radar-panel" aria-labelledby="radar-title" data-view-section="discover taste">
+          <div class="section-heading">
+            <h2 id="radar-title">Taste radar</h2>
+            <span id="radar-status">Loading</span>
+          </div>
+          <div id="radar-list"></div>
+        </section>
+
+        <section class="price-watch" aria-labelledby="price-watch-title" data-view-section="wishlist">
+          <div class="section-heading">
+            <h2 id="price-watch-title">Buy-later watch</h2>
+            <span id="price-watch-region">US</span>
+          </div>
+          <div class="wishlist-dashboard" id="wishlist-dashboard"></div>
+          <div class="queue-toolbar" aria-label="Wishlist queue filters">
+            <div class="queue-filter-tabs">
+              <button class="queue-filter is-active" data-wishlist-filter="all" type="button">All</button>
+              <button class="queue-filter" data-wishlist-filter="buy" type="button">Buy</button>
+              <button class="queue-filter" data-wishlist-filter="wait" type="button">Wait</button>
+              <button class="queue-filter" data-wishlist-filter="verify" type="button">Verify</button>
+              <button class="queue-filter" data-wishlist-filter="missing" type="button">Missing</button>
+            </div>
+            <span id="wishlist-filter-summary">All watched games</span>
+          </div>
+          <div class="wishlist-sort-row" role="group" aria-label="Sort wishlist">
+            <span class="sort-label">Sort:</span>
+            <button class="sort-btn is-active" data-wishlist-sort="score" type="button">Best fit</button>
+            <button class="sort-btn" data-wishlist-sort="price" type="button">Price ↑</button>
+            <button class="sort-btn" data-wishlist-sort="discount" type="button">Discount ↓</button>
+            <button class="sort-btn" data-wishlist-sort="alpha" type="button">A–Z</button>
+          </div>
+          <div id="price-watch-list"></div>
+        </section>
+
+        <section class="buy-decision-panel" aria-labelledby="buy-decision-title" data-view-section="wishlist">
+          <div class="section-heading">
+            <h2 id="buy-decision-title">Buy decision</h2>
+            <span id="buy-decision-status">Loading</span>
+          </div>
+          <div id="buy-decision-list"></div>
+        </section>
+
+        <section class="drop-panel" aria-labelledby="drop-title" data-view-section="discover">
+          <div class="section-heading">
+            <h2 id="drop-title">Drop inbox</h2>
+            <span id="drop-status">Loading</span>
+          </div>
+          <div class="drop-calendar" id="drop-calendar"></div>
+          <div id="drop-list"></div>
+        </section>
+
+        <section class="deals-panel" aria-labelledby="deals-title" data-view-section="deals" id="deals-panel">
+          <div class="section-heading">
+            <h2 id="deals-title">On sale now</h2>
+            <span id="deals-status">Loading</span>
+          </div>
+          <div class="deals-filters" id="deals-filters">
+            <button class="deals-filter-btn is-active" data-deals-filter="all" type="button">All deals</button>
+            <button class="deals-filter-btn" data-deals-filter="under10" type="button">Under $10</button>
+            <button class="deals-filter-btn" data-deals-filter="big" type="button">50%+ off</button>
+            <button class="deals-filter-btn" data-deals-filter="top" type="button">Top rated</button>
+          </div>
+          <div class="deals-grid" id="deals-grid"></div>
+          <p class="deals-footer" id="deals-footer"></p>
+        </section>
+
+        <section class="refresh-panel" aria-labelledby="refresh-policy-title" data-view-section="data">
+          <div class="section-heading">
+            <h2 id="refresh-policy-title">Refresh policy</h2>
+            <span id="refresh-policy-status">Loading</span>
+          </div>
+          <p class="panel-note" id="refresh-policy-summary"></p>
+          <div id="refresh-policy-list"></div>
+        </section>
+
+        <section class="source-panel" aria-labelledby="source-title" data-view-section="data">
+          <div class="section-heading">
+            <h2 id="source-title">Source health</h2>
+            <span id="source-mode">Loading</span>
+          </div>
+          <div id="source-list"></div>
+        </section>
+
+        <section class="dev-health-panel" aria-labelledby="dev-health-title" data-view-section="data">
+          <div class="section-heading">
+            <h2 id="dev-health-title">Dev health</h2>
+            <span id="dev-health-status">Loading</span>
+          </div>
+          <p class="panel-note" id="dev-health-summary"></p>
+          <div id="dev-health-list"></div>
+        </section>
+
+        <section class="workbench-panel" aria-labelledby="workbench-title" data-view-section="data">
+          <div class="section-heading">
+            <h2 id="workbench-title">Data workbench</h2>
+            <span id="workbench-status">Loading</span>
+          </div>
+          <div class="workbench-grid" id="workbench-grid"></div>
+          <div class="atom-strip" id="top-atoms"></div>
+        </section>
+
+        <section class="export-panel" aria-labelledby="export-title" data-view-section="data" id="export-panel">
+          <div class="section-heading">
+            <h2 id="export-title">Export &amp; Import</h2>
+            <span id="export-status"></span>
+          </div>
+          <p class="panel-note">Save your library and taste profile, or restore from a previous backup.</p>
+          <div class="export-actions">
+            <button class="secondary-action" id="export-json" type="button">Export JSON</button>
+            <button class="secondary-action" id="export-csv" type="button">Export CSV</button>
+            <label class="secondary-action export-import-label" for="import-file">Import backup</label>
+            <input type="file" id="import-file" accept=".json,.csv,.txt" style="display:none">
+          </div>
+          <details class="export-import-sources">
+            <summary>Import from another source</summary>
+            <p class="panel-note">Supports <strong>Backloggd CSV</strong>, <strong>HowLongToBeat JSON</strong> backup, or a plain list of game titles. Format is detected automatically.</p>
+            <div class="action-row">
+              <label class="secondary-action export-import-label" for="library-import-file">Choose file…</label>
+              <input type="file" id="library-import-file" accept=".json,.csv,.txt" style="display:none">
+              <button class="secondary-action" id="psn-connect-btn" type="button">Import from PSN</button>
+            </div>
+            <div id="library-import-preview" class="library-import-preview" style="display:none"></div>
+            <div class="action-row" id="library-import-confirm-row" style="display:none">
+              <button class="primary-action" id="library-import-confirm" type="button">Add to library</button>
+              <button class="secondary-action" id="library-import-discard" type="button">Discard</button>
+            </div>
+          </details>
+          <pre class="export-preview" id="export-preview" style="display:none"></pre>
+        </section>
+
+        <section class="catalog-backbone-panel" aria-labelledby="catalog-backbone-title" data-view-section="data">
+          <div class="section-heading">
+            <h2 id="catalog-backbone-title">Catalog backbone</h2>
+            <span id="catalog-backbone-status">Loading</span>
+          </div>
+          <p class="panel-note" id="catalog-backbone-summary"></p>
+          <div id="catalog-backbone-list"></div>
+        </section>
+
+        <section class="catalog-workbench-panel" aria-labelledby="catalog-workbench-title" data-view-section="data">
+          <div class="section-heading">
+            <h2 id="catalog-workbench-title">Catalog workbench</h2>
+            <span id="catalog-workbench-status">Loading</span>
+          </div>
+          <p class="panel-note" id="catalog-workbench-summary"></p>
+          <div id="catalog-workbench-list"></div>
+        </section>
+
+        <section class="debug-panel" aria-labelledby="debug-title" data-view-section="data">
+          <div class="section-heading">
+            <h2 id="debug-title">Why this ranking</h2>
+            <span id="debug-summary"></span>
+          </div>
+          <div id="debug-list"></div>
+        </section>
+
+        <!-- ── Stats view ─────────────────────────────────────────────── -->
+        <section class="stats-panel" aria-labelledby="stats-title" data-view-section="stats" id="stats-panel">
+          <div class="section-heading">
+            <h2 id="stats-title">My library stats</h2>
+            <span id="stats-badge"></span>
+          </div>
+          <div class="stats-grid" id="stats-grid"></div>
+          <div class="stats-atoms" id="stats-atoms"></div>
+          <div class="stats-timeline" id="stats-timeline"></div>
+        </section>
+
+        <!-- ── Wishlist share ─────────────────────────────────────────── -->
+        <section class="wishlist-share-panel" aria-labelledby="wishlist-share-title" data-view-section="wishlist" id="wishlist-share-panel">
+          <div class="section-heading">
+            <h2 id="wishlist-share-title">Share wishlist</h2>
+            <span id="wishlist-share-status"></span>
+          </div>
+          <p class="panel-note">Send a link to share your saved games. The receiver can add all titles to their own wishlist in one click.</p>
+          <div class="taste-share-actions">
+            <button class="secondary-action" id="wishlist-share-btn" type="button">Generate link</button>
+            <button class="secondary-action" id="wishlist-share-copy" type="button" style="display:none">Copy link</button>
+          </div>
+          <div class="taste-share-url" id="wishlist-share-url" style="display:none"></div>
+        </section>
+
+        <!-- ── Wishlist import banner ─────────────────────────────────── -->
+        <section class="taste-import-banner" id="wishlist-import-banner" style="display:none" aria-live="polite">
+          <div class="taste-import-banner-body">
+            <strong id="wishlist-import-banner-title">Someone shared their wishlist with you</strong>
+            <p id="wishlist-import-banner-summary"></p>
+            <div class="action-row">
+              <button class="primary-action" id="wishlist-import-confirm" type="button">Add to my wishlist</button>
+              <button class="secondary-action" id="wishlist-import-dismiss" type="button">Dismiss</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <section class="game-detail-shell is-hidden" id="game-detail" aria-hidden="true">
+      <button class="game-detail-backdrop" data-detail-close type="button" aria-label="Close game detail"></button>
+      <article class="game-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="game-detail-title" tabindex="-1">
+        <div class="drawer-drag-handle" aria-hidden="true"></div>
+        <header class="game-detail-header">
+          <div>
+            <p class="eyebrow">Game detail</p>
+            <h2 id="game-detail-title">Game</h2>
+            <p id="game-detail-meta"></p>
+          </div>
+          <button class="game-detail-close" data-detail-close type="button" aria-label="Close game detail">Close</button>
+        </header>
+        <div class="game-detail-visual"></div>
+        <small class="game-detail-cover-source"></small>
+        <div class="game-detail-body"></div>
+      </article>
+    </section>
+
+    <template id="chip-template">
+      <button class="chip" type="button"></button>
+    </template>
+
+    <template id="card-template">
+      <article class="game-card">
+        <div class="poster" aria-hidden="true">
+          <span class="poster-kind"></span>
+          <strong class="poster-title"></strong>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <h3></h3>
+              <p class="meta"></p>
+            </div>
+            <span class="score"></span>
+          </div>
+          <p class="description"></p>
+          <p class="reason"></p>
+          <div class="personal-evidence card-evidence"></div>
+          <p class="watchout"></p>
+          <div class="atom-row"></div>
+          <div class="facts"></div>
+          <small class="card-cover-source"></small>
+          <div class="card-actions">
+            <button class="memory-action" data-action="detail" type="button">Details</button>
+            <button class="memory-action" data-action="save" type="button">Wishlist</button>
+            <button class="memory-action" data-action="good" type="button">Like</button>
+            <button class="memory-action" data-action="hide" type="button">Not for me</button>
+          </div>
+          <select class="state-select" aria-label="Game state">
+            <option value="">Set state</option>
+            <option value="saved">Saved</option>
+            <option value="want_to_finish">Want to finish</option>
+            <option value="paused">Paused</option>
+            <option value="owned">Owned</option>
+            <option value="owned_forever">Owned forever</option>
+            <option value="subscription">Subscription</option>
+            <option value="playing">Playing</option>
+            <option value="completed">Completed</option>
+            <option value="dropped">Dropped</option>
+            <option value="hidden">Hidden</option>
+          </select>
+        </div>
+      </article>
+    </template>
+
+    <script>
+      window.__playsputnikErrors = [];
+      window.addEventListener("error", (event) => {
+        window.__playsputnikErrors.push({
+          message: event.message,
+          source: event.filename,
+          line: event.lineno,
+          column: event.colno,
+        });
+      });
+      window.addEventListener("unhandledrejection", (event) => {
+        window.__playsputnikErrors.push({
+          message: event.reason && event.reason.message ? event.reason.message : String(event.reason),
+          source: "unhandledrejection",
+        });
+      });
+    </script>
+    <script>
+      function handleScriptError(name) {
+        const el = document.getElementById("app-loading") || document.body;
+        el.innerHTML = `<div style="font-family:monospace;padding:2rem;color:#c00">
+          <strong>PlaySputnik failed to load:</strong> <code>${name}</code><br>
+          Check the browser console for details.
+        </div>`;
+        console.error(`[PlaySputnik] Script load failed: ${name}`);
+      }
+
+      const cacheBust = Date.now();
+      const storageScript = document.createElement("script");
+      storageScript.src = `src/app-storage.js?v=${cacheBust}`;
+      storageScript.onerror = () => handleScriptError("app-storage.js");
+      storageScript.onload = () => {
+      const configScript = document.createElement("script");
+      configScript.src = `src/app-config.js?v=${cacheBust}`;
+      configScript.onerror = () => handleScriptError("app-config.js");
+      configScript.onload = () => {
+        const stateScript = document.createElement("script");
+        stateScript.src = `src/app-state.js?v=${cacheBust}`;
+        stateScript.onerror = () => handleScriptError("app-state.js");
+        stateScript.onload = () => {
+          const searchScript = document.createElement("script");
+          searchScript.src = `src/app-search.js?v=${cacheBust}`;
+          searchScript.onerror = () => handleScriptError("app-search.js");
+          searchScript.onload = () => {
+            const enrichmentScript = document.createElement("script");
+            enrichmentScript.src = `src/app-enrichment.js?v=${cacheBust}`;
+            enrichmentScript.onerror = () => handleScriptError("app-enrichment.js");
+            enrichmentScript.onload = () => {
+              const onboardingScript = document.createElement("script");
+              onboardingScript.src = `src/app-onboarding.js?v=${cacheBust}`;
+              onboardingScript.onerror = () => handleScriptError("app-onboarding.js");
+              onboardingScript.onload = () => {
+              const entryScript = document.createElement("script");
+              entryScript.src = `src/app-entry.js?v=${cacheBust}`;
+              entryScript.onerror = () => handleScriptError("app-entry.js");
+              entryScript.onload = () => {
+              const scoreScript = document.createElement("script");
+              scoreScript.src = `src/app-score.js?v=${cacheBust}`;
+              scoreScript.onerror = () => handleScriptError("app-score.js");
+              scoreScript.onload = () => {
+                const radarScript = document.createElement("script");
+                radarScript.src = `src/app-radar.js?v=${cacheBust}`;
+                radarScript.onerror = () => handleScriptError("app-radar.js");
+                radarScript.onload = () => {
+                const recommendScript = document.createElement("script");
+                recommendScript.src = `src/app-recommend.js?v=${cacheBust}`;
+                recommendScript.onerror = () => handleScriptError("app-recommend.js");
+                recommendScript.onload = () => {
+                  const rankingScript = document.createElement("script");
+                  rankingScript.src = `src/app-ranking.js?v=${cacheBust}`;
+                  rankingScript.onerror = () => handleScriptError("app-ranking.js");
+                  rankingScript.onload = () => {
+                    const answerScript = document.createElement("script");
+                    answerScript.src = `src/app-answer.js?v=${cacheBust}`;
+                    answerScript.onerror = () => handleScriptError("app-answer.js");
+                    answerScript.onload = () => {
+                      const libraryScript = document.createElement("script");
+                      libraryScript.src = `src/app-library.js?v=${cacheBust}`;
+                      libraryScript.onerror = () => handleScriptError("app-library.js");
+                      libraryScript.onload = () => {
+                        const visualScript = document.createElement("script");
+                        visualScript.src = `src/app-visual.js?v=${cacheBust}`;
+                        visualScript.onerror = () => handleScriptError("app-visual.js");
+                        visualScript.onload = () => {
+                        const wishlistScript = document.createElement("script");
+                        wishlistScript.src = `src/app-wishlist.js?v=${cacheBust}`;
+                        wishlistScript.onerror = () => handleScriptError("app-wishlist.js");
+                        wishlistScript.onload = () => {
+                          const detailScript = document.createElement("script");
+                          detailScript.src = `src/app-detail.js?v=${cacheBust}`;
+                          detailScript.onerror = () => handleScriptError("app-detail.js");
+                          detailScript.onload = () => {
+                            const coverScript = document.createElement("script");
+                            coverScript.src = `src/app-cover.js?v=${cacheBust}`;
+                            coverScript.onerror = () => handleScriptError("app-cover.js");
+                            coverScript.onload = () => {
+                              const devScript = document.createElement("script");
+                              devScript.src = `src/app-dev.js?v=${cacheBust}`;
+                              devScript.onerror = () => handleScriptError("app-dev.js");
+                              devScript.onload = () => {
+                              const sessionScript = document.createElement("script");
+                              sessionScript.src = `src/app-session.js?v=${cacheBust}`;
+                              sessionScript.onerror = () => handleScriptError("app-session.js");
+                              sessionScript.onload = () => {
+                              const hltbScript = document.createElement("script");
+                              hltbScript.src = `src/app-hltb.js?v=${cacheBust}`;
+                              hltbScript.onerror = () => handleScriptError("app-hltb.js");
+                              hltbScript.onload = () => {
+                              const aiScript = document.createElement("script");
+                              aiScript.src = `src/app-ai.js?v=${cacheBust}`;
+                              aiScript.onerror = () => handleScriptError("app-ai.js");
+                              aiScript.onload = () => {
+                              const cardsScript = document.createElement("script");
+                              cardsScript.src = `src/app-cards.js?v=${cacheBust}`;
+                              cardsScript.onerror = () => handleScriptError("app-cards.js");
+                              cardsScript.onload = () => {
+                              const dataPanelScript = document.createElement("script");
+                              dataPanelScript.src = `src/app-data-panel.js?v=${cacheBust}`;
+                              dataPanelScript.onerror = () => handleScriptError("app-data-panel.js");
+                              dataPanelScript.onload = () => {
+                              const importScript = document.createElement("script");
+                              importScript.src = `src/app-import.js?v=${cacheBust}`;
+                              importScript.onerror = () => handleScriptError("app-import.js");
+                              importScript.onload = () => {
+                              const exportScript = document.createElement("script");
+                              exportScript.src = `src/app-export.js?v=${cacheBust}`;
+                              exportScript.onerror = () => handleScriptError("app-export.js");
+                              exportScript.onload = () => {
+                                // Preload state from IDB before app.js runs — enables
+                                // synchronous loadState() to read from IndexedDB on cold start
+                                const { STORAGE_KEY } = window.PlaySputnikConfig;
+                                window.PlaySputnikStorage.preload(STORAGE_KEY).then(() => {
+                                  const appScript = document.createElement("script");
+                                  appScript.src = `app.js?v=${cacheBust}`;
+                                  appScript.onerror = () => handleScriptError("app.js");
+                                  document.body.appendChild(appScript);
+                                });
+                              };
+                              document.body.appendChild(exportScript);
+                              };
+                              document.body.appendChild(importScript);
+                              };
+                              document.body.appendChild(dataPanelScript);
+                              };
+                              document.body.appendChild(cardsScript);
+                              };
+                              document.body.appendChild(aiScript);
+                              };
+                              document.body.appendChild(hltbScript);
+              };
+              document.body.appendChild(sessionScript);
+              };
+              document.body.appendChild(devScript);
+                            };
+                            document.body.appendChild(coverScript);
+                          };
+                          document.body.appendChild(detailScript);
+                        };
+                        document.body.appendChild(wishlistScript);
+                        };
+                        document.body.appendChild(visualScript);
+                      };
+                      document.body.appendChild(libraryScript);
+                    };
+                    document.body.appendChild(answerScript);
+                  };
+                  document.body.appendChild(rankingScript);
+                };
+                document.body.appendChild(recommendScript);
+                };
+                document.body.appendChild(radarScript);
+              };
+              document.body.appendChild(scoreScript);
+              };
+              document.body.appendChild(entryScript);
+              };
+              document.body.appendChild(onboardingScript);
+            };
+            document.body.appendChild(enrichmentScript);
+          };
+          document.body.appendChild(searchScript);
+        };
+        document.body.appendChild(stateScript);
+      };
+      document.body.appendChild(configScript);
+      };
+      document.body.appendChild(storageScript);
+    </script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").then((reg) => {
+            console.info("[SW] Registered:", reg.scope);
+            reg.addEventListener("updatefound", () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener("statechange", () => {
+                if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                  // New version available — show reload banner
+                  const banner = document.getElementById("sw-update-banner");
+                  if (banner) banner.classList.remove("is-hidden");
+                  window.dispatchEvent(new CustomEvent("playsputnik:sw-update"));
+                }
+              });
+            });
+          }).catch((err) => {
+            console.warn("[SW] Registration failed:", err.message);
+          });
+        });
+
+        // Update banner buttons
+        const reloadBtn = document.getElementById("sw-update-reload");
+        const dismissBtn = document.getElementById("sw-update-dismiss");
+        const banner = document.getElementById("sw-update-banner");
+        if (reloadBtn) reloadBtn.addEventListener("click", () => window.location.reload());
+        if (dismissBtn && banner) dismissBtn.addEventListener("click", () => banner.classList.add("is-hidden"));
+      }
+
+      // Offline / online indicator
+      (function () {
+        const indicator = document.getElementById("offline-indicator");
+        if (!indicator) return;
+        function sync() {
+          indicator.classList.toggle("is-hidden", navigator.onLine);
+        }
+        window.addEventListener("online", sync);
+        window.addEventListener("offline", sync);
+        sync();
+      })();
+    </script>
+
+    <!-- Error overlay (shown when critical data fails to load) -->
+    <div class="app-error-overlay is-hidden" id="app-error-overlay" role="alert" aria-live="assertive">
+      <div class="app-error-body">
+        <div class="app-error-icon">⚠</div>
+        <h2 class="app-error-title">Couldn't load catalog</h2>
+        <p class="app-error-message" id="app-error-message">Something went wrong while loading game data.</p>
+        <div class="app-error-actions">
+          <button class="primary-action" id="app-error-retry" type="button">Try again</button>
+          <button class="secondary-action" id="app-error-offline" type="button">Work offline</button>
+        </div>
+        <details class="app-error-details">
+          <summary>Technical details</summary>
+          <pre id="app-error-stack"></pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- Deferred data error toast -->
+    <div class="data-error-toast is-hidden" id="data-error-toast" role="status">
+      <span id="data-error-toast-msg"></span>
+      <button id="data-error-toast-close" type="button" aria-label="Dismiss">✕</button>
+    </div>
+
+    <!-- Offline indicator -->
+    <div class="offline-indicator is-hidden" id="offline-indicator" role="status" aria-live="polite">
+      <span class="offline-dot" aria-hidden="true"></span>
+      <span>Offline — showing cached data</span>
+    </div>
+
+    <!-- New version available banner -->
+    <div class="sw-update-banner is-hidden" id="sw-update-banner" role="status">
+      <span>A new version is available.</span>
+      <button id="sw-update-reload" type="button">Reload</button>
+      <button id="sw-update-dismiss" type="button" aria-label="Dismiss">✕</button>
+    </div>
+  </body>
+</html>

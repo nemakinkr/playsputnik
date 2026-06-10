@@ -1,0 +1,2631 @@
+{
+  "mode": "pre-mvp-catalog-backbone",
+  "updatedAt": "2026-06-02T12:30:00Z",
+  "goal": "Provide a structured growth queue from the 24-game seed catalog toward a 150-game private-demo catalog without requiring full price or cover ingestion for every title.",
+  "target": {
+    "seedTarget": 150,
+    "currentSeed": 456,
+    "backboneRecords": 101,
+    "nextPromotionBatch": 24,
+    "minimumReadyForInvestorDemo": 60
+  },
+  "promotionChecklist": [
+    "canonical title and likely platform scope",
+    "at least three taxonomy atoms",
+    "session, commitment, and adult-time fit",
+    "cover snapshot or explicit fallback poster",
+    "source confidence and manual review state",
+    "price need classified as none, watch_only, warm, or hot"
+  ],
+  "lanes": [
+    {
+      "id": "cinematic_story",
+      "label": "Cinematic story",
+      "target": 18,
+      "purpose": "Narrative and prestige games that validate PlaySputnik as a companion for story-first adults."
+    },
+    {
+      "id": "open_world_rpg",
+      "label": "Open-world / RPG",
+      "target": 18,
+      "purpose": "Longer commitment games where taste, time, and purchase timing matter."
+    },
+    {
+      "id": "systems_rpg",
+      "label": "Systems RPG",
+      "target": 16,
+      "purpose": "Choice, builds, tactics, and complex RPG fit/risk signals."
+    },
+    {
+      "id": "action_challenge",
+      "label": "Action challenge",
+      "target": 16,
+      "purpose": "Action, difficulty, short-run, and mastery preferences."
+    },
+    {
+      "id": "horror_tension",
+      "label": "Horror / tension",
+      "target": 14,
+      "purpose": "Horror, pressure, and interactive-cinema branches."
+    },
+    {
+      "id": "cozy_short",
+      "label": "Cozy / short",
+      "target": 14,
+      "purpose": "Low-friction weeknight games and short emotional experiences."
+    },
+    {
+      "id": "co_op_multiplayer",
+      "label": "Co-op / multiplayer",
+      "target": 14,
+      "purpose": "Social, service, and repeatable multiplayer formats."
+    },
+    {
+      "id": "strategy_management",
+      "label": "Strategy / management",
+      "target": 12,
+      "purpose": "Long-system games, management loops, and tactical preferences."
+    },
+    {
+      "id": "sports_service",
+      "label": "Sports / service",
+      "target": 10,
+      "purpose": "Annual sports, racing, competitive loops, and service-game caution."
+    },
+    {
+      "id": "upcoming_watch",
+      "label": "Upcoming watch",
+      "target": 14,
+      "purpose": "Wishlist and unreleased games that should drive radar, not fake price certainty."
+    }
+  ],
+  "records": [
+    {
+      "title": "The Last of Us Part I",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "cinematic",
+        "stealth",
+        "linear"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "High-value taste anchor for cinematic story and stealth tolerance.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "The Last of Us Part II Remastered",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5"
+      ],
+      "atoms": [
+        "story",
+        "cinematic",
+        "stealth",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Strong personal-ranking anchor for story, violence tolerance, and emotional weight.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Uncharted 4: A Thief's End",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "cinematic",
+        "story",
+        "action",
+        "linear"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Clean benchmark for blockbuster adventure fit."
+    },
+    {
+      "title": "God of War",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "action",
+        "cinematic",
+        "mythic"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Core prestige action reference for many PlayStation players.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "God of War Ragnarok",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "action",
+        "cinematic",
+        "mythic"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "High-signal sequel for cinematic action appetite.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Marvel's Spider-Man Remastered",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "action",
+        "cinematic",
+        "open-world",
+        "playful"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Useful for superhero, traversal, and low-friction open-world signals."
+    },
+    {
+      "title": "Marvel's Spider-Man 2",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "action",
+        "cinematic",
+        "open-world",
+        "playful"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Current sequel with strong action and traversal fit signals.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Detroit: Become Human",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "cinematic",
+        "sci-fi"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Interactive-cinema benchmark for choice-heavy narrative players."
+    },
+    {
+      "title": "Mafia: Definitive Edition",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "cinematic",
+        "crime",
+        "linear"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Strong crime-story comparison point for future Mafia interest."
+    },
+    {
+      "title": "A Plague Tale: Innocence",
+      "lane": "cinematic_story",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "stealth",
+        "cinematic",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Useful lower-scale cinematic story comparison."
+    },
+    {
+      "title": "The Witcher 3: Wild Hunt",
+      "lane": "open_world_rpg",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "open-world",
+        "rpg"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Essential anchor for long narrative RPG preference.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Cyberpunk 2077",
+      "lane": "open_world_rpg",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "sci-fi",
+        "choice",
+        "open-world",
+        "action"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "High-signal fit for sci-fi, builds, and mature open-world taste.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Red Dead Redemption 2",
+      "lane": "open_world_rpg",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "open-world",
+        "slow",
+        "realistic"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Crucial anchor for slow, immersive, high-commitment games.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Ghost of Tsushima",
+      "lane": "open_world_rpg",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "cinematic",
+        "action",
+        "stealth"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Important bridge between prestige story and open-world action.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Horizon Forbidden West",
+      "lane": "open_world_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "action",
+        "sci-fi",
+        "systems"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Tests tolerance for big-map structure and sci-fi action."
+    },
+    {
+      "title": "Kingdom Come: Deliverance",
+      "lane": "open_world_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "rpg",
+        "realistic",
+        "systems"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "High-risk, high-fit medieval realism reference."
+    },
+    {
+      "title": "Assassin's Creed Odyssey",
+      "lane": "open_world_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "rpg",
+        "action",
+        "mythic"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Useful for Ubisoft open-world tolerance and mythic action."
+    },
+    {
+      "title": "Hogwarts Legacy",
+      "lane": "open_world_rpg",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "open-world",
+        "story",
+        "systems",
+        "cozy"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Broad mainstream reference for approachable open-world play."
+    },
+    {
+      "title": "Red Dead Redemption",
+      "lane": "open_world_rpg",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "open-world",
+        "crime",
+        "action"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Shorter historical anchor for western open-world taste."
+    },
+    {
+      "title": "Assassin's Creed Mirage",
+      "lane": "open_world_rpg",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "stealth",
+        "action",
+        "open-world",
+        "short"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Useful compact Ubisoft/stealth comparison."
+    },
+    {
+      "title": "Baldur's Gate 3",
+      "lane": "systems_rpg",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "choice",
+        "turn-based",
+        "systems",
+        "long"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "Key taste-risk title: huge upside but turn-based/length friction.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Divinity: Original Sin 2",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "choice",
+        "turn-based",
+        "systems",
+        "long"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "BG3-adjacent comparator for deep CRPG tolerance."
+    },
+    {
+      "title": "The Outer Worlds",
+      "lane": "systems_rpg",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "sci-fi",
+        "choice",
+        "story",
+        "rpg"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Important sci-fi RPG taste anchor for sequel interest.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Persona 5 Royal",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "turn-based",
+        "social",
+        "long"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Strong long-JRPG and social-system risk signal."
+    },
+    {
+      "title": "Mass Effect Legendary Edition",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "sci-fi",
+        "story",
+        "choice",
+        "action"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Classic sci-fi choice benchmark."
+    },
+    {
+      "title": "Dragon Age: The Veilguard",
+      "lane": "systems_rpg",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "rpg",
+        "action"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Modern RPG comparator for party/story appetite."
+    },
+    {
+      "title": "Yakuza: Like a Dragon",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "turn-based",
+        "funny",
+        "systems"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Useful for absurd tone plus turn-based tolerance."
+    },
+    {
+      "title": "Diablo IV",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "action",
+        "systems",
+        "service",
+        "rpg"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Good boundary case between RPG and service grind."
+    },
+    {
+      "title": "Octopath Traveler II",
+      "lane": "systems_rpg",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "turn-based",
+        "systems",
+        "rpg"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "JRPG comparison for turn-based and anthology story taste."
+    },
+    {
+      "title": "Wasteland 3",
+      "lane": "systems_rpg",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "choice",
+        "turn-based",
+        "tactical",
+        "systems"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Tactical RPG signal for deeper systems users."
+    },
+    {
+      "title": "Elden Ring",
+      "lane": "action_challenge",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "challenge",
+        "exploration",
+        "open-world",
+        "soulslike"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Essential challenge and open exploration anchor.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Sekiro: Shadows Die Twice",
+      "lane": "action_challenge",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "challenge",
+        "action",
+        "stealth",
+        "soulslike"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "High-skill boundary test for difficulty tolerance."
+    },
+    {
+      "title": "Bloodborne",
+      "lane": "action_challenge",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4"
+      ],
+      "atoms": [
+        "challenge",
+        "horror",
+        "action",
+        "soulslike"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Combines challenge and dark-horror tone."
+    },
+    {
+      "title": "Returnal",
+      "lane": "action_challenge",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "challenge",
+        "roguelike",
+        "sci-fi",
+        "action"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Good action roguelike and frustration-risk signal."
+    },
+    {
+      "title": "Doom (2016)",
+      "lane": "action_challenge",
+      "priority": 2,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "action",
+        "shooter",
+        "adrenaline",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Short high-energy shooter benchmark.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Doom Eternal",
+      "lane": "action_challenge",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "action",
+        "shooter",
+        "adrenaline",
+        "systems"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Higher-system sequel for shooter intensity tolerance."
+    },
+    {
+      "title": "Armored Core VI: Fires of Rubicon",
+      "lane": "action_challenge",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "action",
+        "systems",
+        "challenge",
+        "sci-fi"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Build/action challenge reference."
+    },
+    {
+      "title": "Dead Cells",
+      "lane": "action_challenge",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "action",
+        "roguelike",
+        "challenge",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Compact action challenge and repeat-run signal."
+    },
+    {
+      "title": "Celeste",
+      "lane": "action_challenge",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "platforming",
+        "challenge",
+        "story",
+        "indie"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "High-quality indie challenge with emotional story."
+    },
+    {
+      "title": "Nioh 2",
+      "lane": "action_challenge",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "challenge",
+        "action",
+        "systems",
+        "soulslike"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Deep challenge/system signal for advanced players."
+    },
+    {
+      "title": "Resident Evil Village",
+      "lane": "horror_tension",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "action",
+        "story",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Popular horror-action signal for RE-style appetite.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Resident Evil 2",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "horror",
+        "tension",
+        "action",
+        "systems"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Survival-horror baseline."
+    },
+    {
+      "title": "Silent Hill 2",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "slow",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Psychological horror and slow tension signal."
+    },
+    {
+      "title": "Until Dawn",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Interactive-horror benchmark."
+    },
+    {
+      "title": "The Quarry",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Modern Supermassive reference for user taste."
+    },
+    {
+      "title": "Still Wakes the Deep",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "linear",
+        "tension"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Short horror narrative with low review burden."
+    },
+    {
+      "title": "Call of Cthulhu",
+      "lane": "horror_tension",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "strange",
+        "choice"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Weird-horror story comparator."
+    },
+    {
+      "title": "The Dark Pictures Anthology: House of Ashes",
+      "lane": "horror_tension",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "co-op"
+      ],
+      "session": "medium",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Useful for compact interactive-horror and co-op signals."
+    },
+    {
+      "title": "Alien: Isolation",
+      "lane": "horror_tension",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "horror",
+        "stealth",
+        "tension",
+        "sci-fi"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Stealth-horror boundary case."
+    },
+    {
+      "title": "SOMA",
+      "lane": "horror_tension",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "sci-fi",
+        "story",
+        "strange"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Philosophical sci-fi horror signal."
+    },
+    {
+      "title": "Stardew Valley",
+      "lane": "cozy_short",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "cozy",
+        "routine",
+        "management",
+        "social"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "none",
+      "reason": "Essential cozy/routine contrast to prestige games.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Spiritfarer",
+      "lane": "cozy_short",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "cozy",
+        "story",
+        "management",
+        "slow"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Cozy plus emotional story signal."
+    },
+    {
+      "title": "Unpacking",
+      "lane": "cozy_short",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "cozy",
+        "short",
+        "story",
+        "routine"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Low-friction short-session anchor."
+    },
+    {
+      "title": "Untitled Goose Game",
+      "lane": "cozy_short",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "funny",
+        "short",
+        "cozy",
+        "systems"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Comedy and compact-system signal."
+    },
+    {
+      "title": "Lake",
+      "lane": "cozy_short",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "cozy",
+        "slow",
+        "story",
+        "routine"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Slow, low-pressure narrative reference."
+    },
+    {
+      "title": "Coffee Talk",
+      "lane": "cozy_short",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "cozy",
+        "reading",
+        "story",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Reading-heavy cozy fit signal."
+    },
+    {
+      "title": "Thank Goodness You're Here!",
+      "lane": "cozy_short",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "funny",
+        "short",
+        "playful",
+        "indie"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Short comedy signal for weeknight recommendations."
+    },
+    {
+      "title": "The Stanley Parable: Ultra Deluxe",
+      "lane": "cozy_short",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "funny",
+        "strange",
+        "choice",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Meta-choice and absurd humor anchor."
+    },
+    {
+      "title": "A Short Hike",
+      "lane": "cozy_short",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "cozy",
+        "exploration",
+        "short",
+        "indie"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Compact exploration and decompression signal."
+    },
+    {
+      "title": "Harold Halibut",
+      "lane": "cozy_short",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "strange",
+        "slow",
+        "indie"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Strange slow-story indie reference."
+    },
+    {
+      "title": "It Takes Two",
+      "lane": "co_op_multiplayer",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "co-op",
+        "platforming",
+        "playful",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Essential co-op fit anchor.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "A Way Out",
+      "lane": "co_op_multiplayer",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "co-op",
+        "story",
+        "cinematic",
+        "crime"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Narrative co-op comparison point."
+    },
+    {
+      "title": "Grounded",
+      "lane": "co_op_multiplayer",
+      "priority": 2,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "co-op",
+        "survival",
+        "systems",
+        "exploration"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "none",
+      "reason": "Subscription-drop style survival/co-op decision.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Sea of Thieves",
+      "lane": "co_op_multiplayer",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "co-op",
+        "multiplayer",
+        "open-world",
+        "service"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Service co-op and social sandbox signal."
+    },
+    {
+      "title": "Deep Rock Galactic",
+      "lane": "co_op_multiplayer",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "co-op",
+        "shooter",
+        "systems",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Short-session co-op shooter reference."
+    },
+    {
+      "title": "Warframe",
+      "lane": "co_op_multiplayer",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "service",
+        "action",
+        "co-op",
+        "systems"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Free service-game boundary signal."
+    },
+    {
+      "title": "Destiny 2",
+      "lane": "co_op_multiplayer",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "service",
+        "shooter",
+        "co-op",
+        "sci-fi"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "High-friction service shooter caution signal."
+    },
+    {
+      "title": "Marvel Rivals",
+      "lane": "co_op_multiplayer",
+      "priority": 2,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "service",
+        "shooter"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "none",
+      "reason": "Current free multiplayer access signal.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Overcooked! All You Can Eat",
+      "lane": "co_op_multiplayer",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "co-op",
+        "funny",
+        "systems",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Local co-op and chaos tolerance signal."
+    },
+    {
+      "title": "Monster Hunter Wilds",
+      "lane": "co_op_multiplayer",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "co-op",
+        "action",
+        "systems",
+        "open-world"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "High-commitment co-op action system signal."
+    },
+    {
+      "title": "Civilization VI",
+      "lane": "strategy_management",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "strategy",
+        "systems",
+        "turn-based",
+        "long"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Essential strategy and long-session onboarding anchor.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Frostpunk",
+      "lane": "strategy_management",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "strategy",
+        "management",
+        "systems",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Moral-management tension signal."
+    },
+    {
+      "title": "Frostpunk 2",
+      "lane": "strategy_management",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "strategy",
+        "management",
+        "systems",
+        "tension"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Modern management sequel for systems-heavy players."
+    },
+    {
+      "title": "XCOM 2",
+      "lane": "strategy_management",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "strategy",
+        "tactical",
+        "turn-based",
+        "systems"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Tactical strategy and failure tolerance signal."
+    },
+    {
+      "title": "Crusader Kings III",
+      "lane": "strategy_management",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "strategy",
+        "systems",
+        "choice",
+        "long"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Deep strategy and story-emergence signal."
+    },
+    {
+      "title": "Cities: Skylines",
+      "lane": "strategy_management",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "management",
+        "creative",
+        "systems",
+        "slow"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Management/creative sandbox signal."
+    },
+    {
+      "title": "Two Point Hospital",
+      "lane": "strategy_management",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "management",
+        "funny",
+        "systems",
+        "cozy"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Light management and humor signal."
+    },
+    {
+      "title": "This Is the Police",
+      "lane": "strategy_management",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "strategy",
+        "crime",
+        "story",
+        "management"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Narrative management and crime-tone signal."
+    },
+    {
+      "title": "Not For Broadcast",
+      "lane": "strategy_management",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "systems",
+        "funny",
+        "choice",
+        "strange"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Unusual systems/narrative signal."
+    },
+    {
+      "title": "Against the Storm",
+      "lane": "strategy_management",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "strategy",
+        "management",
+        "roguelike",
+        "systems"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Modern hybrid strategy/roguelike signal."
+    },
+    {
+      "title": "EA Sports FC 26",
+      "lane": "sports_service",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "short",
+        "annual"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "none",
+      "reason": "Annual sports loop and low-story contrast.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Gran Turismo 7",
+      "lane": "sports_service",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "systems",
+        "realistic"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Racing/simulation and grind tolerance signal."
+    },
+    {
+      "title": "Rocket League",
+      "lane": "sports_service",
+      "priority": 2,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "multiplayer",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Fast competitive multiplayer contrast."
+    },
+    {
+      "title": "The Crew Motorfest",
+      "lane": "sports_service",
+      "priority": 3,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "sports",
+        "open-world",
+        "service",
+        "competitive"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Open-world racing service signal."
+    },
+    {
+      "title": "F1 25",
+      "lane": "sports_service",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "annual",
+        "realistic"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Annual racing/sports comparison."
+    },
+    {
+      "title": "NBA 2K26",
+      "lane": "sports_service",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "annual",
+        "service"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Sports-service monetization and annual loop signal."
+    },
+    {
+      "title": "Tony Hawk's Pro Skater 1+2",
+      "lane": "sports_service",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "sports",
+        "short",
+        "adrenaline",
+        "systems"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Short-session arcade sports signal."
+    },
+    {
+      "title": "Riders Republic",
+      "lane": "sports_service",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "sports",
+        "open-world",
+        "service",
+        "adrenaline"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Arcade sports and service-open-world signal."
+    },
+    {
+      "title": "Fall Guys",
+      "lane": "sports_service",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "funny",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Light competitive party-game signal."
+    },
+    {
+      "title": "eFootball",
+      "lane": "sports_service",
+      "priority": 4,
+      "status": "candidate",
+      "source": "manual_backbone",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "service",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "high",
+      "adultTimeFit": "background",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "none",
+      "reason": "Free sports service comparison."
+    },
+    {
+      "title": "007 First Light",
+      "lane": "upcoming_watch",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "stealth",
+        "cinematic",
+        "action",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "watch_only",
+      "reason": "Hot wishlist/radar title; price must stay watch-only until live data exists.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Mafia: The Old Country",
+      "lane": "upcoming_watch",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "cinematic",
+        "crime",
+        "action"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "High-intent wishlist title with strong cinematic crime fit.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "The Alters",
+      "lane": "upcoming_watch",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "systems",
+        "sci-fi",
+        "strange"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "High-intent title for weird systems/story recommendations.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Ghost of Yotei",
+      "lane": "upcoming_watch",
+      "priority": 1,
+      "status": "blocked_identity",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5"
+      ],
+      "atoms": [
+        "open-world",
+        "cinematic",
+        "action",
+        "stealth"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "needs_review",
+      "priceNeed": "warm",
+      "reason": "Needs alias/platform review before promotion."
+    },
+    {
+      "title": "Death Stranding 2",
+      "lane": "upcoming_watch",
+      "priority": 1,
+      "status": "promoted_to_seed",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5"
+      ],
+      "atoms": [
+        "story",
+        "strange",
+        "open-world",
+        "slow"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "High-intent auteur title with strong fit/risk split.",
+      "promotedAt": "2026-06-02T12:30:00Z",
+      "promotedSource": "promote-catalog-candidates"
+    },
+    {
+      "title": "Pathologic 3",
+      "lane": "upcoming_watch",
+      "priority": 2,
+      "status": "candidate",
+      "source": "wishlist_note",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "strange",
+        "systems",
+        "tension"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Strong authorial-risk title for caution-aware recommendations."
+    },
+    {
+      "title": "Crimson Desert",
+      "lane": "upcoming_watch",
+      "priority": 2,
+      "status": "candidate",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "action",
+        "systems",
+        "adrenaline"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Potential high-upside open-world action, but needs review."
+    },
+    {
+      "title": "Indiana Jones and the Great Circle",
+      "lane": "upcoming_watch",
+      "priority": 2,
+      "status": "candidate",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "cinematic",
+        "story",
+        "action",
+        "exploration"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Adventure/blockbuster reference for wishlist decisions."
+    },
+    {
+      "title": "Directive 8020",
+      "lane": "upcoming_watch",
+      "priority": 2,
+      "status": "candidate",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "sci-fi"
+      ],
+      "session": "medium",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "watch_only",
+      "reason": "Supermassive-style sci-fi horror watchlist item."
+    },
+    {
+      "title": "The Precinct",
+      "lane": "upcoming_watch",
+      "priority": 3,
+      "status": "candidate",
+      "source": "wishlist_note",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "crime",
+        "systems",
+        "open-world",
+        "action"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Lower-price crime systems candidate."
+    },
+    {
+      "title": "Vasilisa and Baba Yaga",
+      "lane": "upcoming_watch",
+      "priority": 3,
+      "status": "candidate",
+      "source": "wishlist_note",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "mythic",
+        "indie",
+        "short"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "draft",
+      "priceNeed": "warm",
+      "reason": "Small folklore title for low-cost experimental fit."
+    }
+  ]
+}

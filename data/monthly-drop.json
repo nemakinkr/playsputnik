@@ -1,0 +1,104 @@
+[
+  {
+    "title": "Grounded",
+    "access": "claim",
+    "verdict": "Try first",
+    "claimDecision": "Claim",
+    "installDecision": "Install first",
+    "playDecision": "Play test",
+    "trialWindow": "2-3 hours",
+    "predictedRank": "#67",
+    "atoms": ["exploration", "systems", "cozy"],
+    "fit": "medium-plus",
+    "whyItFits": [
+      "Unusual small-world adventure hook",
+      "Exploration and survival systems",
+      "Good candidate for a low-commitment test"
+    ],
+    "friction": [
+      "Survival/crafting instead of authored drama",
+      "Can become routine-heavy",
+      "Co-op may matter"
+    ],
+    "nextAction": "Add to library, try before other free claims.",
+    "source": "sample_monthly_drop",
+    "freshnessState": "sample",
+    "confidence": "low"
+  },
+  {
+    "title": "Warhammer 40,000: Darktide",
+    "access": "claim",
+    "verdict": "Try carefully",
+    "claimDecision": "Claim",
+    "installDecision": "Install later",
+    "playDecision": "One-session test",
+    "trialWindow": "1-2 missions",
+    "predictedRank": "#76",
+    "atoms": ["action", "adrenaline", "systems"],
+    "fit": "medium",
+    "whyItFits": [
+      "Strong Warhammer atmosphere",
+      "Heavy combat rhythm",
+      "Can work as an evening action slot"
+    ],
+    "friction": [
+      "Repeatable online missions",
+      "Less authored campaign than Space Marine 2",
+      "Better with a group"
+    ],
+    "nextAction": "Add to library, try after the stronger narrative picks.",
+    "source": "sample_monthly_drop",
+    "freshnessState": "sample",
+    "confidence": "low"
+  },
+  {
+    "title": "Nickelodeon All-Star Brawl 2",
+    "access": "claim",
+    "verdict": "Claim only",
+    "claimDecision": "Claim",
+    "installDecision": "Do not install",
+    "playDecision": "Skip now",
+    "trialWindow": "Skip download",
+    "predictedRank": "#108",
+    "atoms": ["action", "short", "funny"],
+    "fit": "low",
+    "whyItFits": [
+      "Could work for a very light local multiplayer evening"
+    ],
+    "friction": [
+      "Not story-led",
+      "Little atmosphere or exploration",
+      "Mostly outside the core taste profile"
+    ],
+    "nextAction": "Add to library, do not spend storage or evening time now.",
+    "source": "sample_monthly_drop",
+    "freshnessState": "sample",
+    "confidence": "low"
+  },
+  {
+    "title": "Destiny 2",
+    "access": "free-to-play",
+    "verdict": "Low priority sample",
+    "claimDecision": "Already free",
+    "installDecision": "Only if curious",
+    "playDecision": "After backlog",
+    "trialWindow": "1-2 hours only",
+    "predictedRank": "#85-90",
+    "atoms": ["action", "systems", "adrenaline"],
+    "fit": "low-medium",
+    "whyItFits": [
+      "Excellent shooting feel",
+      "Big sci-fi atmosphere",
+      "Can work as a short curiosity test"
+    ],
+    "friction": [
+      "Live-service structure",
+      "Fragmented story context",
+      "High menu and systems burden"
+    ],
+    "nextAction": "Try only after current backlog priorities; do not put in the monthly plan.",
+    "source": "sample_monthly_drop",
+    "freshnessState": "sample",
+    "confidence": "low"
+  }
+]

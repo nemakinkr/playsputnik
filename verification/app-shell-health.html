@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PlaySputnik Shell Health</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="setup-panel" aria-label="Player setup">
+        <div class="brand-row">
+          <div class="brand-mark" aria-hidden="true">PS</div>
+          <div>
+            <p class="eyebrow">PlaySputnik</p>
+            <h1>Your gaming companion</h1>
+          </div>
+        </div>
+        <section class="control-section" aria-labelledby="shell-health-title">
+          <div class="section-heading">
+            <h2 id="shell-health-title">Shell health</h2>
+            <span>static</span>
+          </div>
+          <button class="secondary-action" id="shell-health-button" type="button">Check</button>
+          <p id="shell-health-output">idle</p>
+        </section>
+      </aside>
+      <section class="decision-surface">
+        <header class="surface-header">
+          <div>
+            <p class="eyebrow">For players with money, not time</p>
+            <h2>What should I play tonight?</h2>
+          </div>
+        </header>
+      </section>
+    </main>
+    <script>
+      document.querySelector("#shell-health-button").addEventListener("click", () => {
+        document.querySelector("#shell-health-output").textContent = "clicked";
+      });
+    </script>
+  </body>
+</html>

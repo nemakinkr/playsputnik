@@ -1,0 +1,13 @@
+# Secrets — never commit
+.env.local
+.env
+*.pem
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# Local tooling state
+.claude/
+node_modules/
+*.log

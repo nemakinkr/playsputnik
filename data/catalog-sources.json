@@ -1,0 +1,150 @@
+{
+  "mode": "pre-mvp-catalog-design",
+  "updatedAt": "2026-06-05T07:23:04Z",
+  "goal": "Grow a large game catalog and cover layer without turning price tracking into a mass-refresh problem.",
+  "targetCatalog": {
+    "seed": 150,
+    "privateAlpha": 2000,
+    "publicBeta": 15000
+  },
+  "identityModel": {
+    "canonicalFields": [
+      "gameId",
+      "title",
+      "aliases",
+      "platforms",
+      "releaseDate",
+      "genres",
+      "atoms",
+      "description",
+      "cover",
+      "externalIds",
+      "sourceConfidence",
+      "lastSyncedAt"
+    ],
+    "externalIds": [
+      "rawg",
+      "igdb",
+      "mobygames",
+      "steam",
+      "psStore"
+    ]
+  },
+  "catalogTiers": [
+    {
+      "id": "core_seed",
+      "sizeTarget": 150,
+      "refreshCadence": "manual weekly",
+      "purpose": "Validate taste, memory, explanations, and first-session value."
+    },
+    {
+      "id": "taste_expansion",
+      "sizeTarget": 2000,
+      "refreshCadence": "weekly metadata refresh, on-demand cover repair",
+      "purpose": "Cover popular, current, subscription, wishlist, and adjacent recommendation candidates."
+    },
+    {
+      "id": "search_cache",
+      "sizeTarget": 15000,
+      "refreshCadence": "lazy import on user search or source change",
+      "purpose": "Let users find obscure games without paying to refresh the whole market."
+    }
+  ],
+  "providers": [
+    {
+      "id": "rawg",
+      "layer": "metadata_and_images",
+      "fit": "p0_candidate",
+      "commercialUse": "RAWG API terms list free commercial use for startups and hobby projects within request/product limits, with attribution and active source links. Re-check account terms before public launch.",
+      "coverUse": "Primary early cover candidate source. Store remote image URLs, sourceUrl, and attribution; do not cache originals in the prototype.",
+      "notes": "Good for broad discovery, descriptions, tags, screenshots, and initial cover candidates. If terms change or scale exceeds limits, keep generated posters and switch to a paid/partner source."
+    },
+    {
+      "id": "igdb",
+      "layer": "metadata_and_images",
+      "fit": "research_candidate",
+      "commercialUse": "Free non-commercial API; commercial need should go through partnership.",
+      "coverUse": "Useful for rich metadata and covers after terms are cleared.",
+      "notes": "Strong normalized game database, but commercial path must be clarified before production."
+    },
+    {
+      "id": "mobygames",
+      "layer": "metadata_covers_screenshots",
+      "fit": "paid_candidate",
+      "commercialUse": "Commercial API access is paid.",
+      "coverUse": "Good cover and screenshot depth, especially for historical catalog quality.",
+      "notes": "Better as a paid enrichment source after the product signal is proven."
+    },
+    {
+      "id": "steamgriddb",
+      "layer": "artwork",
+      "fit": "cover_repair_candidate",
+      "commercialUse": "Artwork-specific source; terms need review before product use.",
+      "coverUse": "Use as a repair layer for missing or poor covers, not as canonical metadata.",
+      "notes": "Useful for grids, heroes, logos, and user-friendly library visuals."
+    },
+    {
+      "id": "official_store",
+      "layer": "store_identity",
+      "fit": "trust_anchor",
+      "commercialUse": "Use only within platform terms.",
+      "coverUse": "Prefer store-provided art when the user is looking at that platform context.",
+      "notes": "Best for platform identity, editions, and release pages; do not confuse with price freshness."
+    }
+  ],
+  "coverPolicy": {
+    "storeRemoteUrls": true,
+    "cacheOriginalImages": false,
+    "fallback": "generated_color_poster",
+    "selectedPath": [
+      {
+        "id": "generated_poster_fallback",
+        "status": "fallback",
+        "when": "Always available for every catalog record.",
+        "purpose": "Keep the catalog visually usable before any external image is resolved."
+      },
+      {
+        "id": "rawg_cover_candidate",
+        "status": "candidate",
+        "when": "RAWG_API_KEY is present and the title match has a background image.",
+        "purpose": "Attach a real remote cover candidate with RAWG attribution and sourceUrl."
+      },
+      {
+        "id": "manual_cover_verification",
+        "status": "verified",
+        "when": "A human accepts the candidate match and source context.",
+        "purpose": "Prevent wrong-title cover matches from becoming trusted product UI."
+      },
+      {
+        "id": "igdb_secondary_candidate",
+        "status": "candidate",
+        "when": "RAWG misses and IGDB commercial/partnership path is cleared.",
+        "purpose": "Use a stronger normalized database as a later repair layer."
+      }
+    ],
+    "attribution": {
+      "rawg": "Show RAWG as the source and link to sourceUrl wherever a RAWG image is displayed.",
+      "generated_poster": "Generated locally; no third-party artwork is used.",
+      "official_store": "Show the platform/store context and never imply cross-platform official status."
+    },
+    "requiredFields": [
+      "url",
+      "source",
+      "sourceUrl",
+      "licenseNote",
+      "checkedAt"
+    ],
+    "rules": [
+      "Never claim an image is official unless the source marks it as official or it comes from an official store record.",
+      "Keep attribution and source URL next to every imported cover record.",
+      "Use generated placeholder art when cover rights or source confidence are unclear.",
+      "Treat cover freshness separately from price and subscription freshness."
+    ]
+  },
+  "trustRules": [
+    "Catalog metadata can be stale longer than prices; price and subscription claims need stricter freshness.",
+    "AI atomization may enrich catalog records, but it cannot invent release dates, platforms, prices, or availability.",
+    "Large catalog growth should be lazy and intent-led: wishlist, search, subscription, upcoming, and similar-game expansion first.",
+    "A missing cover is acceptable; a misleading cover or wrong game match is a trust failure."
+  ]
+}

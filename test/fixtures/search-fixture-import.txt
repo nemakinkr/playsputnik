@@ -1,0 +1,10 @@
+Wishlist
+The Blood of Dawnwalker | platforms=PS5,PC,Xbox | atoms=rpg,story,dark | priceNeed=watch_only
+Tides of Annihilation | platforms=PS5,PC,Xbox | atoms=action,mythic,cinematic | priceNeed=watch_only
+
+Short / Indie
+Mixtape | platforms=PS5,PC,Xbox | atoms=story,indie,short | priceNeed=warm
+Keeper | platforms=PC,Xbox | atoms=puzzle,strange,indie | priceNeed=warm
+
+Co-op
+LBC: Light Breaker | platforms=PC | atoms=co-op,action,systems | priceNeed=watch_only

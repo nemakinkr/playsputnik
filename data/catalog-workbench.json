@@ -1,0 +1,79 @@
+{
+  "mode": "pre-mvp-import-sandbox",
+  "updatedAt": "2026-05-28T09:45:00Z",
+  "goal": "Test how imported catalog candidates move through identity matching, cover checks, atomization, and price-refresh eligibility.",
+  "records": [
+    {
+      "title": "Mafia: The Old Country",
+      "source": "wishlist_note",
+      "matchConfidence": "high",
+      "coverStatus": "candidate",
+      "coverSource": "official_store_pending",
+      "atomStatus": "needs_review",
+      "atoms": ["story", "cinematic", "action"],
+      "intent": "hot",
+      "priceNeed": "hot",
+      "manualReview": ["cover rights", "release metadata"]
+    },
+    {
+      "title": "The Alters",
+      "source": "wishlist_note",
+      "matchConfidence": "high",
+      "coverStatus": "candidate",
+      "coverSource": "provider_candidate",
+      "atomStatus": "complete",
+      "atoms": ["story", "systems", "strange"],
+      "intent": "hot",
+      "priceNeed": "hot",
+      "manualReview": ["cover source"]
+    },
+    {
+      "title": "Ghost of Yotei",
+      "source": "wishlist_note",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "coverSource": "none",
+      "atomStatus": "needs_review",
+      "atoms": ["open-world", "cinematic", "action"],
+      "intent": "hot",
+      "priceNeed": "warm",
+      "manualReview": ["title alias", "official cover"]
+    },
+    {
+      "title": "Senua's Saga: Hellblade II",
+      "source": "wishlist_note",
+      "matchConfidence": "high",
+      "coverStatus": "verified",
+      "coverSource": "provider_candidate",
+      "atomStatus": "complete",
+      "atoms": ["story", "cinematic", "strange"],
+      "intent": "warm",
+      "priceNeed": "warm",
+      "manualReview": []
+    },
+    {
+      "title": "007 First Light",
+      "source": "upcoming_note",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "coverSource": "official_store_pending",
+      "atomStatus": "needs_review",
+      "atoms": ["stealth", "cinematic", "action"],
+      "intent": "hot",
+      "priceNeed": "watch_only",
+      "manualReview": ["release metadata", "platform mapping"]
+    },
+    {
+      "title": "Bramble: The Mountain King",
+      "source": "subscription_access",
+      "matchConfidence": "high",
+      "coverStatus": "verified",
+      "coverSource": "provider_candidate",
+      "atomStatus": "complete",
+      "atoms": ["story", "strange", "short"],
+      "intent": "warm",
+      "priceNeed": "none",
+      "manualReview": []
+    }
+  ]
+}

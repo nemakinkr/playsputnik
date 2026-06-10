@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>PlaySputnik Browser Health</title>
+  </head>
+  <body>
+    <main>
+      <h1>Browser health check</h1>
+      <button id="health-button" type="button">Click me</button>
+      <output id="health-output">idle</output>
+    </main>
+    <script>
+      document.querySelector("#health-button").addEventListener("click", () => {
+        document.querySelector("#health-output").textContent = "clicked";
+      });
+    </script>
+  </body>
+</html>

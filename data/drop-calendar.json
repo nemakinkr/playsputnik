@@ -1,0 +1,37 @@
+{
+  "mode": "known-two-drops-per-month",
+  "label": "Two PS Plus checkpoints",
+  "updatedAt": "2026-05-27T00:00:00Z",
+  "lifecycle": {
+    "reviewWindowDays": 2,
+    "cooldownDays": 14,
+    "afterDecision": "Move fitting games to a later-play list, keep claim-only games as library memory, then hide the drop until the next checkpoint."
+  },
+  "drops": [
+    {
+      "id": "monthly-games",
+      "label": "Monthly games",
+      "cadence": "Early-month claimable games",
+      "dataNeed": "Lineup, claim window, platforms, region availability",
+      "userAction": "Claim all eligible games, then triage installs and play time.",
+      "productSurface": "Monthly drop triage",
+      "sourceStatus": "needs live source"
+    },
+    {
+      "id": "catalog-refresh",
+      "label": "Catalog refresh",
+      "cadence": "Mid-month Extra/Premium catalog update",
+      "dataNeed": "Added games, leaving-soon list, tiers, region availability",
+      "userAction": "Find subscription games that fit taste before they disappear.",
+      "productSurface": "PS Plus and Companion plan",
+      "sourceStatus": "needs live source"
+    }
+  ],
+  "rules": [
+    "Treat cadence as a product rule and exact dates as source-backed data.",
+    "Show dates only after ingestion verifies the current month.",
+    "Separate claim, install, and play-now decisions.",
+    "Prefer taste-fit subscription picks over generic catalog browsing.",
+    "After the user confirms or rejects the triage, do not keep promoting the same drop."
+  ]
+}

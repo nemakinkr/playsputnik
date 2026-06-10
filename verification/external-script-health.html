@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>External Script Health</title>
+  </head>
+  <body>
+    <main>
+      <h1>External script health</h1>
+      <output id="external-output">loading</output>
+    </main>
+    <script src="external-health.js?v=1"></script>
+    <script>
+      document.querySelector("#external-output").textContent = window.__externalHealth || "missing";
+    </script>
+  </body>
+</html>

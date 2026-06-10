@@ -1,0 +1,102 @@
+name: Update store data
+
+on:
+  schedule:
+    # Daily at 06:17 UTC (odd minute to avoid GitHub's load spikes on :00)
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ── Source updates — each step independent so one dead API
+      #    doesn't block the others ─────────────────────────────────
+      - name: Update prices (ITAD)
+        id: prices
+        continue-on-error: true
+        env:
+          ITAD_API_KEY: ${{ secrets.ITAD_API_KEY }}
+        run: node scripts/update-prices.mjs
+
+      - name: Update PS Plus availability (PS Store)
+        id: psplus
+        continue-on-error: true
+        run: node scripts/update-psplus.mjs
+
+      - name: Update covers (RAWG)
+        id: covers
+        continue-on-error: true
+        env:
+          RAWG_API_KEY: ${{ secrets.RAWG_API_KEY }}
+        run: node scripts/update-covers.mjs
+
+      # ── Validate before committing — never publish broken data ──
+      - name: Validate data
+        id: validate
+        run: node scripts/validate-data.mjs
+
+      - name: Commit and push changes
+        id: commit
+        run: |
+          git config user.name "playsputnik-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No data changes today."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "data: daily refresh (prices / PS Plus / covers)"
+            git push
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # GITHUB_TOKEN pushes don't trigger other workflows (loop protection),
+      # so redeploy Pages explicitly after a data refresh.
+      - name: Trigger Pages redeploy
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy-pages.yml --ref main
+
+      # ── Source health monitor ────────────────────────────────────
+      # If any source failed, open (or update) a pinned issue so the
+      # outage is visible without digging through Actions logs.
+      - name: Report source failures
+        if: steps.prices.outcome == 'failure' || steps.psplus.outcome == 'failure' || steps.covers.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          FAILED=""
+          [ "${{ steps.prices.outcome }}" = "failure" ] && FAILED="$FAILED ITAD(prices)"
+          [ "${{ steps.psplus.outcome }}" = "failure" ] && FAILED="$FAILED PS-Store(psplus)"
+          [ "${{ steps.covers.outcome }}" = "failure" ] && FAILED="$FAILED RAWG(covers)"
+          TITLE="Source health: failing —$FAILED"
+          BODY="Daily data refresh on $(date -u +%F) failed for:$FAILED
+
+          Check the run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          The remaining sources were updated normally; stale data keeps its previous checkedAt timestamps (the app shows freshness per record)."
+          EXISTING=$(gh issue list --state open --search "Source health: failing in:title" --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY" --label "source-health"
+          fi
+          # Surface the failure in the workflow status as well
+          exit 1

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PlaySputnik">
+  <defs>
+    <linearGradient id="ps-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a6fe0"/>
+      <stop offset="1" stop-color="#003fa3"/>
+    </linearGradient>
+  </defs>
+  <!-- tile -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#ps-tile)"/>
+  <!-- tilted orbit -->
+  <ellipse cx="32" cy="33" rx="20" ry="9" fill="none" stroke="#ffffff" stroke-width="2.4"
+           opacity="0.55" transform="rotate(-28 32 33)"/>
+  <!-- planet / play core -->
+  <circle cx="32" cy="33" r="9.5" fill="#ffffff"/>
+  <!-- play triangle inside the core -->
+  <path d="M29 28.5 L38 33 L29 37.5 Z" fill="#0a4fc0"/>
+  <!-- satellite dot on the orbit -->
+  <circle cx="49" cy="24.5" r="3.6" fill="#9fd0ff"/>
+  <circle cx="49" cy="24.5" r="6.2" fill="none" stroke="#9fd0ff" stroke-width="1" opacity="0.5"/>
+</svg>

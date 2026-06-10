@@ -1,0 +1,44 @@
+{
+  "mode": "intent-weighted-refresh-p0",
+  "label": "Intent-weighted refresh",
+  "updatedAt": "2026-05-27T08:30:00Z",
+  "dailySnapshotCap": 120,
+  "layers": {
+    "prices": {
+      "freshHours": 12,
+      "staleHours": 48,
+      "claimRule": "Show current-price language only when the snapshot is fresh and confidence is medium or high."
+    },
+    "subscriptions": {
+      "freshHours": 24,
+      "staleHours": 72,
+      "claimRule": "Show PS Plus availability as confirmed only when the record is fresh and confidence is medium or high."
+    }
+  },
+  "priorityBands": [
+    {
+      "id": "hot",
+      "label": "Hot intent",
+      "cadence": "6-12h",
+      "description": "Saved games, strong wishlist signals, top recommendations, and high discounts."
+    },
+    {
+      "id": "warm",
+      "label": "Warm intent",
+      "cadence": "24-48h",
+      "description": "Backlog, medium-fit recommendations, and games close to the user's budget."
+    },
+    {
+      "id": "cold",
+      "label": "Cold catalog",
+      "cadence": "On demand",
+      "description": "Long-tail catalog items refreshed only when a user action or recommendation needs them."
+    }
+  ],
+  "claimRules": [
+    "Never treat generated AI text as a source of truth for prices or subscription availability.",
+    "If a price snapshot is sample, stale, missing, or low confidence, show it as a signal and ask the user to verify before buying.",
+    "If PS Plus data is sample, stale, missing, or low confidence, avoid confirmed availability language.",
+    "Refresh the user's wishlist and price-watch games before refreshing the broad catalog."
+  ]
+}

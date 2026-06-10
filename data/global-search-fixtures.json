@@ -1,0 +1,2480 @@
+{
+  "mode": "prototype-external-index",
+  "updatedAt": "2026-06-03T16:04:44.346Z",
+  "goal": "Offline search fixtures that mimic external metadata lookup results for the prototype global-search flow.",
+  "records": [
+    {
+      "title": "Grand Theft Auto VI",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/grand-theft-auto-vi",
+      "platforms": [
+        "PS5",
+        "Xbox"
+      ],
+      "atoms": [
+        "open-world",
+        "crime",
+        "action",
+        "story"
+      ],
+      "vibe": "Big-budget crime sandbox on the radar",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "High-interest external title; keep as wishlist/radar until provider metadata and store data are attached."
+    },
+    {
+      "title": "God of War Ragnarök",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/god-of-war-ragnarok",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "action",
+        "cinematic",
+        "mythic"
+      ],
+      "vibe": "Provider duplicate for mythic action sequel",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Intentional duplicate fixture for reconciliation against the promoted seed catalog."
+    },
+    {
+      "title": "Marvel's Wolverine",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/marvels-wolverine",
+      "platforms": [
+        "PS5"
+      ],
+      "atoms": [
+        "action",
+        "cinematic",
+        "story",
+        "realistic"
+      ],
+      "vibe": "Cinematic superhero action candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Useful external wishlist candidate for players who like Spider-Man-style action."
+    },
+    {
+      "title": "Fable",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/fable",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "choice",
+        "funny",
+        "open-world"
+      ],
+      "vibe": "Playful fantasy RPG candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Good test for platform scope and taste-fit without store certainty."
+    },
+    {
+      "title": "Clair Obscur: Expedition 33",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/clair-obscur-expedition-33",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "turn-based",
+        "rpg",
+        "strange"
+      ],
+      "vibe": "Stylish turn-based story RPG",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate that tests tolerance for turn-based combat and unusual art direction."
+    },
+    {
+      "title": "Hades II",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/hades-ii",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "action",
+        "roguelike",
+        "systems",
+        "mythic"
+      ],
+      "vibe": "Mythic short-run action roguelike",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Good external test for short-session action and build systems."
+    },
+    {
+      "title": "Judas",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/judas",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sci-fi",
+        "shooter",
+        "story",
+        "strange"
+      ],
+      "vibe": "Strange narrative sci-fi shooter",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External radar item for BioShock-like taste signals."
+    },
+    {
+      "title": "Intergalactic: The Heretic Prophet",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/intergalactic-the-heretic-prophet",
+      "platforms": [
+        "PS5"
+      ],
+      "atoms": [
+        "sci-fi",
+        "story",
+        "cinematic",
+        "action"
+      ],
+      "vibe": "Cinematic sci-fi action candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "High-signal radar item for cinematic-story players."
+    },
+    {
+      "title": "OD",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/od",
+      "platforms": [
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "strange",
+        "story",
+        "tension"
+      ],
+      "vibe": "Experimental horror radar item",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Useful external item for horror tolerance and platform availability checks."
+    },
+    {
+      "title": "Silent Hill f",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/silent-hill-f",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "tension",
+        "strange"
+      ],
+      "vibe": "Psychological horror wishlist candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External title for horror and narrative-pressure matching."
+    },
+    {
+      "title": "Avowed",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/avowed",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "choice",
+        "action",
+        "systems"
+      ],
+      "vibe": "First-person fantasy RPG",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External RPG candidate for Outer Worlds and fantasy-RPG taste bridges."
+    },
+    {
+      "title": "Blue Prince",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/blue-prince",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "puzzle",
+        "systems",
+        "strange",
+        "short"
+      ],
+      "vibe": "Mystery puzzle systems candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Useful for discovery outside action/story defaults."
+    },
+    {
+      "title": "South of Midnight",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/south-of-midnight",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "mythic",
+        "action",
+        "strange"
+      ],
+      "vibe": "Folklore action-adventure candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate for story, mythic tone, and platform-scope checks."
+    },
+    {
+      "title": "The Outer Worlds 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-outer-worlds-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "choice",
+        "funny",
+        "sci-fi"
+      ],
+      "vibe": "Satirical sci-fi RPG wishlist candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External candidate for players who liked The Outer Worlds, but sequel specifics need provider verification."
+    },
+    {
+      "title": "Ready or Not",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/ready-or-not",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "tactical",
+        "realistic",
+        "co-op"
+      ],
+      "vibe": "Tactical co-op shooter candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Useful for testing tactical realism and co-op tolerance before purchase advice."
+    },
+    {
+      "title": "Black Myth: Wukong",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/black-myth-wukong",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "challenge",
+        "mythic",
+        "soulslike"
+      ],
+      "vibe": "Mythic action challenge candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate for combat difficulty, mythic tone, and spectacle matching."
+    },
+    {
+      "title": "Split Fiction",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/split-fiction",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "co-op",
+        "platforming",
+        "playful",
+        "story"
+      ],
+      "vibe": "Co-op story-platforming candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Good external item for players who respond to It Takes Two-style co-op structure."
+    },
+    {
+      "title": "Sid Meier's Civilization VII",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/sid-meiers-civilization-vii",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "strategy",
+        "turn-based",
+        "systems",
+        "long"
+      ],
+      "vibe": "Long turn-based strategy candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate for strategy appetite and long-session commitment checks."
+    },
+    {
+      "title": "Hollow Knight: Silksong",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/hollow-knight-silksong",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "challenge",
+        "metroidvania",
+        "exploration",
+        "indie"
+      ],
+      "vibe": "Indie challenge sequel candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External candidate for metroidvania and difficulty tolerance."
+    },
+    {
+      "title": "Metaphor: ReFantazio",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/metaphor-refantazio",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "turn-based",
+        "story",
+        "systems"
+      ],
+      "vibe": "Stylized long-form JRPG candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Good test for turn-based tolerance, reading burden, and long RPG appetite."
+    },
+    {
+      "title": "Final Fantasy VII Rebirth",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/final-fantasy-vii-rebirth",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "rpg",
+        "story",
+        "action",
+        "long"
+      ],
+      "vibe": "Prestige story RPG candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate for long narrative RPG fit and series-context friction."
+    },
+    {
+      "title": "Starfield",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/starfield",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sci-fi",
+        "rpg",
+        "open-world",
+        "systems"
+      ],
+      "vibe": "Large sci-fi RPG candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Useful for detecting appetite for huge systems-heavy sci-fi games."
+    },
+    {
+      "title": "Helldivers 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/helldivers-2",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "co-op",
+        "shooter",
+        "service",
+        "short"
+      ],
+      "vibe": "Session-friendly co-op shooter candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External item for service-game tolerance and short co-op session fit."
+    },
+    {
+      "title": "Elden Ring Nightreign",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/elden-ring-nightreign",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "challenge",
+        "soulslike",
+        "co-op",
+        "roguelike"
+      ],
+      "vibe": "Soulslike co-op challenge candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External candidate for players who like Elden Ring but may reject co-op or run-based structure."
+    },
+    {
+      "title": "Astro Bot",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/astro-bot",
+      "platforms": [
+        "PS5"
+      ],
+      "atoms": [
+        "platforming",
+        "playful",
+        "short",
+        "cozy"
+      ],
+      "vibe": "Polished joyful platforming candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate for low-friction, playful, short-session fit."
+    },
+    {
+      "title": "Balatro",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/balatro",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "roguelike",
+        "systems",
+        "short",
+        "indie"
+      ],
+      "vibe": "Short-session systems puzzle candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External item for quick-session systems taste without story claims."
+    },
+    {
+      "title": "Animal Well",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/animal-well",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "puzzle",
+        "exploration",
+        "indie",
+        "strange"
+      ],
+      "vibe": "Strange puzzle-exploration candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External item for quiet discovery, puzzles, and non-combat exploration."
+    },
+    {
+      "title": "Prince of Persia: The Lost Crown",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/prince-of-persia-the-lost-crown",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "metroidvania",
+        "action",
+        "challenge",
+        "platforming"
+      ],
+      "vibe": "Action metroidvania candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate for action-platforming and metroidvania tolerance."
+    },
+    {
+      "title": "Little Nightmares III",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/little-nightmares-iii",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "horror",
+        "puzzle",
+        "co-op",
+        "tension"
+      ],
+      "vibe": "Compact horror-puzzle candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External item for horror tolerance, co-op interest, and short-session tension."
+    },
+    {
+      "title": "Dragon Age: The Veilguard",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dragon-age-the-veilguard",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "choice",
+        "story",
+        "action"
+      ],
+      "vibe": "Fantasy RPG action/story candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "External candidate for party RPG and action-RPG preference checks."
+    },
+    {
+      "title": "Marathon",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/marathon",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "multiplayer",
+        "service",
+        "competitive"
+      ],
+      "vibe": "Competitive extraction-shooter candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External item for multiplayer/service caution and competitive appetite."
+    },
+    {
+      "title": "ARC Raiders",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/arc-raiders",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "multiplayer",
+        "tactical",
+        "service"
+      ],
+      "vibe": "Tactical extraction-shooter candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External item for shooter/social appetite without pretending to know store status."
+    },
+    {
+      "title": "Replaced",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/replaced",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "cinematic",
+        "platforming",
+        "sci-fi",
+        "indie"
+      ],
+      "vibe": "Cinematic pixel-art sci-fi candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External item for style-forward indie discovery and platform-scope checks."
+    },
+    {
+      "title": "Tides of Annihilation",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/tides-of-annihilation",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "mythic",
+        "cinematic",
+        "challenge"
+      ],
+      "vibe": "Mythic action-adventure radar item",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "External radar candidate for action spectacle and mythic tone."
+    },
+    {
+      "title": "L.A. Noire",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/l-a-noire",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "crime",
+        "story",
+        "cinematic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for crime and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Sleeping Dogs: Definitive Edition",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/sleeping-dogs-definitive-edition",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "crime",
+        "action",
+        "open-world"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for crime and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Watch Dogs 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/watch-dogs-2",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "open-world",
+        "action",
+        "systems"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for open-world and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Max Payne 3",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/max-payne-3",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "crime",
+        "shooter",
+        "cinematic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for crime and shooter discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Quantum Break",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/quantum-break",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sci-fi",
+        "cinematic",
+        "shooter"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for sci-fi and cinematic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Order: 1886",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-order-1886",
+      "platforms": [
+        "PS4"
+      ],
+      "atoms": [
+        "cinematic",
+        "story",
+        "action"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for cinematic and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Sherlock Holmes: Chapter One",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/sherlock-holmes-chapter-one",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "puzzle",
+        "crime"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for story and puzzle discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Sherlock Holmes: The Awakened",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/sherlock-holmes-the-awakened",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "puzzle",
+        "horror"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for story and puzzle discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Wolf Among Us 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-wolf-among-us-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "crime"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for story and choice discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Tomb Raider",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/tomb-raider",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "cinematic",
+        "exploration"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and cinematic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Rise of the Tomb Raider",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/rise-of-the-tomb-raider",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "cinematic",
+        "exploration"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and cinematic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Shadow of the Tomb Raider",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/shadow-of-the-tomb-raider",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "cinematic",
+        "exploration"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and cinematic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Enslaved: Odyssey to the West",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/enslaved-odyssey-to-the-west",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "action",
+        "cinematic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for story and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "GreedFall",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/greedfall",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "choice",
+        "story"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for rpg and choice discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "GreedFall II: The Dying World",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/greedfall-ii-the-dying-world",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "choice",
+        "story"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for rpg and choice discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Vampire: The Masquerade - Bloodlines 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/vampire-the-masquerade-bloodlines-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "choice",
+        "horror"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for rpg and choice discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Blood of Dawnwalker",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-blood-of-dawnwalker",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "story",
+        "action",
+        "systems"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for rpg and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Gothic 1 Remake",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/gothic-1-remake",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "open-world",
+        "challenge"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for rpg and open-world discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Dragon's Dogma 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dragon-s-dogma-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "action",
+        "open-world"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for rpg and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Elder Scrolls VI",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-elder-scrolls-vi",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "open-world",
+        "systems"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for rpg and open-world discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Kingdoms of Amalur: Re-Reckoning",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/kingdoms-of-amalur-re-reckoning",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "action",
+        "open-world"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for rpg and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Elex II",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/elex-ii",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "open-world",
+        "sci-fi"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for rpg and open-world discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Thaumaturge",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-thaumaturge",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "story",
+        "strange"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for rpg and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Wuchang: Fallen Feathers",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/wuchang-fallen-feathers",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "soulslike",
+        "mythic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for action and soulslike discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Where Winds Meet",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/where-winds-meet",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "action",
+        "mythic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for open-world and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Lost Soul Aside",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/lost-soul-aside",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "action",
+        "cinematic",
+        "challenge"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for action and cinematic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "DOOM: The Dark Ages",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/doom-the-dark-ages",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "action",
+        "adrenaline"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for shooter and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Ninja Gaiden 4",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/ninja-gaiden-4",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "challenge",
+        "adrenaline"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for action and challenge discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Metal Gear Solid Delta: Snake Eater",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/metal-gear-solid-delta-snake-eater",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "stealth",
+        "story",
+        "action"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for stealth and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Onimusha: Way of the Sword",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/onimusha-way-of-the-sword",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "mythic",
+        "challenge"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for action and mythic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The First Berserker: Khazan",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-first-berserker-khazan",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "challenge",
+        "soulslike"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and challenge discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Stellar Blade",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/stellar-blade",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "action",
+        "challenge",
+        "sci-fi"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and challenge discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Trek to Yomi",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/trek-to-yomi",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "cinematic",
+        "action",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for cinematic and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Katana ZERO",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/katana-zero",
+      "platforms": [
+        "PC",
+        "Switch",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "indie",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and indie discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Ghostrunner 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/ghostrunner-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "challenge",
+        "sci-fi"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and challenge discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Shadow Warrior 3",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/shadow-warrior-3",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "action",
+        "funny"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for shooter and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Trepang2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/trepang2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "adrenaline",
+        "action"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for shooter and adrenaline discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Sniper Elite: Resistance",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/sniper-elite-resistance",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "stealth",
+        "tactical"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for shooter and stealth discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Cronos: The New Dawn",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/cronos-the-new-dawn",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "sci-fi",
+        "tension"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for horror and sci-fi discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Sinking City 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-sinking-city-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "strange"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for horror and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Reanimal",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/reanimal",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "puzzle",
+        "co-op"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for horror and puzzle discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "ILL",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/ill",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "horror",
+        "realistic",
+        "tension"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for horror and realistic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Tormented Souls 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/tormented-souls-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "puzzle",
+        "tension"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for horror and puzzle discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Slitterhead",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/slitterhead",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "action",
+        "strange"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Callisto Protocol",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-callisto-protocol",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "action",
+        "sci-fi"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and action discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Amnesia: The Bunker",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/amnesia-the-bunker",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "survival",
+        "tension"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and survival discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Layers of Fear",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/layers-of-fear",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "tension"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Martha Is Dead",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/martha-is-dead",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "slow"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Medium",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-medium",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "puzzle"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Mixtape",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/mixtape",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "indie",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for story and indie discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Keeper",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/keeper",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "puzzle",
+        "strange",
+        "indie"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for puzzle and strange discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Lost Records: Bloom & Rage",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/lost-records-bloom-and-rage",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "indie"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for story and choice discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "To a T",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/to-a-t",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "funny",
+        "indie",
+        "strange"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for funny and indie discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Koira",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/koira",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "cozy",
+        "indie",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for cozy and indie discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Wanderstop",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/wanderstop",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "cozy",
+        "story",
+        "routine"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for cozy and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Karma: The Dark World",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/karma-the-dark-world",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "strange",
+        "sci-fi"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for story and strange discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Afterlove EP",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/afterlove-ep",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "indie",
+        "action",
+        "systems"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for story and indie discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Open Roads",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/open-roads",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "short",
+        "indie"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for story and short discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Season: A Letter to the Future",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/season-a-letter-to-the-future",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "cozy",
+        "exploration",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for cozy and exploration discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Tchia",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/tchia",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "cozy",
+        "exploration",
+        "open-world"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for cozy and exploration discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Chants of Sennaar",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/chants-of-sennaar",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "puzzle",
+        "indie",
+        "story"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for puzzle and indie discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Borderlands 4",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/borderlands-4",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "co-op",
+        "systems"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for shooter and co-op discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The First Descendant",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-first-descendant",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "service",
+        "co-op"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for shooter and service discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Remnant II",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/remnant-ii",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "co-op",
+        "soulslike"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for shooter and co-op discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Payday 3",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/payday-3",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "crime",
+        "co-op",
+        "shooter"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for crime and co-op discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Warhammer 40,000: Space Marine 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/warhammer-40-000-space-marine-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "shooter",
+        "co-op"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and shooter discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Killing Floor 3",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/killing-floor-3",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "co-op",
+        "horror"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for shooter and co-op discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Dune: Awakening",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dune-awakening",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "survival",
+        "service",
+        "sci-fi"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for survival and service discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Palworld",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/palworld",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "survival",
+        "co-op",
+        "systems"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for survival and co-op discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "No Man's Sky",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/no-man-s-sky",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sci-fi",
+        "exploration",
+        "survival"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for sci-fi and exploration discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Phasmophobia",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/phasmophobia",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "co-op",
+        "tension"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and co-op discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Valheim",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/valheim",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "survival",
+        "co-op",
+        "systems"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for survival and co-op discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Subnautica 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/subnautica-2",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "survival",
+        "exploration",
+        "sci-fi"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for survival and exploration discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Anno 117: Pax Romana",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/anno-117-pax-romana",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "strategy",
+        "management",
+        "systems"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for strategy and management discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "JDM: Japanese Drift Master",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/jdm-japanese-drift-master",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for sports and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Wreckfest 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/wreckfest-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sports",
+        "adrenaline",
+        "competitive"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for sports and adrenaline discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Assetto Corsa Competizione",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/assetto-corsa-competizione",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "realistic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for sports and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Assetto Corsa EVO",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/assetto-corsa-evo",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "sports",
+        "competitive",
+        "realistic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for sports and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Football Manager 2026",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/football-manager-2026",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sports",
+        "management",
+        "systems"
+      ],
+      "vibe": "Sports or competitive loop candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "watch_only",
+      "reason": "Imported into the no-key search index for sports and management discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Planet Coaster 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/planet-coaster-2",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "management",
+        "creative",
+        "systems"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for management and creative discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Manor Lords",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/manor-lords",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "strategy",
+        "management",
+        "systems"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for strategy and management discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Ara: History Untold",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/ara-history-untold",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "strategy",
+        "turn-based",
+        "systems"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for strategy and turn-based discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Commandos: Origins",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/commandos-origins",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "strategy",
+        "tactical",
+        "stealth"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for strategy and tactical discovery; price, cover, and subscription status remain unverified."
+    }
+  ]
+}

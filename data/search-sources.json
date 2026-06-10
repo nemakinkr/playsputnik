@@ -1,0 +1,59 @@
+{
+  "mode": "prototype-global-search-p0",
+  "updatedAt": "2026-06-05T07:23:04Z",
+  "goal": "Let users find or add games beyond the current seed catalog while keeping metadata, price, cover, and subscription confidence explicit.",
+  "sources": [
+    {
+      "id": "seed_catalog",
+      "label": "Seed catalog",
+      "type": "local",
+      "confidence": "high",
+      "canAddToWishlist": true,
+      "priceCoverage": "sample",
+      "coverCoverage": "fallback_or_better",
+      "note": "Searches games already promoted into data/games.json."
+    },
+    {
+      "id": "catalog_backbone",
+      "label": "Catalog backbone",
+      "type": "local_queue",
+      "confidence": "medium",
+      "canAddToWishlist": true,
+      "priceCoverage": "missing_until_promoted",
+      "coverCoverage": "missing_or_fallback",
+      "note": "Searches curated candidates not yet promoted into the seed catalog."
+    },
+    {
+      "id": "prototype_external_index",
+      "label": "Prototype external index",
+      "type": "fixture",
+      "confidence": "low",
+      "canAddToWishlist": true,
+      "priceCoverage": "missing",
+      "coverCoverage": "missing",
+      "note": "117-record offline stand-in for a future RAWG/IGDB/provider lookup, with alias and token-coverage search support."
+    },
+    {
+      "id": "manual_unverified",
+      "label": "Manual unverified title",
+      "type": "manual",
+      "confidence": "low",
+      "canAddToWishlist": true,
+      "priceCoverage": "missing",
+      "coverCoverage": "missing",
+      "note": "Allows any typed title to enter wishlist memory before metadata is resolved."
+    },
+    {
+      "id": "rawg_provider_hook",
+      "label": "RAWG provider hook",
+      "type": "provider_endpoint",
+      "confidence": "pending",
+      "canAddToWishlist": true,
+      "priceCoverage": "missing",
+      "coverCoverage": "rawg_candidate_or_missing",
+      "endpoint": "http://127.0.0.1:4191/api/search",
+      "requiresEnv": "RAWG_API_KEY",
+      "note": "Optional local provider endpoint. Uses RAWG when RAWG_API_KEY is present, keeps fixture fallback otherwise, and treats returned images as attributed candidates rather than verified official covers."
+    }
+  ]
+}

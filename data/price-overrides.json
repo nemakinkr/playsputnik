@@ -1,0 +1,133 @@
+{
+  "_comment": "Manual price overrides for games ITAD cannot resolve from PS Store. Status: free | delisted | manual",
+  "Rocket League": {
+    "status": "free",
+    "note": "Free to play since September 2020"
+  },
+  "NBA 2K17": {
+    "status": "delisted",
+    "note": "Removed from PS Store"
+  },
+  "FIFA 14": {
+    "status": "delisted",
+    "note": "Removed from PS Store"
+  },
+  "FIFA 17": {
+    "status": "delisted",
+    "note": "Removed from PS Store"
+  },
+  "MLB The Show 17": {
+    "status": "delisted",
+    "note": "Removed from PS Store"
+  },
+  "Grand Theft Auto: Vice City": {
+    "status": "manual",
+    "note": "Part of GTA: The Trilogy – The Definitive Edition",
+    "prices": {
+      "US": { "price": 59.99, "regular": 59.99, "discount": 0, "currency": "USD" },
+      "GB": { "price": 54.99, "regular": 54.99, "discount": 0, "currency": "GBP" },
+      "DE": { "price": 59.99, "regular": 59.99, "discount": 0, "currency": "EUR" },
+      "TR": { "price": 1611.73, "regular": 1611.73, "discount": 0, "currency": "TRY" }
+    }
+  },
+  "Grand Theft Auto III": {
+    "status": "manual",
+    "note": "Part of GTA: The Trilogy – The Definitive Edition",
+    "prices": {
+      "US": { "price": 59.99, "regular": 59.99, "discount": 0, "currency": "USD" },
+      "GB": { "price": 54.99, "regular": 54.99, "discount": 0, "currency": "GBP" },
+      "DE": { "price": 59.99, "regular": 59.99, "discount": 0, "currency": "EUR" },
+      "TR": { "price": 1611.73, "regular": 1611.73, "discount": 0, "currency": "TRY" }
+    }
+  },
+  "Grand Theft Auto: San Andreas": {
+    "status": "manual",
+    "note": "Part of GTA: The Trilogy – The Definitive Edition",
+    "prices": {
+      "US": { "price": 59.99, "regular": 59.99, "discount": 0, "currency": "USD" },
+      "GB": { "price": 54.99, "regular": 54.99, "discount": 0, "currency": "GBP" },
+      "DE": { "price": 59.99, "regular": 59.99, "discount": 0, "currency": "EUR" },
+      "TR": { "price": 1611.73, "regular": 1611.73, "discount": 0, "currency": "TRY" }
+    }
+  },
+  "Grand Theft Auto V": {
+    "status": "manual",
+    "note": "GTA V for PS5",
+    "prices": {
+      "US": { "price": 39.99, "regular": 39.99, "discount": 0, "currency": "USD" },
+      "GB": { "price": 34.99, "regular": 34.99, "discount": 0, "currency": "GBP" },
+      "DE": { "price": 39.99, "regular": 39.99, "discount": 0, "currency": "EUR" },
+      "TR": { "price": 1105.04, "regular": 1105.04, "discount": 0, "currency": "TRY" }
+    }
+  },
+  "Horizon Zero Dawn": {
+    "status": "manual",
+    "note": "Horizon Zero Dawn Complete Edition",
+    "prices": {
+      "US": { "price": 19.99, "regular": 49.99, "discount": 60, "currency": "USD" },
+      "GB": { "price": 14.99, "regular": 39.99, "discount": 62, "currency": "GBP" },
+      "DE": { "price": 19.99, "regular": 49.99, "discount": 60, "currency": "EUR" },
+      "TR": { "price": 460.16, "regular": 1150.4, "discount": 60, "currency": "TRY" }
+    }
+  },
+  "Yakuza 0": {
+    "status": "manual",
+    "note": "Yakuza 0 on PS Store",
+    "prices": {
+      "US": { "price": 19.99, "regular": 19.99, "discount": 0, "currency": "USD" },
+      "GB": { "price": 15.99, "regular": 15.99, "discount": 0, "currency": "GBP" },
+      "DE": { "price": 19.99, "regular": 19.99, "discount": 0, "currency": "EUR" },
+      "TR": { "price": 460.16, "regular": 460.16, "discount": 0, "currency": "TRY" }
+    }
+  },
+  "Diablo III": {
+    "status": "manual",
+    "note": "Diablo III: Reaper of Souls – Ultimate Evil Edition",
+    "prices": {
+      "US": { "price": 19.99, "regular": 39.99, "discount": 50, "currency": "USD" },
+      "GB": { "price": 14.99, "regular": 29.99, "discount": 50, "currency": "GBP" },
+      "DE": { "price": 19.99, "regular": 39.99, "discount": 50, "currency": "EUR" },
+      "TR": { "price": 460.16, "regular": 920.32, "discount": 50, "currency": "TRY" }
+    }
+  },
+  "Far Cry 3 Classic Edition": {
+    "status": "manual",
+    "note": "Far Cry 3 Classic Edition on PS Store",
+    "prices": {
+      "US": { "price": 14.99, "regular": 29.99, "discount": 50, "currency": "USD" },
+      "GB": { "price": 11.99, "regular": 23.99, "discount": 50, "currency": "GBP" },
+      "DE": { "price": 14.99, "regular": 29.99, "discount": 50, "currency": "EUR" },
+      "TR": { "price": 287.43, "regular": 574.86, "discount": 50, "currency": "TRY" }
+    }
+  },
+  "The Walking Dead: Season 1": {
+    "status": "manual",
+    "note": "Telltale's The Walking Dead: The Complete First Season",
+    "prices": {
+      "US": { "price": 14.99, "regular": 24.99, "discount": 40, "currency": "USD" },
+      "GB": { "price": 11.99, "regular": 19.99, "discount": 40, "currency": "GBP" },
+      "DE": { "price": 14.99, "regular": 24.99, "discount": 40, "currency": "EUR" },
+      "TR": { "price": 287.43, "regular": 479.05, "discount": 40, "currency": "TRY" }
+    }
+  },
+  "Middle-earth: Shadow of Mordor": {
+    "status": "manual",
+    "note": "Middle-earth: Shadow of Mordor Game of the Year Edition",
+    "prices": {
+      "US": { "price": 9.99, "regular": 29.99, "discount": 67, "currency": "USD" },
+      "GB": { "price": 7.99, "regular": 24.99, "discount": 68, "currency": "GBP" },
+      "DE": { "price": 9.99, "regular": 29.99, "discount": 67, "currency": "EUR" },
+      "TR": { "price": 229.85, "regular": 689.55, "discount": 67, "currency": "TRY" }
+    }
+  },
+  "Jak and Daxter: The Precursor Legacy": {
+    "status": "manual",
+    "note": "PS2 Classic on PS Store",
+    "prices": {
+      "US": { "price": 14.99, "regular": 14.99, "discount": 0, "currency": "USD" },
+      "GB": { "price": 11.99, "regular": 11.99, "discount": 0, "currency": "GBP" },
+      "DE": { "price": 14.99, "regular": 14.99, "discount": 0, "currency": "EUR" },
+      "TR": { "price": 287.43, "regular": 287.43, "discount": 0, "currency": "TRY" }
+    }
+  }
+}

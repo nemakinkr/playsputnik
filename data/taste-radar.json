@@ -1,0 +1,57 @@
+[
+  {
+    "title": "Blood Meridian Road",
+    "window": "Sample 2026 radar",
+    "atoms": ["story", "choice", "cinematic"],
+    "tone": "dark",
+    "adultTimeFit": "weekend",
+    "reason": "Narrative western thriller for players who like authored stories and hard choices.",
+    "source": "sample_future_catalog",
+    "freshnessState": "sample",
+    "confidence": "low"
+  },
+  {
+    "title": "Signal House",
+    "window": "Sample 2026 radar",
+    "atoms": ["story", "exploration", "slow"],
+    "tone": "strange",
+    "adultTimeFit": "weeknight",
+    "reason": "Compact mystery with low review burden and strong evening-session fit.",
+    "source": "sample_future_catalog",
+    "freshnessState": "sample",
+    "confidence": "low"
+  },
+  {
+    "title": "Iron Saints",
+    "window": "Sample 2026 radar",
+    "atoms": ["action", "systems", "tactical"],
+    "tone": "tense",
+    "adultTimeFit": "weekend",
+    "reason": "Systems-heavy action for players who like tactical decisions more than open-world sprawl.",
+    "source": "sample_future_catalog",
+    "freshnessState": "sample",
+    "confidence": "low"
+  },
+  {
+    "title": "Little Orbit Cafe",
+    "window": "Sample 2026 radar",
+    "atoms": ["cozy", "short", "story"],
+    "tone": "warm",
+    "adultTimeFit": "weeknight",
+    "reason": "Short cozy story pick for low-energy evenings.",
+    "source": "sample_future_catalog",
+    "freshnessState": "sample",
+    "confidence": "low"
+  },
+  {
+    "title": "The Long Gate",
+    "window": "Sample 2027 radar",
+    "atoms": ["exploration", "systems", "choice"],
+    "tone": "epic",
+    "adultTimeFit": "vacation",
+    "reason": "Big exploration RPG to watch later, not a weeknight recommendation.",
+    "source": "sample_future_catalog",
+    "freshnessState": "sample",
+    "confidence": "low"
+  }
+]

@@ -1,0 +1,92 @@
+{
+  "mode": "no-paid-provider-p0",
+  "label": "No paid API mode",
+  "updatedAt": "2026-06-05T09:43:11Z",
+  "regions": [
+    "US",
+    "GB",
+    "DE",
+    "TR"
+  ],
+  "sources": [
+    {
+      "id": "seed_catalog",
+      "layer": "Game catalog",
+      "kind": "Curated seed JSON",
+      "checkedAt": "2026-05-26T12:00:00Z",
+      "freshnessState": "fresh",
+      "confidence": "medium",
+      "note": "Enough for recommendation validation, not full market coverage."
+    },
+    {
+      "id": "ai_atoms",
+      "layer": "AI atoms",
+      "kind": "Manual plus AI-ready taxonomy",
+      "checkedAt": "2026-05-26T12:00:00Z",
+      "freshnessState": "fresh",
+      "confidence": "medium",
+      "note": "Atom schema is stable enough for taste tests."
+    },
+    {
+      "id": "cover_snapshots",
+      "layer": "Covers",
+      "kind": "RAWG cover candidates",
+      "checkedAt": "2026-06-05T09:51:17Z",
+      "freshnessState": "sample",
+      "confidence": "medium",
+      "note": "All 48 seed games have attributed RAWG cover candidates; generated posters remain the fallback for unresolved future imports."
+    },
+    {
+      "id": "catalog_backbone",
+      "layer": "Catalog backbone",
+      "kind": "Curated growth queue",
+      "checkedAt": "2026-06-02T11:00:00Z",
+      "freshnessState": "fresh",
+      "confidence": "medium",
+      "note": "101 candidates are queued by lane, readiness, cover gap, and price need before promotion into the seed catalog."
+    },
+    {
+      "id": "sample_prices",
+      "layer": "Prices",
+      "kind": "Sample region snapshots",
+      "checkedAt": "2026-05-26T12:00:00Z",
+      "freshnessState": "sample",
+      "confidence": "low",
+      "note": "P0 uses representative sample data until ingestion is built."
+    },
+    {
+      "id": "sample_price_history",
+      "layer": "Price history",
+      "kind": "Sample historical lows",
+      "checkedAt": "2026-06-02T12:00:00Z",
+      "freshnessState": "sample",
+      "confidence": "low",
+      "note": "P0 stores narrow history only for hot-intent games; do not treat it as full-market price history."
+    },
+    {
+      "id": "sample_ps_plus",
+      "layer": "PS Plus",
+      "kind": "Sample subscription availability",
+      "checkedAt": "2026-05-26T12:00:00Z",
+      "freshnessState": "sample",
+      "confidence": "low",
+      "note": "Subscription claims are prototype-only in this dataset."
+    },
+    {
+      "id": "drop_calendar",
+      "layer": "Drop calendar",
+      "kind": "Known cadence, live dates pending",
+      "checkedAt": "2026-05-27T00:00:00Z",
+      "freshnessState": "sample",
+      "confidence": "medium",
+      "note": "P0 tracks two monthly PS Plus checkpoints, but exact dates need ingestion."
+    }
+  ],
+  "rules": [
+    "Do not buy pricing APIs before validating recommendation/action value.",
+    "Keep P0 to a small region set and a controlled catalog.",
+    "Show source freshness before trusting price or subscription claims.",
+    "Suppress claims if future live ingestion marks a source stale.",
+    "Refresh hot user intent before refreshing the broad catalog."
+  ]
+}
