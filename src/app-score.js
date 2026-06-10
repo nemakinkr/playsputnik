@@ -39,6 +39,12 @@
         quick_loved: 2.5,
         quick_played: 0.75,
         quick_not_for_me: -2.5,
+        rated_5: 3,
+        rated_4: 1.5,
+        rated_3: 0.25,
+        rated_2: -1.5,
+        rated_1: -3,
+        rating_cleared: 0,
         drop_play_later: 2,
         drop_not_for_me: -2.5,
         drop_claim_only: -0.5,
@@ -67,6 +73,12 @@
         quick_loved: "loved in quick check",
         quick_played: "played in quick check",
         quick_not_for_me: "rejected in quick check",
+        rated_5: "rated 5/5 sputniks",
+        rated_4: "rated 4/5 sputniks",
+        rated_3: "rated 3/5 sputniks",
+        rated_2: "rated 2/5 sputniks",
+        rated_1: "rated 1/5 sputniks",
+        rating_cleared: "cleared rating",
         quick_clear: "cleared quick check",
         drop_play_later: "saved for later",
         drop_not_for_me: "rejected drop pick",
@@ -89,7 +101,19 @@
       weights[signal] = (weights[signal] || 0) + value;
     }
 
+    // Per-render cache: feedbackTasteWeights iterates the feedback log with a
+    // catalog lookup per event, and is hit per-signal-per-game through
+    // combinedTasteWeight in evidence/explain paths — thousands of calls per
+    // render once the log is populated (~10s renders). Cleared together with
+    // the taste profile in invalidateTasteProfile().
+    const _feedbackWeightsCache = { withQuick: null, withoutQuick: null };
     function feedbackTasteWeights({ includeQuick = true } = {}) {
+      const slot = includeQuick ? "withQuick" : "withoutQuick";
+      if (_feedbackWeightsCache[slot]) return _feedbackWeightsCache[slot];
+      _feedbackWeightsCache[slot] = computeFeedbackTasteWeights({ includeQuick });
+      return _feedbackWeightsCache[slot];
+    }
+    function computeFeedbackTasteWeights({ includeQuick = true } = {}) {
       const state = getState();
       const weights = {};
       const seen = new Set();
@@ -143,6 +167,8 @@
     let _tasteProfileCache = null;
     function invalidateTasteProfile() {
       _tasteProfileCache = null;
+      _feedbackWeightsCache.withQuick = null;
+      _feedbackWeightsCache.withoutQuick = null;
     }
     function tasteEngineProfile() {
       if (_tasteProfileCache) return _tasteProfileCache;

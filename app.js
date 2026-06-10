@@ -223,6 +223,7 @@ const {
   normalizeTitle,
   aliasEntryForTitle,
   titleKey,
+  invalidateTitleKeys,
   titleMatches,
   aliasTermsForTitle,
   titleIncludes,
@@ -1047,7 +1048,19 @@ function setGameRating(title, rating) {
   state.userGames[key] = current;
   state.userStates[key] = { title, state: legacyStateFromUserGame(current), updatedAt: current.updatedAt };
   recordUserEvent("user_game_rating_changed", title, { from: previousRating, to: current.rating });
-  recordFeedback(current.rating === null ? "rating_clear" : "rating_set", title);
+  // Feed the taste engine: rated_1..rated_5 carry graded weights (-3..+3),
+  // unlike the old flavourless rating_set which had no weight at all.
+  if (current.rating === null) {
+    // Don't keep an empty shell record around if rating was its only content
+    if (!current.access && !current.completionStatus && !current.saved && !current.hidden) {
+      delete state.userGames[key];
+      delete state.userStates[key];
+    }
+    recordFeedback("rating_cleared", title);
+  } else {
+    const sputniks = Math.max(1, Math.min(5, Math.round(current.rating / 20)));
+    recordFeedback(`rated_${sputniks}`, title);
+  }
 }
 
 function snoozeGame(title) {
@@ -1602,10 +1615,24 @@ async function runProviderSearch() {
 
 
 
+// Per-render caches: feedbackSource is called for every feedbackLog event on
+// every taste-profile computation, and each call rebuilt the full sourceGames()
+// array (~13ms) plus a linear titleMatches scan. With a populated feedback log
+// (any real user) that alone cost ~500ms per render. Cleared in render().
+let _sourceGamesCache = null;
+const _feedbackSourceCache = new Map();
+function invalidateSourceLookups() {
+  _sourceGamesCache = null;
+  _feedbackSourceCache.clear();
+}
 function feedbackSource(title) {
-  return sourceGames().find((game) => titleMatches(game.title, title))
+  if (_feedbackSourceCache.has(title)) return _feedbackSourceCache.get(title);
+  if (!_sourceGamesCache) _sourceGamesCache = sourceGames();
+  const result = _sourceGamesCache.find((game) => titleMatches(game.title, title))
     || monthlyDrop.find((item) => titleMatches(item.title, title))
     || tasteRadar.find((item) => titleMatches(item.title, title));
+  _feedbackSourceCache.set(title, result);
+  return result;
 }
 
 
@@ -3261,6 +3288,22 @@ function renderGameDetail(shouldFocus = false) {
       </div>
     </section>
     ${(() => {
+      const userGame = explicitUserGame(game.title);
+      const currentSputniks = typeof userGame?.rating === "number" ? Math.round(userGame.rating / 20) : 0;
+      const sputnikSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13" rx="9" ry="4.2" transform="rotate(-24 12 13)" fill="none" stroke="currentColor" stroke-width="1.7" opacity="0.55"/><circle cx="12" cy="13" r="4.4" fill="currentColor"/><circle cx="19.2" cy="8.6" r="1.9" fill="currentColor"/></svg>`;
+      return `<section class="game-detail-section">
+        <h3>Your rating</h3>
+        <div class="sputnik-rating" role="radiogroup" aria-label="Rate ${game.title}, 1 to 5 sputniks">
+          ${[1, 2, 3, 4, 5].map((n) => `
+            <button class="sputnik-btn ${currentSputniks >= n ? "is-filled" : ""}" data-rate-sputniks="${n}"
+              type="button" role="radio" aria-checked="${currentSputniks === n}" aria-label="${n} of 5 sputniks">
+              ${sputnikSvg}
+            </button>`).join("")}
+          <span class="sputnik-rating-label">${currentSputniks ? `${currentSputniks}/5 — teaches your taste` : "Tap to rate — sharpens picks"}</span>
+        </div>
+      </section>`;
+    })()}
+    ${(() => {
       const region = state.activeRegion;
       const snap = priceSnapshots.find((s) => s.title === game.title && s.region === region);
       const chunk = gameChunkProfile(game);
@@ -3306,6 +3349,16 @@ function renderGameDetail(shouldFocus = false) {
       } else {
         setGameState(game.title, button.dataset.detailState);
       }
+      render();
+    });
+  });
+  els.gameDetail.querySelectorAll("[data-rate-sputniks]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const n = Number(button.dataset.rateSputniks);
+      const current = explicitUserGame(game.title);
+      const currentSputniks = typeof current?.rating === "number" ? Math.round(current.rating / 20) : 0;
+      // Tapping the current rating clears it
+      setGameRating(game.title, currentSputniks === n ? null : n * 20);
       render();
     });
   });
@@ -3918,6 +3971,7 @@ function render() {
   invalidateTasteMemory();
   invalidateCompanionAgenda();
   invalidateEffectiveState();
+  invalidateSourceLookups();
   hydrateControls();
   renderEntryPaths();
   renderTasteProfile();
@@ -4658,6 +4712,8 @@ async function init() {
       readJsonResponse("data/cover-snapshots.json", "Cover snapshots"),
     ]);
     titleAliases = nextTitleAliases;
+    // titleKey results computed before the alias table arrived are stale
+    invalidateTitleKeys();
     priceSnapshots = nextPriceSnapshots;
     subscriptionAvailability = nextSubscriptionAvailability;
     coverSnapshots = nextCoverSnapshots;

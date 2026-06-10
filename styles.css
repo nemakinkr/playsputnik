@@ -6412,3 +6412,49 @@ select:focus-visible,
 .detail-get-link--store:hover {
   border-color: transparent;
 }
+
+/* ── Sputnik rating (1–5) ──────────────────────────────────────────────────── */
+.sputnik-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sputnik-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: #c7d2e3;
+  cursor: pointer;
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+
+[data-theme="dark"] .sputnik-btn {
+  color: #3a4a62;
+}
+
+.sputnik-btn svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sputnik-btn.is-filled {
+  color: var(--blue);
+}
+
+.sputnik-btn:hover {
+  transform: scale(1.15);
+  color: var(--blue-bright);
+}
+
+.sputnik-rating-label {
+  margin-left: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}

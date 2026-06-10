@@ -272,11 +272,13 @@
         session: "medium",
       },
     ],
+    // Sputnik scale: 1–5 sputniks stored as 20–100 internally
     RATING_ACTIONS: [
-      [100, "Top"],
-      [80, "Good"],
-      [60, "OK"],
-      [30, "No"],
+      [100, "5"],
+      [80, "4"],
+      [60, "3"],
+      [40, "2"],
+      [20, "1"],
       ["", "Clear"],
     ],
   };

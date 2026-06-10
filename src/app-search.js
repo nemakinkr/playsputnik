@@ -28,9 +28,24 @@
       });
     }
 
+    // titleKey is pure given the alias table, but each uncached call scans the
+    // whole alias list with NFKD normalization — and titleKey sits inside every
+    // titleMatches() in every linear catalog scan (456 × ~80 aliases × regex).
+    // Memoizing it speeds up search, ranking, dedupe and evidence everywhere.
+    // The cache MUST be cleared when title-aliases.json loads (keys computed
+    // before the aliases arrive would be stale) — see invalidateTitleKeys().
+    const _titleKeyCache = new Map();
+    function invalidateTitleKeys() {
+      _titleKeyCache.clear();
+    }
     function titleKey(title) {
-      const entry = aliasEntryForTitle(title);
-      return normalizeTitle(entry?.title || title);
+      const raw = String(title || "");
+      const cached = _titleKeyCache.get(raw);
+      if (cached !== undefined) return cached;
+      const entry = aliasEntryForTitle(raw);
+      const key = normalizeTitle(entry?.title || raw);
+      _titleKeyCache.set(raw, key);
+      return key;
     }
 
     function titleMatches(a, b) {
@@ -280,6 +295,7 @@
       normalizeTitle,
       aliasEntryForTitle,
       titleKey,
+      invalidateTitleKeys,
       titleMatches,
       aliasTermsForTitle,
       titleIncludes,
