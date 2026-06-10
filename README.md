@@ -9,6 +9,16 @@ Static first prototype for validating PlaySputnik as an AI game companion:
 
 For token-light development, start with `PROJECT_STATE.md`, then `NEXT_TASKS.md`, then `docs/development-protocol.md`. Those files are the compact working memory; this README is the fuller reference.
 
+Quality gate (data -> module logic -> browser smoke -> perf budget):
+
+```sh
+./scripts/check.sh          # full, ~40s
+./scripts/check.sh --fast   # ~3s, skips browser stages
+```
+
+The service worker is disabled on localhost, so dev reloads always serve
+fresh code. See `CLAUDE.md` for working notes (perf rules, caches, pipeline).
+
 Run a local preview server from this folder:
 
 ```sh

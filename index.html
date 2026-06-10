@@ -967,7 +967,17 @@
       document.body.appendChild(storageScript);
     </script>
     <script>
-      if ("serviceWorker" in navigator) {
+      // Dev mode: no service worker on localhost — cache-first SW made every
+      // dev iteration require unregister+cache-clear+reload. Production only.
+      const IS_DEV_HOST = ["localhost", "127.0.0.1"].includes(location.hostname);
+      if ("serviceWorker" in navigator && IS_DEV_HOST) {
+        // Clean up any SW left over from earlier dev sessions
+        navigator.serviceWorker.getRegistrations().then((regs) => {
+          regs.forEach((reg) => reg.unregister());
+          if (regs.length) caches.keys().then((keys) => keys.forEach((k) => caches.delete(k)));
+        });
+      }
+      if ("serviceWorker" in navigator && !IS_DEV_HOST) {
         window.addEventListener("load", () => {
           navigator.serviceWorker.register("sw.js").then((reg) => {
             console.info("[SW] Registered:", reg.scope);
