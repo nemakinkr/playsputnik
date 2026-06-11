@@ -308,24 +308,28 @@
     // Estimates the natural "complete chunk" of a game in minutes: the shortest
     // play session after which you stop with a sense of completion (a run, a
     // race series, a story beat) rather than mid-task.
-    const RUN_BASED_ATOMS = new Set([
-      "roguelike", "arcade", "racing", "sports", "fighting", "puzzle",
-      "party", "card-battler", "deck-builder", "music", "platformer",
-    ]);
+    const RUN_LABEL_ATOMS = new Set(["roguelike", "card-battler", "deck-builder"]);
+    const MATCH_LABEL_ATOMS = new Set(["sports", "fighting", "racing", "party", "music", "arcade"]);
+    const SHORT_SESSION_ATOMS = new Set(["puzzle", "platformer"]);
     const SLOW_BURN_ATOMS = new Set(["open-world", "rpg", "simulation", "strategy", "grind"]);
 
     function gameChunkProfile(game) {
       const atoms = new Set(game.atoms || []);
-      const runBased = [...atoms].some((a) => RUN_BASED_ATOMS.has(a));
+      const runBased = [...atoms].some((a) => RUN_LABEL_ATOMS.has(a));
+      const matchBased = [...atoms].some((a) => MATCH_LABEL_ATOMS.has(a));
+      const compactSession = [...atoms].some((a) => SHORT_SESSION_ATOMS.has(a));
       const slowBurn = [...atoms].some((a) => SLOW_BURN_ATOMS.has(a));
       let minutes;
       let label;
       if (runBased && !slowBurn) {
         minutes = 30;
         label = "one full run";
+      } else if (matchBased && !slowBurn) {
+        minutes = 30;
+        label = "one complete match";
       } else if (game.session === "short") {
         minutes = 40;
-        label = "a complete short session";
+        label = compactSession ? "one chapter or area" : "a complete short session";
       } else if (game.session === "medium" && !slowBurn) {
         minutes = 60;
         label = "a satisfying story beat";

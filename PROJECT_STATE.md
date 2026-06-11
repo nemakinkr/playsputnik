@@ -37,7 +37,9 @@ reviews, catalogs, sale pages, and announcements.
   first-pick payoff after 3 real taste signals, and "use now / improve later"
   guidance for swipes, library access, or pasted ratings.
 - **Session planner:** "Tonight I have: 30m–evening" chips; chunk model
-  (`gameChunkProfile` in src/app-score.js) scores complete-session fit.
+  (`gameChunkProfile` in src/app-score.js) scores complete-session fit and
+  uses genre-aware labels (run vs match vs chapter/area) to avoid misleading
+  copy on puzzle/platformer story games.
 - **Sputnik ratings 1–5** in the game drawer (stored 20–100 in
   `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
   events (weights −3..+3).

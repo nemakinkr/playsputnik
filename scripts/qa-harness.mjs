@@ -780,6 +780,42 @@ function applyPsnDemoEntry() {
   state.activeCluster = "library";
 }
 
+function createQaScoreTools() {
+  const scoreWindow = {};
+  const PlaySputnikScore = Function("window", `${appScoreSource}\nreturn window.PlaySputnikScore;`)(scoreWindow);
+  return PlaySputnikScore.createScoreTools({
+    getState: () => state,
+    getProfileGames: () => profileGames,
+    getQuickReaction: (title) => state.quickReactions?.[titleKey(title)] || "",
+    getFeedbackSource: () => null,
+    getTasteConflict: () => ({ atoms: [] }),
+    getTasteSignalCount: () => quickTasteSignalCount(),
+    titleMatches,
+    titleKey,
+    effectiveGameState,
+    getSubscriptionStatus: () => ({ state: "missing" }),
+    getPriceStatus: () => ({ state: "missing" }),
+    QUICK_TASTE_FIRST_TARGET: 3,
+  });
+}
+
+function checkChunkLabels() {
+  const { gameChunkProfile } = createQaScoreTools();
+  const stray = catalog.find((game) => game.title === "Stray");
+  const hades = catalog.find((game) => game.title === "Hades");
+  assert(stray, "Stray fixture is missing from catalog");
+  assert(hades, "Hades fixture is missing from catalog");
+
+  const strayChunk = gameChunkProfile(stray);
+  const hadesChunk = gameChunkProfile(hades);
+
+  assert(!/run/i.test(strayChunk.label), `Stray should not be described as a run: ${strayChunk.label}`);
+  assert(/chapter|area|session|beat/i.test(strayChunk.label), `Stray should use narrative/session wording: ${strayChunk.label}`);
+  assert(/run/i.test(hadesChunk.label), `Hades should keep run wording: ${hadesChunk.label}`);
+
+  return { stray: strayChunk.label, hades: hadesChunk.label };
+}
+
 function checkSelectors() {
   const idSelectors = [
     ...new Set(
@@ -1439,12 +1475,14 @@ function checkExternalRecommendationScenario() {
 }
 
 const selectorCheck = checkSelectors();
+const chunkLabels = checkChunkLabels();
 const psnScenario = checkPsnScenario();
 const generatedStatuses = checkCorePanels();
 const externalScenario = checkExternalRecommendationScenario();
 
 console.log("QA harness passed.");
 console.log(`- selectors: ${selectorCheck.checkedIds} ids checked, ${selectorCheck.duplicateIds} duplicate ids`);
+console.log(`- Chunk labels: Stray -> ${chunkLabels.stray}; Hades -> ${chunkLabels.hades}`);
 console.log(`- PSN demo: ${psnScenario.psnStates} states -> ${psnScenario.summary}`);
 console.log(`- PSN primary: ${psnScenario.primaryPick}`);
 console.log(`- Library plan: ${psnScenario.planLabels.join(" / ")}`);

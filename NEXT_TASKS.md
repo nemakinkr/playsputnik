@@ -44,9 +44,10 @@ should be driven by real dogfooding notes, not more abstract copy tuning.
 
 ### 4. Chunk-label copy refinement
 
-Status: todo, small. `gameChunkProfile` labels can mislabel edge cases
-("one full run" for Stray via its platformer atom). Scoring is fine; refine
-label selection (e.g. require roguelike/arcade for "run" wording).
+Status: done. `gameChunkProfile` now reserves "one full run" for true
+run-based games (roguelike/deck-builder/card-battler), uses match wording for
+sports/racing/fighting/arcade cases, and keeps puzzle/platformer story games
+on chapter/area/session wording. QA harness has a Stray/Hades regression.
 
 ## Track: Data
 
