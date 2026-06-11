@@ -105,6 +105,29 @@
         lastSkippedAt: record.lastSkippedAt || null,
         dismissedAt: record.dismissedAt || null,
         archivedAt: record.archivedAt || null,
+        restoredAt: record.restoredAt || null,
+      };
+    }
+
+    function normalizePriceWatchRecord(record) {
+      if (!record || typeof record !== "object") return null;
+      const targets = {};
+      if (record.targets && typeof record.targets === "object") {
+        Object.entries(record.targets).forEach(([region, value]) => {
+          const numeric = Number(value);
+          if (region && Number.isFinite(numeric) && numeric > 0) {
+            targets[region] = Math.round(numeric * 100) / 100;
+          }
+        });
+      }
+      const legacyTarget = Number(record.targetPrice);
+      if (record.region && Number.isFinite(legacyTarget) && legacyTarget > 0) {
+        targets[record.region] = Math.round(legacyTarget * 100) / 100;
+      }
+      if (!Object.keys(targets).length) return null;
+      return {
+        targets,
+        updatedAt: record.updatedAt || null,
       };
     }
 
@@ -147,6 +170,7 @@
         duplicateOf: record.duplicateOf || "",
         duplicateSource: record.duplicateSource || "",
         amnesty: normalizeAmnestyRecord(record.amnesty),
+        priceWatch: normalizePriceWatchRecord(record.priceWatch),
         source: record.source || legacyRecord.source || "manual",
         updatedAt: record.updatedAt || legacyRecord.updatedAt || new Date().toISOString(),
       };

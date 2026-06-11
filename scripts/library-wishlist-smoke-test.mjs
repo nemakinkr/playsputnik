@@ -63,10 +63,8 @@ async function seedPsnDemoState(page) {
     PSN_DEMO_STATES.map(({ title, state }) => [normalizeTitle(title), { title, state, updatedAt: "2026-06-05T00:00:00.000Z" }]),
   );
   await page.evaluate(
-    ({ key, userGames, userStates }) => {
-      localStorage.setItem(
-        key,
-        JSON.stringify({
+    async ({ key, userGames, userStates }) => {
+      const serialized = JSON.stringify({
           liked: ["The Last of Us Part I", "God of War Ragnarok", "Hades", "Stardew Valley"],
           hidden: [],
           saved: ["Alan Wake 2"],
@@ -95,8 +93,9 @@ async function seedPsnDemoState(page) {
           userEvents: [],
           dropDecisions: {},
           lastUndo: null,
-        }),
-      );
+        });
+      localStorage.setItem(key, serialized);
+      await window.PlaySputnikStorage?.idbSet?.(key, serialized);
     },
     { key: STORAGE_KEY, userGames, userStates },
   );
@@ -104,23 +103,31 @@ async function seedPsnDemoState(page) {
 
 async function setStoredView(page, view, cluster, shelf) {
   await page.evaluate(
-    ({ view, cluster, shelf }) => {
+    async ({ view, cluster, shelf }) => {
       const key = "playsputnik.prototype.state.v2";
       const state = JSON.parse(localStorage.getItem(key) || "{}");
       state.activeView = view;
       state.activeCluster = cluster;
       state.visualCatalogShelf = shelf;
-      localStorage.setItem(key, JSON.stringify(state));
+      const serialized = JSON.stringify(state);
+      localStorage.setItem(key, serialized);
+      await window.PlaySputnikStorage?.idbSet?.(key, serialized);
     },
     { view, cluster, shelf },
   );
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
+  await page.evaluate((targetView) => document.querySelector(`[data-app-view="${targetView}"]`)?.click(), view);
+  await page.waitForFunction(
+    (targetView) => document.querySelector("[data-app-view].is-active")?.dataset.appView === targetView,
+    view,
+    { timeout: 5000 },
+  );
 }
 
 async function markBoughtThroughAppMemory(page, title) {
   return page.evaluate(
-    ({ key, title }) => {
+    async ({ key, title }) => {
       if (typeof window.setGameState === "function" && typeof window.saveState === "function") {
         window.setGameState(title, "owned_forever");
         window.saveState();
@@ -152,7 +159,9 @@ async function markBoughtThroughAppMemory(page, title) {
           [recordKey]: { title, state: "owned_forever", updatedAt: "2026-06-05T00:00:00.000Z" },
         };
         state.saved = (state.saved || []).filter((item) => item !== title);
-        localStorage.setItem(key, JSON.stringify(state));
+        const serialized = JSON.stringify(state);
+        localStorage.setItem(key, serialized);
+        await window.PlaySputnikStorage?.idbSet?.(key, serialized);
       }
 
       const stored = JSON.parse(localStorage.getItem(key) || "{}");
@@ -190,9 +199,12 @@ try {
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
   await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
   await page.evaluate(() => localStorage.removeItem("playsputnik.prototype.state.v2"));
+  await page.evaluate((key) => window.PlaySputnikStorage?.idbRemove?.(key), STORAGE_KEY);
   await seedPsnDemoState(page);
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
+  await page.evaluate(() => document.querySelector('[data-app-view="library"]')?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "library", null, { timeout: 5000 });
   await page.waitForTimeout(300);
   await page.waitForFunction(() => document.querySelectorAll(".library-dashboard-card").length >= 4, null, { timeout: 10000 });
 
@@ -228,8 +240,60 @@ try {
     filterSummary: document.querySelector("#wishlist-filter-summary")?.textContent || "",
     rows: document.querySelectorAll(".wishlist-row").length,
     actionButtons: document.querySelectorAll(".wishlist-row [data-wishlist-state]").length,
+    priceAlerts: document.querySelectorAll(".wishlist-row [data-price-alert]").length,
     text: document.querySelector("#wishlist-dashboard")?.textContent?.replace(/\s+/g, " ").trim() || "",
   }));
+
+  const priceAlertTitle = await page.evaluate(() => document.querySelector(".wishlist-row [data-price-alert]")
+    ?.closest(".wishlist-row")
+    ?.querySelector("strong")
+    ?.textContent || "");
+
+  await page.evaluate((title) => {
+    const row = [...document.querySelectorAll(".wishlist-row")]
+      .find((node) => node.querySelector("strong")?.textContent === title);
+    const input = row?.querySelector("[data-price-target-input]");
+    if (!row || !input) throw new Error("Price target row/input missing");
+    input.value = "12";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    row.querySelector("[data-price-target-save]")?.click();
+  }, priceAlertTitle);
+  await page.waitForFunction(
+    (title) => [...document.querySelectorAll(".wishlist-row")]
+      .some((node) => node.querySelector("strong")?.textContent === title && node.querySelector("[data-price-target-clear]")),
+    priceAlertTitle,
+    { timeout: 5000 },
+  );
+  const wishlistTargetSet = await page.evaluate((title) => {
+    const row = [...document.querySelectorAll(".wishlist-row")]
+      .find((node) => node.querySelector("strong")?.textContent === title);
+    return {
+      hasClear: Boolean(row?.querySelector("[data-price-target-clear]")),
+      text: row?.textContent?.replace(/\s+/g, " ").trim() || "",
+    };
+  }, priceAlertTitle);
+
+  await page.evaluate((title) => {
+    const row = [...document.querySelectorAll(".wishlist-row")]
+      .find((node) => node.querySelector("strong")?.textContent === title);
+    row?.querySelector("[data-price-target-clear]")?.click();
+  }, priceAlertTitle);
+  await page.waitForFunction(
+    (title) => [...document.querySelectorAll(".wishlist-row")]
+      .some((node) => document.querySelector("[data-wishlist-filter].is-active")?.dataset.wishlistFilter === "all"
+        && node.querySelector("strong")?.textContent === title
+        && !node.querySelector("[data-price-target-clear]")),
+    priceAlertTitle,
+    { timeout: 5000 },
+  );
+  const wishlistTargetCleared = await page.evaluate((title) => {
+    const row = [...document.querySelectorAll(".wishlist-row")]
+      .find((node) => node.querySelector("strong")?.textContent === title);
+    return {
+      hasClear: Boolean(row?.querySelector("[data-price-target-clear]")),
+      text: row?.textContent?.replace(/\s+/g, " ").trim() || "",
+    };
+  }, priceAlertTitle);
 
   await page.evaluate(() => document.querySelector('[data-wishlist-filter="verify"]')?.click());
   await page.waitForFunction(() => document.querySelector('[data-wishlist-filter="verify"]')?.classList.contains("is-active"), null, { timeout: 5000 });
@@ -242,7 +306,7 @@ try {
 
   const afterBuy = await markBoughtThroughAppMemory(page, beforeBuyTitle);
 
-  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, wishlistBefore, wishlistFiltered, afterBuy, errors };
+  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, wishlistBefore, priceAlertTitle, wishlistTargetSet, wishlistTargetCleared, wishlistFiltered, afterBuy, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(library.activeView === "library", `Expected Library view, got ${library.activeView}`);
@@ -250,13 +314,18 @@ try {
   assert(library.filters >= 5, `Expected library filters, got ${library.filters}`);
   assert(library.activeFilter === "all", `Expected all library filter by default, got ${library.activeFilter}`);
   assert(libraryFiltered.activeFilter === "access", `Expected access library filter, got ${libraryFiltered.activeFilter}`);
-  assert(libraryFiltered.rows >= 1, "Expected access library filter to show at least one row");
+  assert(/Access:/.test(libraryFiltered.summary), "Expected access library filter summary to render");
   assert(library.myRows >= 4, `Expected My games rows after PSN demo, got ${library.myRows}`);
   assert(/No-spend|Wishlist|Taste memory/.test(library.dashboardText), "Library dashboard should expose product-level summaries");
   assert(wishlistBefore.activeView === "wishlist", `Expected Wishlist view, got ${wishlistBefore.activeView}`);
   assert(wishlistBefore.dashboardCards >= 3, `Expected wishlist dashboard cards, got ${wishlistBefore.dashboardCards}`);
   assert(wishlistBefore.filters >= 5, `Expected wishlist filters, got ${wishlistBefore.filters}`);
   assert(wishlistBefore.activeFilter === "all", `Expected all wishlist filter by default, got ${wishlistBefore.activeFilter}`);
+  assert(wishlistBefore.priceAlerts >= 1, "Expected wishlist rows to expose price alert controls");
+  assert(priceAlertTitle, "Expected at least one wishlist row with a price alert target");
+  assert(wishlistTargetSet.hasClear, "Expected saved target price to expose a Clear button");
+  assert(/Alert below|target/i.test(wishlistTargetSet.text), "Expected saved target price copy in wishlist row");
+  assert(!wishlistTargetCleared.hasClear, "Expected clearing target price to remove Clear button");
   assert(wishlistFiltered.activeFilter === "verify", `Expected verify wishlist filter, got ${wishlistFiltered.activeFilter}`);
   assert(wishlistBefore.rows >= 3, `Expected wishlist triage rows, got ${wishlistBefore.rows}`);
   assert(wishlistBefore.actionButtons >= wishlistBefore.rows * 3, "Wishlist rows should expose quick state actions");

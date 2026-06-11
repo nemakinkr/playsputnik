@@ -44,12 +44,14 @@ reviews, catalogs, sale pages, and announcements.
   `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
   events (weights −3..+3).
 - Game drawer: status cards, facts, "Get it" links (PS Store/RAWG/HLTB),
-  price sparkline, PS Plus chip, similar games, rating, swipe-to-close,
-  focus trap.
+  price sparkline, PS Plus chip, per-region price alert target, similar
+  games, rating, swipe-to-close, focus trap.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
 - Backlog amnesty: repeated explicit skips are tracked per title; after 5
   skips Today can suggest letting a game go without guilt, archiving it as
-  hidden with `source: "backlog_amnesty"` and counting it in Stats.
+  hidden with `source: "backlog_amnesty"` and counting it in Stats. Amnestied
+  games can be restored to Wishlist from the drawer or Stats; "Keep it" has a
+  small skip cooldown to avoid nagging after one more skip.
 - Dark mode (`data-theme="dark"`, toggle, OS-follow, anti-flash); design
   tokens are PlayStation-bold (`--blue #0064d2`, `--cta-gradient`, etc.);
   wordmark logo with orbit/satellite tittle; PWA icons.

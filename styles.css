@@ -1009,6 +1009,23 @@ textarea {
   color: #9a3412;
 }
 
+.stats-mini-action {
+  min-height: 28px;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  background: #fff;
+  color: #9a3412;
+  padding: 0 10px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.stats-mini-action:hover {
+  border-color: #d97706;
+  background: #fff7ed;
+}
+
 .segmented {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1745,6 +1762,10 @@ textarea {
   grid-template-columns: 1fr;
   gap: 6px;
   min-width: 116px;
+}
+
+.amnesty-actions--inline {
+  grid-template-columns: minmax(140px, max-content);
 }
 
 .amnesty-actions button {
@@ -3397,6 +3418,93 @@ textarea {
 
 .wishlist-actions button:hover,
 .wishlist-actions button.is-selected {
+  border-color: var(--blue);
+  background: #eaf0ff;
+  color: #173f9a;
+}
+
+.price-alert {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(112px, 0.6fr) auto auto;
+  gap: 7px;
+  align-items: end;
+  border: 1px solid #dbe7ff;
+  border-radius: 8px;
+  background: #f8fbff;
+  padding: 8px;
+}
+
+.price-alert--row {
+  margin-top: 8px;
+}
+
+.price-alert--detail {
+  grid-template-columns: minmax(150px, 1fr) minmax(120px, 0.7fr) auto auto;
+}
+
+.price-alert.is-triggered {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.price-alert div,
+.price-alert label {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.price-alert span,
+.price-alert small {
+  color: #64748b;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.price-alert strong {
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.price-alert.is-triggered span,
+.price-alert.is-triggered small {
+  color: #15803d;
+}
+
+.price-alert input {
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.price-alert input.is-invalid {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.14);
+}
+
+.price-alert button {
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--muted);
+  padding: 0 9px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.price-alert button:hover {
   border-color: var(--blue);
   background: #eaf0ff;
   color: #173f9a;
@@ -5514,6 +5622,15 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .price-alert,
+  .price-alert--detail {
+    grid-template-columns: 1fr;
+  }
+
+  .price-alert button {
+    width: 100%;
+  }
+
   .answer-agenda-actions {
     grid-template-columns: repeat(3, minmax(70px, 1fr));
   }
@@ -6394,7 +6511,8 @@ select:focus-visible,
 
 /* Inputs that slipped through */
 [data-theme="dark"] .queue-toolbar input,
-[data-theme="dark"] [class*="-action"] input {
+[data-theme="dark"] [class*="-action"] input,
+[data-theme="dark"] .price-alert input {
   background: var(--surface);
   color: var(--ink);
 }
@@ -6406,6 +6524,7 @@ select:focus-visible,
 [data-theme="dark"] .taste-gate,
 [data-theme="dark"] .first-run-next-step,
 [data-theme="dark"] .amnesty-card,
+[data-theme="dark"] .price-alert,
 [data-theme="dark"] .entry-result {
   background-image: none !important;
   background-color: var(--card-bg-soft);
@@ -6432,6 +6551,8 @@ select:focus-visible,
 [data-theme="dark"] .first-run-taste-proof > div,
 [data-theme="dark"] .first-run-readiness > div,
 [data-theme="dark"] .amnesty-facts span,
+[data-theme="dark"] .stats-mini-action,
+[data-theme="dark"] .price-alert button,
 [data-theme="dark"] [class*="-dashboard-card"],
 [data-theme="dark"] .visual-catalog-meta > span {
   background: var(--card-bg);
@@ -6449,6 +6570,7 @@ select:focus-visible,
 [data-theme="dark"] .first-run-taste-proof strong,
 [data-theme="dark"] .first-run-readiness strong,
 [data-theme="dark"] .amnesty-copy strong,
+[data-theme="dark"] .price-alert strong,
 [data-theme="dark"] [class*="-dashboard-card"] strong {
   color: var(--text-strong);
 }
@@ -6456,6 +6578,8 @@ select:focus-visible,
 [data-theme="dark"] .first-run-taste-proof span,
 [data-theme="dark"] .first-run-readiness span,
 [data-theme="dark"] .amnesty-copy p,
+[data-theme="dark"] .price-alert span,
+[data-theme="dark"] .price-alert small,
 [data-theme="dark"] [class*="-dashboard-card"] span {
   color: var(--text-mid);
 }

@@ -63,17 +63,29 @@
       };
     }
 
+    function customPriceWatchTarget(game, region) {
+      const target = Number(effectiveUserGame(game)?.priceWatch?.targets?.[region]);
+      return Number.isFinite(target) && target > 0 ? target : null;
+    }
+
+    function priceWatchTarget(game, region) {
+      return customPriceWatchTarget(game, region) || Number(getState().budget);
+    }
+
     function priceWatchRecord(game, region, rankIndex = 0) {
-      const state = getState();
       const snapshot = game.priceMeta?.[region] || {};
       const historicalLow = historicalLowForGame(game, region);
+      const targetPrice = priceWatchTarget(game, region);
+      const currentPrice = typeof game.prices[region] === "number" ? game.prices[region] : null;
+      const hasCustomTarget = customPriceWatchTarget(game, region) !== null;
       return {
         gameId: titleKey(game.title),
         title: game.title,
         region,
-        targetPrice: Number(state.budget),
+        targetPrice,
+        hasCustomTarget,
         watchReason: priceWatchReason(game, region, rankIndex),
-        currentPrice: game.prices[region] || null,
+        currentPrice,
         discountPercent: game.discount[region] || 0,
         checkedAt: snapshot.checkedAt || null,
         freshnessState: snapshot.freshnessState || "missing",
@@ -82,6 +94,8 @@
         historicalLowAt: historicalLow?.checkedAt || null,
         historyCount: historicalLow?.historyCount || 0,
         isHistoricalLow: Boolean(historicalLow?.isCurrentLow),
+        isBelowTarget: typeof currentPrice === "number" && currentPrice <= targetPrice,
+        targetDelta: typeof currentPrice === "number" ? Math.round((currentPrice - targetPrice) * 100) / 100 : null,
       };
     }
 
@@ -133,7 +147,7 @@
           const risk = hasPrice ? purchaseRisk(game) : 18;
           const score = hasPrice ? purchaseScore(game) : scoreGame(game) - 8;
           const memory = effectiveUserGame(game) || {};
-          const watch = hasPrice && priceCanGuideBuy(game, region) ? priceWatchRecord(game, region, 0) : null;
+          const watch = hasPrice ? priceWatchRecord(game, region, 0) : null;
           return {
             game,
             lanes: [...lanes],
@@ -159,7 +173,14 @@
       if (!record.status.canConfirm) {
         return { label: "Verify", tone: "verify", detail: "Price signal exists, but the source needs confirmation before this becomes a confident buy." };
       }
-      if ((record.game.prices[region] || 0) > Number(state.budget) || record.risk >= 24) {
+      if (record.watch?.isBelowTarget && record.risk < 24) {
+        return {
+          label: "Below target",
+          tone: "buy",
+          detail: `${formatPrice(record.game, region)} is at or under your ${record.watch.hasCustomTarget ? "custom" : "budget"} alert.`,
+        };
+      }
+      if ((record.game.prices[region] || 0) > (record.watch?.targetPrice ?? Number(state.budget)) || record.risk >= 24) {
         return {
           label: "Wait",
           tone: "wait",
@@ -246,6 +267,8 @@
       priceWatchReason,
       priceHistoryForGame,
       historicalLowForGame,
+      customPriceWatchTarget,
+      priceWatchTarget,
       priceWatchRecord,
       historicalLowCopy,
       priceWatchRecords,

@@ -582,6 +582,8 @@ const {
   priceWatchReason,
   priceHistoryForGame,
   historicalLowForGame,
+  customPriceWatchTarget,
+  priceWatchTarget,
   priceWatchRecord,
   historicalLowCopy,
   priceWatchRecords,
@@ -1066,7 +1068,89 @@ function setGameRating(title, rating) {
   }
 }
 
+function normalizePriceWatchTargetValue(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric <= 0) return null;
+  return Math.round(numeric * 100) / 100;
+}
+
+function syncLegacyStateFromUserGame(key, userGame) {
+  const legacyState = legacyStateFromUserGame(userGame);
+  if (legacyState) {
+    state.userStates[key] = { title: userGame.title, state: legacyState, updatedAt: userGame.updatedAt };
+  } else {
+    delete state.userStates[key];
+  }
+}
+
+function hasDurableUserGameMemory(userGame) {
+  return Boolean(
+    userGame.access
+      || userGame.completionStatus
+      || userGame.saved
+      || userGame.hidden
+      || typeof userGame.rating === "number"
+      || userGame.amnesty
+      || userGame.provider
+      || userGame.catalogStatus
+      || userGame.sourceUrl
+      || userGame.coverUrl,
+  );
+}
+
+function setPriceWatchTarget(title, rawValue, region = state.activeRegion) {
+  const targetPrice = normalizePriceWatchTargetValue(rawValue);
+  if (!title || !region || targetPrice === null) return false;
+  const key = titleKey(title);
+  const current = normalizeUserGameRecord(explicitUserGame(title), title) || normalizeUserGameRecord({ title });
+  const now = new Date().toISOString();
+  const next = {
+    ...current,
+    title: current.title || title,
+    priceWatch: {
+      targets: {
+        ...(current.priceWatch?.targets || {}),
+        [region]: targetPrice,
+      },
+      updatedAt: now,
+    },
+    source: current.source === "manual" && !hasDurableUserGameMemory(current) ? "price_watch" : current.source || "price_watch",
+    updatedAt: now,
+  };
+  state.userGames[key] = next;
+  syncLegacyStateFromUserGame(key, next);
+  recordUserEvent("price_watch_target_set", title, { region, targetPrice });
+  recordFeedback("price_watch_target", title);
+  return true;
+}
+
+function clearPriceWatchTarget(title, region = state.activeRegion) {
+  if (!title || !region) return false;
+  const key = titleKey(title);
+  const current = normalizeUserGameRecord(explicitUserGame(title), title);
+  if (!current?.priceWatch?.targets?.[region]) return false;
+  const now = new Date().toISOString();
+  const targets = { ...(current.priceWatch.targets || {}) };
+  delete targets[region];
+  const next = {
+    ...current,
+    priceWatch: Object.keys(targets).length ? { targets, updatedAt: now } : null,
+    updatedAt: now,
+  };
+  if (!next.priceWatch && !hasDurableUserGameMemory(next)) {
+    delete state.userGames[key];
+    delete state.userStates[key];
+  } else {
+    state.userGames[key] = next;
+    syncLegacyStateFromUserGame(key, next);
+  }
+  recordUserEvent("price_watch_target_cleared", title, { region });
+  recordFeedback("price_watch_clear", title);
+  return true;
+}
+
 const BACKLOG_AMNESTY_SKIP_TARGET = 5;
+const BACKLOG_AMNESTY_KEEP_COOLDOWN_SKIPS = 2;
 
 function normalizeBacklogAmnestyMeta(meta = {}) {
   const safeMeta = meta && typeof meta === "object" ? meta : {};
@@ -1079,6 +1163,7 @@ function normalizeBacklogAmnestyMeta(meta = {}) {
     lastSkippedAt: safeMeta.lastSkippedAt || null,
     dismissedAt: safeMeta.dismissedAt || null,
     archivedAt: safeMeta.archivedAt || null,
+    restoredAt: safeMeta.restoredAt || null,
   };
 }
 
@@ -1125,7 +1210,7 @@ function dismissBacklogAmnesty(title) {
   const next = writeBacklogAmnestyMeta(title, {
     ...meta,
     dismissedAt: now,
-    dismissedSkips: meta.skips,
+    dismissedSkips: meta.skips + BACKLOG_AMNESTY_KEEP_COOLDOWN_SKIPS,
   });
   recordUserEvent("backlog_amnesty_kept", title, { skips: next.amnesty.skips });
   recordFeedback("backlog_amnesty_keep", title);
@@ -1145,6 +1230,7 @@ function archiveBacklogCandidate(title) {
   next.amnesty = normalizeBacklogAmnestyMeta({
     ...meta,
     archivedAt: now,
+    restoredAt: null,
     dismissedAt: now,
     dismissedSkips: Math.max(meta.dismissedSkips, meta.skips),
   });
@@ -1155,6 +1241,41 @@ function archiveBacklogCandidate(title) {
   state.snoozed.delete(next.title);
   recordUserEvent("backlog_amnestied", title, { skips: next.amnesty.skips });
   recordFeedback("backlog_amnesty", title);
+}
+
+function restoreBacklogAmnesty(title) {
+  if (!title) return false;
+  const current = normalizeUserGameRecord(explicitUserGame(title), title);
+  if (!current?.hidden || !current.amnesty?.archivedAt) return false;
+  stageLastUndo("restore_amnesty", title);
+  invalidateEffectiveState();
+  const key = titleKey(title);
+  const now = new Date().toISOString();
+  const next = {
+    ...current,
+    hidden: false,
+    saved: true,
+    source: "backlog_amnesty_restored",
+    amnesty: normalizeBacklogAmnestyMeta({
+      ...current.amnesty,
+      archivedAt: null,
+      restoredAt: now,
+      dismissedAt: now,
+      dismissedSkips: Math.max(current.amnesty.dismissedSkips, current.amnesty.skips + BACKLOG_AMNESTY_KEEP_COOLDOWN_SKIPS),
+    }),
+    updatedAt: now,
+  };
+  state.userGames[key] = next;
+  syncLegacyStateFromUserGame(key, next);
+  state.hidden.delete(next.title);
+  state.saved.add(next.title);
+  recordUserEvent("backlog_amnesty_restored", title, { skips: next.amnesty.skips });
+  recordFeedback("backlog_amnesty_restore", title);
+  return true;
+}
+
+function isAmnestiedUserGame(userGame) {
+  return Boolean(userGame && (userGame.source === "backlog_amnesty" || (userGame.hidden && userGame.amnesty?.archivedAt)));
 }
 
 function snoozeGame(title) {
@@ -1168,12 +1289,13 @@ function titleStateSnapshot(title) {
 }
 
 function stageLastUndo(action, title) {
-  if (!title || !["play", "save", "snooze", "amnesty"].includes(action)) return;
+  if (!title || !["play", "save", "snooze", "amnesty", "restore_amnesty"].includes(action)) return;
   const labels = {
     play: "Marked Playing",
     save: "Saved",
     snooze: "Skipped tonight",
     amnesty: "Let go",
+    restore_amnesty: "Restored",
   };
   state.lastUndo = {
     action,
@@ -2235,7 +2357,7 @@ function renderStats() {
     saved:     userGames.filter((g) => g.saved).length,
     psPlus:    userGames.filter((g) => g.access === "psplus").length,
   };
-  const amnestiedGames = userGames.filter((g) => g.source === "backlog_amnesty" || (g.hidden && g.amnesty?.archivedAt));
+  const amnestiedGames = userGames.filter(isAmnestiedUserGame);
   const totalTracked = userGames.length;
 
   // Reactions
@@ -2339,7 +2461,15 @@ function renderStats() {
         tag.textContent = `${g.title} (${normalizeBacklogAmnestyMeta(g.amnesty).skips} skips)`;
         tag.style.cursor = "pointer";
         tag.addEventListener("click", () => openGameDetail(g.title));
-        nodes.push(tag);
+        const restore = document.createElement("button");
+        restore.className = "stats-mini-action amnesty-restore";
+        restore.type = "button";
+        restore.textContent = "Restore";
+        restore.addEventListener("click", () => {
+          restoreBacklogAmnesty(g.title);
+          render();
+        });
+        nodes.push(tag, restore);
       });
     }
     els.statsTimeline.replaceChildren(...nodes);
@@ -2743,7 +2873,7 @@ function renderBacklogAmnesty(ranked) {
   const title = document.createElement("strong");
   title.textContent = `Let go of ${game.title}?`;
   const detail = document.createElement("p");
-  detail.textContent = `You've skipped it ${meta.skips} times. If you keep dodging it, archive it without guilt; it will still stay as taste memory.`;
+  detail.textContent = `You've skipped it ${meta.skips} times. If you keep dodging it, archive it without guilt; it will still stay as taste memory and can be restored later.`;
   copy.append(tag, title, detail);
 
   const facts = document.createElement("div");
@@ -2751,6 +2881,7 @@ function renderBacklogAmnesty(ranked) {
   [
     `${meta.skips} skips`,
     effectiveGameState(game) === "saved" ? "wishlist" : "not active",
+    `keep hides for ${BACKLOG_AMNESTY_KEEP_COOLDOWN_SKIPS + 1} skips`,
     "hidden, not deleted",
   ].forEach((text) => {
     const pill = document.createElement("span");
@@ -3422,6 +3553,18 @@ function renderGameDetail(shouldFocus = false) {
       <p><strong>Why:</strong> ${reason}</p>
       <p><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
     </section>
+    ${(() => {
+      const userGame = explicitUserGame(game.title);
+      if (!isAmnestiedUserGame(userGame)) return "";
+      const meta = normalizeBacklogAmnestyMeta(userGame.amnesty);
+      return `<section class="game-detail-section game-detail-amnesty-restore">
+        <h3>Backlog amnesty</h3>
+        <p>Archived after ${meta.skips} skips. It is hidden, not deleted, and can come back to your wishlist whenever you want.</p>
+        <div class="amnesty-actions amnesty-actions--inline">
+          <button data-amnesty-restore type="button">Restore to wishlist</button>
+        </div>
+      </section>`;
+    })()}
     ${valueCard ? `
     <section class="game-detail-section game-detail-value">
       <h3>Value</h3>
@@ -3473,6 +3616,14 @@ function renderGameDetail(shouldFocus = false) {
         })()}
       </div>
     </section>` : ""}
+    ${(() => {
+      const control = priceWatchControlHtml(game, { context: "detail" });
+      if (!control) return "";
+      return `<section class="game-detail-section game-detail-price-alert">
+        <h3>Price alert</h3>
+        ${control}
+      </section>`;
+    })()}
     <section class="game-detail-section">
       <h3>Signals</h3>
       <div class="facts">${facts.map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`).join("")}</div>
@@ -3564,6 +3715,11 @@ function renderGameDetail(shouldFocus = false) {
       }
     });
   }
+  bindPriceWatchControls(els.gameDetailBody, game);
+  els.gameDetailBody.querySelector("[data-amnesty-restore]")?.addEventListener("click", () => {
+    restoreBacklogAmnesty(game.title);
+    render();
+  });
   els.gameDetail.querySelectorAll("[data-detail-state]").forEach((button) => {
     button.addEventListener("click", () => {
       if (game.searchResult && !canonicalSearchResultSeed(game.searchResult)) {
@@ -3862,6 +4018,71 @@ function renderWishlistDashboard(ranked, records) {
   renderDashboardCards(els.wishlistDashboard, wishlistDashboardCards(ranked, records), "wishlist-dashboard-card", "wishlistDashboard");
 }
 
+function priceTargetInputValue(value) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric) || numeric <= 0) return "";
+  return String(Math.round(numeric * 100) / 100);
+}
+
+function priceWatchControlHtml(game, { context = "row" } = {}) {
+  const region = state.activeRegion;
+  if (!game || typeof game.prices?.[region] !== "number") return "";
+  const watch = priceWatchRecord(game, region, 0);
+  const currency = game.priceMeta?.[region]?.currency || "USD";
+  const customTarget = customPriceWatchTarget(game, region);
+  const activeTarget = priceWatchTarget(game, region);
+  const targetCopy = formatMoney(activeTarget, currency);
+  const currentCopy = formatMoney(watch.currentPrice, currency);
+  const deltaCopy = typeof watch.targetDelta === "number" && watch.targetDelta > 0
+    ? `${formatMoney(watch.targetDelta, currency)} above target`
+    : "at or below target";
+  const statusCopy = watch.isBelowTarget
+    ? `Below target now: ${currentCopy}`
+    : `${currentCopy} / ${deltaCopy}`;
+  return `
+    <div class="price-alert price-alert--${context} ${watch.isBelowTarget ? "is-triggered" : ""}" data-price-alert>
+      <div>
+        <span>${watch.isBelowTarget ? "Target hit" : "Price alert"}</span>
+        <strong>${customTarget !== null ? `Alert below ${targetCopy}` : `Using budget ${targetCopy}`}</strong>
+        <small>${statusCopy}</small>
+      </div>
+      <label>
+        <span>Alert below</span>
+        <input data-price-target-input type="number" min="1" step="0.01" inputmode="decimal" value="${customTarget !== null ? priceTargetInputValue(customTarget) : ""}" placeholder="${priceTargetInputValue(activeTarget)}">
+      </label>
+      <button data-price-target-save type="button">Save</button>
+      ${customTarget !== null ? `<button data-price-target-clear type="button">Clear</button>` : ""}
+    </div>
+  `;
+}
+
+function bindPriceWatchControls(root, game) {
+  root.querySelectorAll("[data-price-alert]").forEach((control) => {
+    const input = control.querySelector("[data-price-target-input]");
+    const saveButton = control.querySelector("[data-price-target-save]");
+    const clearButton = control.querySelector("[data-price-target-clear]");
+    const saveTarget = () => {
+      if (setPriceWatchTarget(game.title, input?.value, state.activeRegion)) {
+        render();
+        return;
+      }
+      input?.classList.add("is-invalid");
+      input?.focus();
+    };
+    input?.addEventListener("input", () => input.classList.remove("is-invalid"));
+    input?.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      saveTarget();
+    });
+    saveButton?.addEventListener("click", saveTarget);
+    clearButton?.addEventListener("click", () => {
+      clearPriceWatchTarget(game.title, state.activeRegion);
+      render();
+    });
+  });
+}
+
 function renderPriceWatch(ranked) {
   const region = state.activeRegion;
   const records = wishlistIntentRecords(ranked);
@@ -3901,6 +4122,7 @@ function renderPriceWatch(ranked) {
           <strong>${game.title}</strong>
           <span class="deal-price ${status.canConfirm ? "" : "needs-verify"}">${record.hasPrice ? `${region} ${formatPrice(game, region)} / ${game.discount[region] || 0}% ${status.canConfirm ? "off" : "signal"}` : "Price missing"}</span>
           <span class="deal-reason">${decision.detail}${watch ? ` / target ${formatMoney(watch.targetPrice, currency)} / ${historicalLowCopy(watch, currency)}` : ""} / ${record.lanes.join(", ")}</span>
+          ${watch ? priceWatchControlHtml(game, { context: "row" }) : ""}
         </div>
         <div class="wishlist-actions">
           <button data-wishlist-detail type="button">Details</button>
@@ -3916,6 +4138,7 @@ function renderPriceWatch(ranked) {
           render();
         });
       });
+      bindPriceWatchControls(row, game);
       return row;
     }) : [createQueueEmpty("No watched games in this lane", "Change the filter or add more games from search and the visual catalog.")]),
   );

@@ -12,23 +12,20 @@ Run `./scripts/check.sh` before claiming any task done.
 
 ### 1. Wishlist price alerts UI
 
-Status: todo. Backend exists: `watch.targetPrice` is already used by
-wishlist decision copy ("target $X / historical low").
-
-Goal: let the user set/change/clear a target price per wishlist game.
-
-- UI: small "Alert below $X" control in the game drawer (wishlist games)
-  and/or wishlist rows.
-- Persist into the existing watch structure; show state in wishlist rows.
-- No push delivery yet (no users) — visual "below target!" badge is enough.
-- Files: app.js (drawer + wishlist render), src/app-wishlist.js, styles.css.
+Status: done. Users can set/change/clear per-region target prices from
+Wishlist rows and the game drawer. Targets persist in
+`userGames[key].priceWatch.targets[region]`; wishlist decisions now compare
+against the custom target instead of only the global budget and show a
+"Below target" buy-zone when a watched price reaches the alert.
 
 ### 2. Backlog amnesty dogfood
 
 Status: follow-up. P0 is done: explicit Skip/Snooze actions increment a
 stable per-title `userGames[title].amnesty.skips` counter; after 5 skips the
 Today view can show a "Let it go" card; archive sets hidden with
-`source: "backlog_amnesty"` and Stats counts/list amnestied games.
+`source: "backlog_amnesty"` and Stats counts/list amnestied games. Follow-up
+done: amnestied games can be restored to Wishlist from the detail drawer or
+Stats, and "Keep it" now uses a small skip cooldown before prompting again.
 
 Next work should come from dogfooding: tune the threshold, decide whether
 owned/subscription games should ever be eligible, and consider a "restore"
