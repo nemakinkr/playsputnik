@@ -57,6 +57,9 @@ try {
     sourceTrust: document.querySelectorAll("[data-detail-source-trust]").length,
     sourceRows: document.querySelectorAll(".detail-source-row").length,
     atomSignals: document.querySelectorAll(".detail-atom-signal").length,
+    primaryCta: document.querySelector("[data-detail-primary-action]")?.textContent?.trim() || "",
+    primaryKind: document.querySelector("[data-detail-primary-action]")?.dataset.primaryKind || "",
+    primaryState: document.querySelector("[data-detail-primary-action]")?.dataset.primaryState || "",
     actionButtons: document.querySelectorAll("[data-detail-state]").length,
     facts: document.querySelectorAll(".game-detail-section .fact").length,
     atoms: document.querySelectorAll(".game-detail-atoms span").length,
@@ -71,6 +74,22 @@ try {
       wishlist: document.querySelectorAll("[data-wishlist-detail]").length,
     },
   }));
+
+  await page.evaluate(() => document.querySelector("[data-detail-primary-action]")?.click());
+  await page.waitForTimeout(500);
+
+  const afterPrimary = await page.evaluate((key) => {
+    const title = document.querySelector("#game-detail-title")?.textContent || "";
+    const state = JSON.parse(localStorage.getItem(key) || "{}");
+    const record = Object.values(state.userGames || {}).find((item) => item.title === title);
+    return {
+      title,
+      access: record?.access || "",
+      completionStatus: record?.completionStatus || "",
+      saved: Boolean(record?.saved),
+      primaryCta: document.querySelector("[data-detail-primary-action]")?.textContent?.trim() || "",
+    };
+  }, STORAGE_KEY);
 
   await page.evaluate(() => document.querySelector('[data-detail-state="playing"]')?.click());
   await page.waitForTimeout(500);
@@ -103,7 +122,7 @@ try {
     display: window.getComputedStyle(document.querySelector("#game-detail")).display,
   }));
 
-  const result = { mode: "game-detail-smoke", url: targetUrl, before, afterAction, afterClose, errors };
+  const result = { mode: "game-detail-smoke", url: targetUrl, before, afterPrimary, afterAction, afterClose, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(before.title, "Expected detail drawer title");
@@ -115,6 +134,12 @@ try {
   assert(before.sourceTrust === 1, "Expected detail data trust block");
   assert(before.sourceRows >= 4, `Expected source trust rows, got ${before.sourceRows}`);
   assert(before.atomSignals >= 1, `Expected atom signal chips, got ${before.atomSignals}`);
+  assert(before.primaryCta, "Expected smart primary CTA");
+  assert(["state", "url"].includes(before.primaryKind), `Expected primary CTA kind, got ${before.primaryKind}`);
+  assert(
+    before.primaryKind === "url" || afterPrimary.access || afterPrimary.completionStatus || afterPrimary.saved,
+    "Expected state primary CTA to update game memory",
+  );
   assert(before.actionButtons >= 6, `Expected detail action buttons, got ${before.actionButtons}`);
   assert(before.facts >= 2, `Expected detail facts, got ${before.facts}`);
   assert(before.atoms >= 1, `Expected detail atoms, got ${before.atoms}`);

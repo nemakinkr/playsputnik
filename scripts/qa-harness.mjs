@@ -1327,7 +1327,12 @@ function checkSelectors() {
   assert(/function detailCockpitHtml/.test(appSource), "Game detail cockpit renderer is missing");
   assert(/function detailTasteFitHtml/.test(appSource), "Game detail taste fit renderer is missing");
   assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
+  assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
+  assert(/function runDetailPrimaryAction/.test(appSource), "Game detail smart primary CTA action handler is missing");
+  assert(/function applyDetailState/.test(appSource), "Game detail shared state applier is missing");
   assert(/data-detail-cockpit/.test(appSource), "Game detail cockpit slot is missing");
+  assert(/data-detail-primary-action/.test(appSource), "Game detail primary CTA is missing");
+  assert(/data-primary-kind/.test(appSource), "Game detail primary CTA should expose its action kind");
   assert(/data-detail-taste-fit/.test(appSource), "Game detail taste fit slot is missing");
   assert(/data-detail-source-trust/.test(appSource), "Game detail source trust slot is missing");
   assert(/detail-atom-signal/.test(appSource + css), "Game detail atom signal chips are missing");
@@ -1341,6 +1346,7 @@ function checkSelectors() {
   assert(/game-detail-smoke/.test(gameDetailSmokeSource), "Game detail smoke test is missing");
   assert(/data-detail-state="playing"/.test(gameDetailSmokeSource), "Game detail smoke should verify Play action persistence");
   assert(/data-detail-cockpit/.test(gameDetailSmokeSource), "Game detail smoke should verify decision cockpit");
+  assert(/data-detail-primary-action/.test(gameDetailSmokeSource), "Game detail smoke should verify smart primary CTA");
   assert(/detail-source-row/.test(gameDetailSmokeSource), "Game detail smoke should verify source trust rows");
   assert(/search-memory-smoke/.test(searchMemorySmokeSource), "Search-to-memory smoke test is missing");
   assert(/data-search-detail/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify Details from search");

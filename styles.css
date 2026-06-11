@@ -3824,6 +3824,50 @@ textarea {
   margin: 0;
 }
 
+.detail-cockpit-actions {
+  display: grid;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.detail-primary-cta {
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--blue);
+  color: #fff;
+  padding: 0 14px;
+  font-size: 0.86rem;
+  font-weight: 950;
+  text-align: center;
+}
+
+.detail-primary-cta.tone-play,
+.detail-primary-cta.tone-plus {
+  background: var(--green);
+}
+
+.detail-primary-cta.tone-buy {
+  background: var(--teal);
+}
+
+.detail-primary-cta.tone-watch,
+.detail-primary-cta.tone-save,
+.detail-primary-cta.tone-verify {
+  background: #d97706;
+}
+
+.detail-primary-cta:hover {
+  filter: brightness(0.95);
+}
+
+.detail-cockpit-actions small {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
 .detail-cockpit-grid,
 .detail-source-grid {
   display: grid;
@@ -6586,6 +6630,7 @@ textarea {
 
 [data-theme="dark"] .game-detail-section p,
 [data-theme="dark"] .detail-cockpit-head > span,
+[data-theme="dark"] .detail-cockpit-actions small,
 [data-theme="dark"] .detail-signal-row > span,
 [data-theme="dark"] .detail-evidence-row > span,
 [data-theme="dark"] .detail-source-row > span,

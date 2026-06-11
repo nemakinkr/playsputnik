@@ -57,6 +57,12 @@ live in one scan-friendly flow. `game-detail-smoke-test.mjs` now asserts the
 cockpit/taste/source-trust contract instead of only checking that the drawer
 opens.
 
+Follow-up done: the cockpit now has a smart primary CTA. It changes by game
+context: playable games move to Playing, Plus signals add subscription access,
+buy-zone games open the PS Store when a source URL exists, watched games stay
+price-watched, and unknown games go to Wishlist. The smoke test now clicks the
+CTA and verifies stateful actions update memory.
+
 ## Track: Data
 
 ### 6. PS Plus Premium category id

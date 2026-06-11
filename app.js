@@ -3507,6 +3507,21 @@ function findSimilarGames(game, { limit = 4 } = {}) {
     .slice(0, limit);
 }
 
+function detailAttr(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
+}
+
+function applyDetailState(game, userState) {
+  if (game.searchResult && !canonicalSearchResultSeed(game.searchResult)) {
+    applySearchResultState(game.searchResult, userState);
+  } else {
+    setGameState(game.title, userState);
+  }
+}
+
 function detailPrimaryMove(game) {
   const region = state.activeRegion;
   const accessState = effectiveGameState(game);
@@ -3515,6 +3530,7 @@ function detailPrimaryMove(game) {
   const hasPrice = typeof game.prices?.[region] === "number";
   const priceFitsBudget = hasPrice && game.prices[region] <= Number(state.budget);
   const priceTrustedEnough = hasPrice && priceCanGuideBuy(game, region);
+  const priceSnapshot = priceSnapshots.find((snapshot) => snapshot.region === region && titleMatches(snapshot.title, game.title));
   const plusListed = (game.psPlus || []).includes(region);
   const userGame = effectiveUserGame(game) || {};
 
@@ -3523,6 +3539,9 @@ function detailPrimaryMove(game) {
       tone: "play",
       label: accessState === "playing" ? "Keep playing" : "Play before buying",
       detail: `${accessLabel} access is already in memory. Natural session: ${chunk.label}, about ${chunk.minutes} min.`,
+      action: { kind: "state", state: "playing" },
+      actionLabel: accessState === "playing" ? "Keep playing" : "Start playing",
+      actionHint: accessState === "playing" ? "Leaves it in your active queue." : "Moves it into your active play queue.",
     };
   }
 
@@ -3534,14 +3553,21 @@ function detailPrimaryMove(game) {
       detail: status.canConfirm
         ? `${region} subscription signal is fresh enough to treat this as low-friction.`
         : `${region} subscription signal exists, but should be checked before promising access.`,
+      action: { kind: "state", state: "subscription" },
+      actionLabel: status.canConfirm ? "Add Plus access" : "Mark Plus access",
+      actionHint: "Adds it to your playable library so recommendations stop treating it as a purchase.",
     };
   }
 
   if (priceFitsBudget && priceTrustedEnough) {
+    const storeUrl = priceSnapshot?.storeUrl || "";
     return {
       tone: "buy",
       label: "Buy candidate",
       detail: `${region} ${formatPrice(game, region)} is inside your ${formatMoney(Number(state.budget))} ceiling, with price source marked ${priceStatus(game, region).label}.`,
+      action: storeUrl ? { kind: "url", url: storeUrl } : { kind: "state", state: "saved" },
+      actionLabel: storeUrl ? "Open PS Store" : "Watch price",
+      actionHint: storeUrl ? "Opens the source; confirm Bought only after purchase." : "Keeps it watched until a store link is available.",
     };
   }
 
@@ -3550,6 +3576,9 @@ function detailPrimaryMove(game) {
       tone: "watch",
       label: "Keep watched",
       detail: "Wishlist intent is already present. Let price alerts and taste evidence decide when it becomes urgent.",
+      action: { kind: "state", state: "saved" },
+      actionLabel: "Watch price",
+      actionHint: "Keeps it in Wishlist and lets alert targets do the work.",
     };
   }
 
@@ -3557,7 +3586,45 @@ function detailPrimaryMove(game) {
     tone: "save",
     label: "Add to wishlist",
     detail: "No access or trusted buy signal yet. Saving it teaches taste and lets price/source checks catch up.",
+    action: { kind: "state", state: "saved" },
+    actionLabel: "Wishlist",
+    actionHint: "Saves it as taste and purchase intent.",
   };
+}
+
+function detailPrimaryCtaHtml(move) {
+  const action = move.action || { kind: "state", state: "saved" };
+  const actionAttrs = [
+    `data-primary-kind="${detailAttr(action.kind)}"`,
+    action.state ? `data-primary-state="${detailAttr(action.state)}"` : "",
+    action.url ? `data-primary-url="${detailAttr(action.url)}"` : "",
+  ].filter(Boolean).join(" ");
+  return `
+    <div class="detail-cockpit-actions">
+      <button class="detail-primary-cta tone-${move.tone}" data-detail-primary-action ${actionAttrs} type="button">
+        ${move.actionLabel || move.label}
+      </button>
+      <small>${move.actionHint || "Updates this game's memory."}</small>
+    </div>
+  `;
+}
+
+function runDetailPrimaryAction(game, move) {
+  const action = move.action || { kind: "state", state: "saved" };
+  recordUserEvent("detail_primary_cta_used", game.title, {
+    kind: action.kind,
+    state: action.state || "",
+    tone: move.tone,
+    label: move.actionLabel || move.label,
+  });
+  if (action.kind === "url" && action.url) {
+    window.open(action.url, "_blank", "noopener,noreferrer");
+    return;
+  }
+  if (action.state) {
+    applyDetailState(game, action.state);
+    render();
+  }
 }
 
 function detailAtomSignalHtml(game) {
@@ -3589,8 +3656,8 @@ function detailAtomSignalHtml(game) {
   }).join("");
 }
 
-function detailCockpitHtml(game, { forecast, evidence, watchout, valueCard }) {
-  const move = detailPrimaryMove(game);
+function detailCockpitHtml(game, { move, forecast, evidence, watchout, valueCard }) {
+  const primaryMove = move || detailPrimaryMove(game);
   const valueCopy = valueCard?.valueScore != null
     ? `${valueCard.valueScore} ${valueCard.valueScoreLabel}`
     : typeof game.prices?.[state.activeRegion] === "number"
@@ -3604,10 +3671,11 @@ function detailCockpitHtml(game, { forecast, evidence, watchout, valueCard }) {
   ];
   return `
     <section class="game-detail-section detail-cockpit" data-detail-cockpit>
-      <div class="detail-cockpit-head tone-${move.tone}">
+      <div class="detail-cockpit-head tone-${primaryMove.tone}">
         <span>Next move</span>
-        <strong>${move.label}</strong>
-        <p>${move.detail}</p>
+        <strong>${primaryMove.label}</strong>
+        <p>${primaryMove.detail}</p>
+        ${detailPrimaryCtaHtml(primaryMove)}
       </div>
       <div class="detail-cockpit-grid">
         ${rows.map((row) => `
@@ -3716,6 +3784,7 @@ function renderGameDetail(shouldFocus = false) {
   const watchout = watchOutCopy(game);
   const forecast = personalRankForecast(game);
   const evidence = personalEvidence(game);
+  const primaryMove = detailPrimaryMove(game);
   const description = gameDescription(game);
   const statusCards = detailStatusCards(game);
   const passport = sourcePassportHtml(gameSourcePassport(game), "compact");
@@ -3744,7 +3813,7 @@ function renderGameDetail(shouldFocus = false) {
         </div>
       `).join("")}
     </section>
-    ${detailCockpitHtml(game, { forecast, evidence, watchout, valueCard })}
+    ${detailCockpitHtml(game, { move: primaryMove, forecast, evidence, watchout, valueCard })}
     <section class="game-detail-section detail-decision-copy">
       <h3>What this is</h3>
       <p>${description}</p>
@@ -3927,13 +3996,12 @@ function renderGameDetail(shouldFocus = false) {
     restoreBacklogAmnesty(game.title);
     render();
   });
+  els.gameDetailBody.querySelector("[data-detail-primary-action]")?.addEventListener("click", () => {
+    runDetailPrimaryAction(game, primaryMove);
+  });
   els.gameDetail.querySelectorAll("[data-detail-state]").forEach((button) => {
     button.addEventListener("click", () => {
-      if (game.searchResult && !canonicalSearchResultSeed(game.searchResult)) {
-        applySearchResultState(game.searchResult, button.dataset.detailState);
-      } else {
-        setGameState(game.title, button.dataset.detailState);
-      }
+      applyDetailState(game, button.dataset.detailState);
       render();
     });
   });
