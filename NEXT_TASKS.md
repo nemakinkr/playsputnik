@@ -16,7 +16,9 @@ Status: done. Users can set/change/clear per-region target prices from
 Wishlist rows and the game drawer. Targets persist in
 `userGames[key].priceWatch.targets[region]`; wishlist decisions now compare
 against the custom target instead of only the global budget and show a
-"Below target" buy-zone when a watched price reaches the alert.
+"Below target" buy-zone when a watched price reaches the alert. Follow-up
+polish done: the control now renders as a compact status + currency-input
+widget in both Wishlist and drawer, with desktop/mobile layout smoke checks.
 
 ### 2. Backlog amnesty dogfood
 
@@ -64,6 +66,15 @@ alias-merge (one entry, prefer Remastered) or keep both deliberately.
 
 Status: todo, low priority. scripts/expand-catalog.mjs +
 apply-atom-corrections.mjs pipeline exists; mind RAWG rate limits.
+
+## Track: Dev Loop
+
+### 8. Library/Wishlist smoke seed hardening
+
+Status: done. `scripts/library-wishlist-smoke-test.mjs` now waits for the
+deferred render before mutating storage, writes localStorage + IndexedDB
+together, clears stale preloaded IDB state, and restored the strict Access-row
+assertion. This prevents old deferred saves from clobbering the seeded profile.
 
 ## Track: Deferred (until there are users)
 

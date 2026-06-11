@@ -4041,17 +4041,27 @@ function priceWatchControlHtml(game, { context = "row" } = {}) {
     : `${currentCopy} / ${deltaCopy}`;
   return `
     <div class="price-alert price-alert--${context} ${watch.isBelowTarget ? "is-triggered" : ""}" data-price-alert>
-      <div>
-        <span>${watch.isBelowTarget ? "Target hit" : "Price alert"}</span>
-        <strong>${customTarget !== null ? `Alert below ${targetCopy}` : `Using budget ${targetCopy}`}</strong>
-        <small>${statusCopy}</small>
+      <div class="price-alert-summary">
+        <span class="price-alert-icon" aria-hidden="true">$</span>
+        <div>
+          <span>${watch.isBelowTarget ? "Target hit" : "Price alert"}</span>
+          <strong>${customTarget !== null ? `Alert below ${targetCopy}` : `Using budget ${targetCopy}`}</strong>
+          <small>${statusCopy}</small>
+        </div>
       </div>
-      <label>
-        <span>Alert below</span>
-        <input data-price-target-input type="number" min="1" step="0.01" inputmode="decimal" value="${customTarget !== null ? priceTargetInputValue(customTarget) : ""}" placeholder="${priceTargetInputValue(activeTarget)}">
-      </label>
-      <button data-price-target-save type="button">Save</button>
-      ${customTarget !== null ? `<button data-price-target-clear type="button">Clear</button>` : ""}
+      <div class="price-alert-edit">
+        <label>
+          <span>Alert below</span>
+          <span class="price-alert-input-wrap">
+            <span>${currency}</span>
+            <input data-price-target-input type="number" min="1" step="0.01" inputmode="decimal" value="${customTarget !== null ? priceTargetInputValue(customTarget) : ""}" placeholder="${priceTargetInputValue(activeTarget)}" aria-label="Alert below price for ${game.title}">
+          </span>
+        </label>
+        <div class="price-alert-buttons">
+          <button class="price-alert-save" data-price-target-save type="button">Save</button>
+          ${customTarget !== null ? `<button data-price-target-clear type="button">Clear</button>` : ""}
+        </div>
+      </div>
     </div>
   `;
 }

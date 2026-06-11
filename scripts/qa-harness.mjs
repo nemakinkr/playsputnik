@@ -1263,6 +1263,10 @@ function checkSelectors() {
   assert(/data-price-target-input/.test(appSource), "Price target input is missing from Wishlist/detail UI");
   assert(/data-price-target-clear/.test(appSource), "Price target clear action is missing");
   assert(/price-alert/.test(css), "Price alert controls should be styled");
+  assert(/price-alert-summary/.test(appSource + css), "Price alert should have a readable status summary");
+  assert(/price-alert-input-wrap/.test(appSource + css), "Price alert should have a compact currency input wrapper");
+  assert(/function waitForAppReady/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke should wait for deferred render before seeding");
+  assert(/function writeStoredState/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke should seed localStorage and IndexedDB together");
   assert(/isHistoricalLow/.test(appWishlistSource), "Price watch should flag current historical lows");
   assert(/function restoreBacklogAmnesty/.test(appSource), "Backlog amnesty restore action is missing");
   assert(/data-amnesty-restore/.test(appSource), "Backlog amnesty restore UI is missing");

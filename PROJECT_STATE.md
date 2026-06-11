@@ -44,8 +44,8 @@ reviews, catalogs, sale pages, and announcements.
   `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
   events (weights −3..+3).
 - Game drawer: status cards, facts, "Get it" links (PS Store/RAWG/HLTB),
-  price sparkline, PS Plus chip, per-region price alert target, similar
-  games, rating, swipe-to-close, focus trap.
+  price sparkline, PS Plus chip, polished per-region price alert target,
+  similar games, rating, swipe-to-close, focus trap.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
 - Backlog amnesty: repeated explicit skips are tracked per title; after 5
   skips Today can suggest letting a game go without guilt, archiving it as
@@ -93,7 +93,9 @@ the active view.
 `node` is not on PATH; bundled node at
 `~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`
 (check.sh resolves it). Targeted Chrome smokes still exist in `scripts/`
-(run sequentially, not in parallel).
+(run sequentially, not in parallel). `library-wishlist-smoke-test.mjs` seeds
+both localStorage and IndexedDB after deferred render settles, so profile
+fixtures are not overwritten by late dev renders.
 
 ## Known Constraints
 

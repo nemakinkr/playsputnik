@@ -57,66 +57,82 @@ function userGameRecord(title, state) {
   return record;
 }
 
+async function waitForAppReady(page) {
+  await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
+  await page.waitForFunction(() => window.__playsputnikBoot?.deferredRenderedAt, null, { timeout: 10000 });
+}
+
+async function clearStoredState(page) {
+  await page.evaluate(async (key) => {
+    window.__idbPreloadedState = undefined;
+    localStorage.removeItem(key);
+    await window.PlaySputnikStorage?.idbRemove?.(key);
+  }, STORAGE_KEY);
+}
+
+async function writeStoredState(page, state) {
+  await page.evaluate(
+    async ({ key, state }) => {
+      window.__idbPreloadedState = undefined;
+      const serialized = JSON.stringify(state);
+      localStorage.setItem(key, serialized);
+      await window.PlaySputnikStorage?.idbSet?.(key, serialized);
+    },
+    { key: STORAGE_KEY, state },
+  );
+}
+
+function smokeState(userGames, userStates) {
+  return {
+    liked: ["The Last of Us Part I", "God of War Ragnarok", "Hades", "Stardew Valley"],
+    hidden: [],
+    saved: ["Alan Wake 2"],
+    snoozed: [],
+    userStates,
+    userGames,
+    quickReactions: {},
+    entryPath: "psn",
+    entryResult: "Best available game first, purchase guardrails, PS Plus context",
+    activeView: "library",
+    activeCluster: "library",
+    visualCatalogShelf: "library",
+    activeRegion: "US",
+    mood: "story",
+    session: "short",
+    difficulty: "normal",
+    psPlus: true,
+    budget: 35,
+    ratingImport: "",
+    atomWeights: {},
+    importedRatings: [],
+    notebookImport: "",
+    notebook: { wishlist: [], access: [], prices: [], completed: [], ranked: [], upcoming: [] },
+    gameSearchQuery: "",
+    feedbackLog: [],
+    userEvents: [],
+    dropDecisions: {},
+    sessionLog: [],
+    aiExplanations: {},
+    lastUndo: null,
+  };
+}
+
 async function seedPsnDemoState(page) {
   const userGames = Object.fromEntries(PSN_DEMO_STATES.map(({ title, state }) => [normalizeTitle(title), userGameRecord(title, state)]));
   const userStates = Object.fromEntries(
     PSN_DEMO_STATES.map(({ title, state }) => [normalizeTitle(title), { title, state, updatedAt: "2026-06-05T00:00:00.000Z" }]),
   );
-  await page.evaluate(
-    async ({ key, userGames, userStates }) => {
-      const serialized = JSON.stringify({
-          liked: ["The Last of Us Part I", "God of War Ragnarok", "Hades", "Stardew Valley"],
-          hidden: [],
-          saved: ["Alan Wake 2"],
-          snoozed: [],
-          userStates,
-          userGames,
-          quickReactions: {},
-          entryPath: "psn",
-          entryResult: "Best available game first, purchase guardrails, PS Plus context",
-          activeView: "library",
-          activeCluster: "library",
-          visualCatalogShelf: "library",
-          activeRegion: "US",
-          mood: "story",
-          session: "short",
-          difficulty: "normal",
-          psPlus: true,
-          budget: 35,
-          ratingImport: "",
-          atomWeights: {},
-          importedRatings: [],
-          notebookImport: "",
-          notebook: { wishlist: [], access: [], prices: [], completed: [], ranked: [], upcoming: [] },
-          gameSearchQuery: "",
-          feedbackLog: [],
-          userEvents: [],
-          dropDecisions: {},
-          lastUndo: null,
-        });
-      localStorage.setItem(key, serialized);
-      await window.PlaySputnikStorage?.idbSet?.(key, serialized);
-    },
-    { key: STORAGE_KEY, userGames, userStates },
-  );
+  await writeStoredState(page, smokeState(userGames, userStates));
 }
 
 async function setStoredView(page, view, cluster, shelf) {
-  await page.evaluate(
-    async ({ view, cluster, shelf }) => {
-      const key = "playsputnik.prototype.state.v2";
-      const state = JSON.parse(localStorage.getItem(key) || "{}");
-      state.activeView = view;
-      state.activeCluster = cluster;
-      state.visualCatalogShelf = shelf;
-      const serialized = JSON.stringify(state);
-      localStorage.setItem(key, serialized);
-      await window.PlaySputnikStorage?.idbSet?.(key, serialized);
-    },
-    { view, cluster, shelf },
-  );
+  const state = await page.evaluate((key) => JSON.parse(localStorage.getItem(key) || "{}"), STORAGE_KEY);
+  state.activeView = view;
+  state.activeCluster = cluster;
+  state.visualCatalogShelf = shelf;
+  await writeStoredState(page, state);
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
-  await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
+  await waitForAppReady(page);
   await page.evaluate((targetView) => document.querySelector(`[data-app-view="${targetView}"]`)?.click(), view);
   await page.waitForFunction(
     (targetView) => document.querySelector("[data-app-view].is-active")?.dataset.appView === targetView,
@@ -197,12 +213,11 @@ try {
   });
 
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
-  await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
-  await page.evaluate(() => localStorage.removeItem("playsputnik.prototype.state.v2"));
-  await page.evaluate((key) => window.PlaySputnikStorage?.idbRemove?.(key), STORAGE_KEY);
+  await waitForAppReady(page);
+  await clearStoredState(page);
   await seedPsnDemoState(page);
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
-  await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
+  await waitForAppReady(page);
   await page.evaluate(() => document.querySelector('[data-app-view="library"]')?.click());
   await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "library", null, { timeout: 5000 });
   await page.waitForTimeout(300);
@@ -314,6 +329,7 @@ try {
   assert(library.filters >= 5, `Expected library filters, got ${library.filters}`);
   assert(library.activeFilter === "all", `Expected all library filter by default, got ${library.activeFilter}`);
   assert(libraryFiltered.activeFilter === "access", `Expected access library filter, got ${libraryFiltered.activeFilter}`);
+  assert(libraryFiltered.rows >= 1, "Expected access library filter to show at least one row");
   assert(/Access:/.test(libraryFiltered.summary), "Expected access library filter summary to render");
   assert(library.myRows >= 4, `Expected My games rows after PSN demo, got ${library.myRows}`);
   assert(/No-spend|Wishlist|Taste memory/.test(library.dashboardText), "Library dashboard should expose product-level summaries");

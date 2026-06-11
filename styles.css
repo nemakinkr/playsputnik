@@ -3425,13 +3425,14 @@ textarea {
 
 .price-alert {
   display: grid;
-  grid-template-columns: minmax(150px, 1fr) minmax(112px, 0.6fr) auto auto;
-  gap: 7px;
-  align-items: end;
-  border: 1px solid #dbe7ff;
+  grid-template-columns: minmax(180px, 1fr) minmax(210px, auto);
+  gap: 10px;
+  align-items: center;
+  border: 1px solid #cfe0ff;
   border-radius: 8px;
-  background: #f8fbff;
-  padding: 8px;
+  background: linear-gradient(180deg, #f9fbff 0%, #f3f7ff 100%);
+  padding: 9px;
+  box-shadow: var(--shadow-hairline);
 }
 
 .price-alert--row {
@@ -3439,19 +3440,51 @@ textarea {
 }
 
 .price-alert--detail {
-  grid-template-columns: minmax(150px, 1fr) minmax(120px, 0.7fr) auto auto;
+  grid-template-columns: minmax(180px, 1fr) minmax(230px, auto);
 }
 
 .price-alert.is-triggered {
-  border-color: #86efac;
-  background: #f0fdf4;
+  border-color: #9ee6b5;
+  background: linear-gradient(180deg, #f5fff8 0%, #ecfdf3 100%);
 }
 
-.price-alert div,
+.price-alert-summary {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.price-alert-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: #eaf0ff;
+  color: #173f9a;
+  font-size: 0.82rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.price-alert.is-triggered .price-alert-icon {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.price-alert-summary div,
+.price-alert-edit,
 .price-alert label {
   display: grid;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
+}
+
+.price-alert-edit {
+  grid-template-columns: minmax(96px, 1fr) auto;
+  align-items: end;
 }
 
 .price-alert span,
@@ -3465,7 +3498,7 @@ textarea {
 .price-alert strong {
   overflow-wrap: anywhere;
   color: var(--ink);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   line-height: 1.2;
 }
 
@@ -3474,12 +3507,33 @@ textarea {
   color: #15803d;
 }
 
+.price-alert-input-wrap {
+  display: grid;
+  grid-template-columns: auto minmax(66px, 1fr);
+  align-items: center;
+  min-height: 34px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.price-alert-input-wrap > span {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  border-right: 1px solid var(--line);
+  background: #f8fafc;
+  color: #64748b;
+  padding: 0 8px;
+}
+
 .price-alert input {
   width: 100%;
   min-height: 32px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: #fff;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--ink);
   padding: 0 8px;
   font: inherit;
@@ -3488,8 +3542,13 @@ textarea {
 }
 
 .price-alert input.is-invalid {
-  border-color: var(--rose);
-  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.14);
+  box-shadow: inset 0 0 0 2px var(--rose);
+}
+
+.price-alert-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: end;
 }
 
 .price-alert button {
@@ -3502,6 +3561,12 @@ textarea {
   font-size: 0.76rem;
   font-weight: 900;
   cursor: pointer;
+}
+
+.price-alert .price-alert-save {
+  border-color: rgba(0, 100, 210, 0.3);
+  background: #eaf0ff;
+  color: #173f9a;
 }
 
 .price-alert button:hover {
@@ -5627,6 +5692,15 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .price-alert-edit {
+    grid-template-columns: 1fr;
+  }
+
+  .price-alert-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .price-alert button {
     width: 100%;
   }
@@ -6515,6 +6589,14 @@ select:focus-visible,
 [data-theme="dark"] .price-alert input {
   background: var(--surface);
   color: var(--ink);
+}
+
+[data-theme="dark"] .price-alert-input-wrap,
+[data-theme="dark"] .price-alert-input-wrap > span,
+[data-theme="dark"] .price-alert-icon {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-mid);
 }
 
 /* Dark theme — kill white gradient backgrounds (proof boxes, etc.) */
