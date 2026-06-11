@@ -1373,7 +1373,7 @@ textarea {
 
 .first-run-bridge {
   display: grid;
-  grid-template-columns: minmax(170px, 0.85fr) minmax(220px, 1.05fr) minmax(190px, 0.9fr) minmax(130px, auto);
+  grid-template-columns: minmax(180px, 0.9fr) minmax(210px, 1fr) minmax(190px, 0.9fr) minmax(160px, 0.78fr) minmax(130px, auto);
   gap: 12px;
   align-items: stretch;
   margin-top: 12px;
@@ -1445,6 +1445,38 @@ textarea {
   color: #14532d;
   font-size: 0.78rem;
   line-height: 1.25;
+}
+
+.first-run-readiness {
+  display: grid;
+  gap: 6px;
+}
+
+.first-run-readiness div {
+  min-width: 0;
+  border: 1px solid #d8e4ff;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 7px 8px;
+}
+
+.first-run-readiness span,
+.first-run-readiness small {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 850;
+  line-height: 1.22;
+}
+
+.first-run-readiness strong {
+  display: block;
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+  color: var(--blue);
+  font-size: 0.78rem;
+  line-height: 1.2;
 }
 
 .first-run-mini-agenda {
@@ -1596,6 +1628,12 @@ textarea {
   margin-bottom: 4px;
 }
 
+.first-run-pre-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .first-run-start-cta {
   display: inline-flex;
   align-items: center;
@@ -1610,6 +1648,18 @@ textarea {
   font-weight: 900;
   cursor: pointer;
   width: fit-content;
+}
+
+.first-run-demo-cta {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  padding: 0 14px;
+  font-size: 0.82rem;
+  font-weight: 850;
+  cursor: pointer;
 }
 
 .first-run-start-cta:hover {
@@ -5298,6 +5348,7 @@ textarea {
   }
 
   .first-run-taste-proof,
+  .first-run-readiness,
   .first-run-mini-agenda {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -6266,6 +6317,7 @@ select:focus-visible,
 [data-theme="dark"] [class*="-actions"] button:not(.primary-action),
 [data-theme="dark"] [class*="-action-buttons"] button:not(.primary-action),
 [data-theme="dark"] .first-run-taste-proof > div,
+[data-theme="dark"] .first-run-readiness > div,
 [data-theme="dark"] [class*="-dashboard-card"],
 [data-theme="dark"] .visual-catalog-meta > span {
   background: var(--card-bg);
@@ -6281,11 +6333,13 @@ select:focus-visible,
 }
 
 [data-theme="dark"] .first-run-taste-proof strong,
+[data-theme="dark"] .first-run-readiness strong,
 [data-theme="dark"] [class*="-dashboard-card"] strong {
   color: var(--text-strong);
 }
 
 [data-theme="dark"] .first-run-taste-proof span,
+[data-theme="dark"] .first-run-readiness span,
 [data-theme="dark"] [class*="-dashboard-card"] span {
   color: var(--text-mid);
 }

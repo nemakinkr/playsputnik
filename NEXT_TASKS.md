@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-10. Pick the next task here without rereading the
+Last updated: 2026-06-11. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 CLAUDE.md (dev workflow + perf rules). The user's decision: **polish before
 showing the product to people** — retention/analytics tracks are
@@ -37,11 +37,13 @@ without guilt + honest stat on the Stats view.
   tag so Stats can count "amnestied" separately.
 - Files: app.js, src/app-state.js, src/app-recommend.js, Stats renderer.
 
-### 3. Onboarding polish
+### 3. Onboarding dogfood pass
 
-Status: todo. Goal: tighten the first 5 minutes for a future first cohort.
-Review copy, the 3-signal payoff moment, and mobile spacing. Dogfooding
-notes from the user will drive specifics.
+Status: follow-up. The first polish pass is done: the 3-signal payoff no
+longer appears on an empty profile, the hero cards use the same quick-reaction
+format as the main swipe deck, and the first-run bridge now says "use now,
+improve later" with swipes / library / pasted-rating paths. Next work here
+should be driven by real dogfooding notes, not more abstract copy tuning.
 
 ### 4. Chunk-label copy refinement
 
@@ -77,7 +79,13 @@ apply-atom-corrections.mjs pipeline exists; mind RAWG rate limits.
 
 ## Done (this session series — see HANDOFF.md for detail)
 
-- Catalog 456, dedupe, 100% covers/prices, HLTB, reference-data fixes.
+- Onboarding polish: 3 real taste signals unlock the first-pick payoff; empty
+  profiles see a start prompt instead of a premature recommendation; hero
+  tiles write canonical quick reactions; first-run bridge now explains that
+  the app is usable now and can be sharpened later with more swipes, library
+  access, or pasted ratings.
+- Catalog 456, dedupe, 100% cover coverage, discount snapshots, regional
+  price coverage with honest missing-price issues, HLTB, reference-data fixes.
 - GitHub repo + Pages deploy + daily data workflows + source-health monitor + CI.
 - Session planner (chunk model), sputnik ratings 1–5 feeding taste,
   "Get it" links, Stats view, dark mode, design system + logo + PWA icons,

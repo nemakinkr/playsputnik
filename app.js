@@ -2240,7 +2240,8 @@ function renderOnboardingHero() {
   const hero = document.querySelector("#onboarding-hero");
   if (!hero) return;
 
-  const signals = quickReactionCount();
+  const answered = quickReactionCount();
+  const signals = quickTasteSignalCount();
   const isNewUser = signals < ONBOARDING_SIGNAL_TARGET && Object.keys(state.userGames || {}).length === 0;
 
   if (!isNewUser) {
@@ -2255,7 +2256,7 @@ function renderOnboardingHero() {
         // Show brief toast
         const toast = document.createElement("div");
         toast.className = "onboarding-toast";
-        toast.textContent = "✓ Your first pick is ready!";
+        toast.textContent = "Your first pick is ready. You can refine it later.";
         document.body.append(toast);
         setTimeout(() => toast.remove(), 2800);
       }, 500);
@@ -2272,45 +2273,42 @@ function renderOnboardingHero() {
   const label = document.querySelector("#onboarding-progress-label");
   if (fill) fill.style.width = `${pct}%`;
   if (label) label.textContent = signals === 0
-    ? `Rate ${ONBOARDING_SIGNAL_TARGET} games to unlock your first pick`
-    : `${signals} of ${ONBOARDING_SIGNAL_TARGET} — ${ONBOARDING_SIGNAL_TARGET - signals} more to go`;
+    ? `Like or dislike ${ONBOARDING_SIGNAL_TARGET} games to unlock your first pick`
+    : `${signals} of ${ONBOARDING_SIGNAL_TARGET} taste signals — ${Math.max(0, ONBOARDING_SIGNAL_TARGET - signals)} more`;
 
-  // Featured games — top by criticScore from full catalog
+  hero.dataset.answered = String(answered);
+
+  // Featured games — diagnostic onboarding set, so every tap counts toward the first read.
   const featured = document.querySelector("#onboarding-featured");
-  if (!featured || featured.dataset.populated === "1") return;
-  const pool = recommendationPool()
-    .filter((g) => g.criticScore >= 85)
+  if (!featured) return;
+  const pool = [...profileGames]
     .sort((a, b) => (b.criticScore || 0) - (a.criticScore || 0))
     .slice(0, 8);
-  featured.dataset.populated = "1";
   featured.replaceChildren(...pool.map((game) => {
-    const reaction = state.quickReactions[game.title];
-    const btn = document.createElement("button");
-    btn.className = `onboarding-game-tile ${reaction ? `is-${reaction}` : ""}`;
-    btn.dataset.onboardingTitle = game.title;
-    btn.innerHTML = `
+    const reaction = quickReaction(game.title);
+    const tile = document.createElement("article");
+    tile.className = `onboarding-game-tile ${reaction ? `is-${reaction}` : ""}`;
+    tile.dataset.onboardingTitle = game.title;
+    tile.innerHTML = `
       <div class="onboarding-tile-poster" style="background:${game.color || "var(--panel)"}"></div>
       <div class="onboarding-tile-body">
         <strong>${game.title}</strong>
         <span>${(game.atoms || []).slice(0, 2).join(" · ")}</span>
       </div>
       <div class="onboarding-tile-actions">
-        <button class="onboarding-like ${reaction === "liked" ? "is-active" : ""}" data-onboard-react="liked" data-onboard-title="${game.title}" type="button">👍</button>
-        <button class="onboarding-pass ${reaction === "not_for_me" ? "is-active" : ""}" data-onboard-react="not_for_me" data-onboard-title="${game.title}" type="button">👎</button>
+        <button class="onboarding-like ${reaction === "loved" ? "is-active" : ""}" data-onboard-react="loved" data-onboard-title="${game.title}" type="button">Like</button>
+        <button class="onboarding-pass ${reaction === "not_for_me" ? "is-active" : ""}" data-onboard-react="not_for_me" data-onboard-title="${game.title}" type="button">No</button>
       </div>
     `;
-    return btn;
+    return tile;
   }));
   featured.querySelectorAll("[data-onboard-react]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const title = btn.dataset.onboardTitle;
       const reaction = btn.dataset.onboardReact;
-      const current = state.quickReactions[title];
-      state.quickReactions[title] = current === reaction ? undefined : reaction;
-      if (state.quickReactions[title] === undefined) delete state.quickReactions[title];
-      featured.dataset.populated = "";
-      render();
+      const game = profileGames.find((item) => titleMatches(item.title, title)) || { title };
+      setQuickReaction(game, reaction);
     });
   });
 }
@@ -2426,9 +2424,9 @@ function renderFirstRunFlow(ranked) {
           <strong>${bridge.title}</strong>
           <p>${bridge.detail}</p>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div class="first-run-pre-actions">
           <button class="first-run-start-cta" data-first-run-action="more-signal" data-first-run-title="" type="button">Start swiping</button>
-          <button data-first-run-action="quick-entry" data-first-run-title="" type="button" style="min-height:36px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#334155;padding:0 14px;font-size:0.82rem;font-weight:850;cursor:pointer;">Quick fill (demo)</button>
+          <button class="first-run-demo-cta" data-first-run-action="quick-entry" data-first-run-title="" type="button">Quick fill (demo)</button>
         </div>
       </div>
     `;
@@ -2462,6 +2460,17 @@ function renderFirstRunFlow(ranked) {
           <strong>${bridge.proof.why}</strong>
           <small>${bridge.proof.next}</small>
         </div>
+      </div>
+    ` : ""}
+    ${bridge.readiness?.length ? `
+      <div class="first-run-readiness" aria-label="Profile readiness">
+        ${bridge.readiness.map((item) => `
+          <div>
+            <span>${item.label}</span>
+            <strong>${item.value}</strong>
+            <small>${item.detail}</small>
+          </div>
+        `).join("")}
       </div>
     ` : ""}
     ${bridge.summary?.length ? `

@@ -1,7 +1,8 @@
 # PlaySputnik Project State
 
-Last updated: 2026-06-10 (Claude session series; see HANDOFF.md for the full
-narrative and CLAUDE.md for dev workflow + performance rules).
+Last updated: 2026-06-11 (Codex resumed after Claude session series; see
+HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
+performance rules).
 
 ## Product
 
@@ -32,7 +33,9 @@ reviews, catalogs, sale pages, and announcements.
 - Static app, no build step: `index.html` + `styles.css` + `app.js` (~5.1k
   lines) + 25 IIFE modules in `src/` (`window.PlaySputnikXxx = { createXxxTools }`).
 - Product areas: Today, Library, Discover, Wishlist, Taste, Deals, Data, Stats.
-- Onboarding: 30-game swipe deck, 3/6/10 milestones, animated hero exit.
+- Onboarding: 30-game swipe deck, 3/6/10 milestones, animated hero exit,
+  first-pick payoff after 3 real taste signals, and "use now / improve later"
+  guidance for swipes, library access, or pasted ratings.
 - **Session planner:** "Tonight I have: 30m–evening" chips; chunk model
   (`gameChunkProfile` in src/app-score.js) scores complete-session fit.
 - **Sputnik ratings 1–5** in the game drawer (stored 20–100 in
@@ -63,7 +66,8 @@ the active view.
 ## Data And Catalog
 
 - `data/games.json`: 456 games, deduped (alias-aware via titleKey), 100%
-  cover and price coverage, HLTB filled where applicable.
+  cover coverage and discount snapshots; regional price coverage is ~95-96%
+  with honest missing-price issues for delisted/edge-case games.
 - Prices: ITAD, 4 regions (US/GB/DE/TR), per-record source + `checkedAt` +
   freshness; price-history format is `{title: {region: [...]}}` (object).
 - PS Plus: live Extra list from PS Store category pages; Premium category id
@@ -96,6 +100,7 @@ the active view.
 
 ## Next Recommended Task
 
-User decision: polish before showing to people. Top candidates: wishlist
-price alerts UI (`watch.targetPrice` backend exists), backlog amnesty,
-onboarding polish. See NEXT_TASKS.md and HANDOFF.md "Backlog".
+User decision: polish before showing to people. Onboarding polish pass is now
+done; top next candidates are wishlist price alerts UI (`watch.targetPrice`
+backend exists), backlog amnesty, and chunk-label copy refinement. See
+NEXT_TASKS.md and HANDOFF.md "Backlog".

@@ -269,31 +269,32 @@
         caution,
         why,
         next: gate.ready
-          ? `${gate.answered}/${gate.strongTarget} swipes. Keep playing now or add more signal later.`
+          ? `Use the app now. More swipes, PSN access, or a pasted list can sharpen it later.`
           : `${gate.count}/${gate.minimum} taste signals. ${gate.minimum} unlock a first hypothesis.`,
       };
     }
 
     function firstRunNextSteps(signalCount) {
+      const toUsable = Math.max(0, QUICK_TASTE_USABLE_TARGET - signalCount);
       return [
         {
           id: "more-signal",
-          label: "Swipe more games",
+          label: signalCount >= QUICK_TASTE_USABLE_TARGET ? "Sharpen with swipes" : "Add a few swipes",
           detail: signalCount >= QUICK_TASTE_USABLE_TARGET
-            ? "Sharper ranking forecasts after a few more"
-            : `${QUICK_TASTE_USABLE_TARGET - signalCount} more liked/disliked make answers safer`,
+            ? "20+ quick calls make rankings feel personal"
+            : `${toUsable} more like/dislike signals make this less fragile`,
           tag: "Fastest",
         },
         {
           id: "psn-demo",
-          label: "Import PSN library",
-          detail: "Library-first mode: own before buy, avoid duplicates",
+          label: "Add library later",
+          detail: "PSN/library context turns picks into play-before-buy decisions",
           tag: "Library",
         },
         {
           id: "open-taste-import",
-          label: "Paste a rating list",
-          detail: "Any format: Hades 9/10, Elden Ring – 5★, etc.",
+          label: "Paste ratings",
+          detail: "Any messy text works: rankings, backlog, wishlist, notes",
           tag: "Strongest",
         },
       ];
@@ -303,11 +304,12 @@
       const state = getState();
       const topGame = getPrimaryDecisionGame(ranked);
       const signalCount = getQuickTasteSignalCount();
-      if (!topGame) {
+      const libraryMode = topGame ? getIsLibraryFirstMode(topGame) : false;
+      if (!topGame || (signalCount < QUICK_TASTE_FIRST_TARGET && !libraryMode)) {
         return {
           preSwipe: true,
-          title: `Swipe ${QUICK_TASTE_FIRST_TARGET} games to see your first pick`,
-          detail: "Like or dislike — both teach taste. Not played just skips without inventing a rating.",
+          title: `Three quick calls are enough to start`,
+          detail: "Like or dislike a few known games and PlaySputnik will make a cautious first pick. You can keep using it immediately; library access or a pasted rating list can wait.",
           actions: [{ id: "quick-entry", label: "Quick fill", title: "" }],
         };
       }
@@ -317,7 +319,6 @@
       const agenda = companionAnswerAgenda(ranked, topGame);
       const backup = agenda.find((item) => item.actions?.length && !titleMatches(item.title, topGame.title));
       const guardrail = agenda.find((item) => item.tone === "guard");
-      const libraryMode = getIsLibraryFirstMode(topGame);
       const access = answerAccessLabel(topGame);
       const forecast = personalRankForecast(topGame);
       const proof = firstRunTasteProof(topGame);
@@ -353,18 +354,36 @@
 
       const isSharp = signalCount >= QUICK_TASTE_SHARP_TARGET;
       const isUsable = signalCount >= QUICK_TASTE_USABLE_TARGET;
-      const confidenceLabel = isSharp ? "Good profile" : isUsable ? "Starter profile" : "Early read";
+      const confidenceLabel = isSharp ? "Sharper profile" : isUsable ? "Safer read" : "Enough to start";
       const confidenceReady = isUsable;
+      const readiness = [
+        {
+          label: "Now",
+          value: `${signalCount} signals`,
+          detail: signalCount >= QUICK_TASTE_FIRST_TARGET ? "enough for a cautious pick" : "still learning",
+        },
+        {
+          label: "Better",
+          value: "6-10 swipes",
+          detail: "fewer random misses",
+        },
+        {
+          label: "Best",
+          value: "PSN or ratings",
+          detail: "library and ranking context",
+        },
+      ];
 
       return {
-        eyebrow: libraryMode ? "Library-first answer" : "Instant answer",
-        title: libraryMode ? `${topGame.title} is already ready.` : `I have a first taste hypothesis.`,
+        eyebrow: libraryMode ? "Library-first answer" : "First taste read",
+        title: libraryMode ? `${topGame.title} is already ready.` : `You can use PlaySputnik now.`,
         detail: libraryMode
           ? `${detailParts.join(" / ")}. ${watchout.label}: ${watchout.detail}.`
-          : `${earlyTasteNote}That is why I would start with ${topGame.title}. ${watchout.label}: ${watchout.detail}.`,
+          : `${earlyTasteNote}Based on the first signals, I would start with ${topGame.title}. The read will get sharper, but it is already useful. ${watchout.label}: ${watchout.detail}.`,
         confidenceLabel,
         confidenceReady,
         proof,
+        readiness,
         summary,
         nextSteps: isSharp ? null : firstRunNextSteps(signalCount),
         actions: [
