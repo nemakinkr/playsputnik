@@ -48,28 +48,37 @@ run-based games (roguelike/deck-builder/card-battler), uses match wording for
 sports/racing/fighting/arcade cases, and keeps puzzle/platformer story games
 on chapter/area/session wording. QA harness has a Stray/Hades regression.
 
+### 5. Game Detail 2.0
+
+Status: done. The drawer now opens as a decision cockpit: next move, forecast,
+taste proof, risk, value, taste-fit evidence, atom signal map, data trust rows,
+source passport, actions, rating, price alert, similar games, and Get it links
+live in one scan-friendly flow. `game-detail-smoke-test.mjs` now asserts the
+cockpit/taste/source-trust contract instead of only checking that the drawer
+opens.
+
 ## Track: Data
 
-### 5. PS Plus Premium category id
+### 6. PS Plus Premium category id
 
 Status: blocked/parked. 8 UUID candidates from the PS Store hub page all
 returned 0 products. 3 manual Premium records remain in
 subscription-availability.json. Revisit occasionally.
 
-### 6. TLOU Part II SKU merge decision
+### 7. TLOU Part II SKU merge decision
 
 Status: decision needed. "The Last of Us Part II" and "... Part II
 Remastered" coexist (different SKUs/prices, same content). Either
 alias-merge (one entry, prefer Remastered) or keep both deliberately.
 
-### 7. Catalog expansion +100
+### 8. Catalog expansion +100
 
 Status: todo, low priority. scripts/expand-catalog.mjs +
 apply-atom-corrections.mjs pipeline exists; mind RAWG rate limits.
 
 ## Track: Dev Loop
 
-### 8. Library/Wishlist smoke seed hardening
+### 9. Library/Wishlist smoke seed hardening
 
 Status: done. `scripts/library-wishlist-smoke-test.mjs` now waits for the
 deferred render before mutating storage, writes localStorage + IndexedDB

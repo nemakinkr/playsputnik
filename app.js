@@ -3507,6 +3507,202 @@ function findSimilarGames(game, { limit = 4 } = {}) {
     .slice(0, limit);
 }
 
+function detailPrimaryMove(game) {
+  const region = state.activeRegion;
+  const accessState = effectiveGameState(game);
+  const accessLabel = accessState ? USER_STATE_LABELS[accessState] || accessState : "";
+  const chunk = gameChunkProfile(game);
+  const hasPrice = typeof game.prices?.[region] === "number";
+  const priceFitsBudget = hasPrice && game.prices[region] <= Number(state.budget);
+  const priceTrustedEnough = hasPrice && priceCanGuideBuy(game, region);
+  const plusListed = (game.psPlus || []).includes(region);
+  const userGame = effectiveUserGame(game) || {};
+
+  if (isAlreadyAvailable(game)) {
+    return {
+      tone: "play",
+      label: accessState === "playing" ? "Keep playing" : "Play before buying",
+      detail: `${accessLabel} access is already in memory. Natural session: ${chunk.label}, about ${chunk.minutes} min.`,
+    };
+  }
+
+  if (plusListed && state.psPlus) {
+    const status = subscriptionStatus(game, region);
+    return {
+      tone: status.canConfirm ? "plus" : "verify",
+      label: status.canConfirm ? "Try through Plus" : "Verify Plus access",
+      detail: status.canConfirm
+        ? `${region} subscription signal is fresh enough to treat this as low-friction.`
+        : `${region} subscription signal exists, but should be checked before promising access.`,
+    };
+  }
+
+  if (priceFitsBudget && priceTrustedEnough) {
+    return {
+      tone: "buy",
+      label: "Buy candidate",
+      detail: `${region} ${formatPrice(game, region)} is inside your ${formatMoney(Number(state.budget))} ceiling, with price source marked ${priceStatus(game, region).label}.`,
+    };
+  }
+
+  if (userGame.saved || notebookWishlistWeight(game.title) || game.wishlist) {
+    return {
+      tone: "watch",
+      label: "Keep watched",
+      detail: "Wishlist intent is already present. Let price alerts and taste evidence decide when it becomes urgent.",
+    };
+  }
+
+  return {
+    tone: "save",
+    label: "Add to wishlist",
+    detail: "No access or trusted buy signal yet. Saving it teaches taste and lets price/source checks catch up.",
+  };
+}
+
+function detailAtomSignalHtml(game) {
+  const signals = tasteEngineGameSignals(game, tasteEngineProfile());
+  const atoms = uniqueCompact([
+    ...signals.positive,
+    ...signals.mixed,
+    ...signals.negative,
+    ...(game.atoms || []),
+  ], 10);
+  if (!atoms.length) {
+    return `<span class="detail-atom-signal tone-neutral"><strong>Needs tags</strong><small>no atom evidence yet</small></span>`;
+  }
+  return atoms.map((atom) => {
+    const tone = signals.positive.includes(atom)
+      ? "positive"
+      : signals.negative.includes(atom)
+        ? "negative"
+        : signals.mixed.includes(atom)
+          ? "mixed"
+          : "neutral";
+    const label = {
+      positive: "pull",
+      negative: "caution",
+      mixed: "mixed",
+      neutral: "atom",
+    }[tone];
+    return `<span class="detail-atom-signal tone-${tone}"><strong>${atom}</strong><small>${label}</small></span>`;
+  }).join("");
+}
+
+function detailCockpitHtml(game, { forecast, evidence, watchout, valueCard }) {
+  const move = detailPrimaryMove(game);
+  const valueCopy = valueCard?.valueScore != null
+    ? `${valueCard.valueScore} ${valueCard.valueScoreLabel}`
+    : typeof game.prices?.[state.activeRegion] === "number"
+      ? `${state.activeRegion} ${formatPrice(game, state.activeRegion)}`
+      : "Price missing";
+  const rows = [
+    { label: "Forecast", value: forecast.label, detail: forecast.detail },
+    { label: "Taste proof", value: evidence.lines[0]?.label || "Early signal", detail: evidence.summary },
+    { label: watchout.label, value: watchout.label === "Low risk" ? "No major blocker" : "Check first", detail: watchout.detail },
+    { label: "Value", value: valueCopy, detail: valueCard?.roi?.perHourLabel ? `${valueCard.roi.perHourLabel} per hour` : "Uses price, HLTB and critic signal when available." },
+  ];
+  return `
+    <section class="game-detail-section detail-cockpit" data-detail-cockpit>
+      <div class="detail-cockpit-head tone-${move.tone}">
+        <span>Next move</span>
+        <strong>${move.label}</strong>
+        <p>${move.detail}</p>
+      </div>
+      <div class="detail-cockpit-grid">
+        ${rows.map((row) => `
+          <div class="detail-signal-row">
+            <span>${row.label}</span>
+            <strong>${row.value}</strong>
+            <small>${row.detail}</small>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function detailTasteFitHtml(game, evidence) {
+  const references = evidence.references || [];
+  return `
+    <section class="game-detail-section detail-taste-fit" data-detail-taste-fit>
+      <h3>Taste fit</h3>
+      <p>${evidence.summary}</p>
+      <div class="detail-evidence-list">
+        ${evidence.lines.map((line) => `
+          <div class="detail-evidence-row">
+            <span>${line.label}</span>
+            <strong>${line.detail}</strong>
+          </div>
+        `).join("")}
+      </div>
+      ${references.length ? `
+        <div class="detail-reference-list" aria-label="Reference games">
+          ${references.map((reference) => `
+            <button class="detail-reference-chip" data-similar-title="${reference.title}" type="button">
+              <strong>${reference.title}</strong>
+              <span>${reference.sourceLabel} / ${reference.shared.slice(0, 3).join(" + ")}</span>
+            </button>
+          `).join("")}
+        </div>
+      ` : ""}
+      <div class="game-detail-atoms detail-atom-map" data-detail-atom-map>${detailAtomSignalHtml(game)}</div>
+    </section>
+  `;
+}
+
+function detailSourceTrustRows(game) {
+  const region = state.activeRegion;
+  const seed = knownSeedGame(game.title);
+  const priceSignal = priceStatus(game, region);
+  const plusSignal = subscriptionStatus(game, region);
+  const priceMeta = game.priceMeta?.[region];
+  const subMeta = game.subscriptionMeta?.[region];
+  const hasPrice = typeof game.prices?.[region] === "number";
+  const hasPlusSignal = (game.psPlus || []).includes(region);
+  const atomSource = seed
+    ? "Seed atoms"
+    : game.externalMeta?.atoms?.length
+      ? "Source tags"
+      : game.externalMeta?.inferredAtoms?.length
+        ? "AI inferred"
+        : (game.atoms || []).length
+          ? "Catalog atoms"
+          : "Missing";
+  return [
+    {
+      label: "Catalog",
+      value: seed ? "Seed catalog" : game.externalMeta?.catalogStatus || "Memory candidate",
+      detail: seed ? "Curated prototype entry" : "Resolved from search or user memory",
+      tone: seed ? "good" : "verify",
+    },
+    {
+      label: "Cover",
+      value: coverReadinessLabel(game),
+      detail: coverSourceLabel(game),
+      tone: ["verified", "candidate"].includes(game.coverMeta?.status) ? "good" : "verify",
+    },
+    {
+      label: "Price",
+      value: hasPrice ? priceSignal.label : "missing",
+      detail: hasPrice ? `${region} ${formatPrice(game, region)}${priceMeta?.checkedAt ? ` / ${priceMeta.checkedAt.slice(0, 10)}` : ""}` : "No usable price source yet",
+      tone: priceSignal.canConfirm ? "good" : hasPrice ? "verify" : "warn",
+    },
+    {
+      label: "Plus",
+      value: hasPlusSignal ? plusSignal.label : "not listed",
+      detail: hasPlusSignal ? `${subMeta?.tier || "PS Plus"} / ${region}` : "No active subscription signal for region",
+      tone: hasPlusSignal && plusSignal.canConfirm ? "good" : hasPlusSignal ? "verify" : "neutral",
+    },
+    {
+      label: "Atoms",
+      value: atomSource,
+      detail: `${(game.atoms || []).slice(0, 4).join(" / ") || "Needs enrichment"}`,
+      tone: atomSource === "Missing" ? "warn" : "good",
+    },
+  ];
+}
+
 function renderGameDetail(shouldFocus = false) {
   const detailGame = detailGameForTitle(selectedGameTitle);
   if (!selectedGameTitle || !detailGame) {
@@ -3519,12 +3715,13 @@ function renderGameDetail(shouldFocus = false) {
   const { reason, confidence } = explain(game, game.score);
   const watchout = watchOutCopy(game);
   const forecast = personalRankForecast(game);
+  const evidence = personalEvidence(game);
   const description = gameDescription(game);
   const statusCards = detailStatusCards(game);
-  const atoms = (game.atoms || []).slice(0, 6);
-  const passport = game.externalMeta ? sourcePassportHtml(gameSourcePassport(game), "compact") : "";
+  const passport = sourcePassportHtml(gameSourcePassport(game), "compact");
   const facts = factList(game).slice(0, 6);
   const valueCard = gameValueCard(game);
+  const trustRows = detailSourceTrustRows(game);
 
   els.gameDetail.classList.remove("is-hidden");
   els.gameDetail.setAttribute("aria-hidden", "false");
@@ -3547,12 +3744,14 @@ function renderGameDetail(shouldFocus = false) {
         </div>
       `).join("")}
     </section>
-    <section class="game-detail-section">
-      <h3>Decision</h3>
+    ${detailCockpitHtml(game, { forecast, evidence, watchout, valueCard })}
+    <section class="game-detail-section detail-decision-copy">
+      <h3>What this is</h3>
       <p>${description}</p>
       <p><strong>Why:</strong> ${reason}</p>
       <p><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
     </section>
+    ${detailTasteFitHtml(game, evidence)}
     ${(() => {
       const userGame = explicitUserGame(game.title);
       if (!isAmnestiedUserGame(userGame)) return "";
@@ -3624,10 +3823,18 @@ function renderGameDetail(shouldFocus = false) {
         ${control}
       </section>`;
     })()}
-    <section class="game-detail-section">
-      <h3>Signals</h3>
+    <section class="game-detail-section detail-source-trust" data-detail-source-trust>
+      <h3>Data trust</h3>
+      <div class="detail-source-grid">
+        ${trustRows.map((row) => `
+          <div class="detail-source-row tone-${row.tone}">
+            <span>${row.label}</span>
+            <strong>${row.value}</strong>
+            <small>${row.detail}</small>
+          </div>
+        `).join("")}
+      </div>
       <div class="facts">${facts.map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`).join("")}</div>
-      <div class="game-detail-atoms">${atoms.map((atom) => `<span>${atom}</span>`).join("")}</div>
       ${passport}
     </section>
     <section class="game-detail-section game-detail-ai" id="detail-ai-section">

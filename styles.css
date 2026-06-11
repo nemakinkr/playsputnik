@@ -3774,6 +3774,196 @@ textarea {
   line-height: 1.25;
 }
 
+.detail-cockpit {
+  display: grid;
+  gap: 10px;
+}
+
+.detail-cockpit-head {
+  display: grid;
+  gap: 5px;
+  border-left: 4px solid var(--blue);
+  padding-left: 10px;
+}
+
+.detail-cockpit-head.tone-play,
+.detail-cockpit-head.tone-plus {
+  border-left-color: var(--green);
+}
+
+.detail-cockpit-head.tone-buy {
+  border-left-color: var(--teal);
+}
+
+.detail-cockpit-head.tone-watch,
+.detail-cockpit-head.tone-save {
+  border-left-color: var(--amber);
+}
+
+.detail-cockpit-head.tone-verify {
+  border-left-color: #d97706;
+}
+
+.detail-cockpit-head > span,
+.detail-signal-row > span,
+.detail-evidence-row > span,
+.detail-source-row > span {
+  color: #64748b;
+  font-size: 0.67rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.detail-cockpit-head strong {
+  color: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.15;
+}
+
+.detail-cockpit-head p {
+  margin: 0;
+}
+
+.detail-cockpit-grid,
+.detail-source-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.detail-signal-row,
+.detail-source-row,
+.detail-evidence-row {
+  display: grid;
+  gap: 3px;
+  border-top: 1px solid #e4e9f1;
+  padding-top: 8px;
+}
+
+.detail-signal-row:first-child,
+.detail-source-row:first-child,
+.detail-evidence-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.detail-signal-row strong,
+.detail-source-row strong,
+.detail-evidence-row strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.detail-signal-row small,
+.detail-source-row small {
+  color: #64748b;
+  font-size: 0.74rem;
+  font-weight: 750;
+  line-height: 1.34;
+}
+
+.detail-taste-fit {
+  display: grid;
+  gap: 9px;
+}
+
+.detail-evidence-list {
+  display: grid;
+  gap: 8px;
+}
+
+.detail-evidence-row strong {
+  font-weight: 760;
+}
+
+.detail-reference-list {
+  display: grid;
+  gap: 7px;
+}
+
+.detail-reference-chip {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 9px;
+  text-align: left;
+}
+
+.detail-reference-chip:hover {
+  border-color: rgba(37, 87, 214, 0.4);
+  background: #f3f7ff;
+}
+
+.detail-reference-chip strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.detail-reference-chip span {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 820;
+}
+
+.detail-atom-map {
+  margin-top: 0;
+}
+
+.detail-atom-signal {
+  display: grid;
+  gap: 2px;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 6px 8px;
+}
+
+.detail-atom-signal strong {
+  color: var(--ink);
+  font-size: 0.73rem;
+  line-height: 1.1;
+}
+
+.detail-atom-signal small {
+  color: #64748b;
+  font-size: 0.62rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.detail-atom-signal.tone-positive {
+  border-color: #bfe7cd;
+  background: #eefaf2;
+}
+
+.detail-atom-signal.tone-negative {
+  border-color: #fecaca;
+  background: #fff1f2;
+}
+
+.detail-atom-signal.tone-mixed {
+  border-color: #f5d38a;
+  background: #fff8e8;
+}
+
+.detail-source-row {
+  grid-template-columns: minmax(74px, 0.45fr) minmax(88px, 0.8fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-source-row.tone-good strong {
+  color: var(--green);
+}
+
+.detail-source-row.tone-warn strong,
+.detail-source-row.tone-verify strong {
+  color: var(--amber);
+}
+
 .game-detail-section {
   border: 1px solid #e4e9f1;
   border-radius: 8px;
@@ -3813,6 +4003,43 @@ textarea {
   padding: 5px 8px;
   font-size: 0.72rem;
   font-weight: 850;
+}
+
+.game-detail-atoms .detail-atom-signal {
+  display: grid;
+  gap: 2px;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 6px 8px;
+}
+
+.game-detail-atoms .detail-atom-signal strong {
+  color: var(--ink);
+  font-size: 0.73rem;
+  line-height: 1.1;
+}
+
+.game-detail-atoms .detail-atom-signal small {
+  color: #64748b;
+  font-size: 0.62rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.game-detail-atoms .detail-atom-signal.tone-positive {
+  border-color: #bfe7cd;
+  background: #eefaf2;
+}
+
+.game-detail-atoms .detail-atom-signal.tone-negative {
+  border-color: #fecaca;
+  background: #fff1f2;
+}
+
+.game-detail-atoms .detail-atom-signal.tone-mixed {
+  border-color: #f5d38a;
+  background: #fff8e8;
 }
 
 .similar-games-list {
@@ -5490,6 +5717,10 @@ textarea {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .detail-source-row {
+    grid-template-columns: 1fr;
+  }
+
   .queue-toolbar {
     grid-template-columns: 1fr;
   }
@@ -6313,6 +6544,56 @@ textarea {
 [data-theme="dark"] .stats-tile {
   background: var(--card-bg);
   border-color: var(--card-border);
+}
+
+[data-theme="dark"] .game-detail-section,
+[data-theme="dark"] .detail-atom-signal,
+[data-theme="dark"] .detail-reference-chip {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-signal-row,
+[data-theme="dark"] .detail-source-row,
+[data-theme="dark"] .detail-evidence-row {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-atom-signal.tone-positive {
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.34);
+}
+
+[data-theme="dark"] .detail-atom-signal.tone-negative {
+  background: rgba(244, 63, 94, 0.14);
+  border-color: rgba(244, 63, 94, 0.36);
+}
+
+[data-theme="dark"] .detail-atom-signal.tone-mixed {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.36);
+}
+
+[data-theme="dark"] .game-detail-section h3,
+[data-theme="dark"] .detail-cockpit-head strong,
+[data-theme="dark"] .detail-signal-row strong,
+[data-theme="dark"] .detail-source-row strong,
+[data-theme="dark"] .detail-evidence-row strong,
+[data-theme="dark"] .detail-reference-chip strong,
+[data-theme="dark"] .detail-atom-signal strong {
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .game-detail-section p,
+[data-theme="dark"] .detail-cockpit-head > span,
+[data-theme="dark"] .detail-signal-row > span,
+[data-theme="dark"] .detail-evidence-row > span,
+[data-theme="dark"] .detail-source-row > span,
+[data-theme="dark"] .detail-signal-row small,
+[data-theme="dark"] .detail-source-row small,
+[data-theme="dark"] .detail-reference-chip span,
+[data-theme="dark"] .detail-atom-signal small {
+  color: var(--text-mid);
 }
 
 /* Soft / inset surfaces */

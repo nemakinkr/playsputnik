@@ -51,6 +51,12 @@ try {
     title: document.querySelector("#game-detail-title")?.textContent || "",
     meta: document.querySelector("#game-detail-meta")?.textContent || "",
     statusCards: document.querySelectorAll(".detail-status-card").length,
+    cockpit: document.querySelectorAll("[data-detail-cockpit]").length,
+    tasteFit: document.querySelectorAll("[data-detail-taste-fit]").length,
+    atomMap: document.querySelectorAll("[data-detail-atom-map]").length,
+    sourceTrust: document.querySelectorAll("[data-detail-source-trust]").length,
+    sourceRows: document.querySelectorAll(".detail-source-row").length,
+    atomSignals: document.querySelectorAll(".detail-atom-signal").length,
     actionButtons: document.querySelectorAll("[data-detail-state]").length,
     facts: document.querySelectorAll(".game-detail-section .fact").length,
     atoms: document.querySelectorAll(".game-detail-atoms span").length,
@@ -103,6 +109,12 @@ try {
   assert(before.title, "Expected detail drawer title");
   assert(/fit/.test(before.meta), `Expected fit metadata, got ${before.meta}`);
   assert(before.statusCards >= 4, `Expected status cards, got ${before.statusCards}`);
+  assert(before.cockpit === 1, "Expected detail decision cockpit");
+  assert(before.tasteFit === 1, "Expected detail taste fit block");
+  assert(before.atomMap === 1, "Expected detail atom signal map");
+  assert(before.sourceTrust === 1, "Expected detail data trust block");
+  assert(before.sourceRows >= 4, `Expected source trust rows, got ${before.sourceRows}`);
+  assert(before.atomSignals >= 1, `Expected atom signal chips, got ${before.atomSignals}`);
   assert(before.actionButtons >= 6, `Expected detail action buttons, got ${before.actionButtons}`);
   assert(before.facts >= 2, `Expected detail facts, got ${before.facts}`);
   assert(before.atoms >= 1, `Expected detail atoms, got ${before.atoms}`);

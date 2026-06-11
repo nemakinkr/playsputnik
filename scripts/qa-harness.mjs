@@ -1323,6 +1323,14 @@ function checkSelectors() {
   assert(/id="game-detail"/.test(html), "Game detail drawer markup is missing");
   assert(/function openGameDetail/.test(appSource), "Game detail opener is missing");
   assert(/function renderGameDetail/.test(appSource), "Game detail renderer is missing");
+  assert(/function detailPrimaryMove/.test(appSource), "Game detail primary move helper is missing");
+  assert(/function detailCockpitHtml/.test(appSource), "Game detail cockpit renderer is missing");
+  assert(/function detailTasteFitHtml/.test(appSource), "Game detail taste fit renderer is missing");
+  assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
+  assert(/data-detail-cockpit/.test(appSource), "Game detail cockpit slot is missing");
+  assert(/data-detail-taste-fit/.test(appSource), "Game detail taste fit slot is missing");
+  assert(/data-detail-source-trust/.test(appSource), "Game detail source trust slot is missing");
+  assert(/detail-atom-signal/.test(appSource + css), "Game detail atom signal chips are missing");
   assert(/data-detail-state="subscription"/.test(appSource), "Game detail should support subscription-state actions");
   assert(/data-detail-state="owned_forever"/.test(appSource), "Game detail should support bought-state actions");
   assert(/data-hero-detail/.test(appSource + appCardsSource) && /data-visual-detail/.test(appSource + appVisualSource), "Game detail entry points are missing");
@@ -1332,6 +1340,8 @@ function checkSelectors() {
   assert(/data-visual-state="playing"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify quick Play actions");
   assert(/game-detail-smoke/.test(gameDetailSmokeSource), "Game detail smoke test is missing");
   assert(/data-detail-state="playing"/.test(gameDetailSmokeSource), "Game detail smoke should verify Play action persistence");
+  assert(/data-detail-cockpit/.test(gameDetailSmokeSource), "Game detail smoke should verify decision cockpit");
+  assert(/detail-source-row/.test(gameDetailSmokeSource), "Game detail smoke should verify source trust rows");
   assert(/search-memory-smoke/.test(searchMemorySmokeSource), "Search-to-memory smoke test is missing");
   assert(/data-search-detail/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify Details from search");
   assert(/data-detail-state="subscription"/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify Plus persistence");
