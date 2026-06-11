@@ -1,6 +1,7 @@
 # PlaySputnik Project State
 
-Last updated: 2026-06-06 (session 2)
+Last updated: 2026-06-10 (Claude session series; see HANDOFF.md for the full
+narrative and CLAUDE.md for dev workflow + performance rules).
 
 ## Product
 
@@ -11,75 +12,90 @@ PlaySputnik is an AI gaming companion, not primarily a price tracker. The core l
 3. Tell the user what to play now and why.
 4. Use prices, sales, and subscription drops as supporting signals.
 
-Target user: adult players with money for games but limited time to browse reviews, catalogs, sale pages, and announcements.
+Target user: adult players with money for games but limited time to browse
+reviews, catalogs, sale pages, and announcements.
+
+## Status: deployed product with self-updating data
+
+- **Live:** https://nemakinkr.github.io/playsputnik/
+- **Repo:** https://github.com/nemakinkr/playsputnik (public)
+- Deploy on every push (`.github/workflows/deploy-pages.yml`); daily data
+  refresh at 06:17 UTC (`update-data.yml`: ITAD prices / PS Store Plus /
+  RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
+  `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
+- All app paths are RELATIVE (works under the /playsputnik/ subpath).
+- Service worker v3 (cache-first static / network-first data), **disabled on
+  localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
 
-- Static app: `index.html`, `styles.css`, `app.js`, with config in `src/app-config.js`, state/persistence in `src/app-state.js`, search normalization in `src/app-search.js`, enrichment utilities in `src/app-enrichment.js`, taste engine/scoring in `src/app-score.js`, and explain/evidence/price signals in `src/app-recommend.js`.
-- Local preview: `http://127.0.0.1:4190/`.
-- Current server check: `node scripts/preview-server.mjs --check`.
-- Product areas: `Today`, `Library`, `Discover`, `Wishlist`, `Taste`, `Data`.
-- First-run onboarding: 30 known-game swipe deck with `Liked`, `Not for me`, `Not played`, undo, and 3/6/10 signal milestones.
-- First 30 seconds panel: quick value proof, current pick, backup, guardrail, and actions.
-- Companion answer: short human verdict with personal evidence, alternatives, risk, and buy guardrail.
-- Normalized user memory: access, completion status, saved, hidden, ratings, events.
-- Library and Wishlist dashboards: filters, quick actions, purchase guardrails, and bought/save/hide persistence.
-- Game detail drawer: opens from hero/cards/catalog/library/wishlist, shows cover/source, fit, status cards, facts, atoms, decision copy, and state actions.
-- Search-to-memory flow: search results now expose `Details`, `Wishlist`, `Owned`, and `Plus`; external fixture/provider/manual candidates can open in the drawer and persist into normalized Library/Wishlist memory.
-- Provider search hardening: frontend/provider scoring now exposes `matchKind`, provider responses use `search-result-v2`, RAWG live and fixture fallback share the same normalized shape, and provider fallback/offline/rate-limit states are recoverable in the UI.
-- Search quality matrix: `scripts/search-quality-matrix.mjs` validates 22 high-signal queries across aliases, Roman numerals, diacritics, Russian names, fixture candidates, typo tolerance, and alias-manual fallback.
-- Sixth modularization pass: explain/evidence/price signals/watch-outs/fact list extracted to `src/app-recommend.js` (18 functions: `snapshotAgeHours`, `layerPolicy`, `signalStatus`, `priceStatus`, `subscriptionStatus`, `coverLabel`, `formatMoney`, `formatPrice`, `priceCanGuideBuy`, `gameDescription`, `watchOuts`, `watchOutCopy`, `answerAccessLabel`, `explain`, `personalReferenceGames`, `personalRankForecast`, `personalEvidence`, `factList`); `app.js` now 5544 lines (was 5893).
-- Fifth modularization pass: taste engine + scoring extracted to `src/app-score.js` (21 functions: `gameSignals`, `feedbackWeightForAction/ActionLabel/EffectLabel`, `feedbackTasteWeights`, `combinedTasteWeight`, `quickTasteWeights`, `legacyLikedTasteWeights`, `tasteEngineProfile/GameSignals/Score`, `notebookTitles/WishlistWeight/AccessKind/CompletedSet/TasteScore`, `scoreBreakdown`, `scoreGame`, `personalFitBand`, `rankRangeForScore`); `app.js` now 5850 lines (was 6300).
-- Fourth modularization pass: enrichment utilities (`compactStatus`, `countValues`, `topEntries`, `uniqueCompact`, `enrichmentRuleForTitle`, `inferredAtomsForTitle`, `confidenceTone`, `sourcePassportItem`, `sourcePassportHtml`, `missingChecksForItem`, `searchResultSourcePassport`, `mergeStoreData`) extracted to `src/app-enrichment.js`; `TITLE_ENRICHMENT_RULES` moved to `src/app-config.js`; ~200 lines removed from `app.js`.
-- First-30-seconds value pass: pre-swipe state now shows a clear CTA ("Swipe 3 games to see your first pick"); after 3 signals the bridge shows a confidence badge (Early read / Starter profile / Good profile) and a "Improve your profile" next-steps panel with 3 paths (swipe more, PSN import, paste ratings); mobile/tablet breakpoints hardened at 768px.
+- Static app, no build step: `index.html` + `styles.css` + `app.js` (~5.1k
+  lines) + 25 IIFE modules in `src/` (`window.PlaySputnikXxx = { createXxxTools }`).
+- Product areas: Today, Library, Discover, Wishlist, Taste, Deals, Data, Stats.
+- Onboarding: 30-game swipe deck, 3/6/10 milestones, animated hero exit.
+- **Session planner:** "Tonight I have: 30m–evening" chips; chunk model
+  (`gameChunkProfile` in src/app-score.js) scores complete-session fit.
+- **Sputnik ratings 1–5** in the game drawer (stored 20–100 in
+  `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
+  events (weights −3..+3).
+- Game drawer: status cards, facts, "Get it" links (PS Store/RAWG/HLTB),
+  price sparkline, PS Plus chip, similar games, rating, swipe-to-close,
+  focus trap.
+- Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
+- Dark mode (`data-theme="dark"`, toggle, OS-follow, anti-flash); design
+  tokens are PlayStation-bold (`--blue #0064d2`, `--cta-gradient`, etc.);
+  wordmark logo with orbit/satellite tittle; PWA icons.
+- Taste/wishlist share links (`?taste=`, `?wl=`) with import banners.
+- Error states: init overlay, deferred-data toast, offline indicator,
+  SW update banner.
+
+## Performance contract (critical)
+
+`render()` re-renders everything; budget <800ms WITH a populated profile
+(enforced by `scripts/perf-budget-test.mjs`; current ~33ms). Per-render memo
+caches invalidated at the top of `render()`: tasteProfile (+feedback
+weights), rankedGames, tasteMemory, companionAgenda, effectiveGameState,
+sourceLookups. `titleKey` is memoized in src/app-search.js and invalidated
+when title-aliases.json loads. Any new expensive per-game/per-event helper
+MUST join this scheme. View-gating: right-column sections render only for
+the active view.
 
 ## Data And Catalog
 
-- Seed catalog: `data/games.json`, currently 48 games.
-- Catalog backbone: `data/catalog-backbone.json`, currently 101 candidates across 10 lanes.
-- External no-key search fixtures: `data/global-search-fixtures.json`, currently 117 records.
-- RAWG is optional through `.env.local` / `RAWG_API_KEY`; do not print the key.
-- Cover candidates: `data/cover-snapshots.json`, RAWG attribution where resolved, generated posters as fallback.
-- Store data is split into price snapshots, price history, and subscription availability.
-- Prices/subscriptions are sample snapshots, not live ingestion.
+- `data/games.json`: 456 games, deduped (alias-aware via titleKey), 100%
+  cover and price coverage, HLTB filled where applicable.
+- Prices: ITAD, 4 regions (US/GB/DE/TR), per-record source + `checkedAt` +
+  freshness; price-history format is `{title: {region: [...]}}` (object).
+- PS Plus: live Extra list from PS Store category pages; Premium category id
+  unknown (3 manual records).
+- Covers: RAWG candidates with attribution (`sourceUrl`, `licenseNote`).
+- Secrets in `.env.local` (gitignored) and Actions secrets: `RAWG_API_KEY`,
+  `ITAD_API_KEY`. Never print them.
 
 ## Current Verification
 
-Fast checks for most code/data changes:
-
 ```sh
-node --check app.js
-node scripts/search-quality-matrix.mjs
-node scripts/qa-harness.mjs
-node scripts/validate-data.mjs
-node scripts/preview-server.mjs --check
+./scripts/check.sh          # validate → qa-harness → browser smoke → perf budget (~40s)
+./scripts/check.sh --fast   # ~3s, skips browser stages
 ```
 
-Targeted browser smokes, run sequentially:
-
-```sh
-node scripts/browser-smoke-test.mjs
-node scripts/app-view-smoke-test.mjs
-node scripts/library-wishlist-smoke-test.mjs
-node scripts/game-detail-smoke-test.mjs
-node scripts/search-memory-smoke-test.mjs
-node scripts/visual-catalog-smoke-test.mjs
-node scripts/design-smoke-test.mjs
-```
-
-Do not run all heavy Chrome smokes in parallel; it has caused false timeouts locally.
+`node` is not on PATH; bundled node at
+`~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`
+(check.sh resolves it). Targeted Chrome smokes still exist in `scripts/`
+(run sequentially, not in parallel).
 
 ## Known Constraints
 
 - PSN import is demo logic, not a real PSN integration.
-- Search can now turn seed/backbone/fixture/provider/manual results into app memory with hardened provider fallback, but broad catalog quality still depends on RAWG/fixture coverage and does not include live PS Store price/subscription ingestion.
-- The app is still mostly one large `app.js`; modularization has started with config, state/persistence, and search normalization extraction, but render/UI logic still needs splitting.
-- Investor readiness is "strong prototype narrative", not yet a polished app.
+- RAWG covers are candidates, not official art; keep attribution.
+- Never claim live prices/Plus without per-record source + freshness.
+- validate-data reports 80 honest issues (delisted games missing some
+  regional prices) — expected.
+- Dark-mode overrides are suffix-selector passes at the end of styles.css —
+  check new components in dark mode.
 
 ## Next Recommended Task
 
-Improve the first-30-seconds value proof:
-
-`Open app -> mark a few games -> see a cautious useful read -> understand how to improve taste later without blocking usage`.
-
-See `NEXT_TASKS.md` for acceptance criteria and `docs/development-protocol.md` for the token-saving workflow.
+User decision: polish before showing to people. Top candidates: wishlist
+price alerts UI (`watch.targetPrice` backend exists), backlog amnesty,
+onboarding polish. See NEXT_TASKS.md and HANDOFF.md "Backlog".

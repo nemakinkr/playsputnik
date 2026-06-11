@@ -1,180 +1,88 @@
 # PlaySputnik Backlog
 
-Use this file to pick the next task without rereading the whole chat or README. Keep each task short and update only the relevant lines after work is done.
+Last updated: 2026-06-10. Pick the next task here without rereading the
+whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
+CLAUDE.md (dev workflow + perf rules). The user's decision: **polish before
+showing the product to people** — retention/analytics tracks are
+deliberately deferred until there are users.
 
-## Global Tasks
+Run `./scripts/check.sh` before claiming any task done.
 
-### 1. Search-To-Memory Flow
+## Track: Polish (current focus)
 
-Status: done
+### 1. Wishlist price alerts UI
 
-Goal: make search feel like a real product flow, not a debug panel.
+Status: todo. Backend exists: `watch.targetPrice` is already used by
+wishlist decision copy ("target $X / historical low").
 
-User flow:
+Goal: let the user set/change/clear a target price per wishlist game.
 
-`Search title -> compare result/source -> open game detail -> add to Wishlist or Library -> see it in recommendations/dashboards`.
+- UI: small "Alert below $X" control in the game drawer (wishlist games)
+  and/or wishlist rows.
+- Persist into the existing watch structure; show state in wishlist rows.
+- No push delivery yet (no users) — visual "below target!" badge is enough.
+- Files: app.js (drawer + wishlist render), src/app-wishlist.js, styles.css.
 
-Likely files:
+### 2. Backlog amnesty
 
-- `app.js`
-- `index.html`
-- `styles.css`
-- `scripts/qa-harness.mjs`
-- one focused browser smoke if needed
+Status: todo. Niche-defining feature ("decision fatigue relief").
 
-Acceptance criteria:
+Goal: a game the user has seen and skipped 5+ times gets a gentle prompt:
+"Let it go — you're not going to play this, and that's fine" → archive
+without guilt + honest stat on the Stats view.
 
-- Search result has a clear primary action and a `Details` path.
-- Detail drawer works for seed, backbone, fixture, RAWG provider, and manual fallback candidates.
-- Adding to Wishlist persists normalized user-game fields: title, saved, source, match confidence, cover status, price status, provider metadata when available.
-- Adding as owned/subscription/completed routes the game into Library memory, not only Wishlist.
-- Duplicate/alias handling prevents obvious duplicate saves.
-- The saved external game appears in at least one relevant recommendation surface or dashboard.
-- Missing facts stay visibly unverified.
+- Track per-title impression/skip counts (state.userEvents already logs
+  some; may need a light seen-counter in recommendation surfaces).
+- Prompt as a card in Today view; archive = hidden with a dedicated source
+  tag so Stats can count "amnestied" separately.
+- Files: app.js, src/app-state.js, src/app-recommend.js, Stats renderer.
 
-Checks:
+### 3. Onboarding polish
 
-```sh
-node --check app.js
-node scripts/qa-harness.mjs
-node scripts/validate-data.mjs
-node scripts/search-memory-smoke-test.mjs
-node scripts/game-detail-smoke-test.mjs
-node scripts/browser-smoke-test.mjs
-```
+Status: todo. Goal: tighten the first 5 minutes for a future first cohort.
+Review copy, the 3-signal payoff moment, and mobile spacing. Dogfooding
+notes from the user will drive specifics.
 
-### 2. First-30-Seconds Value Pass
+### 4. Chunk-label copy refinement
 
-Status: done
+Status: todo, small. `gameChunkProfile` labels can mislabel edge cases
+("one full run" for Stray via its platformer atom). Scoring is fine; refine
+label selection (e.g. require roguelike/arcade for "run" wording).
 
-Goal: make the first screen impossible to dismiss in the first 30 seconds.
+## Track: Data
 
-Acceptance criteria:
+### 5. PS Plus Premium category id
 
-- After 3 taste signals, the app says it has a cautious first read, not a full profile.
-- The user sees that 6/10/30 signals, PSN/library, or pasted rankings can improve the profile later.
-- The first recommendation explains one pull signal, one caution signal, and one no-spend/library guardrail.
-- Copy stays short and product-like, not tutorial-like.
-- Mobile first screen has no overlap or huge dead zones.
+Status: blocked/parked. 8 UUID candidates from the PS Store hub page all
+returned 0 products. 3 manual Premium records remain in
+subscription-availability.json. Revisit occasionally.
 
-Checks:
+### 6. TLOU Part II SKU merge decision
 
-```sh
-node scripts/browser-smoke-test.mjs
-node scripts/design-smoke-test.mjs
-```
+Status: decision needed. "The Last of Us Part II" and "... Part II
+Remastered" coexist (different SKUs/prices, same content). Either
+alias-merge (one entry, prefer Remastered) or keep both deliberately.
 
-### 3. Provider Search Hardening
+### 7. Catalog expansion +100
 
-Status: done
+Status: todo, low priority. scripts/expand-catalog.mjs +
+apply-atom-corrections.mjs pipeline exists; mind RAWG rate limits.
 
-Goal: make optional RAWG/provider search reliable enough for broad discovery.
+## Track: Deferred (until there are users)
 
-Acceptance criteria:
+- Web Push "evening ritual" (HTTPS + SW already in place).
+- Analytics (GoatCounter or similar) — deliberately not yet.
+- "Wrapped" year summary, gift mode (taste/wishlist share links exist).
+- Anti-hype buy guard (price-history + Plus-drop prediction).
 
-- RAWG live search and fixture fallback return the same normalized shape.
-- Provider errors and rate limits show a recoverable state.
-- Deferred search sources do not create misleading early rankings while fixture/provider data is still loading.
-- Result ranking handles sequels, aliases, punctuation, diacritics, and localized names.
-- RAWG cover/source attribution remains visible wherever cover candidates render.
-- Provider results do not create duplicate wishlist/library records.
+## Done (this session series — see HANDOFF.md for detail)
 
-Checks:
-
-```sh
-node scripts/search-provider-server.mjs --once "Grand Theft Auto"
-node scripts/search-provider-server.mjs --once "Black Myth" --force-fixture
-node scripts/search-quality-matrix.mjs
-node scripts/qa-harness.mjs
-```
-
-### 4. App Modularization
-
-Status: tenth pass done (wishlist + price-watch logic)
-
-Goal: reduce future token and bug cost by splitting the large `app.js`.
-
-Suggested modules:
-
-- app config: started in `src/app-config.js`
-- state and persistence: started in `src/app-state.js`
-- scoring and recommendation helpers
-- search/provider normalization: started in `src/app-search.js`
-- game detail drawer
-- Library/Wishlist rendering
-- onboarding swipe
-- dev health/data workbench
-
-Acceptance criteria:
-
-- No behavior changes in the first pass.
-- Public helper boundaries are documented with small comments.
-- Existing smoke tests pass.
-- Future task analysis can inspect one module instead of all `app.js`.
-
-Checks:
-
-```sh
-node --check app.js
-node scripts/qa-harness.mjs
-node scripts/browser-smoke-test.mjs
-```
-
-### 5. Investor Demo Polish
-
-Status: open
-
-Goal: make the prototype feel like a coherent early app, not a pile of validated systems.
-
-Acceptance criteria:
-
-- A 2-3 minute route exists in `docs/demo-script.md`.
-- The demo shows quick taste, first pick, library-first mode, wishlist/buy guardrail, and search-to-memory.
-- Internal/debug panels stay out of the default demo path.
-- Visual hierarchy feels professional on desktop and mobile.
-
-Checks:
-
-```sh
-node scripts/app-view-smoke-test.mjs
-node scripts/design-smoke-test.mjs
-```
-
-## Important Refinements
-
-### A. Personal Ranking Forecast Honesty
-
-Only show a personal rank range when the user has enough ranked history. With only a few swipe signals, show fit tier and uncertainty instead.
-
-### B. Onboarding Game Set Review
-
-Keep the swipe deck taste-diagnostic: story, action, challenge, horror, cozy, multiplayer, sports, strategy, sandbox, service, short-session, long-session.
-
-### C. Data Contract Cleanup
-
-Document persisted `userGames`, cover metadata, price freshness, subscription availability, and source passport fields before the catalog grows much larger.
-
-### D. Browser QA Discipline
-
-Run heavy Chrome smokes sequentially. Parallel Chrome runs have caused false local timeouts.
-
-## Done Recently
-
-- Tenth modularization pass: `src/app-wishlist.js` — price watch, wishlist intent, triage decisions, dashboard cards, filters (11 функций: `priceWatchReason`, `priceHistoryForGame`, `historicalLowForGame`, `priceWatchRecord`, `historicalLowCopy`, `priceWatchRecords`, `wishlistIntentRecords`, `wishlistDecision`, `wishlistDashboardCards`, `wishlistFilterSummary`, `wishlistFilterMatches`); app.js теперь 4515 строк (−179).
-- Ninth modularization pass: `src/app-library.js` — library plan, companion plan, taste memory, dashboard data (23 функции: `playLaterQueue`, `bestLibraryPick`, `primaryDecisionGame`, `isLibraryFirstMode`, `buyLaterCandidate`, `companionPlan`, `tasteMemory`, `recentLearningEvents`, `libraryPlan`, `libraryPlanFacts`, `importedRatingForGame`, `personalRatingFacet`, `memoryFacets`, `isMemoryStateSelected`, `memoryHint`, `libraryMemoryRecords`, `bestLibraryRecord`, `libraryDashboardCards`, `memoryCandidates`, `libraryLaneForGame`, `libraryFilterMatches`, `libraryFilterSummary`, `queueLaneLabel`); app.js теперь 4694 строки (−520).
-- Eighth modularization pass: `src/app-answer.js` — companion answer logic + first-run bridge + receipt (15 функций: `renderEvidenceRows`, `renderUndoStrip`, `isAnswerAccessible`, `answerFitLine`, `answerForecast`, `companionAgendaActions`, `companionAlternatives`, `companionBuyGuardrail`, `companionAnswerAgenda`, `companionAnswer`, `firstRunTasteProof`, `firstRunNextSteps`, `firstRunBridge`, `firstValueReceipt`, `uniqueAnswerGames`); app.js теперь 5152 строки.
-- Seventh modularization pass: `src/app-ranking.js` — ranking + deal/purchase logic (7 functions: `rankedGames`, `clusterGames`, `dealReason`, `dealScore`, `purchaseRisk`, `purchaseScore`, `purchaseCandidates`); app.js теперь 5495 строк.
-- Sixth modularization pass: `src/app-recommend.js` — explain, evidence, price/subscription signals, access labels, watch-outs, fact list (18 functions, ~350 lines removed from app.js); app.js now 5544 lines; qa-harness updated.
-- Fifth modularization pass: `src/app-score.js` — taste engine core (21 functions, ~390 lines); `app.js` shrunk from 6300 → 5850 lines; qa-harness updated.
-- Fourth modularization pass: `src/app-enrichment.js` with 12 utility functions + `TITLE_ENRICHMENT_RULES` to config; ~200 lines out of `app.js`; QA harness updated for new module.
-- First-30-seconds value pass: pre-swipe CTA, confidence badge (Early read / Starter profile / Good profile), 3-path next-steps panel (swipe / PSN / paste), 768px layout breakpoint for first-run bridge.
-- Search-to-memory flow: result actions for Details/Wishlist/Owned/Plus, search-result detail drawer, external provider/fixture/manual persistence into Library memory, and `scripts/search-memory-smoke-test.mjs`.
-- Provider search hardening: shared match-kind scoring, stable result comparison, `search-result-v2` provider envelope, recoverable RAWG fallback states, forced fixture QA mode, and local search-index loading warnings.
-- Search result quality matrix: 22 CLI-checked queries for GTA/BG3/Yotei/Russian aliases/Hellblade/KCD2/typos/manual fallback, plus alias canonicalization for manual search results.
-- Game detail drawer with source attribution, facts, atoms, status cards, state actions, and smoke coverage.
-- First modularization pass: app config/constants extracted to `src/app-config.js` and loaded before `app.js`.
-- Second modularization pass: state defaults, persistence serialization, user-game normalization, and user-event helpers extracted to `src/app-state.js`.
-- Third modularization pass: title/alias normalization, token search scoring, source lookup, and search-result builders extracted to `src/app-search.js`.
-- Library/Wishlist dashboards and filters.
-- RAWG cover candidates for the 48-game seed catalog.
-- Search source passport and AI enrichment for external/unverified candidates.
+- Catalog 456, dedupe, 100% covers/prices, HLTB, reference-data fixes.
+- GitHub repo + Pages deploy + daily data workflows + source-health monitor + CI.
+- Session planner (chunk model), sputnik ratings 1–5 feeding taste,
+  "Get it" links, Stats view, dark mode, design system + logo + PWA icons,
+  catalog UX (search/filters/sort/pagination/keyboard), share links,
+  error states, a11y (focus trap, skip-link), swipe-to-close.
+- Perf: 3657ms → 33ms render (memoization contract + view-gating +
+  titleKey cache); perf budget test with populated profile.
+- Dev loop: SW off on localhost, scripts/check.sh one-command gate.
