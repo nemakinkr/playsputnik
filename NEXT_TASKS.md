@@ -23,19 +23,16 @@ Goal: let the user set/change/clear a target price per wishlist game.
 - No push delivery yet (no users) — visual "below target!" badge is enough.
 - Files: app.js (drawer + wishlist render), src/app-wishlist.js, styles.css.
 
-### 2. Backlog amnesty
+### 2. Backlog amnesty dogfood
 
-Status: todo. Niche-defining feature ("decision fatigue relief").
+Status: follow-up. P0 is done: explicit Skip/Snooze actions increment a
+stable per-title `userGames[title].amnesty.skips` counter; after 5 skips the
+Today view can show a "Let it go" card; archive sets hidden with
+`source: "backlog_amnesty"` and Stats counts/list amnestied games.
 
-Goal: a game the user has seen and skipped 5+ times gets a gentle prompt:
-"Let it go — you're not going to play this, and that's fine" → archive
-without guilt + honest stat on the Stats view.
-
-- Track per-title impression/skip counts (state.userEvents already logs
-  some; may need a light seen-counter in recommendation surfaces).
-- Prompt as a card in Today view; archive = hidden with a dedicated source
-  tag so Stats can count "amnestied" separately.
-- Files: app.js, src/app-state.js, src/app-recommend.js, Stats renderer.
+Next work should come from dogfooding: tune the threshold, decide whether
+owned/subscription games should ever be eligible, and consider a "restore"
+flow if amnestied games feel too buried.
 
 ### 3. Onboarding dogfood pass
 
@@ -84,6 +81,9 @@ apply-atom-corrections.mjs pipeline exists; mind RAWG rate limits.
   tiles write canonical quick reactions; first-run bridge now explains that
   the app is usable now and can be sharpened later with more swipes, library
   access, or pasted ratings.
+- Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
+  suggest archiving a repeatedly skipped game without guilt; amnestied games
+  are hidden with a dedicated source and counted/listed in Stats.
 - Catalog 456, dedupe, 100% cover coverage, discount snapshots, regional
   price coverage with honest missing-price issues, HLTB, reference-data fixes.
 - GitHub repo + Pages deploy + daily data workflows + source-health monitor + CI.

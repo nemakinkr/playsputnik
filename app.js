@@ -815,6 +815,9 @@ const els = {
   firstRunBridge: document.querySelector("#first-run-bridge"),
   answerStatus: document.querySelector("#answer-status"),
   answerCopy: document.querySelector("#answer-copy"),
+  amnestyPanel: document.querySelector("#amnesty-panel"),
+  amnestyStatus: document.querySelector("#amnesty-status"),
+  amnestyCard: document.querySelector("#amnesty-card"),
   receiptSummary: document.querySelector("#receipt-summary"),
   receiptGrid: document.querySelector("#receipt-grid"),
   topPick: document.querySelector("#top-pick"),
@@ -1063,7 +1066,99 @@ function setGameRating(title, rating) {
   }
 }
 
+const BACKLOG_AMNESTY_SKIP_TARGET = 5;
+
+function normalizeBacklogAmnestyMeta(meta = {}) {
+  const safeMeta = meta && typeof meta === "object" ? meta : {};
+  const numberOrZero = (value) => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
+  return {
+    impressions: numberOrZero(safeMeta.impressions),
+    skips: numberOrZero(safeMeta.skips),
+    dismissedSkips: numberOrZero(safeMeta.dismissedSkips),
+    lastSeenAt: safeMeta.lastSeenAt || null,
+    lastSkippedAt: safeMeta.lastSkippedAt || null,
+    dismissedAt: safeMeta.dismissedAt || null,
+    archivedAt: safeMeta.archivedAt || null,
+  };
+}
+
+function backfillBacklogAmnestyMeta(title) {
+  const key = titleKey(title);
+  const current = normalizeUserGameRecord(state.userGames[key], title) || normalizeUserGameRecord({ title });
+  return {
+    key,
+    current,
+    meta: normalizeBacklogAmnestyMeta(current.amnesty),
+  };
+}
+
+function writeBacklogAmnestyMeta(title, meta, source = "backlog_amnesty_signal") {
+  const { key, current } = backfillBacklogAmnestyMeta(title);
+  const isShellRecord = !current.access && !current.completionStatus && !current.saved && !current.hidden && typeof current.rating !== "number";
+  const next = {
+    ...current,
+    title: current.title || title,
+    amnesty: normalizeBacklogAmnestyMeta(meta),
+    source: isShellRecord ? source : current.source || source,
+    updatedAt: new Date().toISOString(),
+  };
+  state.userGames[key] = next;
+  if (next.hidden) state.hidden.add(next.title);
+  if (next.saved) state.saved.add(next.title);
+  return next;
+}
+
+function trackBacklogSkip(title, source = "snooze_tonight") {
+  const { meta } = backfillBacklogAmnestyMeta(title);
+  const now = new Date().toISOString();
+  const next = writeBacklogAmnestyMeta(title, {
+    ...meta,
+    skips: meta.skips + 1,
+    lastSkippedAt: now,
+  });
+  recordUserEvent("backlog_skip", title, { source, skips: next.amnesty.skips });
+}
+
+function dismissBacklogAmnesty(title) {
+  const { meta } = backfillBacklogAmnestyMeta(title);
+  const now = new Date().toISOString();
+  const next = writeBacklogAmnestyMeta(title, {
+    ...meta,
+    dismissedAt: now,
+    dismissedSkips: meta.skips,
+  });
+  recordUserEvent("backlog_amnesty_kept", title, { skips: next.amnesty.skips });
+  recordFeedback("backlog_amnesty_keep", title);
+}
+
+function archiveBacklogCandidate(title) {
+  if (!title) return;
+  stageLastUndo("amnesty", title);
+  invalidateEffectiveState();
+  const key = titleKey(title);
+  const { meta } = backfillBacklogAmnestyMeta(title);
+  const current = explicitUserGame(title) || normalizeUserGameRecord({ title });
+  const now = new Date().toISOString();
+  const next = applyStateToUserGame(current, "hidden");
+  next.title = current.title || title;
+  next.source = "backlog_amnesty";
+  next.amnesty = normalizeBacklogAmnestyMeta({
+    ...meta,
+    archivedAt: now,
+    dismissedAt: now,
+    dismissedSkips: Math.max(meta.dismissedSkips, meta.skips),
+  });
+  state.userGames[key] = next;
+  state.userStates[key] = { title: next.title, state: legacyStateFromUserGame(next), updatedAt: next.updatedAt };
+  state.hidden.add(next.title);
+  state.saved.delete(next.title);
+  state.snoozed.delete(next.title);
+  recordUserEvent("backlog_amnestied", title, { skips: next.amnesty.skips });
+  recordFeedback("backlog_amnesty", title);
+}
+
 function snoozeGame(title) {
+  trackBacklogSkip(title);
   state.snoozed.add(title);
   recordFeedback("snooze_tonight", title);
 }
@@ -1073,11 +1168,12 @@ function titleStateSnapshot(title) {
 }
 
 function stageLastUndo(action, title) {
-  if (!title || !["play", "save", "snooze"].includes(action)) return;
+  if (!title || !["play", "save", "snooze", "amnesty"].includes(action)) return;
   const labels = {
     play: "Marked Playing",
     save: "Saved",
     snooze: "Skipped tonight",
+    amnesty: "Let go",
   };
   state.lastUndo = {
     action,
@@ -2139,6 +2235,7 @@ function renderStats() {
     saved:     userGames.filter((g) => g.saved).length,
     psPlus:    userGames.filter((g) => g.access === "psplus").length,
   };
+  const amnestiedGames = userGames.filter((g) => g.source === "backlog_amnesty" || (g.hidden && g.amnesty?.archivedAt));
   const totalTracked = userGames.length;
 
   // Reactions
@@ -2183,6 +2280,7 @@ function renderStats() {
     { label: "Wishlist", value: byStatus.saved, sub: "buy-later queue" },
     { label: "Owned", value: byStatus.owned + byStatus.psPlus, sub: `${byStatus.psPlus} via PS Plus` },
     { label: "HLTB backlog", value: `~${Math.round(hltbTotal)}h`, sub: `${hltbGames.length} games estimated` },
+    { label: "Amnestied", value: amnestiedGames.length, sub: "let-go backlog calls" },
     { label: `Prices (${region})`, value: withPrice, sub: `of ${pool.length} catalog games` },
     { label: "Cover images", value: withCover, sub: `of ${pool.length} in catalog` },
     { label: `PS Plus (${region})`, value: inPsPlus, sub: "titles included" },
@@ -2211,22 +2309,40 @@ function renderStats() {
     els.statsAtoms.replaceChildren();
   }
 
-  // Dropped games
-  if (byStatus.dropped > 0 && els.statsTimeline) {
-    const heading = document.createElement("h3");
-    heading.className = "stats-section-heading";
-    heading.textContent = "Dropped games";
-    const droppedGames = userGames
-      .filter((g) => g.completionStatus === "dropped")
-      .map((g) => {
+  // Closed-loop games: dropped and amnestied.
+  if ((byStatus.dropped > 0 || amnestiedGames.length > 0) && els.statsTimeline) {
+    const nodes = [];
+    if (byStatus.dropped > 0) {
+      const heading = document.createElement("h3");
+      heading.className = "stats-section-heading";
+      heading.textContent = "Dropped games";
+      nodes.push(heading);
+      userGames
+        .filter((g) => g.completionStatus === "dropped")
+        .forEach((g) => {
+          const tag = document.createElement("span");
+          tag.className = "atom-pill negative";
+          tag.textContent = g.title;
+          tag.style.cursor = "pointer";
+          tag.addEventListener("click", () => openGameDetail(g.title));
+          nodes.push(tag);
+        });
+    }
+    if (amnestiedGames.length) {
+      const heading = document.createElement("h3");
+      heading.className = "stats-section-heading";
+      heading.textContent = "Amnestied backlog";
+      nodes.push(heading);
+      amnestiedGames.forEach((g) => {
         const tag = document.createElement("span");
-        tag.className = "atom-pill negative";
-        tag.textContent = g.title;
+        tag.className = "atom-pill amnesty";
+        tag.textContent = `${g.title} (${normalizeBacklogAmnestyMeta(g.amnesty).skips} skips)`;
         tag.style.cursor = "pointer";
         tag.addEventListener("click", () => openGameDetail(g.title));
-        return tag;
+        nodes.push(tag);
       });
-    els.statsTimeline.replaceChildren(heading, ...droppedGames);
+    }
+    els.statsTimeline.replaceChildren(...nodes);
   } else {
     els.statsTimeline?.replaceChildren();
   }
@@ -2567,6 +2683,103 @@ function renderCompanionAnswer(ranked) {
   });
   bindUndoButtons(els.answerCopy);
 }
+
+function backlogAmnestyMeta(title) {
+  return normalizeBacklogAmnestyMeta(explicitUserGame(title)?.amnesty);
+}
+
+function isBacklogAmnestyCandidate(game) {
+  const memoryState = effectiveGameState(game);
+  if (["playing", "paused", "want_to_finish", "completed", "dropped", "hidden", "owned", "owned_forever", "subscription"].includes(memoryState)) {
+    return false;
+  }
+  const meta = backlogAmnestyMeta(game.title);
+  if (meta.archivedAt) return false;
+  if (meta.skips < BACKLOG_AMNESTY_SKIP_TARGET) return false;
+  return meta.dismissedSkips < meta.skips;
+}
+
+function backlogAmnestyCandidate(ranked) {
+  return ranked
+    .filter(isBacklogAmnestyCandidate)
+    .map((game) => ({ game, meta: backlogAmnestyMeta(game.title) }))
+    .sort((a, b) => {
+      const skippedAt = Date.parse(b.meta.lastSkippedAt || "") - Date.parse(a.meta.lastSkippedAt || "");
+      return b.meta.skips - a.meta.skips || (Number.isNaN(skippedAt) ? 0 : skippedAt) || b.game.score - a.game.score;
+    })[0] || null;
+}
+
+function makeAmnestyButton(label, action, title, className = "") {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = label;
+  button.dataset.amnestyAction = action;
+  button.dataset.amnestyTitle = title;
+  if (className) button.className = className;
+  return button;
+}
+
+function renderBacklogAmnesty(ranked) {
+  if (!els.amnestyPanel || !els.amnestyCard) return;
+  const candidate = backlogAmnestyCandidate(ranked);
+  els.amnestyPanel.hidden = !candidate;
+  els.amnestyPanel.classList.toggle("is-empty", !candidate);
+  if (!candidate) {
+    if (els.amnestyStatus) els.amnestyStatus.textContent = "Quiet";
+    els.amnestyCard.replaceChildren();
+    return;
+  }
+
+  const { game, meta } = candidate;
+  if (els.amnestyStatus) els.amnestyStatus.textContent = `${meta.skips} skips`;
+
+  const card = document.createElement("div");
+  card.className = "amnesty-card";
+
+  const copy = document.createElement("div");
+  copy.className = "amnesty-copy";
+  const tag = document.createElement("span");
+  tag.textContent = "Decision fatigue relief";
+  const title = document.createElement("strong");
+  title.textContent = `Let go of ${game.title}?`;
+  const detail = document.createElement("p");
+  detail.textContent = `You've skipped it ${meta.skips} times. If you keep dodging it, archive it without guilt; it will still stay as taste memory.`;
+  copy.append(tag, title, detail);
+
+  const facts = document.createElement("div");
+  facts.className = "amnesty-facts";
+  [
+    `${meta.skips} skips`,
+    effectiveGameState(game) === "saved" ? "wishlist" : "not active",
+    "hidden, not deleted",
+  ].forEach((text) => {
+    const pill = document.createElement("span");
+    pill.textContent = text;
+    facts.appendChild(pill);
+  });
+
+  const actions = document.createElement("div");
+  actions.className = "amnesty-actions";
+  actions.append(
+    makeAmnestyButton("Details", "detail", game.title),
+    makeAmnestyButton("Keep it", "keep", game.title),
+    makeAmnestyButton("Let it go", "archive", game.title, "is-primary"),
+  );
+
+  card.append(copy, facts, actions);
+  els.amnestyCard.replaceChildren(card);
+  els.amnestyCard.querySelectorAll("[data-amnesty-action]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const action = button.dataset.amnestyAction;
+      const gameTitle = button.dataset.amnestyTitle;
+      if (action === "detail") openGameDetail(gameTitle);
+      if (action === "keep") dismissBacklogAmnesty(gameTitle);
+      if (action === "archive") archiveBacklogCandidate(gameTitle);
+      render();
+    });
+  });
+}
+
 function renderFirstValueReceipt(ranked) {
   const cards = firstValueReceipt(ranked);
   const memory = tasteMemory();
@@ -4016,6 +4229,7 @@ function render() {
   if (inView("today", "taste")) renderFirstRunFlow(ranked);
   if (inView("today")) renderTonightTime();
   if (inView("today")) renderCompanionAnswer(ranked);
+  if (inView("today")) renderBacklogAmnesty(ranked);
   if (inView("today", "taste")) renderFirstValueReceipt(ranked);
   if (inView("today")) renderHero(primaryGame, els.topPick);
   if (inView("today")) renderCompanionPlan(ranked);

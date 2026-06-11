@@ -45,6 +45,9 @@ reviews, catalogs, sale pages, and announcements.
   price sparkline, PS Plus chip, similar games, rating, swipe-to-close,
   focus trap.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
+- Backlog amnesty: repeated explicit skips are tracked per title; after 5
+  skips Today can suggest letting a game go without guilt, archiving it as
+  hidden with `source: "backlog_amnesty"` and counting it in Stats.
 - Dark mode (`data-theme="dark"`, toggle, OS-follow, anti-flash); design
   tokens are PlayStation-bold (`--blue #0064d2`, `--cta-gradient`, etc.);
   wordmark logo with orbit/satellite tittle; PWA icons.
@@ -101,6 +104,6 @@ the active view.
 ## Next Recommended Task
 
 User decision: polish before showing to people. Onboarding polish pass is now
-done; top next candidates are wishlist price alerts UI (`watch.targetPrice`
-backend exists), backlog amnesty, and chunk-label copy refinement. See
-NEXT_TASKS.md and HANDOFF.md "Backlog".
+done; Backlog amnesty P0 is now done. Top next candidates are wishlist price
+alerts UI (`watch.targetPrice` backend exists), chunk-label copy refinement,
+and onboarding dogfood. See NEXT_TASKS.md and HANDOFF.md "Backlog".

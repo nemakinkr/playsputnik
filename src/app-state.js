@@ -94,6 +94,20 @@
       return record;
     }
 
+    function normalizeAmnestyRecord(record) {
+      if (!record || typeof record !== "object") return null;
+      const numberOrZero = (value) => Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
+      return {
+        impressions: numberOrZero(record.impressions),
+        skips: numberOrZero(record.skips),
+        dismissedSkips: numberOrZero(record.dismissedSkips),
+        lastSeenAt: record.lastSeenAt || null,
+        lastSkippedAt: record.lastSkippedAt || null,
+        dismissedAt: record.dismissedAt || null,
+        archivedAt: record.archivedAt || null,
+      };
+    }
+
     function normalizeUserGameRecord(record, fallbackTitle = "") {
       if (!record) return null;
       const title = record.title || fallbackTitle;
@@ -132,6 +146,7 @@
         reconciliation: record.reconciliation || null,
         duplicateOf: record.duplicateOf || "",
         duplicateSource: record.duplicateSource || "",
+        amnesty: normalizeAmnestyRecord(record.amnesty),
         source: record.source || legacyRecord.source || "manual",
         updatedAt: record.updatedAt || legacyRecord.updatedAt || new Date().toISOString(),
       };

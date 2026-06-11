@@ -12,6 +12,9 @@ Start here, in this order:
 
 - Before claiming a task done: `./scripts/check.sh` (full gate: data →
   qa-harness → browser smoke → perf budget). `--fast` for quick loops.
+- After a completed checked task, commit and push to `main` immediately unless
+  the user explicitly asks not to. Do not ask for a separate "commit + push"
+  confirmation; the user wants to choose the next practical product step.
 - `node` is NOT on PATH. Bundled node:
   `~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`
   (check.sh resolves it automatically).
