@@ -97,7 +97,19 @@ Status: done. `.github/workflows/deploy-pages.yml` now runs
 `scripts/production-smoke-test.mjs` after deploy against the published Pages
 URL. The smoke checks HTML, `app.js`, `sw.js`, `data-health.json`, and
 `search-sources.json`, including the search-memory panel and versioned service
-worker contract.
+worker contract. Follow-up done: the deploy workflow also runs
+`scripts/production-browser-smoke-test.mjs`, a dependency-free headless Chrome
+CDP smoke that opens live Pages, searches Black Myth, saves it to Wishlist,
+opens the detail cockpit, and checks runtime errors/desktop overflow.
+
+### 11. Discover/search visual polish
+
+Status: done. Search result rows now render as compact action cards with
+clear memory confirmation, stronger selected button states, and dark-mode-safe
+surfaces. Visual catalog cards have cleaner state/value pills, hover affordance,
+selected-state accent bars, and more stable action-button layout. Design smoke
+now accepts the visible first-run onboarding panel when the quick swipe card is
+present but hidden.
 
 ## Track: Deferred (until there are users)
 
@@ -117,6 +129,9 @@ worker contract.
   directly to Wishlist, Library, or Plus from the result row, with an in-row
   confirmation state and a smoke test covering direct Wishlist plus detail
   Plus persistence.
+- Production browser smoke: live Pages is opened in headless Chrome after
+  deploy, then Discover search, direct Wishlist, and detail cockpit are
+  exercised against the actual published site.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

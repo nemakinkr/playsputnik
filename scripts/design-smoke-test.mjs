@@ -92,8 +92,9 @@ try {
     if (!metrics.hero || metrics.hero.height < 220) {
       throw new Error(`${viewport.name} top recommendation is too small or missing`);
     }
-    if (!metrics.quickSwipe || metrics.quickSwipe.height < 180) {
-      throw new Error(`${viewport.name} quick swipe card is too small or missing`);
+    const onboardingSurface = [metrics.quickSwipe, metrics.firstRun].find((item) => item && item.height > 0);
+    if (!onboardingSurface || onboardingSurface.height < 180) {
+      throw new Error(`${viewport.name} onboarding surface is too small or missing`);
     }
     if (!metrics.visualCatalog || metrics.visualCards < 6) {
       throw new Error(`${viewport.name} visual catalog is missing poster cards`);

@@ -20,8 +20,9 @@ reviews, catalogs, sale pages, and announcements.
 
 - **Live:** https://nemakinkr.github.io/playsputnik/
 - **Repo:** https://github.com/nemakinkr/playsputnik (public)
-- Deploy on every push (`.github/workflows/deploy-pages.yml`) with a
-  post-deploy production smoke against the published Pages URL; daily data
+- Deploy on every push (`.github/workflows/deploy-pages.yml`) with
+  post-deploy HTTP + headless-browser production smokes against the published
+  Pages URL; daily data
   refresh at 06:17 UTC (`update-data.yml`: ITAD prices / PS Store Plus /
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
@@ -103,7 +104,9 @@ the active view.
 both localStorage and IndexedDB after deferred render settles, so profile
 fixtures are not overwritten by late dev renders. `scripts/production-smoke-test.mjs`
 checks the live Pages URL after deployment for HTML/app/SW/data/search-source
-contracts.
+contracts; `scripts/production-browser-smoke-test.mjs` opens the live site in
+headless Chrome, clicks Discover search -> Wishlist -> detail, and checks for
+runtime errors and desktop overflow.
 
 ## Known Constraints
 
@@ -117,7 +120,7 @@ contracts.
 
 ## Next Recommended Task
 
-User decision: polish before showing to people. Search-to-memory and production
-smoke are now strengthened. Top next candidates are investor demo path, fuller
-production smoke with a browser pass, and onboarding dogfood. See NEXT_TASKS.md
-and HANDOFF.md "Backlog".
+User decision: polish before showing to people. Search-to-memory, production
+smoke, and the Discover/search visual polish are now strengthened. Top next
+candidates are investor demo path, onboarding dogfood, and a focused mobile
+navigation polish pass. See NEXT_TASKS.md and HANDOFF.md "Backlog".

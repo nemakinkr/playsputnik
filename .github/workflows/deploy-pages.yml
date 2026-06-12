@@ -33,3 +33,5 @@ jobs:
         uses: actions/deploy-pages@v4
       - name: Production smoke
         run: node scripts/production-smoke-test.mjs "${{ steps.deployment.outputs.page_url }}"
+      - name: Production browser smoke
+        run: node scripts/production-browser-smoke-test.mjs "${{ steps.deployment.outputs.page_url }}"

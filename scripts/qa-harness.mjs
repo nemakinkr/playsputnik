@@ -50,11 +50,13 @@ const [
   searchProviderSource,
   coverResolverSource,
   visualCatalogSmokeSource,
+  designSmokeSource,
   appViewSmokeSource,
   libraryWishlistSmokeSource,
   gameDetailSmokeSource,
   searchMemorySmokeSource,
   productionSmokeSource,
+  productionBrowserSmokeSource,
   searchQualityMatrixSource,
   localEnvSource,
   searchFixtureImporterSource,
@@ -111,11 +113,13 @@ const [
   readFile(new URL("scripts/search-provider-server.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/resolve-cover-candidates.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/visual-catalog-smoke-test.mjs", ROOT), "utf8"),
+  readFile(new URL("scripts/design-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/app-view-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/library-wishlist-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/game-detail-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-memory-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/production-smoke-test.mjs", ROOT), "utf8"),
+  readFile(new URL("scripts/production-browser-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-quality-matrix.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/local-env.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/import-global-search-fixtures.mjs", ROOT), "utf8"),
@@ -1350,6 +1354,7 @@ function checkSelectors() {
   assert(/visual-catalog-smoke/.test(visualCatalogSmokeSource), "Visual catalog smoke test is missing");
   assert(/data-visual-shelf="catalog"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify shelf switching");
   assert(/data-visual-state="playing"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify quick Play actions");
+  assert(/onboardingSurface/.test(appViewSmokeSource + visualCatalogSmokeSource + css + designSmokeSource) || /firstRun/.test(designSmokeSource), "Design smoke should tolerate the visible first-run onboarding surface");
   assert(/game-detail-smoke/.test(gameDetailSmokeSource), "Game detail smoke test is missing");
   assert(/data-detail-state="playing"/.test(gameDetailSmokeSource), "Game detail smoke should verify Play action persistence");
   assert(/data-detail-cockpit/.test(gameDetailSmokeSource), "Game detail smoke should verify decision cockpit");
@@ -1364,7 +1369,12 @@ function checkSelectors() {
   assert(/data-search-memory-panel/.test(productionSmokeSource), "Production smoke should verify search memory UI");
   assert(/data-health\.json/.test(productionSmokeSource), "Production smoke should verify published data health");
   assert(/CACHE_VERSION = "v\\d\+"/.test(productionSmokeSource), "Production smoke should verify versioned service worker");
+  assert(/production-browser-smoke/.test(productionBrowserSmokeSource), "Production browser smoke test is missing");
+  assert(/remote-debugging-port/.test(productionBrowserSmokeSource), "Production browser smoke should use a real headless browser");
+  assert(/data-search-state="saved"/.test(productionBrowserSmokeSource), "Production browser smoke should verify direct search Wishlist");
+  assert(/data-detail-cockpit/.test(productionBrowserSmokeSource), "Production browser smoke should verify the detail cockpit");
   assert(/production-smoke-test\.mjs/.test(deployPagesWorkflowSource), "Pages deploy should run production smoke after deployment");
+  assert(/production-browser-smoke-test\.mjs/.test(deployPagesWorkflowSource), "Pages deploy should run production browser smoke after deployment");
   assert(/search-quality-matrix/.test(searchQualityMatrixSource), "Search quality matrix is missing");
   assert(/alias-gta-6/.test(searchQualityMatrixSource), "Search quality matrix should cover GTA aliases");
   assert(/ru-tsushima/.test(searchQualityMatrixSource) && /ru-last-of-us/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian aliases");

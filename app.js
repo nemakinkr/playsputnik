@@ -4083,8 +4083,8 @@ function createVisualCatalogCard(item) {
         <small class="visual-catalog-source"></small>
       </div>
       <div class="visual-catalog-meta">
-        <span>${stateCopy}</span>
-        <span>${inPsPlus ? `<span class="ps-plus-badge">PS+ ${plusTier}</span>` : priceCopy}</span>
+        <span class="visual-state-pill">${stateCopy}</span>
+        <span class="visual-value-pill ${inPsPlus ? "is-plus" : ""}">${inPsPlus ? `PS+ ${plusTier}` : priceCopy}</span>
       </div>
       <div class="visual-catalog-tags">
         ${(game.atoms || []).slice(0, 3).map((atom) => `<span>${atom}</span>`).join("")}
