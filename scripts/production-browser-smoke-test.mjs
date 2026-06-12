@@ -1,6 +1,6 @@
 import { execFile, spawn } from "node:child_process";
 import { constants } from "node:fs";
-import { access, mkdtemp, rm } from "node:fs/promises";
+import { access, mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
@@ -29,6 +29,43 @@ function withCacheBust(url) {
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function localReleaseMarkers() {
+  const [swSource, htmlSource, appSource] = await Promise.all([
+    readFile(new URL("../sw.js", import.meta.url), "utf8"),
+    readFile(new URL("../index.html", import.meta.url), "utf8"),
+    readFile(new URL("../app.js", import.meta.url), "utf8"),
+  ]);
+  const cacheVersion = swSource.match(/CACHE_VERSION\s*=\s*"([^"]+)"/)?.[1] || "";
+  return [
+    { path: "sw.js", marker: `CACHE_VERSION = "${cacheVersion}"`, label: `service worker ${cacheVersion}` },
+    { path: "index.html", marker: htmlSource.includes("demo-continuity-metrics") ? "demo-continuity-metrics" : "<main", label: "HTML shell" },
+    { path: "app.js", marker: appSource.includes("editionNoteHtml") ? "editionNoteHtml" : "function render", label: "app bundle" },
+  ];
+}
+
+async function waitForPublishedRelease(timeoutMs = 45000) {
+  const markers = await localReleaseMarkers();
+  const deadline = Date.now() + timeoutMs;
+  let lastStatus = "";
+  while (Date.now() < deadline) {
+    const checks = await Promise.all(markers.map(async ({ path, marker, label }) => {
+      const url = new URL(path, rootUrl);
+      url.searchParams.set("v", `production-browser-release-${Date.now()}`);
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        const text = await response.text();
+        return { label, ok: response.ok && text.includes(marker), status: `${response.status} ${label}` };
+      } catch (error) {
+        return { label, ok: false, status: `${label}: ${error.message}` };
+      }
+    }));
+    if (checks.every((check) => check.ok)) return checks.map((check) => check.label);
+    lastStatus = checks.map((check) => `${check.label}=${check.ok ? "ok" : check.status}`).join(", ");
+    await wait(1000);
+  }
+  throw new Error(`Published release did not reach Pages edge in time: ${lastStatus}`);
 }
 
 async function findChrome() {
@@ -225,6 +262,7 @@ async function cleanup(cdp) {
 let cdp;
 
 try {
+  const releaseMarkers = await waitForPublishedRelease();
   const chromePath = await launchChrome();
   const targetInfo = await createPageTarget();
   cdp = new CdpConnection(targetInfo.webSocketDebuggerUrl);
@@ -360,6 +398,7 @@ try {
     mode: "production-browser-smoke",
     url: rootUrl,
     chromePath,
+    releaseMarkers,
     before,
     clickResult,
     afterSave,
