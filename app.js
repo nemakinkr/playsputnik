@@ -4711,6 +4711,7 @@ function renderAppViewShell() {
     const isActive = button.dataset.appView === activeView;
     button.classList.toggle("is-active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
+    button.toggleAttribute("aria-current", isActive);
   });
   els.viewSections.forEach((section) => {
     const isVisible = sectionVisibleInAppView(section, activeView);

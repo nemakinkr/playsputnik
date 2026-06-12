@@ -5953,30 +5953,45 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  /* Horizontal scroll nav on small screens */
   .app-view-nav {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow: visible;
     gap: 6px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-  }
-
-  .app-view-nav::-webkit-scrollbar {
-    display: none;
   }
 
   .app-view-tab {
-    flex: 0 0 auto;
-    min-height: 44px;
-    min-width: 72px;
-    padding: 7px 10px;
+    min-width: 0;
+    min-height: 40px;
+    border-radius: 7px;
+    padding: 7px 6px;
+    text-align: center;
+  }
+
+  .app-view-tab:nth-child(-n + 4) {
+    grid-column: span 2;
+    min-height: 56px;
+    padding: 8px 10px;
+    text-align: left;
   }
 
   .app-view-tab span {
     display: none;
+  }
+
+  .app-view-tab:nth-child(-n + 4) span {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.66rem;
+  }
+
+  .app-view-tab strong {
+    font-size: 0.78rem;
+    line-height: 1.1;
+  }
+
+  .app-view-tab:nth-child(-n + 4) strong {
+    font-size: 0.9rem;
   }
 
   /* value-strip: 2x2 instead of 1 column */

@@ -79,10 +79,16 @@ try {
         bodyScrollWidth: document.body.scrollWidth,
         hero: rectFrom(".hero-card"),
         quickSwipe: rectFrom(".quick-swipe-card"),
+        appNav: rectFrom(".app-view-nav"),
         visualCatalog: rectFrom(".visual-catalog-panel"),
         decisionSurface: rectFrom(".decision-surface"),
         firstRun: rectFrom(".first-run-panel"),
         visualCards: document.querySelectorAll(".visual-catalog-card").length,
+        appNavButtons: document.querySelectorAll(".app-view-nav [data-app-view]").length,
+        appNavOverflow: (() => {
+          const nav = document.querySelector(".app-view-nav");
+          return nav ? nav.scrollWidth > nav.clientWidth + 1 : true;
+        })(),
       };
     });
 
@@ -95,6 +101,12 @@ try {
     const onboardingSurface = [metrics.quickSwipe, metrics.firstRun].find((item) => item && item.height > 0);
     if (!onboardingSurface || onboardingSurface.height < 180) {
       throw new Error(`${viewport.name} onboarding surface is too small or missing`);
+    }
+    if (!metrics.appNav || metrics.appNavButtons < 8) {
+      throw new Error(`${viewport.name} app navigation is missing tabs`);
+    }
+    if (metrics.appNavOverflow) {
+      throw new Error(`${viewport.name} app navigation has horizontal overflow`);
     }
     if (!metrics.visualCatalog || metrics.visualCards < 6) {
       throw new Error(`${viewport.name} visual catalog is missing poster cards`);

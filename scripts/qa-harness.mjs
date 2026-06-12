@@ -934,6 +934,7 @@ function checkSelectors() {
   assert((html.match(/data-app-view="/g) || []).length >= 6, "Product area navigation should expose the main app views");
   assert(/data-app-view="today"/.test(html) && /data-app-view="library"/.test(html) && /data-app-view="discover"/.test(html), "Product area navigation should cover Today, Library, and Discover");
   assert(/data-app-view="wishlist"/.test(html) && /data-app-view="taste"/.test(html) && /data-app-view="data"/.test(html), "Product area navigation should cover Wishlist, Taste, and Data");
+  assert(/aria-current/.test(appSource), "Active app view should expose aria-current for navigation");
   assert(/data-view-section="today/.test(html), "User-facing sections should declare app view visibility");
   assert(/data-view-section="data"/.test(html), "Technical sections should move into the Data area");
   // HLTB module (features 1, 3, 4)
@@ -1355,6 +1356,7 @@ function checkSelectors() {
   assert(/data-visual-shelf="catalog"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify shelf switching");
   assert(/data-visual-state="playing"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify quick Play actions");
   assert(/onboardingSurface/.test(appViewSmokeSource + visualCatalogSmokeSource + css + designSmokeSource) || /firstRun/.test(designSmokeSource), "Design smoke should tolerate the visible first-run onboarding surface");
+  assert(/appNavOverflow/.test(designSmokeSource), "Design smoke should guard against mobile app nav overflow");
   assert(/game-detail-smoke/.test(gameDetailSmokeSource), "Game detail smoke test is missing");
   assert(/data-detail-state="playing"/.test(gameDetailSmokeSource), "Game detail smoke should verify Play action persistence");
   assert(/data-detail-cockpit/.test(gameDetailSmokeSource), "Game detail smoke should verify decision cockpit");

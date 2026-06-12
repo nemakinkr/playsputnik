@@ -111,6 +111,14 @@ selected-state accent bars, and more stable action-button layout. Design smoke
 now accepts the visible first-run onboarding panel when the quick swipe card is
 present but hidden.
 
+### 12. Mobile navigation polish
+
+Status: done. The mobile product-area nav no longer relies on horizontal
+scroll. Today/Library/Discover/Wishlist render as a 2x2 primary grid with
+short helper labels; Taste/Deals/Data/Stats render as a compact secondary row.
+Active tabs now expose `aria-current`, and `design-smoke-test.mjs` guards
+against app-nav horizontal overflow.
+
 ## Track: Deferred (until there are users)
 
 - Web Push "evening ritual" (HTTPS + SW already in place).
@@ -132,6 +140,8 @@ present but hidden.
 - Production browser smoke: live Pages is opened in headless Chrome after
   deploy, then Discover search, direct Wishlist, and detail cockpit are
   exercised against the actual published site.
+- Mobile navigation polish: all 8 product areas are visible on a 390px mobile
+  viewport without horizontal scrolling, with primary/secondary hierarchy.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

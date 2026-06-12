@@ -54,6 +54,9 @@ reviews, catalogs, sale pages, and announcements.
   results keep source passport + cover attribution and avoid fake live
   price/Plus claims.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
+- Mobile navigation: all 8 product areas are visible without horizontal
+  scrolling; Today/Library/Discover/Wishlist get primary 2x2 slots and
+  Taste/Deals/Data/Stats sit in a compact secondary row.
 - Backlog amnesty: repeated explicit skips are tracked per title; after 5
   skips Today can suggest letting a game go without guilt, archiving it as
   hidden with `source: "backlog_amnesty"` and counting it in Stats. Amnestied
@@ -121,6 +124,6 @@ runtime errors and desktop overflow.
 ## Next Recommended Task
 
 User decision: polish before showing to people. Search-to-memory, production
-smoke, and the Discover/search visual polish are now strengthened. Top next
-candidates are investor demo path, onboarding dogfood, and a focused mobile
-navigation polish pass. See NEXT_TASKS.md and HANDOFF.md "Backlog".
+smoke, Discover/search visual polish, and mobile navigation polish are now
+strengthened. Top next candidates are investor demo path, onboarding dogfood,
+and first-session payoff polish. See NEXT_TASKS.md and HANDOFF.md "Backlog".
