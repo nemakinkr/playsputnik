@@ -1,6 +1,6 @@
 # PlaySputnik Project State
 
-Last updated: 2026-06-11 (Codex resumed after Claude session series; see
+Last updated: 2026-06-12 (Codex resumed after Claude session series; see
 HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
 performance rules).
 
@@ -20,12 +20,13 @@ reviews, catalogs, sale pages, and announcements.
 
 - **Live:** https://nemakinkr.github.io/playsputnik/
 - **Repo:** https://github.com/nemakinkr/playsputnik (public)
-- Deploy on every push (`.github/workflows/deploy-pages.yml`); daily data
+- Deploy on every push (`.github/workflows/deploy-pages.yml`) with a
+  post-deploy production smoke against the published Pages URL; daily data
   refresh at 06:17 UTC (`update-data.yml`: ITAD prices / PS Store Plus /
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v3 (cache-first static / network-first data), **disabled on
+- Service worker v7 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -43,9 +44,14 @@ reviews, catalogs, sale pages, and announcements.
 - **Sputnik ratings 1–5** in the game drawer (stored 20–100 in
   `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
   events (weights −3..+3).
-- Game drawer: status cards, facts, "Get it" links (PS Store/RAWG/HLTB),
-  price sparkline, PS Plus chip, polished per-region price alert target,
-  similar games, rating, swipe-to-close, focus trap.
+- Game drawer: decision cockpit, smart primary CTA, status cards, facts,
+  "Get it" links (PS Store/RAWG/HLTB), price sparkline, PS Plus chip,
+  polished per-region price alert target, similar games, rating,
+  swipe-to-close, focus trap.
+- Global search: local/provider/manual results can be added directly to
+  Wishlist, Library, or Plus with an in-row memory confirmation panel; external
+  results keep source passport + cover attribution and avoid fake live
+  price/Plus claims.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
 - Backlog amnesty: repeated explicit skips are tracked per title; after 5
   skips Today can suggest letting a game go without guilt, archiving it as
@@ -95,7 +101,9 @@ the active view.
 (check.sh resolves it). Targeted Chrome smokes still exist in `scripts/`
 (run sequentially, not in parallel). `library-wishlist-smoke-test.mjs` seeds
 both localStorage and IndexedDB after deferred render settles, so profile
-fixtures are not overwritten by late dev renders.
+fixtures are not overwritten by late dev renders. `scripts/production-smoke-test.mjs`
+checks the live Pages URL after deployment for HTML/app/SW/data/search-source
+contracts.
 
 ## Known Constraints
 
@@ -109,7 +117,7 @@ fixtures are not overwritten by late dev renders.
 
 ## Next Recommended Task
 
-User decision: polish before showing to people. Onboarding polish pass is now
-done; Backlog amnesty P0 is now done. Top next candidates are wishlist price
-alerts UI (`watch.targetPrice` backend exists), chunk-label copy refinement,
-and onboarding dogfood. See NEXT_TASKS.md and HANDOFF.md "Backlog".
+User decision: polish before showing to people. Search-to-memory and production
+smoke are now strengthened. Top next candidates are investor demo path, fuller
+production smoke with a browser pass, and onboarding dogfood. See NEXT_TASKS.md
+and HANDOFF.md "Backlog".

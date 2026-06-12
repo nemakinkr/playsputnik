@@ -3327,6 +3327,35 @@ function renderMyGameRow(game, index, lane = "suggested") {
       return row;
 }
 
+function searchResultMemoryStatus(result) {
+  if (resultStateSelected(result, "subscription")) {
+    return {
+      tone: "access",
+      label: "Plus access added",
+      detail: "It is now in Library as subscription access; no price claim was created.",
+    };
+  }
+  if (resultStateSelected(result, "owned")) {
+    return {
+      tone: "owned",
+      label: "Added to library",
+      detail: "It can now shape recommendations and backlog planning.",
+    };
+  }
+  if (resultAlreadySaved(result)) {
+    return {
+      tone: "saved",
+      label: "Saved to wishlist",
+      detail: "It now contributes taste and price-watch intent.",
+    };
+  }
+  return {
+    tone: "empty",
+    label: "Ready to add",
+    detail: "Choose Wishlist, Library, or Plus now; details and rating can come later.",
+  };
+}
+
 function renderGameSearch() {
   const query = (state.gameSearchQuery || "").trim();
   const results = globalSearchResults();
@@ -3400,6 +3429,7 @@ function renderGameSearch() {
       const enrichment = result.sourceId === "seed_catalog" ? "" : aiEnrichmentHtml(result, "compact");
       const owned = resultStateSelected(result, "owned");
       const subscription = resultStateSelected(result, "subscription");
+      const memory = searchResultMemoryStatus(result);
       row.innerHTML = `
         <div>
           <strong>${result.title}</strong>
@@ -3417,10 +3447,15 @@ function renderGameSearch() {
           ${enrichment}
         </div>
         <div class="game-search-actions">
-          <button class="memory-action" data-search-detail="${result.title}" type="button">Details</button>
-          <button class="memory-action ${saved ? "is-selected" : ""}" data-search-state="saved" type="button">${saved ? "Saved" : "Wishlist"}</button>
-          <button class="memory-action ${owned ? "is-selected" : ""}" data-search-state="owned" type="button">Owned</button>
-          <button class="memory-action ${subscription ? "is-selected" : ""}" data-search-state="subscription" type="button">Plus</button>
+          <div class="game-search-memory tone-${memory.tone}" data-search-memory-panel>
+            <span>Memory</span>
+            <strong>${memory.label}</strong>
+            <small>${memory.detail}</small>
+          </div>
+          <button class="memory-action search-primary-action ${saved ? "is-selected" : ""}" data-search-state="saved" aria-pressed="${saved}" type="button">${saved ? "Saved" : "Wishlist"}</button>
+          <button class="memory-action ${owned ? "is-selected" : ""}" data-search-state="owned" aria-pressed="${owned}" type="button">Library</button>
+          <button class="memory-action ${subscription ? "is-selected" : ""}" data-search-state="subscription" aria-pressed="${subscription}" type="button">Plus</button>
+          <button class="memory-action" data-search-detail="${detailAttr(result.title)}" type="button">Details</button>
         </div>
       `;
       row.querySelector("[data-search-detail]").addEventListener("click", () => openGameDetail(result.title));

@@ -69,10 +69,40 @@ try {
     allTitles: Array.from(document.querySelectorAll(".game-search-row"))
       .map((row) => row.firstElementChild?.querySelector("strong")?.textContent || ""),
     detailButtons: document.querySelectorAll("[data-search-detail]").length,
+    memoryPanels: document.querySelectorAll("[data-search-memory-panel]").length,
+    savedButtons: document.querySelectorAll('[data-search-state="saved"]').length,
     ownedButtons: document.querySelectorAll('[data-search-state="owned"]').length,
     subscriptionButtons: document.querySelectorAll('[data-search-state="subscription"]').length,
+    pressedButtons: document.querySelectorAll('[data-search-state][aria-pressed]').length,
     passportChecks: document.querySelectorAll(".game-search-row .source-check").length,
   }));
+
+  await page.evaluate((title) => {
+    const row = Array.from(document.querySelectorAll(".game-search-row"))
+      .find((item) => (item.querySelector("strong")?.textContent || "").trim() === title);
+    (row || document.querySelector(".game-search-row"))?.querySelector('[data-search-state="saved"]')?.click();
+  }, expectedTitle);
+  await page.waitForTimeout(500);
+
+  const afterSearchSave = await page.evaluate(({ key, expectedTitle }) => {
+    const stored = JSON.parse(localStorage.getItem(key) || "{}");
+    const record = Object.values(stored.userGames || {}).find((item) => item.title === expectedTitle);
+    const userState = Object.values(stored.userStates || {}).find((item) => item.title === expectedTitle);
+    const row = Array.from(document.querySelectorAll(".game-search-row"))
+      .find((item) => (item.querySelector("strong")?.textContent || "").trim() === expectedTitle);
+    return {
+      activeSaved: row?.querySelector('[data-search-state="saved"]')?.classList.contains("is-selected") || false,
+      pressedSaved: row?.querySelector('[data-search-state="saved"]')?.getAttribute("aria-pressed") || "",
+      memoryStatus: row?.querySelector("[data-search-memory-panel]")?.textContent?.replace(/\s+/g, " ").trim() || "",
+      record: record ? {
+        title: record.title,
+        access: record.access || "",
+        saved: Boolean(record.saved),
+        source: record.source || "",
+      } : null,
+      userState: userState?.state || "",
+    };
+  }, { key: STORAGE_KEY, expectedTitle });
 
   await page.evaluate((title) => {
     const row = Array.from(document.querySelectorAll(".game-search-row"))
@@ -129,15 +159,24 @@ try {
       .filter((item) => /Subscription|Plus/i.test(item.textContent || "")).length,
   }), expectedTitle);
 
-  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, detail, after, library, errors };
+  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(before.rows >= 1, `Expected search rows, got ${before.rows}`);
   assert(before.firstTitle === expectedTitle, `Expected ${expectedTitle} as first result, got ${before.firstTitle}`);
   assert(before.detailButtons >= 1, "Expected search Details action");
+  assert(before.memoryPanels >= 1, "Expected search memory confirmation panels");
+  assert(before.savedButtons >= 1, "Expected search Wishlist action");
   assert(before.ownedButtons >= 1, "Expected search Owned action");
   assert(before.subscriptionButtons >= 1, "Expected search Plus action");
+  assert(before.pressedButtons >= 3, "Expected search memory actions to expose pressed state");
   assert(before.passportChecks >= 5, `Expected search source passport checks, got ${before.passportChecks}`);
+  assert(afterSearchSave.record?.saved, "Expected direct search Wishlist action to save the external game");
+  assert(afterSearchSave.record?.source?.startsWith("search_"), `Expected direct search save source memory, got ${afterSearchSave.record?.source}`);
+  assert(afterSearchSave.activeSaved, "Expected direct Wishlist button to become selected");
+  assert(afterSearchSave.pressedSaved === "true", `Expected Wishlist aria-pressed=true, got ${afterSearchSave.pressedSaved}`);
+  assert(/Saved to wishlist/.test(afterSearchSave.memoryStatus), `Expected search memory confirmation, got ${afterSearchSave.memoryStatus}`);
+  assert(afterSearchSave.userState === "saved", `Expected saved userState after direct search action, got ${afterSearchSave.userState}`);
   assert(detail.title === expectedTitle, `Expected ${expectedTitle} detail drawer, got ${detail.title}`);
   assert(/fit/.test(detail.meta), `Expected detail fit metadata, got ${detail.meta}`);
   assert(detail.actions >= 7, `Expected detail actions including Plus, got ${detail.actions}`);

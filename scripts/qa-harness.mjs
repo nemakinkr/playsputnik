@@ -54,10 +54,12 @@ const [
   libraryWishlistSmokeSource,
   gameDetailSmokeSource,
   searchMemorySmokeSource,
+  productionSmokeSource,
   searchQualityMatrixSource,
   localEnvSource,
   searchFixtureImporterSource,
   previewServerSource,
+  deployPagesWorkflowSource,
   catalogImportFixture,
   searchFixtureImportFixture,
   searchFixtureExpansionFixture,
@@ -113,10 +115,12 @@ const [
   readFile(new URL("scripts/library-wishlist-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/game-detail-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-memory-smoke-test.mjs", ROOT), "utf8"),
+  readFile(new URL("scripts/production-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-quality-matrix.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/local-env.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/import-global-search-fixtures.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/preview-server.mjs", ROOT), "utf8"),
+  readFile(new URL(".github/workflows/deploy-pages.yml", ROOT), "utf8"),
   readFile(new URL("test/fixtures/catalog-import-note.txt", ROOT), "utf8"),
   readFile(new URL("test/fixtures/search-fixture-import.txt", ROOT), "utf8"),
   readFile(new URL("test/fixtures/search-fixture-expansion-80.txt", ROOT), "utf8"),
@@ -1126,7 +1130,10 @@ function checkSelectors() {
   assert(/searchIndexStatus/.test(appSource), "Frontend search should track deferred local index status");
   assert(/source-warning/.test(appSource + css), "Frontend search should warn while sources or providers are degraded");
   assert(/function applySearchResultState/.test(appSource), "Search results should persist to normalized memory states");
+  assert(/function searchResultMemoryStatus/.test(appSource), "Search results should expose memory confirmation status");
   assert(/function addSearchResultToWishlist/.test(appSource), "Search wishlist add handler is missing");
+  assert(/data-search-memory-panel/.test(appSource), "Search results should show direct add confirmation panels");
+  assert(/aria-pressed="\$\{saved\}"/.test(appSource), "Search Wishlist action should expose pressed state");
   assert(/data-search-detail/.test(appSource), "Search results should expose a Details path");
   assert(/data-search-state="owned"/.test(appSource), "Search results should support owned memory actions");
   assert(/data-search-state="subscription"/.test(appSource), "Search results should support subscription memory actions");
@@ -1350,7 +1357,14 @@ function checkSelectors() {
   assert(/detail-source-row/.test(gameDetailSmokeSource), "Game detail smoke should verify source trust rows");
   assert(/search-memory-smoke/.test(searchMemorySmokeSource), "Search-to-memory smoke test is missing");
   assert(/data-search-detail/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify Details from search");
+  assert(/data-search-memory-panel/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify search memory confirmation");
+  assert(/data-search-state="saved"/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify direct Wishlist from search");
   assert(/data-detail-state="subscription"/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify Plus persistence");
+  assert(/production-smoke/.test(productionSmokeSource), "Production smoke test is missing");
+  assert(/data-search-memory-panel/.test(productionSmokeSource), "Production smoke should verify search memory UI");
+  assert(/data-health\.json/.test(productionSmokeSource), "Production smoke should verify published data health");
+  assert(/CACHE_VERSION = "v\\d\+"/.test(productionSmokeSource), "Production smoke should verify versioned service worker");
+  assert(/production-smoke-test\.mjs/.test(deployPagesWorkflowSource), "Pages deploy should run production smoke after deployment");
   assert(/search-quality-matrix/.test(searchQualityMatrixSource), "Search quality matrix is missing");
   assert(/alias-gta-6/.test(searchQualityMatrixSource), "Search quality matrix should cover GTA aliases");
   assert(/ru-tsushima/.test(searchQualityMatrixSource) && /ru-last-of-us/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian aliases");

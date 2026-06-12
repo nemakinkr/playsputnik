@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-11. Pick the next task here without rereading the
+Last updated: 2026-06-12. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 CLAUDE.md (dev workflow + perf rules). The user's decision: **polish before
 showing the product to people** — retention/analytics tracks are
@@ -91,6 +91,14 @@ deferred render before mutating storage, writes localStorage + IndexedDB
 together, clears stale preloaded IDB state, and restored the strict Access-row
 assertion. This prevents old deferred saves from clobbering the seeded profile.
 
+### 10. Production smoke after Pages deploy
+
+Status: done. `.github/workflows/deploy-pages.yml` now runs
+`scripts/production-smoke-test.mjs` after deploy against the published Pages
+URL. The smoke checks HTML, `app.js`, `sw.js`, `data-health.json`, and
+`search-sources.json`, including the search-memory panel and versioned service
+worker contract.
+
 ## Track: Deferred (until there are users)
 
 - Web Push "evening ritual" (HTTPS + SW already in place).
@@ -105,6 +113,10 @@ assertion. This prevents old deferred saves from clobbering the seeded profile.
   tiles write canonical quick reactions; first-run bridge now explains that
   the app is usable now and can be sharpened later with more swipes, library
   access, or pasted ratings.
+- Global search memory flow: search/provider/manual results can be added
+  directly to Wishlist, Library, or Plus from the result row, with an in-row
+  confirmation state and a smoke test covering direct Wishlist plus detail
+  Plus persistence.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.
