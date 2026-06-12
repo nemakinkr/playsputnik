@@ -2689,6 +2689,17 @@ function renderFirstRunFlow(ranked) {
       <strong>${bridge.title}</strong>
       <p>${bridge.detail}</p>
     </div>
+    ${bridge.verdict?.length ? `
+      <div class="first-run-verdict" data-first-run-verdict>
+        ${bridge.verdict.map((item) => `
+          <div>
+            <span>${item.label}</span>
+            <strong>${item.value}</strong>
+            <small>${item.detail}</small>
+          </div>
+        `).join("")}
+      </div>
+    ` : ""}
     ${bridge.proof ? `
       <div class="first-run-taste-proof">
         <div>

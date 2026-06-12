@@ -1231,6 +1231,10 @@ function checkSelectors() {
   assert(/taste-gate-insights/.test(appSource), "Known-games taste insights renderer is missing");
   assert(/data-first-run-action/.test(appAnswerSource + appSource), "First-run bridge actions are missing");
   assert(/first-run-mini-agenda/.test(appAnswerSource + appSource), "First-run mini answer agenda is missing");
+  assert(/data-first-run-verdict/.test(appSource), "First-run payoff should render a visible verdict block");
+  assert(/What I learned/.test(appAnswerSource), "First-run payoff should explain what was learned");
+  assert(/Use it now/.test(appAnswerSource), "First-run payoff should tell the user they can act now");
+  assert(/First read: try/.test(appAnswerSource), "First-run payoff should name the first read as a concrete pick");
   assert(/function firstRunTasteProof/.test(appAnswerSource), "First-run taste proof is missing");
   assert(/first-run-taste-proof/.test(appAnswerSource + appSource), "First-run taste proof renderer is missing");
   assert(/id: "more-signal"/.test(appAnswerSource), "First-run more-signal action is missing");

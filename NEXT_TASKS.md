@@ -119,6 +119,13 @@ short helper labels; Taste/Deals/Data/Stats render as a compact secondary row.
 Active tabs now expose `aria-current`, and `design-smoke-test.mjs` guards
 against app-nav horizontal overflow.
 
+### 13. First-session payoff polish
+
+Status: done. After 3 real taste signals, the first-run bridge now names a
+concrete first read ("try X"), then shows a visible verdict block:
+"What I learned", "Use it now", and "Still uncertain". This makes the first
+payoff feel like a useful companion answer instead of a generic unlock.
+
 ## Track: Deferred (until there are users)
 
 - Web Push "evening ritual" (HTTPS + SW already in place).
@@ -142,6 +149,8 @@ against app-nav horizontal overflow.
   exercised against the actual published site.
 - Mobile navigation polish: all 8 product areas are visible on a 390px mobile
   viewport without horizontal scrolling, with primary/secondary hierarchy.
+- First-session payoff polish: after 3 real onboarding signals, the product
+  states what it learned, what to try now, and what remains uncertain.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

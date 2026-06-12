@@ -373,15 +373,37 @@
           detail: "library and ranking context",
         },
       ];
+      const verdict = [
+        {
+          label: "What I learned",
+          value: proof.pull,
+          detail: `${signalCount} taste signals / ${confidence} fit`,
+        },
+        {
+          label: "Use it now",
+          value: libraryMode ? `Start ${topGame.title}` : `Try ${topGame.title}`,
+          detail: `${forecast.label}. ${watchout.label}.`,
+        },
+        {
+          label: "Still uncertain",
+          value: gate.conflict.hasConflict ? gate.conflict.atoms.join(" / ") : proof.caution,
+          detail: isSharp
+            ? "Profile is strong enough for bolder calls."
+            : isUsable
+              ? "Keep using it; more signals will tune rankings."
+              : `${Math.max(0, QUICK_TASTE_USABLE_TARGET - signalCount)} more swipes make the read safer.`,
+        },
+      ];
 
       return {
         eyebrow: libraryMode ? "Library-first answer" : "First taste read",
-        title: libraryMode ? `${topGame.title} is already ready.` : `You can use PlaySputnik now.`,
+        title: libraryMode ? `${topGame.title} is already ready.` : `First read: try ${topGame.title}.`,
         detail: libraryMode
           ? `${detailParts.join(" / ")}. ${watchout.label}: ${watchout.detail}.`
-          : `${earlyTasteNote}Based on the first signals, I would start with ${topGame.title}. The read will get sharper, but it is already useful. ${watchout.label}: ${watchout.detail}.`,
+          : `${earlyTasteNote}${signalCount} signals are enough to stop browsing and test one direction: ${topGame.title}. The read will get sharper, but the first useful answer is already here. ${watchout.label}: ${watchout.detail}.`,
         confidenceLabel,
         confidenceReady,
+        verdict,
         proof,
         readiness,
         summary,
