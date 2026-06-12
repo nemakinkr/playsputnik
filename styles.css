@@ -1354,6 +1354,72 @@ textarea {
   font-size: 1.05rem;
 }
 
+.demo-continuity-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #c7d2fe;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+  padding: 12px;
+}
+
+.demo-continuity-copy {
+  min-width: 0;
+}
+
+.demo-continuity-copy span,
+.demo-continuity-copy p {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.28;
+}
+
+.demo-continuity-copy span {
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.demo-continuity-copy strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.18;
+}
+
+.demo-continuity-copy p {
+  margin: 4px 0 0;
+  font-weight: 650;
+}
+
+.demo-continuity-actions {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 8px;
+}
+
+.demo-continuity-actions button {
+  min-height: 34px;
+  border: 1px solid #bfdbfe;
+  border-radius: 7px;
+  background: #fff;
+  color: #1e40af;
+  padding: 0 11px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.demo-continuity-actions button:hover {
+  border-color: var(--blue);
+  background: #eaf0ff;
+}
+
 .first-run-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -6112,6 +6178,20 @@ textarea {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
+  .demo-continuity-panel {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .demo-continuity-actions {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-continuity-actions button {
+    white-space: normal;
+  }
+
   .first-run-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -7182,6 +7262,17 @@ select:focus-visible,
 [data-theme="dark"] .first-run-journey-head small,
 [data-theme="dark"] .first-run-journey-step small {
   color: var(--text-mid);
+}
+
+[data-theme="dark"] .demo-continuity-panel {
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.18) 0%, var(--card-bg) 100%);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .demo-continuity-actions button {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-strong);
 }
 
 /* Dark theme — kill white gradient backgrounds (proof boxes, etc.) */

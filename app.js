@@ -219,6 +219,55 @@ const PSN_DEMO_STATES = [
   { title: "Alan Wake 2", state: "saved" },
 ];
 
+const DEMO_PROFILE_REACTIONS = [
+  { title: "The Last of Us Part I", reaction: "loved" },
+  { title: "Red Dead Redemption 2", reaction: "loved" },
+  { title: "The Witcher 3: Wild Hunt", reaction: "loved" },
+  { title: "Cyberpunk 2077", reaction: "loved" },
+  { title: "God of War Ragnarok", reaction: "loved" },
+  { title: "Disco Elysium", reaction: "loved" },
+  { title: "Alan Wake 2", reaction: "loved" },
+  { title: "Resident Evil 4", reaction: "played" },
+  { title: "Stray", reaction: "played" },
+  { title: "Hades", reaction: "played" },
+  { title: "Baldur's Gate 3", reaction: "not_for_me" },
+  { title: "Fortnite", reaction: "not_for_me" },
+  { title: "EA Sports FC 26", reaction: "not_for_me" },
+  { title: "Civilization VI", reaction: "not_for_me" },
+];
+
+const DEMO_PROFILE_STATES = [
+  { title: "The Forgotten City", state: "playing" },
+  { title: "Resident Evil 4", state: "want_to_finish" },
+  { title: "Control Ultimate Edition", state: "owned_forever" },
+  { title: "Dave the Diver", state: "subscription" },
+  { title: "Alan Wake 2", state: "saved" },
+  { title: "Mafia: The Old Country", state: "saved" },
+  { title: "The Alters", state: "saved" },
+  { title: "Death Stranding 2", state: "saved" },
+  { title: "Kena: Bridge of Spirits", state: "completed" },
+  { title: "Sifu", state: "dropped" },
+];
+
+const DEMO_PROFILE_RATINGS = [
+  { title: "Red Dead Redemption 2", rating: 100 },
+  { title: "The Witcher 3: Wild Hunt", rating: 100 },
+  { title: "Cyberpunk 2077", rating: 92 },
+  { title: "Alan Wake 2", rating: 90 },
+  { title: "Disco Elysium", rating: 90 },
+  { title: "Control Ultimate Edition", rating: 88 },
+  { title: "What Remains of Edith Finch", rating: 86 },
+  { title: "Stray", rating: 78 },
+  { title: "Baldur's Gate 3", rating: 42 },
+  { title: "EA Sports FC 26", rating: 25 },
+];
+
+const DEMO_PROFILE_PRICE_TARGETS = [
+  { title: "Mafia: The Old Country", region: "US", target: 38 },
+  { title: "The Alters", region: "US", target: 25 },
+  { title: "Death Stranding 2", region: "US", target: 45 },
+];
+
 const {
   normalizeTitle,
   aliasEntryForTitle,
@@ -812,6 +861,11 @@ const els = {
   timeFit: document.querySelector("#time-fit"),
   libraryCount: document.querySelector("#library-count"),
   guardedCount: document.querySelector("#guarded-count"),
+  demoContinuityPanel: document.querySelector("#demo-continuity-panel"),
+  demoContinuityKicker: document.querySelector("#demo-continuity-kicker"),
+  demoContinuityTitle: document.querySelector("#demo-continuity-title"),
+  demoContinuityDetail: document.querySelector("#demo-continuity-detail"),
+  demoContinuityActions: document.querySelector("#demo-continuity-actions"),
   firstRunStatus: document.querySelector("#first-run-status"),
   firstRunGrid: document.querySelector("#first-run-grid"),
   firstRunBridge: document.querySelector("#first-run-bridge"),
@@ -1990,6 +2044,35 @@ function applyDeepEntry() {
   render();
 }
 
+function applyDemoProfile() {
+  state = defaultState();
+  state.entryPath = "demo";
+  state.entryResult = "Demo profile: taste, library, wishlist, ratings, and price alerts are filled";
+  state.activeView = "today";
+  state.activeRegion = "US";
+  state.activeCluster = "play";
+  state.visualCatalogShelf = "smart";
+  state.mood = "story";
+  state.session = "short";
+  state.sessionMinutes = 45;
+  state.difficulty = "normal";
+  state.psPlus = true;
+  state.budget = 45;
+  state.gameSearchQuery = "Mafia: The Old Country";
+  state.liked = new Set(DEMO_PROFILE_REACTIONS.filter((item) => item.reaction === "loved").map((item) => item.title));
+  state.quickReactions = makeQuickReactionMap(DEMO_PROFILE_REACTIONS);
+  state.ratingImport = DEMO_PROFILE_RATINGS
+    .map((item) => `${item.title} - ${Math.max(1, Math.min(10, Math.round(item.rating / 10)))}/10`)
+    .join("\n");
+  analyzeTasteImport();
+
+  DEMO_PROFILE_STATES.forEach((item) => setGameState(item.title, item.state));
+  DEMO_PROFILE_RATINGS.forEach((item) => setGameRating(item.title, item.rating));
+  DEMO_PROFILE_PRICE_TARGETS.forEach((item) => setPriceWatchTarget(item.title, item.target, item.region));
+  recordFeedback("entry_demo_profile", "Demo profile");
+  render();
+}
+
 function renderQuickSwipeDeck() {
   const answered = quickReactionCount();
   const signalCount = quickTasteSignalCount();
@@ -2622,6 +2705,15 @@ function firstRunFlow(ranked) {
     ],
   };
 }
+function openDiscoverForTitle(title) {
+  if (title) state.gameSearchQuery = title;
+  openAppView("discover");
+  window.setTimeout(() => {
+    els.gameSearchInput?.focus({ preventScroll: true });
+    els.gameSearchInput?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 0);
+}
+
 function runFirstRunAction(action, title) {
   if (action === "quick-entry") {
     applyQuickEntry();
@@ -2648,16 +2740,83 @@ function runFirstRunAction(action, title) {
     return;
   }
   if (action === "discover-pick" && title) {
-    state.gameSearchQuery = title;
-    openAppView("discover");
-    window.setTimeout(() => {
-      els.gameSearchInput?.focus({ preventScroll: true });
-      els.gameSearchInput?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 0);
+    openDiscoverForTitle(title);
     return;
   }
   runAnswerAction(action, title);
   render();
+}
+
+function continuityActionLabel(action) {
+  return action.label || action.id;
+}
+
+function runContinuityAction(action, title) {
+  if (action === "load-demo") {
+    applyDemoProfile();
+    return;
+  }
+  if (action === "today") {
+    openAppView("today");
+    window.setTimeout(() => els.topPick?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+    return;
+  }
+  if (action === "detail" && title) {
+    openGameDetail(title);
+    return;
+  }
+  if (action === "discover") {
+    openDiscoverForTitle(title || state.gameSearchQuery);
+    return;
+  }
+  if (action === "wishlist") {
+    openAppView("wishlist");
+    return;
+  }
+}
+
+function renderDemoContinuity(ranked) {
+  if (!els.demoContinuityPanel) return;
+  const primaryGame = primaryDecisionGame(ranked);
+  const isDemo = state.entryPath === "demo";
+  const trackedCount = Object.keys(state.userGames || {}).length;
+  const savedCount = Object.values(state.userGames || {}).filter((game) => game.saved).length;
+  const searchTitle = state.gameSearchQuery || primaryGame?.title || "Mafia: The Old Country";
+  const searchCopy = state.activeView === "discover" && state.gameSearchQuery
+    ? `Discover is focused on ${state.gameSearchQuery}.`
+    : "Jump into Discover with the current recommendation as context.";
+
+  els.demoContinuityKicker.textContent = isDemo ? "Demo profile live" : "Product path";
+  els.demoContinuityTitle.textContent = isDemo
+    ? `${trackedCount} remembered games / ${savedCount} wishlist`
+    : "Load a filled profile";
+  els.demoContinuityDetail.textContent = isDemo
+    ? `${primaryGame?.title || "A first pick"} anchors Today. ${searchCopy}`
+    : "Use a stable sample taste, library, wishlist, ratings, and search context to inspect the full companion loop.";
+
+  const actions = isDemo
+    ? [
+        { id: "detail", label: "Open pick", title: primaryGame?.title || "" },
+        { id: "discover", label: state.activeView === "discover" ? "Refresh search" : "Explore in Discover", title: primaryGame?.title || searchTitle },
+        { id: "wishlist", label: "Wishlist", title: "" },
+        { id: "today", label: "Back to Today", title: "" },
+      ]
+    : [
+        { id: "load-demo", label: "Load demo profile", title: "" },
+        { id: "discover", label: "Explore catalog", title: searchTitle },
+      ];
+
+  els.demoContinuityActions.replaceChildren(
+    ...actions.map((action) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.continuityAction = action.id;
+      button.dataset.continuityTitle = action.title || "";
+      button.textContent = continuityActionLabel(action);
+      button.addEventListener("click", () => runContinuityAction(action.id, action.title || ""));
+      return button;
+    }),
+  );
 }
 
 function renderFirstRunFlow(ranked) {
@@ -4810,6 +4969,7 @@ function render() {
   // render(), so a section is repopulated the moment its view becomes active.
   const inView = (...views) => views.includes(state.activeView);
 
+  if (inView("today", "discover")) renderDemoContinuity(ranked);
   if (inView("today", "taste")) renderFirstRunFlow(ranked);
   if (inView("today")) renderTonightTime();
   if (inView("today")) renderCompanionAnswer(ranked);

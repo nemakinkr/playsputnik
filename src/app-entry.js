@@ -16,6 +16,7 @@
   }) {
     function entryLabel() {
       const state = getState();
+      if (state.entryPath === "demo") return "Demo profile";
       if (state.entryPath === "psn") return "Library guardrails";
       if (state.entryPath === "deep") return "Imported taste";
       return "Fast profile";
@@ -25,6 +26,13 @@
       const state = getState();
       const signalCount = quickTasteSignalCount();
       const answered = quickReactionCount();
+
+      if (state.entryPath === "demo") {
+        return {
+          label: "Full loop loaded",
+          value: "Taste, library, wishlist, ratings, and search context are ready for product review.",
+        };
+      }
 
       if (state.entryPath === "psn") {
         return {

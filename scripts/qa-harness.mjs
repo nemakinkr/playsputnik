@@ -58,6 +58,7 @@ const [
   productionSmokeSource,
   productionBrowserSmokeSource,
   coreJourneySmokeSource,
+  demoProfileSmokeSource,
   searchQualityMatrixSource,
   localEnvSource,
   searchFixtureImporterSource,
@@ -122,6 +123,7 @@ const [
   readFile(new URL("scripts/production-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/production-browser-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/core-journey-smoke-test.mjs", ROOT), "utf8"),
+  readFile(new URL("scripts/demo-profile-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-quality-matrix.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/local-env.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/import-global-search-fixtures.mjs", ROOT), "utf8"),
@@ -1244,6 +1246,12 @@ function checkSelectors() {
   assert(/core-journey-smoke/.test(coreJourneySmokeSource), "Core journey smoke test is missing");
   assert(/data-first-run-journey/.test(coreJourneySmokeSource), "Core journey smoke should verify the journey rail");
   assert(/data-detail-cockpit/.test(coreJourneySmokeSource), "Core journey smoke should verify the detail cockpit");
+  assert(/id="demo-continuity-panel"/.test(html), "Demo continuity panel is missing");
+  assert(/function applyDemoProfile/.test(appSource), "Demo profile loader is missing");
+  assert(/continuityAction/.test(appSource), "Continuity actions are missing");
+  assert(/demo-profile-smoke/.test(demoProfileSmokeSource), "Demo profile smoke test is missing");
+  assert(/Load demo profile/.test(demoProfileSmokeSource), "Demo smoke should verify loading a demo profile");
+  assert(/data-continuity-action="discover"/.test(demoProfileSmokeSource), "Demo smoke should verify Discover continuity");
   assert(/function firstRunTasteProof/.test(appAnswerSource), "First-run taste proof is missing");
   assert(/first-run-taste-proof/.test(appAnswerSource + appSource), "First-run taste proof renderer is missing");
   assert(/id: "more-signal"/.test(appAnswerSource), "First-run more-signal action is missing");

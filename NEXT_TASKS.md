@@ -134,6 +134,15 @@ Discover search with the recommended title prefilled. This makes the prototype
 feel guided from first taste signal to product memory instead of leaving the
 user with disconnected screens.
 
+### 15. Demo profile + Today/Discover continuity
+
+Status: done. A stable demo profile can now be loaded from the top product
+path panel: it seeds taste reactions, normalized library/wishlist memory,
+personal ratings, price targets, and search context. The same panel stays
+visible in Today and Discover so a reviewer can open the current pick, continue
+into Discover with search prefilled, jump to Wishlist, and return to Today.
+`scripts/demo-profile-smoke-test.mjs` verifies the loop on mobile.
+
 ## Track: Deferred (until there are users)
 
 - Web Push "evening ritual" (HTTPS + SW already in place).
@@ -161,6 +170,9 @@ user with disconnected screens.
   states what it learned, what to try now, and what remains uncertain.
 - Core user journey polish: first read now leads directly into detail,
   memory action, and Discover search through a compact guided rail.
+- Demo profile + Today/Discover continuity: one click seeds a complete review
+  profile and keeps the demo path connected across Today, Discover, and
+  Wishlist.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

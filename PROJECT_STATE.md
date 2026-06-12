@@ -27,7 +27,7 @@ reviews, catalogs, sale pages, and announcements.
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v11 (cache-first static / network-first data), **disabled on
+- Service worker v12 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -41,6 +41,10 @@ reviews, catalogs, sale pages, and announcements.
   now shows a concrete verdict: what was learned, what to try now, and what is
   still uncertain, plus a "Next 3 clicks" journey into detail, memory, and
   Discover search.
+- Demo/review mode: a top product-path panel can load a stable filled profile
+  with taste reactions, library/wishlist memory, ratings, price targets, and
+  search context; the same panel connects Today, Discover, Wishlist, and the
+  detail cockpit for review flows.
 - **Session planner:** "Tonight I have: 30m–evening" chips; chunk model
   (`gameChunkProfile` in src/app-score.js) scores complete-session fit and
   uses genre-aware labels (run vs match vs chapter/area) to avoid misleading
@@ -128,7 +132,7 @@ runtime errors and desktop overflow.
 
 User decision: polish before showing to people. Search-to-memory, production
 smoke, Discover/search visual polish, mobile navigation, first-session payoff,
-and the core journey from first read into detail/memory/Discover are now
-strengthened. Top next candidates are onboarding dogfood, demo/seed profile,
-and visual polish on Today/Discover continuity. See NEXT_TASKS.md and
+core journey, and demo Today/Discover continuity are now strengthened. Top next
+candidates are onboarding dogfood, visual polish on the demo path, and a
+decision to keep/merge the TLOU Part II SKU pair. See NEXT_TASKS.md and
 HANDOFF.md "Backlog".
