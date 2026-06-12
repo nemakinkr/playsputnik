@@ -1187,6 +1187,15 @@ function checkSelectors() {
   assert(globalSearchFixtures.records.some((record) => record.title === "L.A. Noire"), "Global search fixtures should include cinematic/story expansion records");
   assert(globalSearchFixtures.records.some((record) => record.title === "Commandos: Origins"), "Global search fixtures should include strategy/tactical expansion records");
   assert(!globalSearchFixtures.records.some((record) => /^(Cinematic \/ Story|RPG \/ Open World|Action \/ Challenge|Strategy \/ Sports \/ Racing)$/.test(record.title)), "Global search fixture importer should not import section headings as games");
+  {
+    const tlouRemastered = catalog.find((game) => game.title === "The Last of Us Part II Remastered");
+    const tlouOriginal = catalog.find((game) => game.title === "The Last of Us Part II");
+    assert(tlouRemastered?.editionRole === "primary", "TLOU Part II Remastered should be marked as the primary edition");
+    assert(tlouOriginal?.editionRole === "legacy", "TLOU Part II original should be marked as a legacy related edition");
+    assert(tlouOriginal?.priceCanonicalTitle === "The Last of Us Part II Remastered", "TLOU Part II original should point price tracking at Remastered");
+    assert(/function editionNoteHtml/.test(appSource), "Edition note UI is missing from detail drawer");
+    assert(/editionLabel/.test(appSearchSource), "Seed search results should preserve edition labels");
+  }
   assert(titleAliases.some((entry) => entry.title === "Grand Theft Auto VI" && entry.aliases.includes("GTA 6")), "Title aliases should cover GTA 6");
   assert(titleAliases.some((entry) => entry.title === "Black Myth: Wukong" && entry.aliases.includes("Wukong")), "Title aliases should cover Wukong shorthand");
   assert(titleAliases.some((entry) => entry.title === "Baldur's Gate 3" && entry.aliases.includes("Baldur's Gate III")), "Title aliases should cover BG3 roman numeral provider names");
@@ -1247,8 +1256,10 @@ function checkSelectors() {
   assert(/data-first-run-journey/.test(coreJourneySmokeSource), "Core journey smoke should verify the journey rail");
   assert(/data-detail-cockpit/.test(coreJourneySmokeSource), "Core journey smoke should verify the detail cockpit");
   assert(/id="demo-continuity-panel"/.test(html), "Demo continuity panel is missing");
+  assert(/id="demo-continuity-metrics"/.test(html), "Demo continuity metrics are missing");
   assert(/function applyDemoProfile/.test(appSource), "Demo profile loader is missing");
   assert(/continuityAction/.test(appSource), "Continuity actions are missing");
+  assert(/Sample profile live/.test(appSource), "Demo profile should read like a product review mode");
   assert(/demo-profile-smoke/.test(demoProfileSmokeSource), "Demo profile smoke test is missing");
   assert(/Load demo profile/.test(demoProfileSmokeSource), "Demo smoke should verify loading a demo profile");
   assert(/data-continuity-action="discover"/.test(demoProfileSmokeSource), "Demo smoke should verify Discover continuity");

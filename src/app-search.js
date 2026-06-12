@@ -155,6 +155,12 @@
         atoms: game.atoms || [],
         vibe: game.vibe,
         reason: "Already in the promoted seed catalog.",
+        editionGroup: game.editionGroup || "",
+        editionRole: game.editionRole || "",
+        editionLabel: game.editionLabel || "",
+        editionNote: game.editionNote || "",
+        priceCanonicalTitle: game.priceCanonicalTitle || "",
+        relatedEditions: game.relatedEditions || [],
         score: match.score,
         matchKind: match.kind,
       };

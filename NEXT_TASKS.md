@@ -73,9 +73,12 @@ subscription-availability.json. Revisit occasionally.
 
 ### 7. TLOU Part II SKU merge decision
 
-Status: decision needed. "The Last of Us Part II" and "... Part II
-Remastered" coexist (different SKUs/prices, same content). Either
-alias-merge (one entry, prefer Remastered) or keep both deliberately.
+Status: done. "The Last of Us Part II Remastered" and "The Last of Us Part
+II" now stay as deliberate related editions instead of accidental duplicates.
+Remastered is marked as the primary PS5 recommendation / price-tracking entry;
+the PS4 original is marked legacy and kept for owned/progress history, with a
+canonical price pointer back to Remastered and visible edition notes in search
+and detail.
 
 ### 8. Catalog expansion +100
 
@@ -143,6 +146,9 @@ visible in Today and Discover so a reviewer can open the current pick, continue
 into Discover with search prefilled, jump to Wishlist, and return to Today.
 `scripts/demo-profile-smoke-test.mjs` verifies the loop on mobile.
 
+Follow-up done: the panel now reads as review mode rather than a dev-only
+switch, with compact metrics for taste, memory, wishlist, and price intent.
+
 ## Track: Deferred (until there are users)
 
 - Web Push "evening ritual" (HTTPS + SW already in place).
@@ -173,6 +179,9 @@ into Discover with search prefilled, jump to Wishlist, and return to Today.
 - Demo profile + Today/Discover continuity: one click seeds a complete review
   profile and keeps the demo path connected across Today, Discover, and
   Wishlist.
+- Demo review-mode polish + TLOU edition cleanup: the filled-profile rail now
+  feels product-facing, and The Last of Us Part II versions are explicit related
+  editions rather than muddy duplicate-looking records.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

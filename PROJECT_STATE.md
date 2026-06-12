@@ -27,7 +27,7 @@ reviews, catalogs, sale pages, and announcements.
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v12 (cache-first static / network-first data), **disabled on
+- Service worker v13 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -44,7 +44,11 @@ reviews, catalogs, sale pages, and announcements.
 - Demo/review mode: a top product-path panel can load a stable filled profile
   with taste reactions, library/wishlist memory, ratings, price targets, and
   search context; the same panel connects Today, Discover, Wishlist, and the
-  detail cockpit for review flows.
+  detail cockpit for review flows. The panel now reads as a product review
+  mode with compact memory/taste/wishlist metrics instead of a dev-only switch.
+- Edition handling: the TLOU Part II PS5 Remastered / PS4 original pair is
+  kept as related editions. Remastered is the primary recommendation and price
+  tracking edition; the PS4 original remains useful for owned/progress history.
 - **Session planner:** "Tonight I have: 30m–evening" chips; chunk model
   (`gameChunkProfile` in src/app-score.js) scores complete-session fit and
   uses genre-aware labels (run vs match vs chapter/area) to avoid misleading
@@ -132,7 +136,7 @@ runtime errors and desktop overflow.
 
 User decision: polish before showing to people. Search-to-memory, production
 smoke, Discover/search visual polish, mobile navigation, first-session payoff,
-core journey, and demo Today/Discover continuity are now strengthened. Top next
-candidates are onboarding dogfood, visual polish on the demo path, and a
-decision to keep/merge the TLOU Part II SKU pair. See NEXT_TASKS.md and
-HANDOFF.md "Backlog".
+core journey, demo Today/Discover continuity, demo review-mode polish, and the
+TLOU Part II edition decision are now strengthened. Top next candidates are
+onboarding dogfood, detail-drawer visual polish, and data-health issue triage.
+See NEXT_TASKS.md and HANDOFF.md "Backlog".

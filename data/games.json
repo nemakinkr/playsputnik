@@ -944,6 +944,13 @@
     "adultTimeFit": "weekend",
     "backlog": false,
     "wishlist": false,
+    "editionGroup": "the-last-of-us-part-ii",
+    "editionRole": "primary",
+    "editionLabel": "PS5 Remastered",
+    "editionNote": "Primary PS5 edition for recommendations and price tracking. Keep the PS4 original as related library/history memory.",
+    "relatedEditions": [
+      "The Last of Us Part II"
+    ],
     "color": "linear-gradient(135deg, #233044, #d65f46)",
     "hltbHours": 25,
     "criticScore": 96
@@ -1316,6 +1323,14 @@
     "adultTimeFit": "anytime",
     "backlog": false,
     "wishlist": false,
+    "editionGroup": "the-last-of-us-part-ii",
+    "editionRole": "legacy",
+    "editionLabel": "PS4 original",
+    "editionNote": "Legacy PS4 edition. Prefer Remastered for new PS5 recommendations; keep this title for owned/progress history.",
+    "priceCanonicalTitle": "The Last of Us Part II Remastered",
+    "relatedEditions": [
+      "The Last of Us Part II Remastered"
+    ],
     "color": "linear-gradient(135deg, #12232e, #4fc3f7)",
     "hltbHours": 25,
     "criticScore": 93

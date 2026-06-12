@@ -865,6 +865,7 @@ const els = {
   demoContinuityKicker: document.querySelector("#demo-continuity-kicker"),
   demoContinuityTitle: document.querySelector("#demo-continuity-title"),
   demoContinuityDetail: document.querySelector("#demo-continuity-detail"),
+  demoContinuityMetrics: document.querySelector("#demo-continuity-metrics"),
   demoContinuityActions: document.querySelector("#demo-continuity-actions"),
   firstRunStatus: document.querySelector("#first-run-status"),
   firstRunGrid: document.querySelector("#first-run-grid"),
@@ -2786,13 +2787,33 @@ function renderDemoContinuity(ranked) {
     ? `Discover is focused on ${state.gameSearchQuery}.`
     : "Jump into Discover with the current recommendation as context.";
 
-  els.demoContinuityKicker.textContent = isDemo ? "Demo profile live" : "Product path";
+  els.demoContinuityKicker.textContent = isDemo ? "Sample profile live" : "Review mode";
   els.demoContinuityTitle.textContent = isDemo
     ? `${trackedCount} remembered games / ${savedCount} wishlist`
-    : "Load a filled profile";
+    : "See the companion with memory";
   els.demoContinuityDetail.textContent = isDemo
     ? `${primaryGame?.title || "A first pick"} anchors Today. ${searchCopy}`
-    : "Use a stable sample taste, library, wishlist, ratings, and search context to inspect the full companion loop.";
+    : "Load a realistic sample profile to inspect recommendations, wishlist, ratings, and price intent as one loop.";
+
+  const metrics = isDemo
+    ? [
+        ["Taste", "10 ratings"],
+        ["Memory", `${trackedCount} games`],
+        ["Wishlist", `${savedCount} saved`],
+      ]
+    : [
+        ["One click", "full loop"],
+        ["Taste", "seeded"],
+        ["Prices", "watch intent"],
+      ];
+  els.demoContinuityMetrics?.replaceChildren(
+    ...metrics.map(([label, value]) => {
+      const item = document.createElement("span");
+      item.className = "demo-continuity-metric";
+      item.innerHTML = `<small>${label}</small><strong>${value}</strong>`;
+      return item;
+    }),
+  );
 
   const actions = isDemo
     ? [
@@ -3555,6 +3576,35 @@ function searchResultMemoryStatus(result) {
   };
 }
 
+function editionLabelForItem(item) {
+  if (!item?.editionLabel) return "";
+  if (item.editionRole === "legacy") return `${item.editionLabel} / related edition`;
+  if (item.editionRole === "primary") return `${item.editionLabel} / primary edition`;
+  return item.editionLabel;
+}
+
+function editionBadgeHtml(item, modifier = "") {
+  const label = editionLabelForItem(item);
+  if (!label) return "";
+  return `<span class="fact edition ${modifier}">${label}</span>`;
+}
+
+function editionNoteHtml(game) {
+  if (!game?.editionLabel && !game?.priceCanonicalTitle) return "";
+  const priceNote = game.priceCanonicalTitle && game.priceCanonicalTitle !== game.title
+    ? ` Price tracking is anchored to ${game.priceCanonicalTitle}.`
+    : "";
+  return `
+    <section class="game-detail-section edition-note">
+      <div>
+        <span>Edition</span>
+        <strong>${editionLabelForItem(game) || "Related edition"}</strong>
+        <p>${game.editionNote || "This title is linked to another catalog edition."}${priceNote}</p>
+      </div>
+    </section>
+  `;
+}
+
 function renderGameSearch() {
   const query = (state.gameSearchQuery || "").trim();
   const results = globalSearchResults();
@@ -3637,6 +3687,7 @@ function renderGameSearch() {
           <div class="facts">
             ${atoms}
             ${platforms}
+            ${editionBadgeHtml(result)}
             <span class="fact access">${result.catalogStatus}</span>
             ${reconciliationFact}
             <span class="fact ${result.coverStatus === "missing" ? "warn" : "cover"}">cover ${result.coverStatus}</span>
@@ -3990,6 +4041,12 @@ function detailSourceTrustRows(game) {
       detail: hasPrice ? `${region} ${formatPrice(game, region)}${priceMeta?.checkedAt ? ` / ${priceMeta.checkedAt.slice(0, 10)}` : ""}` : "No usable price source yet",
       tone: priceSignal.canConfirm ? "good" : hasPrice ? "verify" : "warn",
     },
+    ...(game.priceCanonicalTitle && game.priceCanonicalTitle !== game.title ? [{
+      label: "Edition price",
+      value: "canonical link",
+      detail: `Treat ${game.priceCanonicalTitle} as the purchase-tracking edition; keep this one for library/history memory.`,
+      tone: "verify",
+    }] : []),
     {
       label: "Plus",
       value: hasPlusSignal ? plusSignal.label : "not listed",
@@ -4047,6 +4104,7 @@ function renderGameDetail(shouldFocus = false) {
         </div>
       `).join("")}
     </section>
+    ${editionNoteHtml(game)}
     ${detailCockpitHtml(game, { move: primaryMove, forecast, evidence, watchout, valueCard })}
     <section class="game-detail-section detail-decision-copy">
       <h3>What this is</h3>

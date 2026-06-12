@@ -150,10 +150,13 @@
       const discount = game.discount?.[region] || 0;
       const watch = priceCanGuideBuy(game, region) ? priceWatchRecord(game, region, 0) : null;
       const currency = game.priceMeta?.[region]?.currency || "USD";
+      const editionPriceNote = game.priceCanonicalTitle && game.priceCanonicalTitle !== game.title
+        ? ` / tracked via ${game.priceCanonicalTitle}`
+        : "";
       return {
         label: `${region} price`,
         value: formatPrice(game, region),
-        detail: `${discount}% ${status.canConfirm ? "off" : "signal"}${watch ? ` / ${historicalLowCopy(watch, currency)}` : ""}`,
+        detail: `${discount}% ${status.canConfirm ? "off" : "signal"}${watch ? ` / ${historicalLowCopy(watch, currency)}` : ""}${editionPriceNote}`,
       };
     }
 
