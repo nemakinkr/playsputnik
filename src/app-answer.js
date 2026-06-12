@@ -394,6 +394,29 @@
               : `${Math.max(0, QUICK_TASTE_USABLE_TARGET - signalCount)} more swipes make the read safer.`,
         },
       ];
+      const journey = [
+        {
+          step: "1",
+          label: "Open the pick",
+          detail: "See the cockpit: fit, risk, value, sources",
+          id: "detail-pick",
+          title: topGame.title,
+        },
+        {
+          step: "2",
+          label: libraryMode ? "Start it" : "Save intent",
+          detail: libraryMode ? "Move it into the active play queue" : "Put it in memory before browsing more",
+          id: libraryMode ? "play" : "save",
+          title: topGame.title,
+        },
+        {
+          step: "3",
+          label: "Search next",
+          detail: "Jump to Discover with this title as context",
+          id: "discover-pick",
+          title: topGame.title,
+        },
+      ];
 
       return {
         eyebrow: libraryMode ? "Library-first answer" : "First taste read",
@@ -407,10 +430,11 @@
         proof,
         readiness,
         summary,
+        journey,
         nextSteps: isSharp ? null : firstRunNextSteps(signalCount),
         actions: [
           { id: "focus-answer", label: "Agenda", title: "" },
-          { id: "play", label: "Play", title: topGame.title },
+          { id: libraryMode ? "play" : "save", label: libraryMode ? "Play" : "Wishlist", title: topGame.title },
           { id: "snooze", label: "Skip", title: topGame.title },
         ],
       };

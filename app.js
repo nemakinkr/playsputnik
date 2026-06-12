@@ -2643,6 +2643,19 @@ function runFirstRunAction(action, title) {
     focusTasteImport();
     return;
   }
+  if (action === "detail-pick" && title) {
+    openGameDetail(title);
+    return;
+  }
+  if (action === "discover-pick" && title) {
+    state.gameSearchQuery = title;
+    openAppView("discover");
+    window.setTimeout(() => {
+      els.gameSearchInput?.focus({ preventScroll: true });
+      els.gameSearchInput?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 0);
+    return;
+  }
   runAnswerAction(action, title);
   render();
 }
@@ -2741,8 +2754,24 @@ function renderFirstRunFlow(ranked) {
         `).join("")}
       </div>
     ` : ""}
+    ${bridge.journey?.length ? `
+      <div class="first-run-journey" data-first-run-journey aria-label="Next 3 clicks">
+        <div class="first-run-journey-head">
+          <span>Next 3 clicks</span>
+          <strong>Follow the product path</strong>
+          <small>From first read to memory and discovery.</small>
+        </div>
+        ${bridge.journey.map((step) => `
+          <button class="first-run-journey-step" data-first-run-action="${step.id}" data-first-run-title="${detailAttr(step.title)}" type="button">
+            <span>${step.step}</span>
+            <strong>${step.label}</strong>
+            <small>${step.detail}</small>
+          </button>
+        `).join("")}
+      </div>
+    ` : ""}
     <div class="first-run-actions">
-      ${bridge.actions.map((action) => `<button data-first-run-action="${action.id}" data-first-run-title="${action.title}" type="button">${action.label}</button>`).join("")}
+      ${bridge.actions.map((action) => `<button data-first-run-action="${action.id}" data-first-run-title="${detailAttr(action.title)}" type="button">${action.label}</button>`).join("")}
     </div>
     ${bridge.nextSteps ? `
       <div class="first-run-next-steps">

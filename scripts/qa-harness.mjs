@@ -57,6 +57,7 @@ const [
   searchMemorySmokeSource,
   productionSmokeSource,
   productionBrowserSmokeSource,
+  coreJourneySmokeSource,
   searchQualityMatrixSource,
   localEnvSource,
   searchFixtureImporterSource,
@@ -120,6 +121,7 @@ const [
   readFile(new URL("scripts/search-memory-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/production-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/production-browser-smoke-test.mjs", ROOT), "utf8"),
+  readFile(new URL("scripts/core-journey-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-quality-matrix.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/local-env.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/import-global-search-fixtures.mjs", ROOT), "utf8"),
@@ -1235,6 +1237,13 @@ function checkSelectors() {
   assert(/What I learned/.test(appAnswerSource), "First-run payoff should explain what was learned");
   assert(/Use it now/.test(appAnswerSource), "First-run payoff should tell the user they can act now");
   assert(/First read: try/.test(appAnswerSource), "First-run payoff should name the first read as a concrete pick");
+  assert(/data-first-run-journey/.test(appSource), "First-run payoff should expose the core journey rail");
+  assert(/Next 3 clicks/.test(appSource), "Core journey should tell the user what to do next");
+  assert(/detail-pick/.test(appAnswerSource + appSource), "Core journey should open the recommended detail cockpit");
+  assert(/discover-pick/.test(appAnswerSource + appSource), "Core journey should continue into Discover search");
+  assert(/core-journey-smoke/.test(coreJourneySmokeSource), "Core journey smoke test is missing");
+  assert(/data-first-run-journey/.test(coreJourneySmokeSource), "Core journey smoke should verify the journey rail");
+  assert(/data-detail-cockpit/.test(coreJourneySmokeSource), "Core journey smoke should verify the detail cockpit");
   assert(/function firstRunTasteProof/.test(appAnswerSource), "First-run taste proof is missing");
   assert(/first-run-taste-proof/.test(appAnswerSource + appSource), "First-run taste proof renderer is missing");
   assert(/id: "more-signal"/.test(appAnswerSource), "First-run more-signal action is missing");

@@ -126,6 +126,14 @@ concrete first read ("try X"), then shows a visible verdict block:
 "What I learned", "Use it now", and "Still uncertain". This makes the first
 payoff feel like a useful companion answer instead of a generic unlock.
 
+### 14. Core user journey polish
+
+Status: done. The first-session payoff now exposes a "Next 3 clicks" rail:
+open the recommended detail cockpit, save/start the pick, then continue into
+Discover search with the recommended title prefilled. This makes the prototype
+feel guided from first taste signal to product memory instead of leaving the
+user with disconnected screens.
+
 ## Track: Deferred (until there are users)
 
 - Web Push "evening ritual" (HTTPS + SW already in place).
@@ -151,6 +159,8 @@ payoff feel like a useful companion answer instead of a generic unlock.
   viewport without horizontal scrolling, with primary/secondary hierarchy.
 - First-session payoff polish: after 3 real onboarding signals, the product
   states what it learned, what to try now, and what remains uncertain.
+- Core user journey polish: first read now leads directly into detail,
+  memory action, and Discover search through a compact guided rail.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.
