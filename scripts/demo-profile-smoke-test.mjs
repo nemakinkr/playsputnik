@@ -26,7 +26,11 @@ const browser = await chromium.launch({
 });
 
 try {
-  const page = await browser.newPage({ viewport: { width: 390, height: 900 } });
+  const context = await browser.newContext({
+    serviceWorkers: "block",
+    viewport: { width: 390, height: 900 },
+  });
+  const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -36,7 +40,12 @@ try {
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
   await page.evaluate(() => localStorage.removeItem("playsputnik.prototype.state.v2"));
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
-  await page.waitForTimeout(1000);
+  await page.waitForFunction(
+    () => Array.from(document.querySelectorAll("[data-continuity-action]"))
+      .some((button) => button.textContent.trim() === "Load demo profile"),
+    null,
+    { timeout: 10000 },
+  );
 
   const empty = await page.evaluate(() => ({
     panel: Boolean(document.querySelector("#demo-continuity-panel")),
