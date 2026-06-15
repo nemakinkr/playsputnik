@@ -8,6 +8,14 @@ deliberately deferred until there are users.
 
 Run `./scripts/check.sh` before claiming any task done.
 
+## Current Operating Mode
+
+Token budget is tight. Prefer small, contained polish tasks that touch one
+surface, keep verification to fast gate + one relevant targeted check when
+needed, then still run the required final `./scripts/check.sh`. Avoid catalog
+expansion, broad redesigns, provider research, and multi-screen refactors until
+the user explicitly switches back to deeper work.
+
 ## Track: Polish (current focus)
 
 ### 1. Wishlist price alerts UI
@@ -38,8 +46,11 @@ flow if amnestied games feel too buried.
 Status: follow-up. The first polish pass is done: the 3-signal payoff no
 longer appears on an empty profile, the hero cards use the same quick-reaction
 format as the main swipe deck, and the first-run bridge now says "use now,
-improve later" with swipes / library / pasted-rating paths. Next work here
-should be driven by real dogfooding notes, not more abstract copy tuning.
+improve later" with swipes / library / pasted-rating paths. Follow-up done:
+the quick swipe card now states the 30-second value contract, and the first
+payoff copy frames 3 signals as the first useful read rather than a final
+profile. Next work here should be driven by real dogfooding notes, not more
+abstract copy tuning.
 
 ### 4. Chunk-label copy refinement
 
