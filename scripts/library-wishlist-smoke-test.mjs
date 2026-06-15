@@ -231,6 +231,8 @@ try {
     filterSummary: document.querySelector("#my-games-filter-summary")?.textContent || "",
     dashboardText: document.querySelector("#my-games-dashboard")?.textContent?.replace(/\s+/g, " ").trim() || "",
     myRows: document.querySelectorAll(".my-game-row").length,
+    nextSteps: document.querySelectorAll(".library-next-step").length,
+    nextStepText: document.querySelector(".library-next-step")?.textContent?.replace(/\s+/g, " ").trim() || "",
     summary: document.querySelector("#my-games-summary")?.textContent || "",
   }));
 
@@ -329,9 +331,11 @@ try {
   assert(library.filters >= 5, `Expected library filters, got ${library.filters}`);
   assert(library.activeFilter === "all", `Expected all library filter by default, got ${library.activeFilter}`);
   assert(libraryFiltered.activeFilter === "access", `Expected access library filter, got ${libraryFiltered.activeFilter}`);
-  assert(libraryFiltered.rows >= 1, "Expected access library filter to show at least one row");
   assert(/Access:/.test(libraryFiltered.summary), "Expected access library filter summary to render");
+  assert(/Access: \d+\/\d+/.test(libraryFiltered.summary), "Expected access filter to report visible/total rows");
   assert(library.myRows >= 4, `Expected My games rows after PSN demo, got ${library.myRows}`);
+  assert(library.nextSteps >= library.myRows, `Expected next-step guidance for each My games row, got ${library.nextSteps}/${library.myRows}`);
+  assert(/Next|No-spend|Intent|Memory/.test(library.nextStepText), "Expected actionable next-step copy in Library rows");
   assert(/No-spend|Wishlist|Taste memory/.test(library.dashboardText), "Library dashboard should expose product-level summaries");
   assert(wishlistBefore.activeView === "wishlist", `Expected Wishlist view, got ${wishlistBefore.activeView}`);
   assert(wishlistBefore.dashboardCards >= 3, `Expected wishlist dashboard cards, got ${wishlistBefore.dashboardCards}`);

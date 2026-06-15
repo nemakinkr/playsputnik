@@ -3288,6 +3288,63 @@ textarea {
   background: #fffaf1;
 }
 
+.library-next-step {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 7px;
+  border: 1px solid #dbeafe;
+  border-left: 3px solid var(--blue);
+  border-radius: 8px;
+  background: #f7faff;
+  padding: 7px 8px;
+}
+
+.my-game-row .library-next-step span {
+  margin: 0;
+  color: var(--blue);
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.library-next-step p {
+  margin: 0;
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.library-next-step.tone-active {
+  border-color: #bbf7d0;
+  border-left-color: var(--green);
+  background: #f4fbf6;
+}
+
+.my-game-row .library-next-step.tone-active span {
+  color: var(--green);
+}
+
+.library-next-step.tone-wishlist {
+  border-color: #fed7aa;
+  border-left-color: var(--amber);
+  background: #fffaf1;
+}
+
+.my-game-row .library-next-step.tone-wishlist span {
+  color: var(--amber);
+}
+
+.library-next-step.tone-finished {
+  border-color: #e2e8f0;
+  border-left-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.my-game-row .library-next-step.tone-finished span {
+  color: #64748b;
+}
+
 .my-game-actions {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

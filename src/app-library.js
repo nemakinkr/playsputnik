@@ -377,6 +377,37 @@
       ];
     }
 
+    function libraryNextStep(game) {
+      const userGame = effectiveUserGame(game) || {};
+      const lane = libraryLaneForGame(game);
+      if (userGame.completionStatus === "want_to_finish") {
+        return { label: "Next", detail: "Finish is the clearest action; keep it above new starts.", tone: "active" };
+      }
+      if (userGame.completionStatus === "playing") {
+        return { label: "Next", detail: "Resume or mark Done before opening another long game.", tone: "active" };
+      }
+      if (userGame.completionStatus === "paused") {
+        return { label: "Next", detail: "Resume, finish later, or drop it so it stops blocking the queue.", tone: "active" };
+      }
+      if (ACCESS_STATES.includes(userGame.access)) {
+        return { label: "No-spend", detail: "Playable now; try this before turning Wishlist into a purchase.", tone: "access" };
+      }
+      if (userGame.saved || game.wishlist || notebookWishlistWeight(game.title)) {
+        return { label: "Intent", detail: "Keep watching price and fit; do not treat it as urgent until a signal improves.", tone: "wishlist" };
+      }
+      if (userGame.completionStatus === "completed") {
+        return { label: "Memory", detail: "Done games stay as taste evidence and should not compete for tonight.", tone: "finished" };
+      }
+      if (userGame.completionStatus === "dropped" || userGame.hidden) {
+        return { label: "Memory", detail: "Kept as a negative signal; hidden games stay out of active picks.", tone: "finished" };
+      }
+      return {
+        label: lane === "suggested" ? "Try later" : "Next",
+        detail: "Add access, progress, or rating when you know what this game means to you.",
+        tone: lane,
+      };
+    }
+
     function isMemoryStateSelected(userGame, memoryState) {
       if (!memoryState) return false;
       if (ACCESS_STATES.includes(memoryState)) return userGame?.access === memoryState;
@@ -534,6 +565,7 @@
       importedRatingForGame,
       personalRatingFacet,
       memoryFacets,
+      libraryNextStep,
       isMemoryStateSelected,
       memoryHint,
       libraryMemoryRecords,

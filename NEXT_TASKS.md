@@ -207,6 +207,9 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 - Recommendation coherence: Today, Library, and detail now reuse one shared
   decision rationale, keeping the primary pick explanation consistent across
   the main journey.
+- Library queue dogfooding: My Games rows now show next-step cues for active,
+  access, wishlist, and finished/memory states so changing a state immediately
+  explains what the user should do next.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

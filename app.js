@@ -584,6 +584,7 @@ const {
   importedRatingForGame,
   personalRatingFacet,
   memoryFacets,
+  libraryNextStep,
   isMemoryStateSelected,
   memoryHint,
   libraryMemoryRecords,
@@ -3482,6 +3483,7 @@ function renderMyGames(ranked) {
 function renderMyGameRow(game, index, lane = "suggested") {
       const row = document.createElement("div");
       const userGame = effectiveUserGame(game) || {};
+      const nextStep = libraryNextStep(game);
       const facets = memoryFacets(game).map((facet) => `
         <span class="my-game-facet tone-${facet.tone}">
           <small>${facet.label}</small>
@@ -3524,6 +3526,10 @@ function renderMyGameRow(game, index, lane = "suggested") {
           </div>
           <span>${memoryHint(game, index)} / ${game.vibe}</span>
           <div class="my-game-facets">${facets}</div>
+          <div class="library-next-step tone-${nextStep.tone}">
+            <span>${nextStep.label}</span>
+            <p>${nextStep.detail}</p>
+          </div>
           <div class="facts">${atoms}</div>
           ${sourcePassport}
           ${enrichment}
