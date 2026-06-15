@@ -31,6 +31,7 @@
     watchOutCopy,
     personalEvidence,
     personalRankForecast,
+    decisionRationale,
     answerAccessLabel,
     priceStatus,
     formatPrice,
@@ -183,7 +184,7 @@
         {
           label: getIsLibraryFirstMode(topGame) ? "Library start" : primaryAccess ? "Start from access" : "Start",
           title: topGame.title,
-          detail: answerFitLine(topGame),
+          detail: decisionRationale(topGame).headline,
           tone: isAnswerAccessible(topGame) ? "access" : "primary",
           forecast: answerForecast(topGame),
           actions: companionAgendaActions(topGame),
@@ -209,23 +210,12 @@
       const { confidence } = explain(topGame, topGame.score);
       const watchout = watchOutCopy(topGame);
       const evidence = personalEvidence(topGame);
+      const rationale = decisionRationale(topGame);
       const memory = getTasteMemory();
       const topLikes = memory.likes.map((item) => item.label).slice(0, 3);
-      const access = effectiveGameState(topGame);
-      const accessLabel = answerAccessLabel(topGame);
       const libraryMode = getIsLibraryFirstMode(topGame);
       const queued = getPlayLaterQueue()[0];
       const fallback = ranked.find((game) => !titleMatches(game.title, topGame.title));
-      const sessionCopy = {
-        short: "a short evening",
-        medium: "a 1-2 hour session",
-        long: "a long evening",
-      }[state.session] || "tonight";
-      const accessCopy = access
-        ? `It is already marked as ${USER_STATE_LABELS[access] || access}, so this is a low-friction start.`
-        : accessLabel
-          ? `It has a ${accessLabel}, so this should be tested through access before any purchase.`
-          : "It is the cleanest current match from your taste and context.";
       const fallbackCopy = fallback
         ? `If that does not click, switch to ${fallback.title} instead of browsing the store.`
         : "If that does not click, mark it Not for me and I will adjust.";
@@ -236,8 +226,8 @@
         status: `${confidence} confidence / ${libraryMode ? "library-first" : state.session}${state.snoozed.size ? ` / ${state.snoozed.size} skipped` : ""}`,
         title: `I would play ${topGame.title}${libraryMode ? " from your library" : ""} tonight.`,
         paragraphs: [
-          `${accessCopy} It fits ${sessionCopy}${topLikes.length ? ` and your ${topLikes.join(" + ")} taste` : ""}.`,
-          `${watchout.label}: ${watchout.detail}. ${fallbackCopy}`,
+          `${rationale.headline}${topLikes.length ? ` It also follows your ${topLikes.join(" + ")} taste.` : ""}`,
+          `${rationale.risk} ${fallbackCopy}`,
           queueCopy,
         ],
         evidence,

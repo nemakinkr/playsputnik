@@ -27,7 +27,7 @@ reviews, catalogs, sale pages, and announcements.
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v14 (cache-first static / network-first data), **disabled on
+- Service worker v15 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -56,10 +56,11 @@ reviews, catalogs, sale pages, and announcements.
 - **Sputnik ratings 1–5** in the game drawer (stored 20–100 in
   `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
   events (weights −3..+3).
-- Game drawer: polished decision cockpit, hero badges for fit/time/value/next
-  move, smart primary CTA, status cards, facts, "Get it" links
-  (PS Store/RAWG/HLTB), price sparkline, PS Plus chip, polished per-region
-  price alert target, similar games, rating, swipe-to-close, focus trap.
+- Game drawer: polished decision cockpit, shared "why now" rationale, hero
+  badges for fit/time/value/next move, smart primary CTA, status cards,
+  facts, "Get it" links (PS Store/RAWG/HLTB), price sparkline, PS Plus chip,
+  polished per-region price alert target, similar games, rating,
+  swipe-to-close, focus trap.
 - Global search: local/provider/manual results can be added directly to
   Wishlist, Library, or Plus with an in-row memory confirmation panel; external
   results keep source passport + cover attribution and avoid fake live
@@ -137,7 +138,8 @@ runtime errors and desktop overflow.
 User decision: polish before showing to people. Search-to-memory, production
 smoke, Discover/search visual polish, mobile navigation, first-session payoff,
 core journey, demo Today/Discover continuity, demo review-mode polish, TLOU
-Part II edition decision, detail-drawer visual hierarchy, and data-health
-issue triage are now strengthened. Top next candidates are onboarding
-dogfood, Library/Today recommendation coherence, and expanded catalog/data
-trust polish. See NEXT_TASKS.md and HANDOFF.md "Backlog".
+Part II edition decision, detail-drawer visual hierarchy, data-health issue
+triage, and Today/Library/detail recommendation coherence are now
+strengthened. Top next candidates are onboarding dogfood, expanded catalog/data
+trust polish, and Library queue dogfooding. See NEXT_TASKS.md and HANDOFF.md
+"Backlog".

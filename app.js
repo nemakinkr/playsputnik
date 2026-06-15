@@ -473,6 +473,7 @@ const {
   personalReferenceGames,
   personalRankForecast,
   personalEvidence,
+  decisionRationale,
   factList,
 } = window.PlaySputnikRecommend.createRecommendTools({
   getState: () => state,
@@ -558,6 +559,7 @@ const {
   watchOutCopy,
   personalEvidence,
   personalRankForecast,
+  decisionRationale,
   answerAccessLabel,
   priceStatus,
   formatPrice,
@@ -615,7 +617,7 @@ const {
   feedbackActionLabel,
   effectiveGameState,
   effectiveUserGame,
-  explain,
+  decisionRationale,
   priceStatus,
   formatPrice,
   priceCanGuideBuy,
@@ -3943,12 +3945,14 @@ function detailAtomSignalHtml(game) {
 
 function detailCockpitHtml(game, { move, forecast, evidence, watchout, valueCard }) {
   const primaryMove = move || detailPrimaryMove(game);
+  const rationale = decisionRationale(game);
   const valueCopy = valueCard?.valueScore != null
     ? `${valueCard.valueScore} ${valueCard.valueScoreLabel}`
     : typeof game.prices?.[state.activeRegion] === "number"
       ? `${state.activeRegion} ${formatPrice(game, state.activeRegion)}`
       : "Price missing";
   const rows = [
+    { label: "Why now", value: rationale.label, detail: rationale.headline },
     { label: "Forecast", value: forecast.label, detail: forecast.detail },
     { label: "Taste proof", value: evidence.lines[0]?.label || "Early signal", detail: evidence.summary },
     { label: watchout.label, value: watchout.label === "Low risk" ? "No major blocker" : "Check first", detail: watchout.detail },
@@ -4085,10 +4089,11 @@ function renderGameDetail(shouldFocus = false) {
   }
   const game = detailScoredGame(detailGame);
 
-  const { reason, confidence } = explain(game, game.score);
+  const { confidence } = explain(game, game.score);
   const watchout = watchOutCopy(game);
   const forecast = personalRankForecast(game);
   const evidence = personalEvidence(game);
+  const rationale = decisionRationale(game);
   const primaryMove = detailPrimaryMove(game);
   const description = gameDescription(game);
   const statusCards = detailStatusCards(game);
@@ -4122,9 +4127,9 @@ function renderGameDetail(shouldFocus = false) {
     ${editionNoteHtml(game)}
     ${detailCockpitHtml(game, { move: primaryMove, forecast, evidence, watchout, valueCard })}
     <section class="game-detail-section detail-decision-copy">
-      <h3>What this is</h3>
+      <h3>Why this pick</h3>
       <p>${description}</p>
-      <p><strong>Why:</strong> ${reason}</p>
+      <p><strong>Same logic:</strong> ${rationale.detail}</p>
       <p><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
     </section>
     ${detailTasteFitHtml(game, evidence)}

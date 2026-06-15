@@ -302,6 +302,44 @@
       };
     }
 
+    function decisionRationale(game) {
+      const state = getState();
+      const region = state.activeRegion;
+      const { reason, confidence } = explain(game, scoreGame(game));
+      const forecast = personalRankForecast(game);
+      const evidence = personalEvidence(game);
+      const watchout = watchOutCopy(game);
+      const accessState = effectiveGameState(game);
+      const accessLabel = answerAccessLabel(game);
+      const accessCopy = accessState
+        ? `${USER_STATE_LABELS[accessState] || accessState}: use memory before browsing.`
+        : accessLabel
+          ? `${accessLabel}: test access before buying.`
+          : "No access shortcut: use taste fit before opening the store.";
+      const sessionCopy = {
+        short: "short evening",
+        medium: "1-2 hour session",
+        long: "long session",
+      }[state.session] || `${state.session} session`;
+      const priceCopy = typeof game.prices?.[region] === "number"
+        ? `${region} ${formatPrice(game, region)}`
+        : "price pending";
+
+      return {
+        label: accessState || accessLabel ? "Same logic: play before buy" : "Same logic: taste before store",
+        headline: `${accessCopy} ${forecast.label}; ${game.session} game for a ${sessionCopy}.`,
+        detail: `${reason} ${evidence.summary}`,
+        proof: evidence.summary,
+        risk: `${watchout.label}: ${watchout.detail}.`,
+        price: priceCopy,
+        confidence,
+        forecast,
+        watchout,
+        evidence,
+        chips: [confidence, forecast.label, accessState ? USER_STATE_LABELS[accessState] || accessState : accessLabel || priceCopy].filter(Boolean),
+      };
+    }
+
     function factList(game) {
       const state = getState();
       const region = state.activeRegion;
@@ -361,6 +399,7 @@
       personalReferenceGames,
       personalRankForecast,
       personalEvidence,
+      decisionRationale,
       factList,
     };
   }

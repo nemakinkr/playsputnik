@@ -68,6 +68,11 @@ surface, richer hero image treatment, scan-friendly fit/time/value/next-move
 badges, a clearer cockpit card, and desktop/mobile/dark-mode-safe layout
 guards.
 
+Follow-up done: Today, Library, and detail now share a single decision
+rationale from `app-recommend.js`, so "what to play tonight", the Library next
+action, and the detail cockpit explain the same play-before-buy /
+taste-before-store logic instead of drifting into three separate copies.
+
 ## Track: Data
 
 ### 6. PS Plus Premium category id
@@ -199,6 +204,9 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 - Detail drawer + data-health polish: the decision cockpit now reads more like
   a professional product surface, and current data issues are classified as
   price gaps only with 0 critical catalog issues.
+- Recommendation coherence: Today, Library, and detail now reuse one shared
+  decision rationale, keeping the primary pick explanation consistent across
+  the main journey.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

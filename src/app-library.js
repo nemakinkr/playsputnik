@@ -46,7 +46,7 @@
     formatPrice,
     priceCanGuideBuy,
     // from recommend module (additional)
-    explain,
+    decisionRationale,
     // from ranking module
     dealScore,
     dealReason,
@@ -108,25 +108,25 @@
       const rows = [];
 
       if (topGame) {
+        const rationale = decisionRationale(topGame);
         const topState = effectiveGameState(topGame);
         rows.push({
           id: `play-${topGame.title}`,
           label: "Tonight",
           title: topGame.title,
           tag: topState || `${topGame.session} session`,
-          detail: explain(topGame, topGame.score).reason,
+          detail: rationale.headline,
         });
       }
 
       if (accessGame) {
+        const rationale = decisionRationale(accessGame);
         rows.push({
           id: `access-${accessGame.title}`,
           label: getIsAlreadyAvailable(accessGame) ? "Use access" : "Subscription",
           title: accessGame.title,
           tag: effectiveGameState(accessGame) || "PS Plus signal",
-          detail: getIsAlreadyAvailable(accessGame)
-            ? "Prefer the existing library queue: active, paused, owned, permanent, or subscription access before buying more."
-            : "Try through subscription context before treating it as a purchase candidate.",
+          detail: rationale.headline,
         });
       }
 

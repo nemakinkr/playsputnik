@@ -1219,6 +1219,7 @@ function checkSelectors() {
   assert(/existingTitles\.set\(titleKey\(game\.title\), "seed_catalog"\)/.test(catalogImporterSource), "Catalog import should let seed catalog duplicates outrank backbone duplicates");
   assert(/Marvel's Wolverine/.test(catalogImportFixture), "Catalog import fixture should include a wishlist candidate");
   assert(/function personalEvidence/.test(appRecommendSource), "Personal evidence generator is missing");
+  assert(/function decisionRationale/.test(appRecommendSource), "Shared decision rationale is missing");
   assert(/function personalRankForecast/.test(appRecommendSource), "Personal ranking forecast is missing");
   assert(/hasRankingBaseline/.test(appRecommendSource), "Ranking forecast should require a ranking baseline");
   assert(/Fit tier:/.test(appRecommendSource), "Ranking forecast should fall back to fit tier without a ranking");
@@ -1270,6 +1271,7 @@ function checkSelectors() {
   assert(/id: "more-signal"/.test(appAnswerSource), "First-run more-signal action is missing");
   assert(/function bestLibraryPick/.test(appLibrarySource), "Library-first primary pick is missing");
   assert(/function primaryDecisionGame/.test(appLibrarySource), "Primary decision game selector is missing");
+  assert(/decisionRationale\(topGame\)/.test(appAnswerSource) && /decisionRationale\(topGame\)/.test(appLibrarySource), "Today and Library should share decision rationale");
   assert(/library-first/.test(appLibrarySource + appAnswerSource + appSource), "Companion answer should expose library-first mode");
   assert(/userGames/.test(appSource), "Normalized user-game memory store is missing");
   assert(/function effectiveUserGame/.test(appSource), "Effective user-game resolver is missing");
@@ -1375,6 +1377,7 @@ function checkSelectors() {
   assert(/function renderGameDetail/.test(appSource), "Game detail renderer is missing");
   assert(/function detailPrimaryMove/.test(appSource), "Game detail primary move helper is missing");
   assert(/function detailCockpitHtml/.test(appSource), "Game detail cockpit renderer is missing");
+  assert(/Why now/.test(appSource) && /Same logic/.test(appSource), "Detail cockpit should reuse the shared decision rationale");
   assert(/function detailTasteFitHtml/.test(appSource), "Game detail taste fit renderer is missing");
   assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
   assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
