@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T15:51:37.486Z",
+  "generatedAt": "2026-06-15T20:11:31.354Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 456,
   "regions": [
@@ -22,7 +22,7 @@
     "searchSourceCount": 5,
     "globalSearchFixtureCount": 117,
     "titleAliasCount": 76,
-    "priceHistoryCount": 4084,
+    "priceHistoryCount": 4565,
     "priceHistoryGameCount": 437,
     "libraryStates": [
       "later",
