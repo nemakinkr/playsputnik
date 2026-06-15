@@ -893,6 +893,8 @@ function checkSelectors() {
   assert(/quick-swipe-proof small/.test(css), "Follow-up hint should be styled as quiet supporting copy");
   assert(/quick-swipe-main/.test(appSource), "Swipe deck should have a focused main area");
   assert(/quick-swipe-proof/.test(appSource), "Swipe deck should show why the first signals already create value");
+  assert(/data-quick-swipe-contract/.test(appSource), "Swipe deck should show the 30-second value contract");
+  assert(/click.*to first pick/.test(appSource), "Swipe deck should tell users how close they are to the first pick");
   assert(/quick-swipe-meters/.test(appSource), "Swipe deck should show progress meters");
   assert(/quick-swipe-track/.test(appSource), "Swipe deck should render progress tracks");
   assert(/quick-swipe-atom-row/.test(appSource), "Swipe deck atom row is missing");

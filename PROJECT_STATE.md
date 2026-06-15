@@ -27,7 +27,7 @@ reviews, catalogs, sale pages, and announcements.
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v16 (cache-first static / network-first data), **disabled on
+- Service worker v17 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -35,9 +35,10 @@ reviews, catalogs, sale pages, and announcements.
 - Static app, no build step: `index.html` + `styles.css` + `app.js` (~5.1k
   lines) + 25 IIFE modules in `src/` (`window.PlaySputnikXxx = { createXxxTools }`).
 - Product areas: Today, Library, Discover, Wishlist, Taste, Deals, Data, Stats.
-- Onboarding: 30-game swipe deck, 3/6/10 milestones, animated hero exit,
-  first-pick payoff after 3 real taste signals, and "use now / improve later"
-  guidance for swipes, library access, or pasted ratings. The first payoff
+- Onboarding: 30-game swipe deck, visible 30-second contract, 3/6/10
+  milestones, animated hero exit, first-pick payoff after 3 real taste
+  signals, and "use now / improve later" guidance for swipes, library access,
+  or pasted ratings. The first payoff
   now shows a concrete verdict: what was learned, what to try now, and what is
   still uncertain, plus a "Next 3 clicks" journey into detail, memory, and
   Discover search.

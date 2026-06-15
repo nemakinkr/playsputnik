@@ -210,6 +210,9 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 - Library queue dogfooding: My Games rows now show next-step cues for active,
   access, wishlist, and finished/memory states so changing a state immediately
   explains what the user should do next.
+- Onboarding dogfood: the quick swipe card now shows a visible 30-second
+  contract ("clicks to first pick" plus 3/6/10 progress), making the value
+  promise obvious before the user has answered enough games.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

@@ -2107,6 +2107,18 @@ function renderQuickSwipeDeck() {
   const proofDetail = gate.ready
     ? gate.maturity
     : "Liked and Not for me both teach taste. Not played just moves on without pretending you rated it.";
+  const firstRemaining = Math.max(0, QUICK_TASTE_FIRST_TARGET - signalCount);
+  const usableRemaining = Math.max(0, QUICK_TASTE_USABLE_TARGET - signalCount);
+  const sharpRemaining = Math.max(0, QUICK_TASTE_SHARP_TARGET - signalCount);
+  const contractLabel = gate.ready ? "First pick unlocked" : `${firstRemaining} click${firstRemaining === 1 ? "" : "s"} to first pick`;
+  const nextMilestoneCopy = signalCount >= QUICK_TASTE_SHARP_TARGET
+    ? "The rest is optional calibration."
+    : signalCount >= QUICK_TASTE_USABLE_TARGET
+      ? `${sharpRemaining} more real signal${sharpRemaining === 1 ? "" : "s"} to sharper picks.`
+      : `${usableRemaining} more real signal${usableRemaining === 1 ? "" : "s"} to a safer read.`;
+  const contractDetail = gate.ready
+    ? nextMilestoneCopy
+    : "You can use the app after 3 real like/dislike answers. PSN and pasted ratings can wait.";
 
   els.quickSwipeDeck.innerHTML = `
     <div class="quick-swipe-card">
@@ -2123,6 +2135,15 @@ function renderQuickSwipeDeck() {
         <span>${proofTitle}</span>
         <p>${proofDetail}</p>
         <small>${followUpHint}</small>
+      </div>
+      <div class="quick-swipe-contract" data-quick-swipe-contract>
+        <span>${contractLabel}</span>
+        <p>${contractDetail}</p>
+        <div>
+          <strong>${signalCount}/${QUICK_TASTE_FIRST_TARGET}</strong>
+          <strong>${signalCount}/${QUICK_TASTE_USABLE_TARGET}</strong>
+          <strong>${signalCount}/${QUICK_TASTE_SHARP_TARGET}</strong>
+        </div>
       </div>
       <div class="quick-swipe-meters">
         <div>
