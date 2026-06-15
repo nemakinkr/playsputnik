@@ -215,6 +215,8 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
   promise obvious before the user has answered enough games.
 - Library action polish: My Games rows now show 2-3 contextual quick actions
   first and move the full state/rating matrix into a `More states` disclosure.
+- Mobile polish pass: tightened mobile spacing for the quick onboarding
+  contract and My Games quick actions while preserving touch-friendly controls.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

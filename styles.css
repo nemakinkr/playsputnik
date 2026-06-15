@@ -6516,6 +6516,30 @@ textarea {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .quick-swipe-card {
+    gap: 8px;
+    min-height: 0;
+  }
+
+  .quick-swipe-contract {
+    padding: 7px;
+  }
+
+  .quick-swipe-contract div {
+    gap: 4px;
+  }
+
+  .quick-swipe-contract strong {
+    padding: 5px 4px;
+    font-size: 0.68rem;
+  }
+
+  .quick-swipe-actions button {
+    min-height: 42px;
+    padding: 0 5px;
+    font-size: 0.72rem;
+  }
+
   .deal-row,
   .profile-game-row,
   .buy-decision-row,
@@ -6538,12 +6562,21 @@ textarea {
 
   .my-game-actions,
   .my-game-action-matrix,
-  .my-game-quick-actions,
   .my-game-facets,
   .game-search-actions,
   .source-passport,
   .my-game-row.is-queued .my-game-actions {
     grid-template-columns: 1fr;
+  }
+
+  .my-game-quick-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .my-game-quick-actions button {
+    min-height: 40px;
+    padding: 0 5px;
+    font-size: 0.72rem;
   }
 
   .game-search-actions {
