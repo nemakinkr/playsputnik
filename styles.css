@@ -3823,15 +3823,15 @@ textarea {
   z-index: 1;
   display: grid;
   align-content: start;
-  gap: 12px;
-  width: min(540px, calc(100vw - 24px));
+  gap: 14px;
+  width: min(580px, calc(100vw - 24px));
   max-height: calc(100vh - 24px);
   overflow: auto;
   border: 1px solid #dbe3ef;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.24);
-  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.28);
+  padding: 16px;
   outline: none;
   will-change: transform;
   transition: transform 0.2s ease;
@@ -3894,21 +3894,23 @@ textarea {
   display: grid;
   align-content: end;
   gap: 8px;
-  min-height: 250px;
+  min-height: 280px;
   overflow: hidden;
   border-radius: 8px;
   background: var(--poster);
   background-position: center;
   background-size: cover;
   color: #fff;
-  padding: 16px;
+  padding: 18px;
 }
 
 .game-detail-visual::after {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(8, 14, 23, 0.05) 0%, rgba(8, 14, 23, 0.82) 100%);
+  background:
+    linear-gradient(180deg, rgba(8, 14, 23, 0.02) 0%, rgba(8, 14, 23, 0.5) 52%, rgba(8, 14, 23, 0.9) 100%),
+    linear-gradient(90deg, rgba(8, 14, 23, 0.68), rgba(8, 14, 23, 0.1) 62%);
   content: "";
 }
 
@@ -3922,9 +3924,29 @@ textarea {
 }
 
 .game-detail-visual strong {
-  max-width: 92%;
-  font-size: 1.35rem;
+  max-width: 94%;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
+  font-size: 1.52rem;
   line-height: 1.08;
+}
+
+.detail-hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 96%;
+  margin-top: 2px;
+}
+
+.detail-hero-badges span {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.56);
+  color: #fff;
+  padding: 5px 8px;
+  backdrop-filter: blur(10px);
+  font-size: 0.68rem;
+  font-weight: 950;
 }
 
 .game-detail-cover-source {
@@ -3939,7 +3961,7 @@ textarea {
 
 .game-detail-body {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .game-detail-status {
@@ -4030,14 +4052,19 @@ textarea {
 
 .detail-cockpit {
   display: grid;
-  gap: 10px;
+  gap: 12px;
+  border-color: #c7d2fe;
+  background:
+    linear-gradient(135deg, rgba(0, 55, 145, 0.08), rgba(0, 0, 0, 0) 42%),
+    #ffffff;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
 }
 
 .detail-cockpit-head {
   display: grid;
-  gap: 5px;
+  gap: 6px;
   border-left: 4px solid var(--blue);
-  padding-left: 10px;
+  padding: 2px 0 2px 12px;
 }
 
 .detail-cockpit-head.tone-play,
@@ -4070,7 +4097,7 @@ textarea {
 
 .detail-cockpit-head strong {
   color: var(--ink);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   line-height: 1.15;
 }
 
@@ -4128,6 +4155,10 @@ textarea {
   gap: 8px;
 }
 
+.detail-cockpit-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .detail-signal-row,
 .detail-source-row,
 .detail-evidence-row {
@@ -4140,6 +4171,12 @@ textarea {
 .detail-signal-row:first-child,
 .detail-source-row:first-child,
 .detail-evidence-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.detail-cockpit-grid .detail-signal-row:first-child,
+.detail-cockpit-grid .detail-signal-row:nth-child(2) {
   border-top: 0;
   padding-top: 0;
 }
@@ -6109,6 +6146,15 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .detail-cockpit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-cockpit-grid .detail-signal-row:nth-child(2) {
+    border-top: 1px solid #e4e9f1;
+    padding-top: 8px;
+  }
+
   .queue-toolbar {
     grid-template-columns: 1fr;
   }
@@ -6991,6 +7037,23 @@ textarea {
 [data-theme="dark"] .detail-reference-chip {
   background: var(--card-bg);
   border-color: var(--card-border);
+}
+
+[data-theme="dark"] .game-detail-drawer {
+  background: linear-gradient(180deg, var(--card-bg) 0%, #101826 100%);
+}
+
+[data-theme="dark"] .detail-cockpit {
+  background:
+    linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(0, 0, 0, 0) 44%),
+    var(--card-bg);
+  border-color: rgba(96, 165, 250, 0.28);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .detail-hero-badges span {
+  background: rgba(15, 23, 42, 0.68);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 [data-theme="dark"] .game-search-memory {

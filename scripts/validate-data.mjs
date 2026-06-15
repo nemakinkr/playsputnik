@@ -132,6 +132,54 @@ const issuesByGame = games
   .map((game) => ({ title: game.title || "Untitled", issues: validateGame(game) }))
   .filter((entry) => entry.issues.length > 0);
 
+function issueKind(issue) {
+  if (/Missing [A-Z]{2} price( snapshot)?/.test(issue)) return "price_gap";
+  if (/Missing [A-Z]{2} (discount|currency|price source|checkedAt)/.test(issue)) return "price_integrity";
+  if (/cover/i.test(issue)) return "cover";
+  if (/atom|session|difficulty|commitment|tone|content|reviewBurden|adultTimeFit/i.test(issue)) return "metadata";
+  return "other";
+}
+
+function issueTriageSummary(entries) {
+  const flat = entries.flatMap((entry) => entry.issues.map((issue) => ({ title: entry.title, issue, kind: issueKind(issue) })));
+  const counts = flat.reduce((acc, item) => {
+    acc[item.kind] = (acc[item.kind] || 0) + 1;
+    return acc;
+  }, {});
+  const critical = flat.filter((item) => !["price_gap"].includes(item.kind));
+  const fullPriceGapGames = entries.filter((entry) => regions.every((region) => (
+    entry.issues.includes(`Missing ${region} price`) || entry.issues.includes(`Missing ${region} price snapshot`)
+  )));
+  const partialPriceGapGames = entries.filter((entry) => (
+    entry.issues.some((issue) => issueKind(issue) === "price_gap")
+    && !fullPriceGapGames.some((full) => full.title === entry.title)
+  ));
+  return {
+    mode: critical.length ? "fix_critical_first" : "price_gap_only",
+    summary: critical.length
+      ? `${critical.length} non-price issues need review before investor demos.`
+      : "All current issues are missing regional price records; catalog metadata, covers, and adult signals pass.",
+    criticalIssueCount: critical.length,
+    priceGapIssueCount: counts.price_gap || 0,
+    priceIntegrityIssueCount: counts.price_integrity || 0,
+    coverIssueCount: counts.cover || 0,
+    metadataIssueCount: counts.metadata || 0,
+    otherIssueCount: counts.other || 0,
+    affectedGameCount: entries.length,
+    fullPriceGapGameCount: fullPriceGapGames.length,
+    partialPriceGapGameCount: partialPriceGapGames.length,
+    topPriceGapGames: entries
+      .filter((entry) => entry.issues.some((issue) => issueKind(issue) === "price_gap"))
+      .slice(0, 8)
+      .map((entry) => ({
+        title: entry.title,
+        missingRegions: regions.filter((region) => (
+          entry.issues.includes(`Missing ${region} price`) || entry.issues.includes(`Missing ${region} price snapshot`)
+        )),
+      })),
+  };
+}
+
 const storeIssues = [
   ...priceSnapshots
     .filter((snapshot) => !knownTitles.has(titleKey(snapshot.title || "")))
@@ -643,6 +691,7 @@ const health = {
     .slice(0, 12)
     .map(([atom, count]) => ({ atom, count })),
   issueCount: issuesByGame.reduce((sum, entry) => sum + entry.issues.length, 0),
+  issueTriage: issueTriageSummary(issuesByGame),
   issuesByGame,
 };
 

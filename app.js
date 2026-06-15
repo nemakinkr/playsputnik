@@ -3975,6 +3975,20 @@ function detailCockpitHtml(game, { move, forecast, evidence, watchout, valueCard
   `;
 }
 
+function detailHeroBadgesHtml(game, { forecast, valueCard, move }) {
+  const region = state.activeRegion;
+  const price = typeof game.prices?.[region] === "number" ? `${region} ${formatPrice(game, region)}` : "Price pending";
+  const length = game.hltbHours ? `${game.hltbHours}h HLTB` : `${game.session} session`;
+  const next = move?.actionLabel || move?.label || "Next move";
+  const badges = [
+    { label: forecast.label, tone: "fit" },
+    { label: length, tone: "time" },
+    { label: valueCard?.roi?.perHourLabel ? `${valueCard.roi.perHourLabel}/h` : price, tone: "price" },
+    { label: next, tone: "move" },
+  ];
+  return `<div class="detail-hero-badges">${badges.map((badge) => `<span class="tone-${badge.tone}">${badge.label}</span>`).join("")}</div>`;
+}
+
 function detailTasteFitHtml(game, evidence) {
   const references = evidence.references || [];
   return `
@@ -4091,6 +4105,7 @@ function renderGameDetail(shouldFocus = false) {
   els.gameDetailVisual.innerHTML = `
     <span>${forecast.label}</span>
     <strong>${game.title}</strong>
+    ${detailHeroBadgesHtml(game, { forecast, valueCard, move: primaryMove })}
   `;
   applyCoverVisual(els.gameDetailVisual, game);
   renderCoverSourceInto(els.gameDetailCoverSource, game);

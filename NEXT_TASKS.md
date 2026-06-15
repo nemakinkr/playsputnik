@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-12. Pick the next task here without rereading the
+Last updated: 2026-06-15. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 CLAUDE.md (dev workflow + perf rules). The user's decision: **polish before
 showing the product to people** — retention/analytics tracks are
@@ -63,6 +63,11 @@ buy-zone games open the PS Store when a source URL exists, watched games stay
 price-watched, and unknown games go to Wishlist. The smoke test now clicks the
 CTA and verifies stateful actions update memory.
 
+Follow-up done: visual hierarchy is stronger. The drawer has a wider polished
+surface, richer hero image treatment, scan-friendly fit/time/value/next-move
+badges, a clearer cockpit card, and desktop/mobile/dark-mode-safe layout
+guards.
+
 ## Track: Data
 
 ### 6. PS Plus Premium category id
@@ -80,21 +85,30 @@ the PS4 original is marked legacy and kept for owned/progress history, with a
 canonical price pointer back to Remastered and visible edition notes in search
 and detail.
 
-### 8. Catalog expansion +100
+### 8. Data-health issue triage
+
+Status: done. `validate-data.mjs` now classifies issues into price gaps,
+price integrity, covers, metadata, and other critical buckets. The current
+catalog is explicitly `price_gap_only`: 80 missing regional price records,
+0 critical catalog issues. The Data workbench separates "critical" from
+"price gaps" so missing prices for delisted/edge-case games do not look like
+broken covers, atoms, or adult-fit metadata.
+
+### 9. Catalog expansion +100
 
 Status: todo, low priority. scripts/expand-catalog.mjs +
 apply-atom-corrections.mjs pipeline exists; mind RAWG rate limits.
 
 ## Track: Dev Loop
 
-### 9. Library/Wishlist smoke seed hardening
+### 10. Library/Wishlist smoke seed hardening
 
 Status: done. `scripts/library-wishlist-smoke-test.mjs` now waits for the
 deferred render before mutating storage, writes localStorage + IndexedDB
 together, clears stale preloaded IDB state, and restored the strict Access-row
 assertion. This prevents old deferred saves from clobbering the seeded profile.
 
-### 10. Production smoke after Pages deploy
+### 11. Production smoke after Pages deploy
 
 Status: done. `.github/workflows/deploy-pages.yml` now runs
 `scripts/production-smoke-test.mjs` after deploy against the published Pages
@@ -105,7 +119,7 @@ worker contract. Follow-up done: the deploy workflow also runs
 CDP smoke that opens live Pages, searches Black Myth, saves it to Wishlist,
 opens the detail cockpit, and checks runtime errors/desktop overflow.
 
-### 11. Discover/search visual polish
+### 12. Discover/search visual polish
 
 Status: done. Search result rows now render as compact action cards with
 clear memory confirmation, stronger selected button states, and dark-mode-safe
@@ -114,7 +128,7 @@ selected-state accent bars, and more stable action-button layout. Design smoke
 now accepts the visible first-run onboarding panel when the quick swipe card is
 present but hidden.
 
-### 12. Mobile navigation polish
+### 13. Mobile navigation polish
 
 Status: done. The mobile product-area nav no longer relies on horizontal
 scroll. Today/Library/Discover/Wishlist render as a 2x2 primary grid with
@@ -122,14 +136,14 @@ short helper labels; Taste/Deals/Data/Stats render as a compact secondary row.
 Active tabs now expose `aria-current`, and `design-smoke-test.mjs` guards
 against app-nav horizontal overflow.
 
-### 13. First-session payoff polish
+### 14. First-session payoff polish
 
 Status: done. After 3 real taste signals, the first-run bridge now names a
 concrete first read ("try X"), then shows a visible verdict block:
 "What I learned", "Use it now", and "Still uncertain". This makes the first
 payoff feel like a useful companion answer instead of a generic unlock.
 
-### 14. Core user journey polish
+### 15. Core user journey polish
 
 Status: done. The first-session payoff now exposes a "Next 3 clicks" rail:
 open the recommended detail cockpit, save/start the pick, then continue into
@@ -137,7 +151,7 @@ Discover search with the recommended title prefilled. This makes the prototype
 feel guided from first taste signal to product memory instead of leaving the
 user with disconnected screens.
 
-### 15. Demo profile + Today/Discover continuity
+### 16. Demo profile + Today/Discover continuity
 
 Status: done. A stable demo profile can now be loaded from the top product
 path panel: it seeds taste reactions, normalized library/wishlist memory,
@@ -182,6 +196,9 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 - Demo review-mode polish + TLOU edition cleanup: the filled-profile rail now
   feels product-facing, and The Last of Us Part II versions are explicit related
   editions rather than muddy duplicate-looking records.
+- Detail drawer + data-health polish: the decision cockpit now reads more like
+  a professional product surface, and current data issues are classified as
+  price gaps only with 0 critical catalog issues.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

@@ -1,6 +1,6 @@
 # PlaySputnik Project State
 
-Last updated: 2026-06-12 (Codex resumed after Claude session series; see
+Last updated: 2026-06-15 (Codex resumed after Claude session series; see
 HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
 performance rules).
 
@@ -27,7 +27,7 @@ reviews, catalogs, sale pages, and announcements.
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v13 (cache-first static / network-first data), **disabled on
+- Service worker v14 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -56,10 +56,10 @@ reviews, catalogs, sale pages, and announcements.
 - **Sputnik ratings 1–5** in the game drawer (stored 20–100 in
   `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
   events (weights −3..+3).
-- Game drawer: decision cockpit, smart primary CTA, status cards, facts,
-  "Get it" links (PS Store/RAWG/HLTB), price sparkline, PS Plus chip,
-  polished per-region price alert target, similar games, rating,
-  swipe-to-close, focus trap.
+- Game drawer: polished decision cockpit, hero badges for fit/time/value/next
+  move, smart primary CTA, status cards, facts, "Get it" links
+  (PS Store/RAWG/HLTB), price sparkline, PS Plus chip, polished per-region
+  price alert target, similar games, rating, swipe-to-close, focus trap.
 - Global search: local/provider/manual results can be added directly to
   Wishlist, Library, or Plus with an in-row memory confirmation panel; external
   results keep source passport + cover attribution and avoid fake live
@@ -127,8 +127,8 @@ runtime errors and desktop overflow.
 - PSN import is demo logic, not a real PSN integration.
 - RAWG covers are candidates, not official art; keep attribution.
 - Never claim live prices/Plus without per-record source + freshness.
-- validate-data reports 80 honest issues (delisted games missing some
-  regional prices) — expected.
+- validate-data reports 80 honest price-gap issues (delisted/edge-case games
+  missing some regional prices), 0 critical catalog issues — expected.
 - Dark-mode overrides are suffix-selector passes at the end of styles.css —
   check new components in dark mode.
 
@@ -136,7 +136,8 @@ runtime errors and desktop overflow.
 
 User decision: polish before showing to people. Search-to-memory, production
 smoke, Discover/search visual polish, mobile navigation, first-session payoff,
-core journey, demo Today/Discover continuity, demo review-mode polish, and the
-TLOU Part II edition decision are now strengthened. Top next candidates are
-onboarding dogfood, detail-drawer visual polish, and data-health issue triage.
-See NEXT_TASKS.md and HANDOFF.md "Backlog".
+core journey, demo Today/Discover continuity, demo review-mode polish, TLOU
+Part II edition decision, detail-drawer visual hierarchy, and data-health
+issue triage are now strengthened. Top next candidates are onboarding
+dogfood, Library/Today recommendation coherence, and expanded catalog/data
+trust polish. See NEXT_TASKS.md and HANDOFF.md "Backlog".

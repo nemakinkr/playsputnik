@@ -148,7 +148,10 @@
     function renderDataWorkbench() {
       const dataHealth = getDataHealth();
       if (!dataHealth) return;
-      els.workbenchStatus.textContent = `${dataHealth.status} / ${dataHealth.issueCount} issues`;
+      const triage = dataHealth.issueTriage || {};
+      els.workbenchStatus.textContent = triage.criticalIssueCount
+        ? `${dataHealth.status} / ${triage.criticalIssueCount} critical / ${dataHealth.issueCount} issues`
+        : `${dataHealth.status} / ${dataHealth.issueCount} price issues / 0 critical`;
       const regionCards = dataHealth.regions.map((region) => {
         const coverage = dataHealth.regionCoverage[region];
         return { label: `${region} coverage`, value: `${coverage.priceCoverage}% price`, sub: `${coverage.psPlusCount} PS Plus picks` };
@@ -163,6 +166,16 @@
           label: "Covers",
           value: `${dataHealth.coverCoverage?.coverage || 0}% ready`,
           sub: `${dataHealth.coverCoverage?.fallbackCount || 0} fallback / ${dataHealth.coverCoverage?.realImageCount || 0} images`,
+        },
+        {
+          label: "Issue triage",
+          value: `${triage.criticalIssueCount || 0} critical`,
+          sub: triage.summary || "Waiting for health summary",
+        },
+        {
+          label: "Price gaps",
+          value: `${triage.priceGapIssueCount ?? dataHealth.issueCount} records`,
+          sub: `${triage.fullPriceGapGameCount || 0} full gaps / ${triage.partialPriceGapGameCount || 0} partial`,
         },
         ...regionCards,
         ...adultCards,

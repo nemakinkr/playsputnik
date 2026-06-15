@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-14T12:37:39.093Z",
+  "generatedAt": "2026-06-15T09:56:57.242Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 456,
   "regions": [
@@ -299,6 +299,87 @@
     }
   ],
   "issueCount": 80,
+  "issueTriage": {
+    "mode": "price_gap_only",
+    "summary": "All current issues are missing regional price records; catalog metadata, covers, and adult signals pass.",
+    "criticalIssueCount": 0,
+    "priceGapIssueCount": 80,
+    "priceIntegrityIssueCount": 0,
+    "coverIssueCount": 0,
+    "metadataIssueCount": 0,
+    "otherIssueCount": 0,
+    "affectedGameCount": 22,
+    "fullPriceGapGameCount": 18,
+    "partialPriceGapGameCount": 4,
+    "topPriceGapGames": [
+      {
+        "title": "Alan Wake 2",
+        "missingRegions": [
+          "GB",
+          "DE"
+        ]
+      },
+      {
+        "title": "The Outer Worlds",
+        "missingRegions": [
+          "GB",
+          "DE"
+        ]
+      },
+      {
+        "title": "Doom (2016)",
+        "missingRegions": [
+          "GB",
+          "DE"
+        ]
+      },
+      {
+        "title": "NBA 2K17",
+        "missingRegions": [
+          "US",
+          "GB",
+          "DE",
+          "TR"
+        ]
+      },
+      {
+        "title": "FIFA 14",
+        "missingRegions": [
+          "US",
+          "GB",
+          "DE",
+          "TR"
+        ]
+      },
+      {
+        "title": "MLB The Show 17",
+        "missingRegions": [
+          "US",
+          "GB",
+          "DE",
+          "TR"
+        ]
+      },
+      {
+        "title": "FIFA 17",
+        "missingRegions": [
+          "US",
+          "GB",
+          "DE",
+          "TR"
+        ]
+      },
+      {
+        "title": "Tales of Arise",
+        "missingRegions": [
+          "US",
+          "GB",
+          "DE",
+          "TR"
+        ]
+      }
+    ]
+  },
   "issuesByGame": [
     {
       "title": "Alan Wake 2",

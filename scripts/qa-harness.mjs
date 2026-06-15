@@ -43,6 +43,7 @@ const [
   searchSources,
   catalogSources,
   globalSearchFixtures,
+  dataHealth,
   devHealth,
   catalogImporterSource,
   catalogPromoterSource,
@@ -108,6 +109,7 @@ const [
   readJson("data/search-sources.json"),
   readJson("data/catalog-sources.json"),
   readJson("data/global-search-fixtures.json"),
+  readJson("data/data-health.json"),
   readJson("data/dev-health.json"),
   readFile(new URL("scripts/import-catalog-backbone.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/promote-catalog-candidates.mjs", ROOT), "utf8"),
@@ -1279,6 +1281,10 @@ function checkSelectors() {
   assert(/function setGameRating/.test(appSource), "My Games should support personal rating updates");
   assert(/id="my-games-dashboard"/.test(html), "Library view should expose a My Games dashboard");
   assert(/data-library-filter="active"/.test(html) && /data-library-filter="access"/.test(html), "Library queue filters are missing");
+  assert(dataHealth.issueTriage?.mode === "price_gap_only", "Data health should classify current issues as price gaps only");
+  assert(dataHealth.issueTriage?.criticalIssueCount === 0, "Data health should expose zero critical issues for current catalog");
+  assert(/Issue triage/.test(appDataPanelSource), "Data workbench should explain issue triage");
+  assert(/Price gaps/i.test(appDataPanelSource), "Data workbench should distinguish price gaps from critical issues");
   assert(/function libraryDashboardCards/.test(appLibrarySource), "Library dashboard cards are missing");
   assert(/function libraryLaneForGame/.test(appLibrarySource), "Library queue lanes are missing");
   assert(/function libraryFilterMatches/.test(appLibrarySource), "Library queue filter logic is missing");
