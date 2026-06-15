@@ -367,7 +367,7 @@
         {
           label: "What I learned",
           value: proof.pull,
-          detail: `${signalCount} taste signals / ${confidence} fit`,
+          detail: `${signalCount} taste signals already give me a direction / ${confidence} fit`,
         },
         {
           label: "Use it now",
@@ -413,7 +413,7 @@
         title: libraryMode ? `${topGame.title} is already ready.` : `First read: try ${topGame.title}.`,
         detail: libraryMode
           ? `${detailParts.join(" / ")}. ${watchout.label}: ${watchout.detail}.`
-          : `${earlyTasteNote}${signalCount} signals are enough to stop browsing and test one direction: ${topGame.title}. The read will get sharper, but the first useful answer is already here. ${watchout.label}: ${watchout.detail}.`,
+          : `${earlyTasteNote}${signalCount} signals are enough to stop browsing and test one direction: ${topGame.title}. This is not the final profile; it is the first useful read. ${watchout.label}: ${watchout.detail}.`,
         confidenceLabel,
         confidenceReady,
         verdict,
