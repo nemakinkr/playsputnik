@@ -1296,6 +1296,8 @@ function checkSelectors() {
   assert(/function renderLibraryDashboard/.test(appSource), "Library dashboard renderer is missing");
   assert(/my-game-facets/.test(appSource), "My Games should show separate access/progress/rating facets");
   assert(/library-next-step/.test(appSource + css), "My Games should show next-step guidance");
+  assert(/my-game-quick-actions/.test(appSource + css), "My Games should expose compact quick actions");
+  assert(/my-game-more-actions/.test(appSource + css), "My Games should hide advanced states behind a disclosure");
   assert(/data-memory-rating/.test(appSource), "My Games rating controls are missing");
   assert(/id="wishlist-dashboard"/.test(html), "Wishlist view should expose a dashboard");
   assert(/data-wishlist-filter="verify"/.test(html) && /data-wishlist-filter="missing"/.test(html), "Wishlist queue filters are missing");

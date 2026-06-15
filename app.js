@@ -3501,10 +3501,36 @@ function renderMyGames(ranked) {
   );
 }
 
+function libraryQuickActions(game, userGame, lane) {
+  if (userGame.completionStatus === "want_to_finish") {
+    return [["playing", "Start"], ["completed", "Done"], ["paused", "Pause"]];
+  }
+  if (userGame.completionStatus === "playing") {
+    return [["completed", "Done"], ["paused", "Pause"], ["dropped", "Drop"]];
+  }
+  if (userGame.completionStatus === "paused") {
+    return [["playing", "Resume"], ["want_to_finish", "Finish"], ["dropped", "Drop"]];
+  }
+  if (["completed", "dropped"].includes(userGame.completionStatus) || userGame.hidden) {
+    return [["playing", "Replay"], ["saved", "Wishlist"], ["", "Clear"]];
+  }
+  if (userGame.access) {
+    return [["playing", "Play"], ["want_to_finish", "Finish"], ["saved", "Wishlist"]];
+  }
+  if (userGame.saved || game.wishlist || notebookWishlistWeight(game.title)) {
+    return [["owned_forever", "Bought"], ["playing", "Start"], ["", "Clear"]];
+  }
+  if (lane === "suggested") {
+    return [["saved", "Wishlist"], ["owned", "Owned"], ["subscription", "Plus"]];
+  }
+  return [["playing", "Play"], ["saved", "Wishlist"], ["", "Clear"]];
+}
+
 function renderMyGameRow(game, index, lane = "suggested") {
       const row = document.createElement("div");
       const userGame = effectiveUserGame(game) || {};
       const nextStep = libraryNextStep(game);
+      const quickActions = libraryQuickActions(game, userGame, lane);
       const facets = memoryFacets(game).map((facet) => `
         <span class="my-game-facet tone-${facet.tone}">
           <small>${facet.label}</small>
@@ -3556,8 +3582,18 @@ function renderMyGameRow(game, index, lane = "suggested") {
           ${enrichment}
         </div>
         <div class="my-game-actions">
-          ${actionGroups}
-          ${ratingGroup}
+          <div class="my-game-quick-actions" aria-label="${game.title} quick actions">
+            ${quickActions.map(([memoryState, label]) => `
+              <button class="${isMemoryStateSelected(userGame, memoryState) ? "is-selected" : ""}" data-memory-state="${memoryState}" type="button">${label}</button>
+            `).join("")}
+          </div>
+          <details class="my-game-more-actions">
+            <summary>More states</summary>
+            <div class="my-game-action-matrix">
+              ${actionGroups}
+              ${ratingGroup}
+            </div>
+          </details>
         </div>
       `;
       row.querySelector("[data-memory-detail]").addEventListener("click", () => openGameDetail(game.title));

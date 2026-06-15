@@ -213,6 +213,8 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 - Onboarding dogfood: the quick swipe card now shows a visible 30-second
   contract ("clicks to first pick" plus 3/6/10 progress), making the value
   promise obvious before the user has answered enough games.
+- Library action polish: My Games rows now show 2-3 contextual quick actions
+  first and move the full state/rating matrix into a `More states` disclosure.
 - Backlog amnesty P0: repeated explicit skips are tracked per title; Today can
   suggest archiving a repeatedly skipped game without guilt; amnestied games
   are hidden with a dedicated source and counted/listed in Stats.

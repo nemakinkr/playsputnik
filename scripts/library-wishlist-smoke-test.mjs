@@ -233,6 +233,8 @@ try {
     myRows: document.querySelectorAll(".my-game-row").length,
     nextSteps: document.querySelectorAll(".library-next-step").length,
     nextStepText: document.querySelector(".library-next-step")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    quickActions: document.querySelectorAll(".my-game-quick-actions").length,
+    moreActions: document.querySelectorAll(".my-game-more-actions").length,
     summary: document.querySelector("#my-games-summary")?.textContent || "",
   }));
 
@@ -336,6 +338,8 @@ try {
   assert(library.myRows >= 4, `Expected My games rows after PSN demo, got ${library.myRows}`);
   assert(library.nextSteps >= library.myRows, `Expected next-step guidance for each My games row, got ${library.nextSteps}/${library.myRows}`);
   assert(/Next|No-spend|Intent|Memory/.test(library.nextStepText), "Expected actionable next-step copy in Library rows");
+  assert(library.quickActions >= library.myRows, `Expected compact quick actions for each My games row, got ${library.quickActions}/${library.myRows}`);
+  assert(library.moreActions >= library.myRows, `Expected advanced state disclosure for each My games row, got ${library.moreActions}/${library.myRows}`);
   assert(/No-spend|Wishlist|Taste memory/.test(library.dashboardText), "Library dashboard should expose product-level summaries");
   assert(wishlistBefore.activeView === "wishlist", `Expected Wishlist view, got ${wishlistBefore.activeView}`);
   assert(wishlistBefore.dashboardCards >= 3, `Expected wishlist dashboard cards, got ${wishlistBefore.dashboardCards}`);

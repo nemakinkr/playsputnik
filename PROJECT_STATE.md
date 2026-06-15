@@ -27,7 +27,7 @@ reviews, catalogs, sale pages, and announcements.
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v17 (cache-first static / network-first data), **disabled on
+- Service worker v18 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -71,8 +71,10 @@ reviews, catalogs, sale pages, and announcements.
   scrolling; Today/Library/Discover/Wishlist get primary 2x2 slots and
   Taste/Deals/Data/Stats sit in a compact secondary row.
 - Library/My Games: queue rows separate access/progress/rating facets and now
-  show a next-step cue (resume, no-spend, intent, or memory) so state changes
-  explain what should happen next.
+  show a next-step cue (resume, no-spend, intent, or memory) plus compact
+  quick actions, with advanced state/rating controls hidden behind a
+  disclosure so state changes explain what should happen next without a button
+  wall.
 - Backlog amnesty: repeated explicit skips are tracked per title; after 5
   skips Today can suggest letting a game go without guilt, archiving it as
   hidden with `source: "backlog_amnesty"` and counting it in Stats. Amnestied
