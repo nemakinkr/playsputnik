@@ -89,6 +89,12 @@ reviews, catalogs, sale pages, and announcements.
 - Error states: init overlay, deferred-data toast, offline indicator,
   SW update banner.
 
+## Engineering principle
+
+Invisible bug classes become automated gates, not memory: check.sh + CI run
+perf, dark-mode contrast, and mobile-layout gates against a SEEDED profile.
+See AGENTS.md "Core engineering principle" / CLAUDE.md.
+
 ## Performance contract (critical)
 
 `render()` re-renders everything; budget <800ms WITH a populated profile

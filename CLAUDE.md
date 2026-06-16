@@ -23,6 +23,19 @@ python3 -m http.server 7432        # serve (or use .claude/launch.json "playsput
   in sw.js whenever app.js/styles.css change, or returning users get stale code.
 - gh CLI: `~/.local/gh-cli/gh_2.93.0_macOS_arm64/bin/gh` (authed as nemakinkr).
 
+## Core principle: invisible bug classes → automated gates
+
+The single most important lesson here. **A bug class that is invisible during
+normal development will rot silently across edits and agents.** Don't fight it
+with discipline/memory — encode it as a deterministic gate that fails the build.
+Three times now: performance (empty profile hid a ~10s render), dark mode
+(hardcoded light colors look fine in the light theme you're viewing), mobile
+(desktop viewport hides overflow). Each is now a gate run by check.sh + CI with
+a SEEDED profile. When you fix a bug, ask whether the whole class can recur
+invisibly; if so, add a gate (CDP template: contrast-check.mjs / mobile-check.mjs
+— system Chrome, no install). Narrow high-confidence assertions only — a flaky
+gate gets disabled. For colors: use tokens so the bug can't be written at all.
+
 ## Performance rules (hard-won)
 
 `render()` re-renders everything; budget is <800ms with a POPULATED profile
@@ -66,7 +79,9 @@ were spent finding these by hand.
 **The gates** (deterministic, keep green): `scripts/contrast-check.mjs`
 (check.sh stage 5 + CI) boots the app dark with a SEEDED profile and fails on
 any light solid background OR dark-on-dark text; `scripts/mobile-check.mjs`
-(stage 6 + CI) fails on 375px horizontal overflow or primary controls < 24px.
+(stage 6 + CI) fails on 375px horizontal overflow or primary controls < 24px;
+`scripts/a11y-check.mjs` (stage 7 + CI) fails on interactive controls with no
+accessible name.
 Both use system Chrome over CDP (no install), run locally and on the ubuntu
 runner. Test dark mode with a
 seeded/demo profile, never empty (empty profiles hide most components, same

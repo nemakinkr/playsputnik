@@ -13,10 +13,10 @@ if [ ! -x "$NODE" ]; then
   echo "❌ node not found"; exit 1
 fi
 
-echo "── 1/6 validate-data ──────────────────────────"
+echo "── 1/7 validate-data ──────────────────────────"
 "$NODE" scripts/validate-data.mjs
 
-echo "── 2/6 qa-harness ─────────────────────────────"
+echo "── 2/7 qa-harness ─────────────────────────────"
 "$NODE" scripts/qa-harness.mjs
 
 if [ "$1" = "--fast" ]; then
@@ -33,16 +33,19 @@ if ! curl -s -o /dev/null "http://127.0.0.1:7432/index.html"; then
 fi
 trap '[ -n "$STARTED_SERVER" ] && kill $STARTED_SERVER 2>/dev/null' EXIT
 
-echo "── 3/6 browser smoke ──────────────────────────"
+echo "── 3/7 browser smoke ──────────────────────────"
 "$NODE" scripts/browser-smoke-test.mjs "http://127.0.0.1:7432/?v=check" | tail -3
 
-echo "── 4/6 perf budget (populated profile) ────────"
+echo "── 4/7 perf budget (populated profile) ────────"
 "$NODE" scripts/perf-budget-test.mjs "http://127.0.0.1:7432/?v=check-perf"
 
-echo "── 5/6 dark-mode contrast gate ────────────────"
+echo "── 5/7 dark-mode contrast gate ────────────────"
 "$NODE" scripts/contrast-check.mjs "http://127.0.0.1:7432/?v=check-contrast"
 
-echo "── 6/6 mobile layout gate (375px) ─────────────"
+echo "── 6/7 mobile layout gate (375px) ─────────────"
 "$NODE" scripts/mobile-check.mjs "http://127.0.0.1:7432/?v=check-mobile"
+
+echo "── 7/7 accessibility gate ─────────────────────"
+"$NODE" scripts/a11y-check.mjs "http://127.0.0.1:7432/?v=check-a11y"
 
 echo "✅ all checks passed"
