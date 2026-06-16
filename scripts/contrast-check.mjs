@@ -119,25 +119,56 @@ function scanInPage(LUM) {
 
   const parse = (s) => { const m = s.match(/[\d.]+/g); return m ? m.map(Number) : null; };
   const lum = (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  // nearest opaque SOLID background up the tree; null if an image background is
+  // encountered first (can't measure cover-art-backed text — skip it).
+  const nearestOpaque = (el) => {
+    let e = el;
+    while (e) {
+      const cs = getComputedStyle(e);
+      if (cs.backgroundImage !== "none") return null;
+      const m = parse(cs.backgroundColor);
+      if (m && (m[3] === undefined || m[3] >= 0.95)) return m.slice(0, 3);
+      e = e.parentElement;
+    }
+    return [10, 16, 24];
+  };
   const views = ["today", "library", "discover", "wishlist", "taste", "deals", "data", "stats"];
   const offenders = {};
+  const add = (kind, key, sample, v) => {
+    const k = kind + "::" + key;
+    if (!offenders[k]) offenders[k] = { kind, key, views: [], sample };
+    if (!offenders[k].views.includes(v)) offenders[k].views.push(v);
+  };
   views.forEach((v) => {
     try { openAppView(v); render(); } catch (e) {}
     document.querySelectorAll("main *").forEach((el) => {
       if (el.offsetParent === null) return;
-      const c = parse(getComputedStyle(el).backgroundColor);
-      if (!c) return;
-      if (!(c[3] === undefined || c[3] >= 0.9) || lum(c) <= LUM) return;
-      const r = el.getBoundingClientRect();
-      if (r.width < 30 || r.height < 10) return;
       const cls = (typeof el.className === "string" && el.className) ? el.className.split(" ")[0] : el.tagName;
-      const key = cls + " | " + getComputedStyle(el).backgroundColor;
-      if (!offenders[key]) offenders[key] = { views: [], sample: (el.textContent || "").trim().slice(0, 20) };
-      if (!offenders[key].views.includes(v)) offenders[key].views.push(v);
+
+      // (1) light SOLID background in dark mode
+      const c = parse(getComputedStyle(el).backgroundColor);
+      if (c && (c[3] === undefined || c[3] >= 0.9) && lum(c) > LUM) {
+        const r = el.getBoundingClientRect();
+        if (r.width >= 30 && r.height >= 10) {
+          add("light-bg", cls + " | " + getComputedStyle(el).backgroundColor, (el.textContent || "").trim().slice(0, 20), v);
+        }
+      }
+
+      // (2) dark text on a dark solid background (leaf text only; skip image-backed)
+      if (el.children.length === 0) {
+        const t = (el.textContent || "").trim();
+        if (t) {
+          const bg = nearestOpaque(el);
+          const fg = parse(getComputedStyle(el).color);
+          if (bg && fg && lum(bg) < 70 && lum(fg) < 95) {
+            add("dark-text", cls + " | " + getComputedStyle(el).color + " on rgb(" + bg.map(Math.round).join(",") + ")", t.slice(0, 20), v);
+          }
+        }
+      }
     });
   });
   try { openAppView("today"); } catch (e) {}
-  return JSON.stringify(Object.entries(offenders).map(([k, val]) => ({ key: k, views: val.views.join(","), sample: val.sample })));
+  return JSON.stringify(Object.values(offenders).map((o) => ({ kind: o.kind, key: o.key, views: o.views.join(","), sample: o.sample })));
 }
 
 async function launchChrome() {
@@ -181,13 +212,23 @@ try {
   clearTimeout(hardTimer);
 
   if (offenders.length) {
-    console.error(`❌ Dark-mode contrast: ${offenders.length} element(s) have a LIGHT solid background in dark mode:`);
-    offenders.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
-    console.error('\nFix: use a theme token for the background (var(--card-bg) / --card-bg-soft /');
-    console.error('--chip-bg / --surface-2 / --accent-bg / --panel / --surface), or a [data-theme="dark"] override.');
+    const lightBg = offenders.filter((o) => o.kind === "light-bg");
+    const darkText = offenders.filter((o) => o.kind === "dark-text");
+    console.error(`❌ Dark-mode contrast: ${offenders.length} issue(s) in dark mode:`);
+    if (lightBg.length) {
+      console.error(`  ${lightBg.length} LIGHT solid background(s):`);
+      lightBg.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
+    }
+    if (darkText.length) {
+      console.error(`  ${darkText.length} DARK text on dark background:`);
+      darkText.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
+    }
+    console.error('\nFix: use theme tokens — backgrounds via var(--card-bg)/--card-bg-soft/');
+    console.error('--chip-bg/--surface-2/--accent-bg/--panel/--surface, text via var(--text-mid)/');
+    console.error('--text-strong/--ink — or add a [data-theme="dark"] override. See CLAUDE.md.');
     process.exit(1);
   }
-  console.log("✅ Dark-mode contrast OK (no light solid backgrounds in dark mode across 8 views)");
+  console.log("✅ Dark-mode contrast OK (no light backgrounds or dark-on-dark text across 8 views)");
 } catch (error) {
   await cleanup();
   clearTimeout(hardTimer);

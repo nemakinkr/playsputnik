@@ -37,6 +37,7 @@ Start here, in this order:
   backgrounds (`var(--card-bg)`/`--card-bg-soft`/`--chip-bg`/`--surface-2`/
   `--accent-bg`/`--panel`/`--surface`) and text (`--text-mid`/`--text-strong`/
   `--ink`) — NEVER a hardcoded light-hex background or dark-hex text color.
-  `scripts/contrast-check.mjs` (check.sh stage 5) fails on any light solid
-  background in dark mode; test dark with a SEEDED profile, not empty. See
+  `scripts/contrast-check.mjs` (check.sh + CI) fails on any light background or
+  dark-on-dark text in dark mode; `scripts/mobile-check.mjs` fails on 375px
+  overflow or controls < 24px. Test with a SEEDED profile, not empty. See
   CLAUDE.md "Dark mode rules".

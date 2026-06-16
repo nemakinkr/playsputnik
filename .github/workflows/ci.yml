@@ -29,3 +29,5 @@ jobs:
           sleep 1
       - name: Dark-mode contrast gate
         run: node scripts/contrast-check.mjs http://127.0.0.1:7432/
+      - name: Mobile layout gate (375px)
+        run: node scripts/mobile-check.mjs http://127.0.0.1:7432/

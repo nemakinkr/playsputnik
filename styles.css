@@ -7732,7 +7732,8 @@ select:focus-visible,
 [data-theme="dark"] .amnesty-copy p,
 [data-theme="dark"] .price-alert span,
 [data-theme="dark"] .price-alert small,
-[data-theme="dark"] [class*="-dashboard-card"] span {
+[data-theme="dark"] [class*="-dashboard-card"] span,
+[data-theme="dark"] [class*="-dashboard-card"] p {
   color: var(--text-mid);
 }
 
@@ -8045,12 +8046,14 @@ select:focus-visible,
 /* Mobile touch targets — the "More states" disclosure summary (14px tall) and
    the queue Details button (24px) are too thin to tap comfortably on phones. */
 @media (max-width: 640px) {
-  .my-game-more-actions summary {
+  .my-game-more-actions summary,
+  .export-import-sources summary {
     display: flex;
     align-items: center;
     min-height: 32px;
   }
-  .queue-detail-button {
+  .queue-detail-button,
+  .deals-filter-btn {
     min-height: 30px;
   }
 }
@@ -8212,4 +8215,10 @@ select:focus-visible,
   background: var(--card-bg-soft);
   border-color: var(--card-border);
   color: var(--text-mid);
+}
+
+/* Dark theme — dev-health code snippets kept a dark-blue text color (#173f9a)
+   on the now-dark code surface; lighten it for readability. */
+[data-theme="dark"] .dev-health-row code {
+  color: var(--blue-bright);
 }
