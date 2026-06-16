@@ -34,6 +34,7 @@
   --radius-md: 10px;
   --radius-sm: 7px;
   --body-gradient: linear-gradient(180deg, #eef3fb 0%, #e3eaf5 100%);
+  --chip-bg: #f1f5f9;
 }
 
 [data-theme="dark"] {
@@ -66,6 +67,7 @@
   --accent-bg: #16264a;
   --accent-text: #93b8ff;
   --body-gradient: linear-gradient(180deg, #0e141c 0%, #0a0f16 100%);
+  --chip-bg: #1b273c;
 }
 
 * {
@@ -658,7 +660,7 @@ h3 {
   font-size: 0.75rem;
   font-weight: 600;
   color: #334155;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   border: 1px solid #e2e8f0;
   border-radius: 5px;
   padding: 2px 7px;
@@ -1033,7 +1035,7 @@ textarea {
 
 .atom-pill {
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 5px 8px;
   font-size: 0.74rem;
@@ -2234,7 +2236,7 @@ textarea {
 
 .fact {
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 5px 9px;
   font-size: 0.76rem;
@@ -2277,7 +2279,7 @@ textarea {
 }
 
 .fact.cover {
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #475569;
 }
 
@@ -2359,7 +2361,7 @@ textarea {
   align-self: start;
   min-width: 42px;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: var(--ink);
   padding: 5px 8px;
   text-align: center;
@@ -2771,7 +2773,7 @@ textarea {
 .answer-agenda-row > span {
   width: fit-content;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 4px 7px;
   font-size: 0.68rem;
@@ -2852,7 +2854,7 @@ textarea {
 
 .answer-chips span {
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 5px 8px;
   font-size: 0.74rem;
@@ -2986,7 +2988,7 @@ textarea {
 }
 
 .plan-tag {
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
 }
 
@@ -3075,7 +3077,7 @@ textarea {
 }
 
 .library-plan-tag {
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
 }
 
@@ -3233,7 +3235,7 @@ textarea {
   width: fit-content;
   margin-bottom: 0;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 4px 7px;
   font-size: 0.68rem;
@@ -3258,7 +3260,7 @@ textarea {
 }
 
 .queue-lane.tone-finished {
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #64748b;
 }
 
@@ -3732,7 +3734,7 @@ textarea {
 }
 
 .decision-tag {
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
 }
 
@@ -3764,7 +3766,7 @@ textarea {
 .wishlist-decision {
   width: fit-content;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 5px 8px;
   font-size: 0.74rem;
@@ -4719,7 +4721,7 @@ textarea {
 .source-state {
   width: fit-content;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   padding: 5px 8px;
   color: #334155;
   font-weight: 900;
@@ -4774,7 +4776,7 @@ textarea {
 .dev-health-state {
   width: fit-content;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   padding: 5px 8px;
   color: #334155;
   font-weight: 900;
@@ -4854,7 +4856,7 @@ textarea {
 }
 
 .catalog-filter-chip:hover {
-  background: #f1f5f9;
+  background: var(--chip-bg);
   border-color: #94a3b8;
 }
 
@@ -5236,7 +5238,7 @@ textarea {
 .visual-catalog-tags span {
   border: 1px solid rgba(23, 32, 43, 0.04);
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 4px 7px;
   font-size: 0.66rem;
@@ -5725,7 +5727,7 @@ textarea {
 .catalog-pill {
   width: fit-content;
   border-radius: 999px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   color: #334155;
   padding: 5px 8px;
   font-weight: 900;
@@ -7154,7 +7156,7 @@ textarea {
 .app-error-details pre {
   margin: 8px 0 0;
   padding: 10px;
-  background: #f1f5f9;
+  background: var(--chip-bg);
   border-radius: 6px;
   overflow-x: auto;
   white-space: pre-wrap;
@@ -7216,6 +7218,7 @@ textarea {
 [data-theme="dark"] [class*="-option"],
 [data-theme="dark"] [class*="-result"],
 [data-theme="dark"] [class*="-banner"],
+[data-theme="dark"] .price-watch,
 [data-theme="dark"] .setup-panel,
 [data-theme="dark"] .decision-surface,
 [data-theme="dark"] .game-detail-drawer,
@@ -7978,4 +7981,155 @@ select:focus-visible,
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-soft);
+}
+
+/* Dark theme — status/value micro-pills (Codex-era) with hardcoded light
+   tint backgrounds (green/blue/amber/slate) that the earlier suffix passes
+   never reached. They rendered as light-on-light or dark-on-dark in dark mode
+   across Today/Library/Wishlist/Discover/Data/Taste. One neutral dark surface
+   + readable text fixes both failure modes consistently. */
+[data-theme="dark"] .score,
+[data-theme="dark"] .queue-lane,
+[data-theme="dark"] .catalog-pill,
+[data-theme="dark"] .backbone-pill,
+[data-theme="dark"] .dev-health-state,
+[data-theme="dark"] .source-state,
+[data-theme="dark"] .decision-label,
+[data-theme="dark"] .decision-tag,
+[data-theme="dark"] .library-plan-label,
+[data-theme="dark"] .library-plan-tag,
+[data-theme="dark"] .plan-label,
+[data-theme="dark"] .plan-tag,
+[data-theme="dark"] .policy-cadence,
+[data-theme="dark"] .calendar-status,
+[data-theme="dark"] .enrichment-status,
+[data-theme="dark"] .learning-effect,
+[data-theme="dark"] .visual-value-pill,
+[data-theme="dark"] .wishlist-decision {
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+  border-color: var(--card-border);
+}
+
+/* Price-alert "below target" icon keeps a green hint but legible on dark */
+[data-theme="dark"] .price-alert-icon {
+  background: rgba(47, 192, 127, 0.16);
+  color: #86e8b6;
+  border-color: rgba(47, 192, 127, 0.3);
+}
+
+/* Higher-specificity supplement: these three pills have tone/context variants
+   (.wishlist-row.tone-*, .visual-catalog-meta .visual-value-pill.is-plus,
+   .price-alert.is-triggered) that outrank the single-class dark override. */
+[data-theme="dark"] .wishlist-row .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-buy .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-wait .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-verify .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-missing .wishlist-decision,
+[data-theme="dark"] .visual-catalog-meta .visual-value-pill,
+[data-theme="dark"] .visual-catalog-meta .visual-value-pill.is-plus {
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .price-alert .price-alert-icon,
+[data-theme="dark"] .price-alert.is-triggered .price-alert-icon {
+  background: rgba(47, 192, 127, 0.16);
+  color: #86e8b6;
+  border-color: rgba(47, 192, 127, 0.3);
+}
+
+/* Mobile touch targets — the "More states" disclosure summary (14px tall) and
+   the queue Details button (24px) are too thin to tap comfortably on phones. */
+@media (max-width: 640px) {
+  .my-game-more-actions summary {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+  }
+  .queue-detail-button {
+    min-height: 30px;
+  }
+}
+
+/* Dark theme — recommendation copy cluster (reason / description / evidence /
+   watchout). These carry hardcoded dark text colors (#2f3b4c/#475569/#334155)
+   and light tint backgrounds (#eaf0ff/#f8fafc/#fffaf1) with no dark override,
+   so on a populated profile they rendered dark-on-dark or light-on-light on
+   the hero and cards. (Only visible with a seeded profile — empty-profile
+   checks missed it.) */
+[data-theme="dark"] .reason,
+[data-theme="dark"] .description,
+[data-theme="dark"] .evidence-row p,
+[data-theme="dark"] .watchout {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .evidence-row span {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+[data-theme="dark"] .card-evidence,
+[data-theme="dark"] .answer-evidence {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .hero-evidence,
+[data-theme="dark"] .answer-evidence {
+  border-left-color: var(--card-border);
+}
+
+[data-theme="dark"] .watchout {
+  background: rgba(224, 173, 60, 0.12);
+  border-left-color: var(--amber);
+}
+
+[data-theme="dark"] .watchout strong {
+  color: #f3cd7a;
+}
+
+/* Dark theme — source-check / source-passport rows (data-trust labels like
+   "seed", "Catalog"). Base + tone variants use light bgs (#fff/#f4fbf6/
+   #fffaf1) with dark label text and had no dark override. */
+[data-theme="dark"] .source-check,
+[data-theme="dark"] .source-check.tone-good,
+[data-theme="dark"] .source-check.tone-warn,
+[data-theme="dark"] .source-check.tone-neutral {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .source-check small,
+[data-theme="dark"] .source-check strong {
+  color: var(--text-mid);
+}
+
+/* Dark theme — answer agenda row labels/detail (light #f1f5f9 label pill +
+   dark #475569 detail text, no dark override → light-on-light / dark-on-dark). */
+[data-theme="dark"] .answer-agenda-row > span {
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .answer-agenda-row p {
+  color: var(--text-mid);
+}
+
+/* Dark theme — remaining recommendation/wishlist copy with hardcoded dark text
+   (.deal-reason #334155) and the .ai-enrichment near-white (#f8fbff) panel. */
+[data-theme="dark"] .deal-reason {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .ai-enrichment {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .ai-enrichment p,
+[data-theme="dark"] .ai-enrichment span {
+  color: var(--text-mid);
 }
