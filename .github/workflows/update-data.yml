@@ -46,10 +46,19 @@ jobs:
           RAWG_API_KEY: ${{ secrets.RAWG_API_KEY }}
         run: node scripts/update-covers.mjs
 
-      # ── Validate before committing — never publish broken data ──
+      # ── Gate before committing — never publish data that breaks the app ──
+      # Both steps are hard gates (no continue-on-error): if either fails the
+      # job stops before the commit, so a refresh that violates data integrity
+      # OR an app invariant (e.g. the PSN play-before-buy pick) never lands on
+      # main. The bot commit doesn't trigger ci.yml, so this is the only place
+      # qa-harness runs against refreshed data.
       - name: Validate data
         id: validate
         run: node scripts/validate-data.mjs
+
+      - name: QA harness (app invariants vs refreshed data)
+        id: qa
+        run: node scripts/qa-harness.mjs
 
       - name: Commit and push changes
         id: commit
