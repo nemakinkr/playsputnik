@@ -789,6 +789,10 @@ function extractPsnDemoStates() {
 
 function applyPsnDemoEntry() {
   state = defaultState();
+  // Mirror the real PSN entry path (app.js sets state.entryPath = "psn"); without
+  // it primaryDecisionGame skips the library-first pick and returns ranked[0].
+  // That gap was masked until a price refresh changed ranked[0] to a no-price game.
+  state.entryPath = "psn";
   state.liked = new Set(["The Last of Us Part I", "God of War Ragnarok", "Hades", "Stardew Valley"]);
   extractPsnDemoStates().forEach((item) => setGameState(item.title, item.state));
   state.activeCluster = "library";
