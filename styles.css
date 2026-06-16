@@ -35,6 +35,7 @@
   --radius-sm: 7px;
   --body-gradient: linear-gradient(180deg, #eef3fb 0%, #e3eaf5 100%);
   --chip-bg: #f1f5f9;
+  --surface-2: #f8fafc;
 }
 
 [data-theme="dark"] {
@@ -68,6 +69,7 @@
   --accent-text: #93b8ff;
   --body-gradient: linear-gradient(180deg, #0e141c 0%, #0a0f16 100%);
   --chip-bg: #1b273c;
+  --surface-2: #1b273c;
 }
 
 * {
@@ -354,7 +356,7 @@ h3 {
 .quick-swipe-atom-row span {
   border: 1px solid #d8e2f0;
   border-radius: 999px;
-  background: #f8fafc;
+  background: var(--surface-2);
   color: #334155;
   padding: 4px 7px;
   font-size: 0.67rem;
@@ -590,7 +592,7 @@ h3 {
   min-height: 28px;
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: #f8fafc;
+  background: var(--surface-2);
   color: var(--muted);
   padding: 0 6px;
   font-size: 0.72rem;
@@ -612,7 +614,7 @@ h3 {
 
 .quick-reactions button[data-quick-reaction="unplayed"].is-selected {
   border-color: #94a3b8;
-  background: #f8fafc;
+  background: var(--surface-2);
   color: #334155;
 }
 
@@ -933,7 +935,7 @@ h3 {
 .entry-tags em {
   border: 1px solid #d8e2f0;
   border-radius: 999px;
-  background: #f8fafc;
+  background: var(--surface-2);
   color: #334155;
   padding: 3px 7px;
   font-size: 0.66rem;
@@ -2190,7 +2192,7 @@ textarea {
 .card-evidence {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 8px;
 }
 
@@ -2485,7 +2487,7 @@ textarea {
   border: 1px solid var(--line);
   border-left: 3px solid #cbd5e1;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 10px;
 }
 
@@ -2571,7 +2573,7 @@ textarea {
   margin-bottom: 10px;
   border: 1px solid #e4e9f1;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 6px;
 }
 
@@ -2611,7 +2613,7 @@ textarea {
 .queue-empty {
   border: 1px dashed #cbd5e1;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 14px;
 }
 
@@ -2653,7 +2655,7 @@ textarea {
   border: 1px solid var(--line);
   border-left: 3px solid #cbd5e1;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 10px;
 }
 
@@ -2897,7 +2899,7 @@ textarea {
   align-content: start;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 11px;
 }
 
@@ -3116,7 +3118,7 @@ textarea {
   min-height: 96px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 10px;
 }
 
@@ -3381,7 +3383,7 @@ textarea {
 .library-next-step.tone-finished {
   border-color: #e2e8f0;
   border-left-color: #94a3b8;
-  background: #f8fafc;
+  background: var(--surface-2);
 }
 
 .my-game-row .library-next-step.tone-finished span {
@@ -3403,7 +3405,7 @@ textarea {
 .my-game-more-actions {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 7px;
 }
 
@@ -3431,7 +3433,7 @@ textarea {
   align-content: start;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 7px;
 }
 
@@ -3494,7 +3496,7 @@ textarea {
 }
 
 .my-game-quick-actions button[data-memory-state=""]:first-child {
-  background: #f8fafc;
+  background: var(--surface-2);
   border-color: var(--line);
   color: #64748b;
 }
@@ -3532,7 +3534,7 @@ textarea {
   align-items: center;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 10px;
 }
 
@@ -3913,7 +3915,7 @@ textarea {
   place-items: center;
   height: 100%;
   border-right: 1px solid var(--line);
-  background: #f8fafc;
+  background: var(--surface-2);
   color: #64748b;
   padding: 0 8px;
 }
@@ -4043,7 +4045,7 @@ textarea {
   min-height: 32px;
   border: 1px solid var(--line);
   border-radius: 6px;
-  background: #f8fafc;
+  background: var(--surface-2);
   color: var(--muted);
   padding: 0 10px;
   font-size: 0.76rem;
@@ -4141,7 +4143,7 @@ textarea {
   min-width: 0;
   border: 1px solid #e4e9f1;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 8px;
 }
 
@@ -4188,7 +4190,7 @@ textarea {
 
 .edition-note {
   border-color: #d7deea;
-  background: #f8fafc;
+  background: var(--surface-2);
 }
 
 .edition-note span {
@@ -4419,7 +4421,7 @@ textarea {
   gap: 2px;
   border: 1px solid #dbe3ef;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 6px 8px;
 }
 
@@ -4512,7 +4514,7 @@ textarea {
   gap: 2px;
   border: 1px solid #dbe3ef;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 6px 8px;
 }
 
@@ -4559,7 +4561,7 @@ textarea {
   padding: 9px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   text-align: left;
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s;
@@ -4766,7 +4768,7 @@ textarea {
 .dev-health-row code {
   overflow-wrap: anywhere;
   border-radius: 6px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 6px 7px;
   color: #173f9a;
   font-size: 0.74rem;
@@ -4867,7 +4869,7 @@ textarea {
 }
 
 .catalog-filter-chip--meta {
-  background: #f8fafc;
+  background: var(--surface-2);
   color: #64748b;
 }
 
@@ -5011,7 +5013,7 @@ textarea {
 .visual-catalog-metric {
   border: 1px solid #e5ebf3;
   border-radius: 7px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 8px 9px;
 }
 
@@ -5185,7 +5187,7 @@ textarea {
   overflow: hidden;
   border: 1px solid #e5ebf3;
   border-radius: 6px;
-  background: #f8fafc;
+  background: var(--surface-2);
   color: #334155;
   padding: 5px 6px;
   font-size: 0.67rem;
@@ -5196,7 +5198,7 @@ textarea {
 }
 
 .visual-catalog-meta .visual-state-pill {
-  background: #f8fafc;
+  background: var(--surface-2);
 }
 
 .visual-catalog-meta .visual-value-pill {
@@ -5338,7 +5340,7 @@ textarea {
   gap: 3px;
   border: 1px solid #d9e2ee;
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 8px;
 }
 
@@ -5499,7 +5501,7 @@ textarea {
   gap: 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f8fafc;
+  background: var(--surface-2);
   padding: 10px;
 }
 
@@ -8131,5 +8133,83 @@ select:focus-visible,
 
 [data-theme="dark"] .ai-enrichment p,
 [data-theme="dark"] .ai-enrichment span {
+  color: var(--text-mid);
+}
+
+/* Dark theme — final tail: surfaces with light solid backgrounds that more
+   specific rules kept light in dark mode (caught by the dark light-bg gate). */
+[data-theme="dark"] .visual-catalog-search input[type="search"] {
+  background: var(--surface);
+  border-color: var(--card-border);
+  color: var(--ink);
+}
+
+[data-theme="dark"] .tabs {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .rank-forecast span {
+  background: var(--card-bg-soft);
+}
+
+[data-theme="dark"] .learning-row.negative .learning-effect {
+  background: var(--card-bg-soft);
+}
+
+/* Dark theme — sidebar onboarding/taste components (swipe atom chips,
+   quick-reaction selected states, region toggle, taste-gate insight, counts)
+   with hardcoded light tint/white backgrounds. */
+[data-theme="dark"] .quick-swipe-atom-row span.is-needed {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+[data-theme="dark"] .quick-swipe-atom-row span.is-conflict {
+  background: rgba(224, 173, 60, 0.16);
+  color: #f3cd7a;
+}
+
+[data-theme="dark"] .quick-reactions button.is-selected {
+  background: rgba(47, 192, 127, 0.16);
+  color: #86e8b6;
+  border-color: rgba(47, 192, 127, 0.4);
+}
+
+[data-theme="dark"] .quick-reactions button[data-quick-reaction="not_for_me"].is-selected {
+  background: rgba(240, 96, 138, 0.16);
+  color: #f3a3bd;
+  border-color: rgba(240, 96, 138, 0.4);
+}
+
+[data-theme="dark"] .segmented {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .taste-gate-insight {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+/* Dark theme — quick-swipe progress meters (Profile / first-hypothesis /
+   sharper-profile cards in the onboarding sidebar) had white backgrounds. */
+[data-theme="dark"] .quick-swipe-meters > div {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+/* #liked-count is a .section-heading span but a later rule kept it white in
+   dark; pin it by id. */
+[data-theme="dark"] #liked-count {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+/* taste-gate confidence chip (.taste-gate > span) had a white background. */
+[data-theme="dark"] .taste-gate > span {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
   color: var(--text-mid);
 }

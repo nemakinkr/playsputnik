@@ -116,7 +116,7 @@ the active view.
 ## Current Verification
 
 ```sh
-./scripts/check.sh          # validate → qa-harness → browser smoke → perf budget (~40s)
+./scripts/check.sh          # validate → qa-harness → browser smoke → perf budget → dark-contrast (~45s)
 ./scripts/check.sh --fast   # ~3s, skips browser stages
 ```
 
