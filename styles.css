@@ -7731,6 +7731,86 @@ select:focus-visible,
   color: var(--text-mid);
 }
 
+/* Dark theme — first-run payoff verdict block (Codex-era; the earlier suffix
+   passes covered taste-proof/readiness but not the verdict cards, mini-rows,
+   confidence/eyebrow chips, which kept light backgrounds → unreadable light
+   text on light surfaces on the most important first-impression screen). */
+[data-theme="dark"] .first-run-verdict {
+  background-image: none;
+  background-color: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .first-run-verdict > div,
+[data-theme="dark"] .first-run-mini-row {
+  background: var(--card-bg);
+  background-image: none;
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .first-run-verdict strong,
+[data-theme="dark"] .first-run-mini-row strong {
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .first-run-verdict span,
+[data-theme="dark"] .first-run-verdict p,
+[data-theme="dark"] .first-run-mini-row span,
+[data-theme="dark"] .first-run-mini-row small {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .first-run-eyebrow {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+/* Keep the confidence chip's semantic color, but legible on dark — the text
+   must be much lighter than the tinted background (a var(--green) text on a
+   green tint reads at ~1.0 contrast). */
+[data-theme="dark"] .first-run-confidence {
+  background: rgba(224, 173, 60, 0.18);
+  color: #f3cd7a;
+}
+
+[data-theme="dark"] .first-run-confidence.is-ready {
+  background: rgba(47, 192, 127, 0.18);
+  color: #86e8b6;
+}
+
+/* Undo confirmation strip (green-tinted; used in first-run and answer) */
+[data-theme="dark"] .undo-strip {
+  background: rgba(47, 192, 127, 0.12);
+  border-color: rgba(47, 192, 127, 0.35);
+}
+
+[data-theme="dark"] .undo-strip span {
+  color: #86e8b6;
+}
+
+[data-theme="dark"] .undo-strip button {
+  background: var(--card-bg);
+  border-color: rgba(47, 192, 127, 0.35);
+  color: #86e8b6;
+}
+
+/* Global status chips — light-gray (#f7f9fb) base slipped through earlier
+   white scans and reads as light-on-light in dark mode across every panel. */
+[data-theme="dark"] .section-heading span,
+[data-theme="dark"] .region-pill,
+[data-theme="dark"] .quick-swipe-progress {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+/* Journey step number badge keeps white text on its solid blue circle —
+   the broad journey dark override had greyed it to ~2.37 contrast. */
+[data-theme="dark"] .first-run-journey-step > span {
+  color: #fff;
+}
+
 /* Dark theme — dashboard card inner cells (segmented stat blocks) */
 [data-theme="dark"] [class*="-dashboard-card"] div,
 [data-theme="dark"] [class*="-dashboard-card"] > * {
