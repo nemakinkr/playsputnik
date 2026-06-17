@@ -191,7 +191,8 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 The recurring dark-mode regression across handoffs is now structurally
 prevented, not memory-managed. `check.sh` is a 5-stage gate (validate-data,
 qa-harness, browser smoke, perf budget, **browser gates**) and CI runs the same.
-The browser gates — **dark/light contrast**, **mobile 375px**, **a11y** — are
+The browser gates — **dark/light contrast**, **mobile 375px**, **a11y**,
+**stale-hidden** — are
 dependency-free CDP (system Chrome, no install), seed a demo profile (empty
 profiles hide most components), and run on ONE headless Chrome via
 `scripts/browser-gates.mjs` (shared `scripts/lib/cdp.mjs` harness; each
@@ -204,6 +205,14 @@ the class can recur invisibly → if so add a gate (see CLAUDE.md "Core principl
 - Quality-gate quartet (perf/contrast/mobile/a11y) wired into check.sh + CI as
   deterministic CDP gates; the systemic fix for the recurring dark-mode-across-
   handoffs regression. Light-mode contrast added as symmetric backstop.
+- Browser gates unified onto ONE Chrome run via shared scripts/lib/cdp.mjs +
+  scripts/browser-gates.mjs (check.sh 7→5 stages, CI 3 gate steps → 1; each
+  *-check.mjs still standalone). Faster CI, no assertion change.
+- Desktop light/dark dogfood found+fixed a real bug: the onboarding hero
+  ("Rate 3 games") showed to every seeded/returning user because
+  .onboarding-hero.is-hidden had no display:none rule (the class was inert).
+  Added the rule + a new stale-hidden gate (scripts/hidden-check.mjs) that flags
+  any .is-hidden element still rendering; verified it catches the bug.
 - Mobile visual dogfood (375px) found+fixed a real bug: game-detail hero
   rendered the fit-tier string twice (floating span + fit badge); removed the
   floating span. Fixed check.sh node-resolution footgun (nvm Node 20 →
