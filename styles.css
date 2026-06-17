@@ -1248,6 +1248,12 @@ textarea {
   gap: 20px;
 }
 
+/* Hidden for returning/seeded users — without this the onboarding card shows
+   to everyone (the .onboarding-hero display:flex above wins otherwise). */
+.onboarding-hero.is-hidden {
+  display: none;
+}
+
 .onboarding-hero-text h2 {
   font-size: 1.5rem;
   font-weight: 900;

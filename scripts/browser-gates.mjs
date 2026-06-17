@@ -11,7 +11,8 @@ import { isMain, rootUrlFromArgv, runAll } from "./lib/cdp.mjs";
 import { gate as contrastGate } from "./contrast-check.mjs";
 import { gate as mobileGate } from "./mobile-check.mjs";
 import { gate as a11yGate } from "./a11y-check.mjs";
+import { gate as hiddenGate } from "./hidden-check.mjs";
 
 if (isMain(import.meta.url)) {
-  await runAll([contrastGate, mobileGate, a11yGate], rootUrlFromArgv());
+  await runAll([contrastGate, mobileGate, a11yGate, hiddenGate], rootUrlFromArgv());
 }

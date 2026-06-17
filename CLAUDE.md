@@ -81,7 +81,10 @@ boots the app dark with a SEEDED profile and fails on any light solid
 background OR dark-on-dark text (+ light-on-light in light mode);
 `scripts/mobile-check.mjs` fails on 375px horizontal overflow or primary
 controls < 24px; `scripts/a11y-check.mjs` fails on interactive controls with
-no accessible name. Each is a `{ name, drive, analyze }` module over a shared
+no accessible name; `scripts/hidden-check.mjs` fails on any `.is-hidden` element
+that still renders (a state class with no matching `display:none` rule — that's
+how the onboarding hero showed to every seeded user). Each is a
+`{ name, drive, analyze }` module over a shared
 `scripts/lib/cdp.mjs` harness; `scripts/browser-gates.mjs` runs all three on ONE
 headless Chrome (check.sh stage 5 + CI), and each `*-check.mjs` still runs
 standalone for debugging.
