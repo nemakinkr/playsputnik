@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-15. Pick the next task here without rereading the
+Last updated: 2026-06-17. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 CLAUDE.md (dev workflow + perf rules). The user's decision: **polish before
 showing the product to people** — retention/analytics tracks are
@@ -186,7 +186,27 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 - "Wrapped" year summary, gift mode (taste/wishlist share links exist).
 - Anti-hype buy guard (price-history + Plus-drop prediction).
 
+## Quality gates (the systemic fix for cross-agent regressions)
+
+The recurring dark-mode regression across handoffs is now structurally
+prevented, not memory-managed. `check.sh` is a 7-stage gate (validate-data,
+qa-harness, browser smoke, perf budget, **dark-mode contrast**, **mobile 375px**,
+**a11y**) and CI runs the same. The 3 browser gates are dependency-free CDP
+(system Chrome, no install) and seed a demo profile (empty profiles hide most
+components). Contrast gate is dual-pass (dark + light). All green at ccb9fff,
+CI-verified. check.sh prefers the bundled Node 24 (PATH may be nvm Node 20
+without global WebSocket). When fixing a bug, ask if the class can recur
+invisibly → if so add a gate (see CLAUDE.md "Core principle").
+
 ## Done (this session series — see HANDOFF.md for detail)
+
+- Quality-gate quartet (perf/contrast/mobile/a11y) wired into check.sh + CI as
+  deterministic CDP gates; the systemic fix for the recurring dark-mode-across-
+  handoffs regression. Light-mode contrast added as symmetric backstop.
+- Mobile visual dogfood (375px) found+fixed a real bug: game-detail hero
+  rendered the fit-tier string twice (floating span + fit badge); removed the
+  floating span. Fixed check.sh node-resolution footgun (nvm Node 20 →
+  "WebSocket is not defined"); now prefers bundled Node 24.
 
 - Onboarding polish: 3 real taste signals unlock the first-pick payoff; empty
   profiles see a start prompt instead of a premature recommendation; hero
