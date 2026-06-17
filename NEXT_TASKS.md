@@ -189,14 +189,15 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 ## Quality gates (the systemic fix for cross-agent regressions)
 
 The recurring dark-mode regression across handoffs is now structurally
-prevented, not memory-managed. `check.sh` is a 7-stage gate (validate-data,
-qa-harness, browser smoke, perf budget, **dark-mode contrast**, **mobile 375px**,
-**a11y**) and CI runs the same. The 3 browser gates are dependency-free CDP
-(system Chrome, no install) and seed a demo profile (empty profiles hide most
-components). Contrast gate is dual-pass (dark + light). All green at ccb9fff,
-CI-verified. check.sh prefers the bundled Node 24 (PATH may be nvm Node 20
-without global WebSocket). When fixing a bug, ask if the class can recur
-invisibly → if so add a gate (see CLAUDE.md "Core principle").
+prevented, not memory-managed. `check.sh` is a 5-stage gate (validate-data,
+qa-harness, browser smoke, perf budget, **browser gates**) and CI runs the same.
+The browser gates — **dark/light contrast**, **mobile 375px**, **a11y** — are
+dependency-free CDP (system Chrome, no install), seed a demo profile (empty
+profiles hide most components), and run on ONE headless Chrome via
+`scripts/browser-gates.mjs` (shared `scripts/lib/cdp.mjs` harness; each
+`*-check.mjs` still runs standalone). check.sh prefers the bundled Node 24
+(PATH may be nvm Node 20 without global WebSocket). When fixing a bug, ask if
+the class can recur invisibly → if so add a gate (see CLAUDE.md "Core principle").
 
 ## Done (this session series — see HANDOFF.md for detail)
 

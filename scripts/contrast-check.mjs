@@ -8,107 +8,23 @@
  *
  *   In dark mode, NO visible element may have a light SOLID background.
  *
- * It deliberately does NOT score text contrast (alpha compositing + cover-image
- * backgrounds make that heuristic and false-positive-prone). It boots the app
- * in dark mode with a SEEDED profile (empty profiles hide most components, same
- * lesson as the perf budget) and walks all 8 views.
+ * It also flags dark-on-dark text (dark) and light-on-light text (light), but
+ * deliberately does NOT score general text contrast (alpha compositing +
+ * cover-image backgrounds make that heuristic and false-positive-prone). It
+ * boots the app with a SEEDED profile (empty profiles hide most components,
+ * same lesson as the perf budget) and walks all 8 views, dark then light.
  *
- * Uses system Chrome over the DevTools protocol (no Playwright/npm install), so
- * it works in check.sh locally and on a GitHub ubuntu runner unchanged.
- *
- * Usage: node scripts/contrast-check.mjs [url]   (default http://127.0.0.1:7432)
+ * Usage: node scripts/contrast-check.mjs [url]   (standalone; one Chrome)
+ *        — or run via scripts/browser-gates.mjs with the other gates (one Chrome).
  * When adding a component: use theme tokens (var(--card-bg)/--card-bg-soft/
  * --chip-bg/--surface-2/--accent-bg/--panel/--surface) for backgrounds — never
  * a hardcoded light hex. See CLAUDE.md "Dark mode rules".
  */
-import { execFile, spawn } from "node:child_process";
-import { constants } from "node:fs";
-import { access, mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { promisify } from "node:util";
+import { APP_READY, evaluate, isMain, rootUrlFromArgv, runStandalone, waitFor } from "./lib/cdp.mjs";
 
-const execFileAsync = promisify(execFile);
 const LUM_THRESHOLD = 225;
-const DEFAULT_URL = "http://127.0.0.1:7432/";
-const target = process.argv.find((a) => a.startsWith("http")) || DEFAULT_URL;
-const rootUrl = target.endsWith("/") ? target : `${target}/`;
-const pageUrl = `${rootUrl}?v=contrast-${Date.now()}`;
-const port = Number(process.env.PLAYSPUTNIK_CHROME_PORT || 9341);
 
-let chromeProcess;
-let userDataDir = "";
-
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-
-async function findChrome() {
-  if (process.env.PLAYSPUTNIK_CHROME) return process.env.PLAYSPUTNIK_CHROME;
-  const candidates = [
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-    "/Applications/Chromium.app/Contents/MacOS/Chromium",
-    "google-chrome", "google-chrome-stable", "chromium-browser", "chromium",
-  ];
-  for (const c of candidates) {
-    if (c.startsWith("/")) {
-      try { await access(c, constants.X_OK); return c; } catch { /* next */ }
-    } else {
-      try { const { stdout } = await execFileAsync("which", [c], { timeout: 2000 }); if (stdout.trim()) return stdout.trim(); } catch { /* next */ }
-    }
-  }
-  throw new Error("Chrome/Chromium executable not found");
-}
-
-async function getJson(path) {
-  const res = await fetch(`http://127.0.0.1:${port}${path}`);
-  if (!res.ok) throw new Error(`DevTools ${path}: ${res.status}`);
-  return res.json();
-}
-
-class Cdp {
-  constructor(wsUrl) { this.wsUrl = wsUrl; this.id = 0; this.pending = new Map(); }
-  async open() {
-    this.ws = new WebSocket(this.wsUrl);
-    await new Promise((resolve, reject) => {
-      const t = setTimeout(() => reject(new Error("CDP open timeout")), 10000);
-      this.ws.addEventListener("open", () => { clearTimeout(t); resolve(); }, { once: true });
-      this.ws.addEventListener("error", () => { clearTimeout(t); reject(new Error("CDP open error")); }, { once: true });
-    });
-    this.ws.addEventListener("message", (e) => {
-      const m = JSON.parse(String(e.data));
-      if (m.id && this.pending.has(m.id)) {
-        const { resolve, reject } = this.pending.get(m.id);
-        this.pending.delete(m.id);
-        m.error ? reject(new Error(m.error.message || "CDP error")) : resolve(m.result || {});
-      }
-    });
-  }
-  send(method, params = {}) {
-    const id = ++this.id;
-    return new Promise((resolve, reject) => {
-      const t = setTimeout(() => { this.pending.delete(id); reject(new Error(`CDP timeout: ${method}`)); }, 20000);
-      this.pending.set(id, { resolve: (v) => { clearTimeout(t); resolve(v); }, reject: (e) => { clearTimeout(t); reject(e); } });
-      this.ws.send(JSON.stringify({ id, method, params }));
-    });
-  }
-  close() { try { this.ws?.close(); } catch { /* ignore */ } }
-}
-
-async function evaluate(cdp, expression) {
-  const r = await cdp.send("Runtime.evaluate", { expression, awaitPromise: true, returnByValue: true });
-  if (r.exceptionDetails) throw new Error(r.exceptionDetails.text || "evaluate exception");
-  return r.result?.value;
-}
-
-async function waitFor(cdp, expression, timeoutMs = 20000) {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    if (await evaluate(cdp, expression).catch(() => false)) return;
-    await wait(200);
-  }
-  throw new Error(`Timed out waiting for: ${expression}`);
-}
-
-// Runs in the page: seed a profile, force dark, scan all views for light bgs.
+// Runs in the page: seed a profile, set theme, scan all views.
 function scanInPage(LUM, mode) {
   const demoBtn = [...document.querySelectorAll("button")].find((b) => /load demo profile/i.test(b.textContent));
   if (demoBtn) demoBtn.click();
@@ -187,82 +103,51 @@ function scanInPage(LUM, mode) {
   return JSON.stringify(Object.values(offenders).map((o) => ({ kind: o.kind, key: o.key, views: o.views.join(","), sample: o.sample })));
 }
 
-async function launchChrome() {
-  const chromePath = await findChrome();
-  userDataDir = await mkdtemp(join(tmpdir(), "playsputnik-contrast-"));
-  chromeProcess = spawn(chromePath, [
-    "--headless=new", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage",
-    `--remote-debugging-port=${port}`, `--user-data-dir=${userDataDir}`, "about:blank",
-  ], { stdio: "ignore" });
-  // wait for DevTools endpoint
-  const deadline = Date.now() + 15000;
-  while (Date.now() < deadline) {
-    try { await getJson("/json/version"); return; } catch { await wait(200); }
-  }
-  throw new Error("Chrome DevTools did not become ready");
-}
+export const gate = {
+  name: "dark/light contrast",
+  defaultPort: 9341,
+  async drive(cdp, rootUrl) {
+    const pageUrl = `${rootUrl}?v=contrast-${Date.now()}`;
+    // Emulate the OS color scheme so the app boots into the right theme at load
+    // (its inline head script reads prefers-color-scheme as the default). Dark
+    // pass first, then reload under light emulation for the light pass.
+    await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
+    await cdp.send("Page.navigate", { url: pageUrl });
+    await waitFor(cdp, APP_READY);
+    const darkRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "dark")`);
 
-const hardTimer = setTimeout(() => { console.error("Contrast check timed out."); cleanup().finally(() => process.exit(124)); }, 60000);
+    await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "light" }] });
+    await cdp.send("Page.reload", { ignoreCache: true });
+    await waitFor(cdp, APP_READY);
+    const lightRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "light")`);
 
-async function cleanup() {
-  try { chromeProcess?.kill("SIGKILL"); } catch { /* ignore */ }
-  if (userDataDir) await rm(userDataDir, { recursive: true, force: true }).catch(() => {});
-}
-
-try {
-  await launchChrome();
-  const tab = await fetch(`http://127.0.0.1:${port}/json/new?about:blank`, { method: "PUT" }).then((r) => r.json());
-  const cdp = new Cdp(tab.webSocketDebuggerUrl);
-  await cdp.open();
-  await cdp.send("Page.enable");
-  await cdp.send("Runtime.enable");
-  const ready = "document.querySelector('#top-pick') && document.querySelector('#top-pick').innerHTML.trim().length > 0";
-
-  // Emulate the OS color scheme so the app boots into the right theme at load
-  // (its inline head script reads prefers-color-scheme as the default). Dark
-  // pass first, then reload under light emulation for the light pass.
-  await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
-  await cdp.send("Page.navigate", { url: pageUrl });
-  await waitFor(cdp, ready);
-  const darkRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "dark")`);
-
-  await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "light" }] });
-  await cdp.send("Page.reload", { ignoreCache: true });
-  await waitFor(cdp, ready);
-  const lightRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "light")`);
-
-  const offenders = [...JSON.parse(darkRaw || "[]"), ...JSON.parse(lightRaw || "[]")];
-
-  cdp.close();
-  await cleanup();
-  clearTimeout(hardTimer);
-
-  if (offenders.length) {
+    return [...JSON.parse(darkRaw || "[]"), ...JSON.parse(lightRaw || "[]")];
+  },
+  analyze(offenders) {
+    if (!offenders.length) {
+      return { ok: true, lines: ["✅ Contrast OK (dark: no light-bg/dark-on-dark; light: no light-on-light) across 8 views"] };
+    }
     const lightBg = offenders.filter((o) => o.kind === "light-bg");
     const darkText = offenders.filter((o) => o.kind === "dark-text");
     const lightText = offenders.filter((o) => o.kind === "light-text");
-    console.error(`❌ Contrast: ${offenders.length} issue(s):`);
+    const lines = [`❌ Contrast: ${offenders.length} issue(s):`];
     if (lightBg.length) {
-      console.error(`  ${lightBg.length} LIGHT solid background(s) in DARK mode:`);
-      lightBg.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
+      lines.push(`  ${lightBg.length} LIGHT solid background(s) in DARK mode:`);
+      lightBg.forEach((o) => lines.push(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
     }
     if (darkText.length) {
-      console.error(`  ${darkText.length} DARK text on dark bg in DARK mode:`);
-      darkText.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
+      lines.push(`  ${darkText.length} DARK text on dark bg in DARK mode:`);
+      darkText.forEach((o) => lines.push(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
     }
     if (lightText.length) {
-      console.error(`  ${lightText.length} LIGHT text on light bg in LIGHT mode:`);
-      lightText.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
+      lines.push(`  ${lightText.length} LIGHT text on light bg in LIGHT mode:`);
+      lightText.forEach((o) => lines.push(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
     }
-    console.error('\nFix: use theme tokens — backgrounds via var(--card-bg)/--card-bg-soft/');
-    console.error('--chip-bg/--surface-2/--accent-bg/--panel/--surface, text via var(--text-mid)/');
-    console.error('--text-strong/--ink — or add a [data-theme="dark"] override. See CLAUDE.md.');
-    process.exit(1);
-  }
-  console.log("✅ Contrast OK (dark: no light-bg/dark-on-dark; light: no light-on-light) across 8 views");
-} catch (error) {
-  await cleanup();
-  clearTimeout(hardTimer);
-  console.error(`❌ Contrast check failed to run: ${error.message}`);
-  process.exit(1);
-}
+    lines.push('\nFix: use theme tokens — backgrounds via var(--card-bg)/--card-bg-soft/');
+    lines.push('--chip-bg/--surface-2/--accent-bg/--panel/--surface, text via var(--text-mid)/');
+    lines.push('--text-strong/--ink — or add a [data-theme="dark"] override. See CLAUDE.md.');
+    return { ok: false, lines };
+  },
+};
+
+if (isMain(import.meta.url)) await runStandalone(gate, rootUrlFromArgv());

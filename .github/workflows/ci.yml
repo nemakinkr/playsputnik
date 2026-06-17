@@ -20,16 +20,13 @@ jobs:
         run: node scripts/validate-data.mjs
       - name: QA harness (module logic, no browser)
         run: node scripts/qa-harness.mjs
-      # Dark-mode contrast backstop — catches a light-bg-in-dark regression even
-      # if an agent commits without running check.sh locally. Uses system Chrome
-      # (preinstalled on ubuntu runners) over CDP, no browser download needed.
+      # Browser gates (contrast + mobile 375px + a11y) — catch regressions that
+      # are invisible in normal dev even if an agent commits without running
+      # check.sh locally. All three run on ONE headless Chrome (system Chrome,
+      # preinstalled on ubuntu runners; CDP, no browser download needed).
       - name: Serve static site
         run: |
           python3 -m http.server 7432 >/dev/null 2>&1 &
           sleep 1
-      - name: Dark-mode contrast gate
-        run: node scripts/contrast-check.mjs http://127.0.0.1:7432/
-      - name: Mobile layout gate (375px)
-        run: node scripts/mobile-check.mjs http://127.0.0.1:7432/
-      - name: Accessibility gate
-        run: node scripts/a11y-check.mjs http://127.0.0.1:7432/
+      - name: Browser gates (contrast + mobile + a11y)
+        run: node scripts/browser-gates.mjs http://127.0.0.1:7432/

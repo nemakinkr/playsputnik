@@ -77,12 +77,15 @@ were spent finding these by hand.
   suffix (that's how the whole `.price-watch` panel stayed white).
 
 **The gates** (deterministic, keep green): `scripts/contrast-check.mjs`
-(check.sh stage 5 + CI) boots the app dark with a SEEDED profile and fails on
-any light solid background OR dark-on-dark text; `scripts/mobile-check.mjs`
-(stage 6 + CI) fails on 375px horizontal overflow or primary controls < 24px;
-`scripts/a11y-check.mjs` (stage 7 + CI) fails on interactive controls with no
-accessible name.
-Both use system Chrome over CDP (no install), run locally and on the ubuntu
+boots the app dark with a SEEDED profile and fails on any light solid
+background OR dark-on-dark text (+ light-on-light in light mode);
+`scripts/mobile-check.mjs` fails on 375px horizontal overflow or primary
+controls < 24px; `scripts/a11y-check.mjs` fails on interactive controls with
+no accessible name. Each is a `{ name, drive, analyze }` module over a shared
+`scripts/lib/cdp.mjs` harness; `scripts/browser-gates.mjs` runs all three on ONE
+headless Chrome (check.sh stage 5 + CI), and each `*-check.mjs` still runs
+standalone for debugging.
+All use system Chrome over CDP (no install), run locally and on the ubuntu
 runner. Test dark mode with a
 seeded/demo profile, never empty (empty profiles hide most components, same
 lesson as the perf budget). Two shared light surfaces are already tokenized:
