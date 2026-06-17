@@ -6,9 +6,12 @@
 set -e
 cd "$(dirname "$0")/.."
 
-# Resolve node: PATH first, then the bundled codex runtime
-NODE="$(command -v node || true)"
-[ -z "$NODE" ] && NODE="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+# Resolve node. Prefer the bundled codex runtime (Node 24) because the browser
+# gates use the global WebSocket (Node 22+); a PATH node may be older (e.g. an
+# nvm Node 20 has no global WebSocket). On CI the bundled path is absent, so we
+# fall back to the runner's node (setup-node pins 24).
+NODE="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+[ -x "$NODE" ] || NODE="$(command -v node || true)"
 if [ ! -x "$NODE" ]; then
   echo "❌ node not found"; exit 1
 fi

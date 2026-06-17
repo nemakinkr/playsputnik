@@ -4170,8 +4170,9 @@ function renderGameDetail(shouldFocus = false) {
   els.gameDetailTitle.textContent = game.title;
   els.gameDetailMeta.textContent = `${confidence} confidence / ${Math.max(game.score, 0)} fit / ${game.session} session`;
   els.gameDetailVisual.replaceChildren();
+  // The fit tier already appears as a badge in detailHeroBadgesHtml; don't also
+  // render it as a floating eyebrow (it duplicated the same text in the hero).
   els.gameDetailVisual.innerHTML = `
-    <span>${forecast.label}</span>
     <strong>${game.title}</strong>
     ${detailHeroBadgesHtml(game, { forecast, valueCard, move: primaryMove })}
   `;

@@ -109,16 +109,18 @@ async function waitFor(cdp, expression, timeoutMs = 20000) {
 }
 
 // Runs in the page: seed a profile, force dark, scan all views for light bgs.
-function scanInPage(LUM) {
+function scanInPage(LUM, mode) {
   const demoBtn = [...document.querySelectorAll("button")].find((b) => /load demo profile/i.test(b.textContent));
   if (demoBtn) demoBtn.click();
   ["Hades", "Stray", "Bloodborne", "Celeste", "Returnal"].forEach((t, i) => { try { setGameRating(t, ((i % 5) + 1) * 20); } catch (e) {} });
   try { render(); } catch (e) {}
-  document.documentElement.setAttribute("data-theme", "dark");
+  if (mode === "light") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", "dark");
   try { render(); } catch (e) {}
 
   const parse = (s) => { const m = s.match(/[\d.]+/g); return m ? m.map(Number) : null; };
   const lum = (c) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  const pageBase = mode === "light" ? [244, 247, 251] : [10, 16, 24];
   // nearest opaque SOLID background up the tree; null if an image background is
   // encountered first (can't measure cover-art-backed text — skip it).
   const nearestOpaque = (el) => {
@@ -130,7 +132,7 @@ function scanInPage(LUM) {
       if (m && (m[3] === undefined || m[3] >= 0.95)) return m.slice(0, 3);
       e = e.parentElement;
     }
-    return [10, 16, 24];
+    return pageBase;
   };
   const views = ["today", "library", "discover", "wishlist", "taste", "deals", "data", "stats"];
   const offenders = {};
@@ -145,7 +147,22 @@ function scanInPage(LUM) {
       if (el.offsetParent === null) return;
       const cls = (typeof el.className === "string" && el.className) ? el.className.split(" ")[0] : el.tagName;
 
-      // (1) light SOLID background in dark mode
+      if (mode === "light") {
+        // light-on-light text in light mode (leaf text on a near-white solid bg)
+        if (el.children.length === 0) {
+          const t = (el.textContent || "").trim();
+          if (t) {
+            const bg = nearestOpaque(el);
+            const fg = parse(getComputedStyle(el).color);
+            if (bg && fg && lum(bg) > 200 && lum(fg) > 175) {
+              add("light-text", cls + " | " + getComputedStyle(el).color + " on rgb(" + bg.map(Math.round).join(",") + ")", t.slice(0, 20), v);
+            }
+          }
+        }
+        return;
+      }
+
+      // dark mode — (1) light SOLID background
       const c = parse(getComputedStyle(el).backgroundColor);
       if (c && (c[3] === undefined || c[3] >= 0.9) && lum(c) > LUM) {
         const r = el.getBoundingClientRect();
@@ -153,8 +170,7 @@ function scanInPage(LUM) {
           add("light-bg", cls + " | " + getComputedStyle(el).backgroundColor, (el.textContent || "").trim().slice(0, 20), v);
         }
       }
-
-      // (2) dark text on a dark solid background (leaf text only; skip image-backed)
+      // dark mode — (2) dark text on a dark solid background (leaf text; skip image-backed)
       if (el.children.length === 0) {
         const t = (el.textContent || "").trim();
         if (t) {
@@ -200,12 +216,22 @@ try {
   await cdp.open();
   await cdp.send("Page.enable");
   await cdp.send("Runtime.enable");
+  const ready = "document.querySelector('#top-pick') && document.querySelector('#top-pick').innerHTML.trim().length > 0";
+
+  // Emulate the OS color scheme so the app boots into the right theme at load
+  // (its inline head script reads prefers-color-scheme as the default). Dark
+  // pass first, then reload under light emulation for the light pass.
   await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
   await cdp.send("Page.navigate", { url: pageUrl });
-  await waitFor(cdp, "document.querySelector('#top-pick') && document.querySelector('#top-pick').innerHTML.trim().length > 0");
+  await waitFor(cdp, ready);
+  const darkRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "dark")`);
 
-  const raw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD})`);
-  const offenders = JSON.parse(raw || "[]");
+  await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "light" }] });
+  await cdp.send("Page.reload", { ignoreCache: true });
+  await waitFor(cdp, ready);
+  const lightRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "light")`);
+
+  const offenders = [...JSON.parse(darkRaw || "[]"), ...JSON.parse(lightRaw || "[]")];
 
   cdp.close();
   await cleanup();
@@ -214,21 +240,26 @@ try {
   if (offenders.length) {
     const lightBg = offenders.filter((o) => o.kind === "light-bg");
     const darkText = offenders.filter((o) => o.kind === "dark-text");
-    console.error(`❌ Dark-mode contrast: ${offenders.length} issue(s) in dark mode:`);
+    const lightText = offenders.filter((o) => o.kind === "light-text");
+    console.error(`❌ Contrast: ${offenders.length} issue(s):`);
     if (lightBg.length) {
-      console.error(`  ${lightBg.length} LIGHT solid background(s):`);
+      console.error(`  ${lightBg.length} LIGHT solid background(s) in DARK mode:`);
       lightBg.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
     }
     if (darkText.length) {
-      console.error(`  ${darkText.length} DARK text on dark background:`);
+      console.error(`  ${darkText.length} DARK text on dark bg in DARK mode:`);
       darkText.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
+    }
+    if (lightText.length) {
+      console.error(`  ${lightText.length} LIGHT text on light bg in LIGHT mode:`);
+      lightText.forEach((o) => console.error(`   - ${o.key}  [views: ${o.views}]  "${o.sample}"`));
     }
     console.error('\nFix: use theme tokens — backgrounds via var(--card-bg)/--card-bg-soft/');
     console.error('--chip-bg/--surface-2/--accent-bg/--panel/--surface, text via var(--text-mid)/');
     console.error('--text-strong/--ink — or add a [data-theme="dark"] override. See CLAUDE.md.');
     process.exit(1);
   }
-  console.log("✅ Dark-mode contrast OK (no light backgrounds or dark-on-dark text across 8 views)");
+  console.log("✅ Contrast OK (dark: no light-bg/dark-on-dark; light: no light-on-light) across 8 views");
 } catch (error) {
   await cleanup();
   clearTimeout(hardTimer);
