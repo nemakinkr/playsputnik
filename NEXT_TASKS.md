@@ -27,9 +27,12 @@ both audiences. This is a deliberate large project, done in phases with a commit
   catalogs, header `#lang-toggle`, SW v28. Localized: header eyebrow/title, the
   8 nav tabs + subs, all 8 view summaries (graceful EN fallback for untranslated
   views). All gates green. Switch verified both directions.
-- **Phase 2 — Today dynamic copy:** metric cards (SCREENED/RADAR/TIME FIT/LIBRARY/
-  GUARDED labels + "N games" plurals), sample-profile panel, time selector
-  ("Tonight I have" + chips + fit note), top-recommendation labels.
+- **Phase 2 — Today dynamic copy — DONE.** Metric cards (5 labels + plural
+  counts via `t(..,{count})`), sample-profile panel (kicker/title/detail/chips/
+  actions), time selector (label + 6 chips). Russian plural forms verified
+  (454 игры / 18 запомненных игр / 210 вариантов / 4 пропуска). qa-harness now
+  also scans the i18n-en catalog for moved copy. No 375px overflow in RU across
+  8 views. SW v29. (Top-recommendation block left to Phase 4 — it's narrative.)
 - **Phase 3 — settings sidebar** (the `⚙` panel: section titles, field labels,
   start-path cards, demo button — when localized, fix the gate seed hook).
 - **Phase 4 — narrative engine** (app-answer.js / app-recommend.js): the hard

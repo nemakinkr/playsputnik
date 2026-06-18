@@ -2672,11 +2672,11 @@ function renderValueStats(ranked) {
   const radarLeads = rankedRadar().filter((item) => item.score >= 20).length;
   const timeFitCount = ranked.filter((game) => game.session === state.session || game.adultTimeFit === "weeknight").length;
   const guardedCount = ranked.filter((game) => game.prices[region] <= Number(state.budget) && blocksPurchase(game)).length;
-  els.screenedCount.textContent = `${ranked.length} games`;
-  els.bestDeal.textContent = `${radarLeads} leads`;
-  els.timeFit.textContent = `${timeFitCount} picks`;
-  els.libraryCount.textContent = `${stateCount()} states`;
-  els.guardedCount.textContent = `${guardedCount} skips`;
+  els.screenedCount.textContent = t("today.metrics.games", { count: ranked.length });
+  els.bestDeal.textContent = t("today.metrics.leads", { count: radarLeads });
+  els.timeFit.textContent = t("today.metrics.picks", { count: timeFitCount });
+  els.libraryCount.textContent = t("today.metrics.states", { count: stateCount() });
+  els.guardedCount.textContent = t("today.metrics.skips", { count: guardedCount });
 }
 function firstRunFlow(ranked) {
   const topGame = primaryDecisionGame(ranked);
@@ -2808,27 +2808,29 @@ function renderDemoContinuity(ranked) {
   const savedCount = Object.values(state.userGames || {}).filter((game) => game.saved).length;
   const searchTitle = state.gameSearchQuery || primaryGame?.title || "Mafia: The Old Country";
   const searchCopy = state.activeView === "discover" && state.gameSearchQuery
-    ? `Discover is focused on ${state.gameSearchQuery}.`
-    : "Jump into Discover with the current recommendation as context.";
+    ? t("today.sample.searchFocused", { query: state.gameSearchQuery })
+    : t("today.sample.searchDefault");
 
-  els.demoContinuityKicker.textContent = isDemo ? "Sample profile live" : "Review mode";
+  els.demoContinuityKicker.textContent = isDemo
+    ? t("today.sample.kickerDemo")
+    : t("today.sample.kickerReview");
   els.demoContinuityTitle.textContent = isDemo
-    ? `${trackedCount} remembered games / ${savedCount} wishlist`
-    : "See the companion with memory";
+    ? `${t("today.sample.remembered", { count: trackedCount })} / ${t("today.sample.wishlistCount", { count: savedCount })}`
+    : t("today.sample.titleReview");
   els.demoContinuityDetail.textContent = isDemo
-    ? `${primaryGame?.title || "A first pick"} anchors Today. ${searchCopy}`
-    : "Load a realistic sample profile to inspect recommendations, wishlist, ratings, and price intent as one loop.";
+    ? t("today.sample.detailDemo", { title: primaryGame?.title || t("today.sample.anchorFallback"), search: searchCopy })
+    : t("today.sample.detailReview");
 
   const metrics = isDemo
     ? [
-        ["Taste", "10 ratings"],
-        ["Memory", `${trackedCount} games`],
-        ["Wishlist", `${savedCount} saved`],
+        [t("today.sample.chipTaste"), t("today.sample.ratings", { count: 10 })],
+        [t("today.sample.chipMemory"), t("today.metrics.games", { count: trackedCount })],
+        [t("today.sample.chipWishlist"), t("today.sample.saved", { count: savedCount })],
       ]
     : [
-        ["One click", "full loop"],
-        ["Taste", "seeded"],
-        ["Prices", "watch intent"],
+        [t("today.sample.chipOneClick"), t("today.sample.valFullLoop")],
+        [t("today.sample.chipTaste"), t("today.sample.valSeeded")],
+        [t("today.sample.chipPrices"), t("today.sample.valWatchIntent")],
       ];
   els.demoContinuityMetrics?.replaceChildren(
     ...metrics.map(([label, value]) => {
@@ -2841,14 +2843,14 @@ function renderDemoContinuity(ranked) {
 
   const actions = isDemo
     ? [
-        { id: "detail", label: "Open pick", title: primaryGame?.title || "" },
-        { id: "discover", label: state.activeView === "discover" ? "Refresh search" : "Explore in Discover", title: primaryGame?.title || searchTitle },
-        { id: "wishlist", label: "Wishlist", title: "" },
-        { id: "today", label: "Back to Today", title: "" },
+        { id: "detail", label: t("today.sample.actOpenPick"), title: primaryGame?.title || "" },
+        { id: "discover", label: state.activeView === "discover" ? t("today.sample.actRefresh") : t("today.sample.actExplore"), title: primaryGame?.title || searchTitle },
+        { id: "wishlist", label: t("today.sample.actWishlist"), title: "" },
+        { id: "today", label: t("today.sample.actBackToday"), title: "" },
       ]
     : [
-        { id: "load-demo", label: "Load demo profile", title: "" },
-        { id: "discover", label: "Explore catalog", title: searchTitle },
+        { id: "load-demo", label: t("today.sample.actLoadDemo"), title: "" },
+        { id: "discover", label: t("today.sample.actExploreCatalog"), title: searchTitle },
       ];
 
   els.demoContinuityActions.replaceChildren(

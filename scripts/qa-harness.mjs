@@ -136,6 +136,9 @@ const [
   readFile(new URL("test/fixtures/search-fixture-expansion-80.txt", ROOT), "utf8"),
 ]);
 
+// User-facing copy moved into the i18n catalogs; checks below look here too.
+const i18nEnSource = await readFile(new URL("src/i18n-en.js", ROOT), "utf8");
+
 const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
 
 const USER_STATE_LABELS = {
@@ -1268,7 +1271,7 @@ function checkSelectors() {
   assert(/id="demo-continuity-metrics"/.test(html), "Demo continuity metrics are missing");
   assert(/function applyDemoProfile/.test(appSource), "Demo profile loader is missing");
   assert(/continuityAction/.test(appSource), "Continuity actions are missing");
-  assert(/Sample profile live/.test(appSource), "Demo profile should read like a product review mode");
+  assert(/Sample profile live/.test(appSource + i18nEnSource), "Demo profile should read like a product review mode");
   assert(/demo-profile-smoke/.test(demoProfileSmokeSource), "Demo profile smoke test is missing");
   assert(/Load demo profile/.test(demoProfileSmokeSource), "Demo smoke should verify loading a demo profile");
   assert(/data-continuity-action="discover"/.test(demoProfileSmokeSource), "Demo smoke should verify Discover continuity");

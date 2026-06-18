@@ -270,23 +270,23 @@
 
         <section class="value-strip" aria-label="Decision metrics" data-view-section="today library discover wishlist taste">
           <div>
-            <span>Screened</span>
+            <span data-i18n="today.metrics.screenedLabel">Screened</span>
             <strong id="screened-count">0 games</strong>
           </div>
           <div>
-            <span>Radar</span>
+            <span data-i18n="today.metrics.radarLabel">Radar</span>
             <strong id="best-deal">0% off</strong>
           </div>
           <div>
-            <span>Time fit</span>
+            <span data-i18n="today.metrics.timeFitLabel">Time fit</span>
             <strong id="time-fit">0 picks</strong>
           </div>
           <div>
-            <span>Library</span>
+            <span data-i18n="today.metrics.libraryLabel">Library</span>
             <strong id="library-count">0 states</strong>
           </div>
           <div>
-            <span>Guarded</span>
+            <span data-i18n="today.metrics.guardedLabel">Guarded</span>
             <strong id="guarded-count">0 skips</strong>
           </div>
         </section>
@@ -316,14 +316,14 @@
         </section>
 
         <section class="tonight-time" aria-label="Time available tonight" data-view-section="today">
-          <span class="tonight-time-label">Tonight I have:</span>
-          <div class="tonight-time-chips" role="group" aria-label="Pick your available time">
-            <button class="time-chip" data-session-minutes="30" type="button">30 min</button>
-            <button class="time-chip" data-session-minutes="45" type="button">45 min</button>
-            <button class="time-chip" data-session-minutes="60" type="button">1 hour</button>
-            <button class="time-chip" data-session-minutes="120" type="button">2 hours</button>
-            <button class="time-chip" data-session-minutes="180" type="button">Long evening</button>
-            <button class="time-chip is-active" data-session-minutes="0" type="button">Any</button>
+          <span class="tonight-time-label" data-i18n="today.time.label">Tonight I have:</span>
+          <div class="tonight-time-chips" role="group" aria-label="Pick your available time" data-i18n-attr="aria-label:today.time.aria">
+            <button class="time-chip" data-session-minutes="30" type="button" data-i18n="today.time.min30">30 min</button>
+            <button class="time-chip" data-session-minutes="45" type="button" data-i18n="today.time.min45">45 min</button>
+            <button class="time-chip" data-session-minutes="60" type="button" data-i18n="today.time.hour1">1 hour</button>
+            <button class="time-chip" data-session-minutes="120" type="button" data-i18n="today.time.hour2">2 hours</button>
+            <button class="time-chip" data-session-minutes="180" type="button" data-i18n="today.time.longEvening">Long evening</button>
+            <button class="time-chip is-active" data-session-minutes="0" type="button" data-i18n="today.time.any">Any</button>
           </div>
           <span class="tonight-time-hint" id="tonight-time-hint"></span>
         </section>
