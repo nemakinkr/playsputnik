@@ -1,9 +1,10 @@
-/* All browser quality gates in ONE Chrome launch (faster than 3 separate spawns).
+/* All browser quality gates in ONE Chrome launch (faster than separate spawns).
  *
- * Runs the dark/light contrast, mobile-layout (375px), and accessibility gates
- * sequentially on fresh tabs of a single headless Chrome, then exits non-zero if
- * any failed. Each gate's logic lives in its own *-check.mjs (single source of
- * truth, still runnable standalone for debugging); this just composes them.
+ * Runs dark/light contrast, mobile-layout (375px), accessibility, and
+ * stale-hidden gates sequentially on fresh tabs of a single headless Chrome,
+ * then exits non-zero if any failed. Each gate's logic lives in its own
+ * *-check.mjs (single source of truth, still runnable standalone for debugging);
+ * this just composes them.
  *
  * Usage: node scripts/browser-gates.mjs [url]   (default http://127.0.0.1:7432)
  */

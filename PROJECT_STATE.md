@@ -25,7 +25,8 @@ reviews, catalogs, sale pages, and announcements.
   Pages URL; daily data
   refresh at 06:17 UTC (`update-data.yml`: ITAD prices / PS Store Plus /
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
-  `source-health` issue monitor; CI on push (`ci.yml`: validate + qa-harness).
+  `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
+  catalogs + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
 - Service worker v19 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
@@ -122,7 +123,7 @@ the active view.
 ## Current Verification
 
 ```sh
-./scripts/check.sh          # validate → qa-harness → browser smoke → perf budget → dark-contrast (~45s)
+./scripts/check.sh          # validate → i18n → qa → browser smoke → perf → browser gates (~45s)
 ./scripts/check.sh --fast   # ~3s, skips browser stages
 ```
 

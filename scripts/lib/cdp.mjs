@@ -174,5 +174,5 @@ export async function runAll(gates, rootUrl) {
   clearTimeout(hard);
   await session.cleanup();
   if (!allOk) { console.error("\n❌ One or more browser gates failed."); process.exit(1); }
-  console.log("\n✅ All browser gates passed (contrast, mobile, a11y) on one Chrome run.");
+  console.log("\n✅ All browser gates passed (contrast, mobile, a11y, stale-hidden) on one Chrome run.");
 }

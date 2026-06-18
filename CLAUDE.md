@@ -10,7 +10,7 @@ nemakinkr/playsputnik).
 
 ```sh
 python3 -m http.server 7432        # serve (or use .claude/launch.json "playsputnik")
-./scripts/check.sh                 # full gate: data → qa-harness → browser smoke → perf budget
+./scripts/check.sh                 # full gate: data → i18n → qa → browser → perf → browser gates
 ./scripts/check.sh --fast          # ~3s, skips browser stages
 ```
 
@@ -85,8 +85,8 @@ no accessible name; `scripts/hidden-check.mjs` fails on any `.is-hidden` element
 that still renders (a state class with no matching `display:none` rule — that's
 how the onboarding hero showed to every seeded user). Each is a
 `{ name, drive, analyze }` module over a shared
-`scripts/lib/cdp.mjs` harness; `scripts/browser-gates.mjs` runs all three on ONE
-headless Chrome (check.sh stage 5 + CI), and each `*-check.mjs` still runs
+`scripts/lib/cdp.mjs` harness; `scripts/browser-gates.mjs` runs all four on ONE
+headless Chrome (check.sh stage 6 + CI), and each `*-check.mjs` still runs
 standalone for debugging.
 All use system Chrome over CDP (no install), run locally and on the ubuntu
 runner. Test dark mode with a
@@ -117,6 +117,9 @@ and exposes a global `t(key, params)` (+ `window.PlaySputnikI18n`). Catalogs are
 `setLocale()` re-applies static markup and fires `onLocaleChange` → app.js
 re-renders. A missing key renders the key itself (visible, never throws) — so an
 untranslated surface shows English/the key, not a crash. Migrate view-by-view.
+`scripts/i18n-catalog-check.mjs` runs in check.sh + CI and fails on missing
+logical keys, string/plural type drift, wrong locale-specific plural branches,
+empty messages, or mismatched `{placeholders}`.
 **Gates** seed via the stable
 `[data-continuity-action="load-demo"]` hook, never localized button text.
 Russian text is longer — once a view's dynamic copy is translated, re-run

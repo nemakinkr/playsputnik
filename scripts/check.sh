@@ -16,10 +16,13 @@ if [ ! -x "$NODE" ]; then
   echo "❌ node not found"; exit 1
 fi
 
-echo "── 1/5 validate-data ──────────────────────────"
+echo "── 1/6 validate-data ──────────────────────────"
 "$NODE" scripts/validate-data.mjs
 
-echo "── 2/5 qa-harness ─────────────────────────────"
+echo "── 2/6 i18n catalogs ──────────────────────────"
+"$NODE" scripts/i18n-catalog-check.mjs
+
+echo "── 3/6 qa-harness ─────────────────────────────"
 "$NODE" scripts/qa-harness.mjs
 
 if [ "$1" = "--fast" ]; then
@@ -36,13 +39,13 @@ if ! curl -s -o /dev/null "http://127.0.0.1:7432/index.html"; then
 fi
 trap '[ -n "$STARTED_SERVER" ] && kill $STARTED_SERVER 2>/dev/null' EXIT
 
-echo "── 3/5 browser smoke ──────────────────────────"
+echo "── 4/6 browser smoke ──────────────────────────"
 "$NODE" scripts/browser-smoke-test.mjs "http://127.0.0.1:7432/?v=check" | tail -3
 
-echo "── 4/5 perf budget (populated profile) ────────"
+echo "── 5/6 perf budget (populated profile) ────────"
 "$NODE" scripts/perf-budget-test.mjs "http://127.0.0.1:7432/?v=check-perf"
 
-echo "── 5/5 browser gates (contrast + mobile + a11y, one Chrome) ──"
+echo "── 6/6 browser gates (contrast + mobile + a11y + hidden, one Chrome) ──"
 "$NODE" scripts/browser-gates.mjs "http://127.0.0.1:7432/"
 
 echo "✅ all checks passed"
