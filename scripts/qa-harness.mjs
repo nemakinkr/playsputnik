@@ -1257,11 +1257,11 @@ function checkSelectors() {
   assert(/data-first-run-action/.test(appAnswerSource + appSource), "First-run bridge actions are missing");
   assert(/first-run-mini-agenda/.test(appAnswerSource + appSource), "First-run mini answer agenda is missing");
   assert(/data-first-run-verdict/.test(appSource), "First-run payoff should render a visible verdict block");
-  assert(/What I learned/.test(appAnswerSource), "First-run payoff should explain what was learned");
-  assert(/Use it now/.test(appAnswerSource), "First-run payoff should tell the user they can act now");
-  assert(/First read: try/.test(appAnswerSource), "First-run payoff should name the first read as a concrete pick");
+  assert(/narrative\.firstRun\.verdictLearned/.test(appAnswerSource), "First-run payoff should explain what was learned");
+  assert(/narrative\.firstRun\.verdictUse/.test(appAnswerSource), "First-run payoff should tell the user they can act now");
+  assert(/narrative\.firstRun\.titleTaste/.test(appAnswerSource), "First-run payoff should name the first read as a concrete pick");
   assert(/data-first-run-journey/.test(appSource), "First-run payoff should expose the core journey rail");
-  assert(/Next 3 clicks/.test(appSource), "Core journey should tell the user what to do next");
+  assert(/narrative\.firstRun\.journeyHead/.test(appSource), "Core journey should tell the user what to do next");
   assert(/detail-pick/.test(appAnswerSource + appSource), "Core journey should open the recommended detail cockpit");
   assert(/discover-pick/.test(appAnswerSource + appSource), "Core journey should continue into Discover search");
   assert(/core-journey-smoke/.test(coreJourneySmokeSource), "Core journey smoke test is missing");

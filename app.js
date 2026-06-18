@@ -2720,46 +2720,90 @@ function firstRunFlow(ranked) {
   const reactions = quickReactionSummary();
   const signalCount = quickTasteSignalCount();
   const gate = tasteGateState();
-  const confidence = topGame ? explain(topGame, topGame.score).confidence : "Need signal";
+  const confidence = topGame ? explain(topGame, topGame.score).confidence : t("narrative.firstRun.flowNeedTaste");
   const watchout = topGame ? watchOutCopy(topGame) : null;
   const access = topGame ? effectiveGameState(topGame) : "";
   const buyLater = buyLaterCandidate(ranked);
+  const contextKey = (group, value) => {
+    const keys = {
+      mood: {
+        story: "settings.context.moodStory",
+        energy: "settings.context.moodEnergy",
+        cozy: "settings.context.moodCozy",
+        systems: "settings.context.moodSystems",
+      },
+      session: {
+        short: "settings.context.sessionShort",
+        medium: "settings.context.sessionMedium",
+        long: "settings.context.sessionLong",
+      },
+      difficulty: {
+        normal: "settings.context.difficultyNormal",
+        low: "settings.context.difficultyLow",
+        high: "settings.context.difficultyHigh",
+      },
+    };
+    return keys[group]?.[value] ? t(keys[group][value]) : value;
+  };
   const actionValue = topGame
-    ? access ? "Play now"
-      : buyLater && titleMatches(buyLater.title, topGame.title) ? "Watch price"
-        : "Try tonight"
-    : "Add taste";
+    ? access ? t("narrative.firstRun.flowPlayNow")
+      : buyLater && titleMatches(buyLater.title, topGame.title) ? t("narrative.firstRun.flowWatchPrice")
+        : t("narrative.firstRun.flowTryTonight")
+    : t("narrative.firstRun.flowAddTaste");
   const actionDetail = topGame
-    ? access ? USER_STATE_LABELS[access] || access
+    ? access ? answerAccessLabel(topGame)
       : buyLater && titleMatches(buyLater.title, topGame.title) ? `${state.activeRegion} ${formatPrice(topGame, state.activeRegion)}`
-        : `${state.session} session`
-    : "No pick yet";
+        : contextKey("session", state.session)
+    : t("narrative.firstRun.flowNoPick");
+  const mode = isLibraryFirstMode(topGame)
+    ? t("narrative.firstRun.flowModeLibrary")
+    : gate.ready
+      ? gate.maturityLabel
+      : t("narrative.firstRun.flowModeLearning");
 
   return {
-    status: `${isLibraryFirstMode(topGame) ? "library ready" : gate.ready ? gate.maturityLabel.toLowerCase() : "learning"} / ${confidence}`,
+    status: t("narrative.firstRun.flowStatus", { mode, confidence }),
     steps: [
       {
-        label: isLibraryFirstMode(topGame) ? "Library" : "Taste",
-        value: isLibraryFirstMode(topGame) ? `${games.filter(isAlreadyAvailable).length} playable` : `${signalCount}/${QUICK_TASTE_FIRST_TARGET}`,
-        detail: gate.conflict.hasConflict ? `mixed ${gate.conflict.atoms.join(" / ")}` : `${reactions.loved} loved / ${reactions.played} played / ${reactions.notForMe} no`,
+        label: isLibraryFirstMode(topGame)
+          ? t("narrative.firstRun.flowLibrary")
+          : t("narrative.firstRun.flowTaste"),
+        value: isLibraryFirstMode(topGame)
+          ? t("narrative.firstRun.flowPlayable", { count: games.filter(isAlreadyAvailable).length })
+          : t("narrative.firstRun.flowSignalProgress", {
+              count: signalCount,
+              target: QUICK_TASTE_FIRST_TARGET,
+            }),
+        detail: gate.conflict.hasConflict
+          ? t("narrative.firstRun.flowMixed", { signals: gate.conflict.atoms.join(" / ") })
+          : t("narrative.firstRun.flowReactions", {
+              loved: reactions.loved,
+              played: reactions.played,
+              disliked: reactions.notForMe,
+            }),
         state: signalCount >= QUICK_TASTE_FIRST_TARGET ? "done" : "active",
       },
       {
-        label: "Tonight",
-        value: `${state.mood} / ${state.session}`,
-        detail: `${state.difficulty} friction`,
+        label: t("narrative.firstRun.flowTonight"),
+        value: t("narrative.firstRun.flowTonightValue", {
+          mood: contextKey("mood", state.mood),
+          session: contextKey("session", state.session),
+        }),
+        detail: t("narrative.firstRun.flowFriction", {
+          difficulty: contextKey("difficulty", state.difficulty),
+        }),
         state: "done",
       },
       {
-        label: "Pick",
-        value: topGame ? topGame.title : "Waiting",
+        label: t("narrative.firstRun.flowPick"),
+        value: topGame ? topGame.title : t("narrative.firstRun.flowWaiting"),
         detail: topGame
-          ? `${isLibraryFirstMode(topGame) ? USER_STATE_LABELS[effectiveGameState(topGame)] || effectiveGameState(topGame) : confidence} / ${watchout.label}`
-          : "need taste",
+          ? `${isLibraryFirstMode(topGame) ? answerAccessLabel(topGame) : confidence} / ${watchout.label}`
+          : t("narrative.firstRun.flowNeedTaste"),
         state: topGame ? "done" : "active",
       },
       {
-        label: "Action",
+        label: t("narrative.firstRun.flowAction"),
         value: actionValue,
         detail: actionDetail,
         state: topGame ? "done" : "active",
@@ -2927,8 +2971,8 @@ function renderFirstRunFlow(ranked) {
           <p>${bridge.detail}</p>
         </div>
         <div class="first-run-pre-actions">
-          <button class="first-run-start-cta" data-first-run-action="more-signal" data-first-run-title="" type="button">Start swiping</button>
-          <button class="first-run-demo-cta" data-first-run-action="quick-entry" data-first-run-title="" type="button">Quick fill (demo)</button>
+          <button class="first-run-start-cta" data-first-run-action="more-signal" data-first-run-title="" type="button">${t("narrative.firstRun.preStart")}</button>
+          <button class="first-run-demo-cta" data-first-run-action="quick-entry" data-first-run-title="" type="button">${t("narrative.firstRun.preDemo")}</button>
         </div>
       </div>
     `;
@@ -2941,7 +2985,7 @@ function renderFirstRunFlow(ranked) {
   els.firstRunBridge.innerHTML = `
     <div class="first-run-copy">
       <span class="first-run-confidence ${bridge.confidenceReady ? "is-ready" : ""}">${bridge.confidenceLabel}</span>
-      <span class="first-run-eyebrow">${bridge.eyebrow || "First answer"}</span>
+      <span class="first-run-eyebrow">${bridge.eyebrow || t("narrative.firstRun.firstAnswer")}</span>
       <strong>${bridge.title}</strong>
       <p>${bridge.detail}</p>
     </div>
@@ -2961,22 +3005,22 @@ function renderFirstRunFlow(ranked) {
         <div>
           <span>${bridge.proof.status}</span>
           <strong>${bridge.proof.pull}</strong>
-          <small>Current pull</small>
+          <small>${t("narrative.firstRun.proofCurrentPull")}</small>
         </div>
         <div>
-          <span>Caution</span>
+          <span>${t("narrative.firstRun.proofCaution")}</span>
           <strong>${bridge.proof.caution}</strong>
-          <small>Known risk</small>
+          <small>${t("narrative.firstRun.proofKnownRisk")}</small>
         </div>
         <div>
-          <span>Why this pick</span>
+          <span>${t("narrative.firstRun.proofWhy")}</span>
           <strong>${bridge.proof.why}</strong>
           <small>${bridge.proof.next}</small>
         </div>
       </div>
     ` : ""}
     ${bridge.readiness?.length ? `
-      <div class="first-run-readiness" aria-label="Profile readiness">
+      <div class="first-run-readiness" aria-label="${t("narrative.firstRun.readinessAria")}">
         ${bridge.readiness.map((item) => `
           <div>
             <span>${item.label}</span>
@@ -2998,11 +3042,11 @@ function renderFirstRunFlow(ranked) {
       </div>
     ` : ""}
     ${bridge.journey?.length ? `
-      <div class="first-run-journey" data-first-run-journey aria-label="Next 3 clicks">
+      <div class="first-run-journey" data-first-run-journey aria-label="${t("narrative.firstRun.journeyAria")}">
         <div class="first-run-journey-head">
-          <span>Next 3 clicks</span>
-          <strong>Follow the product path</strong>
-          <small>From first read to memory and discovery.</small>
+          <span>${t("narrative.firstRun.journeyHead")}</span>
+          <strong>${t("narrative.firstRun.journeyTitle")}</strong>
+          <small>${t("narrative.firstRun.journeyDetail")}</small>
         </div>
         ${bridge.journey.map((step) => `
           <button class="first-run-journey-step" data-first-run-action="${step.id}" data-first-run-title="${detailAttr(step.title)}" type="button">

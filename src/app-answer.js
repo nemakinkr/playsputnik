@@ -8,7 +8,6 @@
     QUICK_TASTE_FIRST_TARGET,
     QUICK_TASTE_USABLE_TARGET,
     QUICK_TASTE_SHARP_TARGET,
-    USER_STATE_LABELS,
   } = window.PlaySputnikConfig;
 
   function createAnswerTools({
@@ -277,22 +276,31 @@
     function firstRunTasteProof(topGame) {
       const gate = getTasteGateState();
       const tasteSummary = getKnownGamesTasteSummary();
-      const pull = tasteSummary.pull.length ? tasteSummary.pull.slice(0, 3).join(" / ") : "early taste";
+      const pull = tasteSummary.pull.length
+        ? tasteSummary.pull.slice(0, 3).join(" / ")
+        : t("narrative.firstRun.proofEarlyTaste");
       const caution = gate.conflict.hasConflict
-        ? `mixed ${gate.conflict.atoms.join(" / ")}`
-        : tasteSummary.caution.length ? tasteSummary.caution.slice(0, 2).join(" / ") : "no strong dislikes yet";
+        ? t("narrative.firstRun.proofMixed", { signals: gate.conflict.atoms.join(" / ") })
+        : tasteSummary.caution.length
+          ? tasteSummary.caution.slice(0, 2).join(" / ")
+          : t("narrative.firstRun.proofNoDislikes");
       const matchingAtoms = (topGame?.atoms || []).filter((atom) => tasteSummary.pull.includes(atom)).slice(0, 3);
       const why = matchingAtoms.length
-        ? `${topGame.title} matches ${matchingAtoms.join(" + ")}`
-        : topGame ? `${topGame.title} is the best current fit` : "waiting for a pick";
+        ? t("narrative.firstRun.proofMatch", { title: topGame.title, signals: matchingAtoms.join(" + ") })
+        : topGame
+          ? t("narrative.firstRun.proofBestFit", { title: topGame.title })
+          : t("narrative.firstRun.proofWaiting");
       return {
-        status: gate.ready ? gate.maturityLabel : "Learning",
+        status: gate.ready ? gate.maturityLabel : t("narrative.firstRun.proofLearning"),
         pull,
         caution,
         why,
         next: gate.ready
-          ? `Use the app now. More swipes, PSN access, or a pasted list can sharpen it later.`
-          : `${gate.count}/${gate.minimum} taste signals. ${gate.minimum} unlock a first hypothesis.`,
+          ? t("narrative.firstRun.proofNextReady")
+          : t("narrative.firstRun.proofNextLearning", {
+              count: gate.count,
+              minimum: gate.minimum,
+            }),
       };
     }
 
@@ -301,23 +309,25 @@
       return [
         {
           id: "more-signal",
-          label: signalCount >= QUICK_TASTE_USABLE_TARGET ? "Sharpen with swipes" : "Add a few swipes",
+          label: signalCount >= QUICK_TASTE_USABLE_TARGET
+            ? t("narrative.firstRun.nextSwipeSharpLabel")
+            : t("narrative.firstRun.nextSwipeAddLabel"),
           detail: signalCount >= QUICK_TASTE_USABLE_TARGET
-            ? "20+ quick calls make rankings feel personal"
-            : `${toUsable} more like/dislike signals make this less fragile`,
-          tag: "Fastest",
+            ? t("narrative.firstRun.nextSwipeSharpDetail")
+            : t("narrative.firstRun.nextSwipeMoreDetail", { count: toUsable }),
+          tag: t("narrative.firstRun.nextFastest"),
         },
         {
           id: "psn-demo",
-          label: "Add library later",
-          detail: "PSN/library context turns picks into play-before-buy decisions",
-          tag: "Library",
+          label: t("narrative.firstRun.nextLibraryLabel"),
+          detail: t("narrative.firstRun.nextLibraryDetail"),
+          tag: t("narrative.firstRun.nextLibraryTag"),
         },
         {
           id: "open-taste-import",
-          label: "Paste ratings",
-          detail: "Any messy text works: rankings, backlog, wishlist, notes",
-          tag: "Strongest",
+          label: t("narrative.firstRun.nextPasteLabel"),
+          detail: t("narrative.firstRun.nextPasteDetail"),
+          tag: t("narrative.firstRun.nextPasteTag"),
         },
       ];
     }
@@ -330,9 +340,9 @@
       if (!topGame || (signalCount < QUICK_TASTE_FIRST_TARGET && !libraryMode)) {
         return {
           preSwipe: true,
-          title: `Three quick calls are enough to start`,
-          detail: "Like or dislike a few known games and PlaySputnik will make a cautious first pick. You can keep using it immediately; library access or a pasted rating list can wait.",
-          actions: [{ id: "quick-entry", label: "Quick fill", title: "" }],
+          title: t("narrative.firstRun.preTitle"),
+          detail: t("narrative.firstRun.preDetail"),
+          actions: [{ id: "quick-entry", label: t("narrative.firstRun.actionQuickFill"), title: "" }],
         };
       }
 
@@ -346,106 +356,147 @@
       const proof = firstRunTasteProof(topGame);
       const gate = getTasteGateState();
       const earlyTasteNote = gate.maturityStage === "mixed"
-        ? "The signals are mixed, so this is deliberately cautious. "
+        ? t("narrative.firstRun.noteMixed")
         : gate.maturityStage === "hypothesis"
-          ? "This is an early read, not a final profile. "
+          ? t("narrative.firstRun.noteHypothesis")
           : "";
       const detailParts = [
-        `${libraryMode ? "Library" : topGame.title} first`,
-        libraryMode ? `${topGame.title} is ${USER_STATE_LABELS[effectiveGameState(topGame)] || effectiveGameState(topGame)}` : "",
-        backup ? `${backup.title} backup` : "",
+        libraryMode
+          ? t("narrative.firstRun.detailLeadLibrary")
+          : t("narrative.firstRun.detailLeadGame", { title: topGame.title }),
+        libraryMode ? t("narrative.firstRun.detailState", { title: topGame.title, state: access }) : "",
+        backup ? t("narrative.firstRun.detailBackup", { title: backup.title }) : "",
         guardrail ? guardrail.title : "",
       ].filter(Boolean);
       const summary = [
         {
-          label: libraryMode ? "Owned pick" : "Play first",
+          label: libraryMode
+            ? t("narrative.firstRun.summaryOwned")
+            : t("narrative.firstRun.summaryPlay"),
           value: topGame.title,
-          detail: libraryMode ? `${access}. ${forecast.label}.` : `${forecast.label}. ${confidence} fit.`,
+          detail: libraryMode
+            ? t("narrative.firstRun.summaryOwnedDetail", { access, forecast: forecast.label })
+            : t("narrative.firstRun.summaryTasteDetail", { forecast: forecast.label, confidence }),
         },
         backup ? {
-          label: "Backup",
+          label: t("narrative.firstRun.summaryBackup"),
           value: backup.title,
-          detail: `${backup.forecast?.label || "Forecast ready"}. ${backup.tone === "access" ? "Also available." : "Fallback."}`,
+          detail: `${backup.forecast?.label || t("narrative.firstRun.forecastReady")}. ${
+            backup.tone === "access"
+              ? t("narrative.firstRun.alsoAvailable")
+              : t("narrative.firstRun.fallback")
+          }.`,
         } : null,
         guardrail ? {
-          label: "Guardrail",
+          label: t("narrative.firstRun.summaryGuardrail"),
           value: guardrail.title,
-          detail: libraryMode ? "Use what is already playable first." : guardrail.detail,
+          detail: libraryMode ? t("narrative.firstRun.guardrailLibrary") : guardrail.detail,
         } : null,
       ].filter(Boolean);
 
       const isSharp = signalCount >= QUICK_TASTE_SHARP_TARGET;
       const isUsable = signalCount >= QUICK_TASTE_USABLE_TARGET;
-      const confidenceLabel = isSharp ? "Sharper profile" : isUsable ? "Safer read" : "Enough to start";
+      const confidenceLabel = isSharp
+        ? t("narrative.firstRun.confidenceSharp")
+        : isUsable
+          ? t("narrative.firstRun.confidenceSafer")
+          : t("narrative.firstRun.confidenceEnough");
       const confidenceReady = isUsable;
       const readiness = [
         {
-          label: "Now",
-          value: `${signalCount} signals`,
-          detail: signalCount >= QUICK_TASTE_FIRST_TARGET ? "enough for a cautious pick" : "still learning",
+          label: t("narrative.firstRun.readyNow"),
+          value: t("narrative.firstRun.signalCount", { count: signalCount }),
+          detail: signalCount >= QUICK_TASTE_FIRST_TARGET
+            ? t("narrative.firstRun.readyEnough")
+            : t("narrative.firstRun.readyLearning"),
         },
         {
-          label: "Better",
-          value: "6-10 swipes",
-          detail: "fewer random misses",
+          label: t("narrative.firstRun.readyBetter"),
+          value: t("narrative.firstRun.readySwipes"),
+          detail: t("narrative.firstRun.readySwipesDetail"),
         },
         {
-          label: "Best",
-          value: "PSN or ratings",
-          detail: "library and ranking context",
+          label: t("narrative.firstRun.readyBest"),
+          value: t("narrative.firstRun.readyContext"),
+          detail: t("narrative.firstRun.readyContextDetail"),
         },
       ];
       const verdict = [
         {
-          label: "What I learned",
+          label: t("narrative.firstRun.verdictLearned"),
           value: proof.pull,
-          detail: `${signalCount} taste signals already give me a direction / ${confidence} fit`,
+          detail: t("narrative.firstRun.verdictLearnedDetail", { count: signalCount, confidence }),
         },
         {
-          label: "Use it now",
-          value: libraryMode ? `Start ${topGame.title}` : `Try ${topGame.title}`,
-          detail: `${forecast.label}. ${watchout.label}.`,
+          label: t("narrative.firstRun.verdictUse"),
+          value: libraryMode
+            ? t("narrative.firstRun.verdictStart", { title: topGame.title })
+            : t("narrative.firstRun.verdictTry", { title: topGame.title }),
+          detail: t("narrative.firstRun.verdictUseDetail", {
+            forecast: forecast.label,
+            risk: watchout.label,
+          }),
         },
         {
-          label: "Still uncertain",
+          label: t("narrative.firstRun.verdictUncertain"),
           value: gate.conflict.hasConflict ? gate.conflict.atoms.join(" / ") : proof.caution,
           detail: isSharp
-            ? "Profile is strong enough for bolder calls."
+            ? t("narrative.firstRun.verdictSharp")
             : isUsable
-              ? "Keep using it; more signals will tune rankings."
-              : `${Math.max(0, QUICK_TASTE_USABLE_TARGET - signalCount)} more swipes make the read safer.`,
+              ? t("narrative.firstRun.verdictUsable")
+              : t("narrative.firstRun.verdictMore", {
+                  count: Math.max(0, QUICK_TASTE_USABLE_TARGET - signalCount),
+                }),
         },
       ];
       const journey = [
         {
           step: "1",
-          label: "Open the pick",
-          detail: "See the cockpit: fit, risk, value, sources",
+          label: t("narrative.firstRun.journeyOpen"),
+          detail: t("narrative.firstRun.journeyOpenDetail"),
           id: "detail-pick",
           title: topGame.title,
         },
         {
           step: "2",
-          label: libraryMode ? "Start it" : "Save intent",
-          detail: libraryMode ? "Move it into the active play queue" : "Put it in memory before browsing more",
+          label: libraryMode
+            ? t("narrative.firstRun.journeyStart")
+            : t("narrative.firstRun.journeySave"),
+          detail: libraryMode
+            ? t("narrative.firstRun.journeyStartDetail")
+            : t("narrative.firstRun.journeySaveDetail"),
           id: libraryMode ? "play" : "save",
           title: topGame.title,
         },
         {
           step: "3",
-          label: "Search next",
-          detail: "Jump to Discover with this title as context",
+          label: t("narrative.firstRun.journeySearch"),
+          detail: t("narrative.firstRun.journeySearchDetail"),
           id: "discover-pick",
           title: topGame.title,
         },
       ];
 
       return {
-        eyebrow: libraryMode ? "Library-first answer" : "First taste read",
-        title: libraryMode ? `${topGame.title} is already ready.` : `First read: try ${topGame.title}.`,
+        eyebrow: libraryMode
+          ? t("narrative.firstRun.eyebrowLibrary")
+          : t("narrative.firstRun.eyebrowTaste"),
+        title: libraryMode
+          ? t("narrative.firstRun.titleLibrary", { title: topGame.title })
+          : t("narrative.firstRun.titleTaste", { title: topGame.title }),
         detail: libraryMode
-          ? `${detailParts.join(" / ")}. ${watchout.label}: ${watchout.detail}.`
-          : `${earlyTasteNote}${signalCount} signals are enough to stop browsing and test one direction: ${topGame.title}. This is not the final profile; it is the first useful read. ${watchout.label}: ${watchout.detail}.`,
+          ? t("narrative.firstRun.detailLibrary", {
+              parts: detailParts.join(" / "),
+              riskLabel: watchout.label,
+              riskDetail: watchout.detail,
+            })
+          : t("narrative.firstRun.detailTaste", {
+              count: signalCount,
+              note: earlyTasteNote,
+              title: topGame.title,
+              riskLabel: watchout.label,
+              riskDetail: watchout.detail,
+            }),
         confidenceLabel,
         confidenceReady,
         verdict,
@@ -455,9 +506,15 @@
         journey,
         nextSteps: isSharp ? null : firstRunNextSteps(signalCount),
         actions: [
-          { id: "focus-answer", label: "Agenda", title: "" },
-          { id: libraryMode ? "play" : "save", label: libraryMode ? "Play" : "Wishlist", title: topGame.title },
-          { id: "snooze", label: "Skip", title: topGame.title },
+          { id: "focus-answer", label: t("narrative.firstRun.actionAgenda"), title: "" },
+          {
+            id: libraryMode ? "play" : "save",
+            label: libraryMode
+              ? t("narrative.firstRun.actionPlay")
+              : t("narrative.firstRun.actionWishlist"),
+            title: topGame.title,
+          },
+          { id: "snooze", label: t("narrative.firstRun.actionSkip"), title: topGame.title },
         ],
       };
     }

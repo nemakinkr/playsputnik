@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v33 (cache-first static / network-first data), **disabled on
+- Service worker v34 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -39,7 +39,8 @@ reviews, catalogs, sale pages, and announcements.
 - Localization: EN/RU engine, complete settings sidebar, Today metrics/sample/
   time controls, and the main "what to play tonight" answer shell with
   locale-aware status, actions, alternatives, buy guardrails, personal
-  forecast, evidence, and risk rationale.
+  forecast, evidence, and risk rationale. The complete first-run payoff is
+  localized too: readiness, verdict, proof, next steps, and journey actions.
 - Onboarding: 30-game swipe deck, visible 30-second contract, 3/6/10
   milestones, animated hero exit, first-pick payoff after 3 real taste
   signals, and "use now / improve later" guidance for swipes, library access,

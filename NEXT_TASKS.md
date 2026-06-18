@@ -39,11 +39,13 @@ both audiences. This is a deliberate large project, done in phases with a commit
   continuity. Browser gates now seed through the stable
   `data-continuity-action="load-demo"` hook instead of English button text.
   Verified at 375px in RU with no horizontal overflow. SW v30.
-- **Phase 4 — narrative engine — IN PROGRESS.** First two slices done: the main
-  companion answer shell and recommendation-layer forecast/evidence/risk
-  rationale now use locale-aware whole-sentence templates. Risk branching uses
-  machine state instead of translated display text. Remaining: first-run bridge
-  and narrative labels still owned by the top-level/detail renderers. SW v33.
+- **Phase 4 — narrative engine — DONE.** The main companion answer,
+  recommendation-layer forecast/evidence/risk rationale, and complete
+  first-run payoff now use locale-aware whole-sentence templates. The first-run
+  flow includes localized readiness, verdict, proof, journey, actions, and
+  accessibility labels; browser gates assert the live EN/RU verdict. Risk
+  branching uses machine state instead of translated display text. Remaining
+  top-level/detail labels belong to Phase 5. SW v34.
 - **Phase 5 — remaining views** (Library, Discover, Wishlist, Taste, Deals, Data,
   Stats) dynamic copy + the detail cockpit drawer.
 - **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
