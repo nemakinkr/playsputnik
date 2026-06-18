@@ -117,11 +117,10 @@ and exposes a global `t(key, params)` (+ `window.PlaySputnikI18n`). Catalogs are
 `setLocale()` re-applies static markup and fires `onLocaleChange` → app.js
 re-renders. A missing key renders the key itself (visible, never throws) — so an
 untranslated surface shows English/the key, not a crash. Migrate view-by-view.
-**Gates** seed via the English "Load demo profile" button text; headless Chrome
-defaults to en so they pass. When you localize that button, update the seed hook
-in `scripts/*-check.mjs` (or force `setLocale('en')` there). Russian text is
-longer — once a view's dynamic copy is translated, re-run mobile-check for
-375px overflow.
+**Gates** seed via the stable
+`[data-continuity-action="load-demo"]` hook, never localized button text.
+Russian text is longer — once a view's dynamic copy is translated, re-run
+mobile-check for 375px overflow.
 
 ## Data pipeline
 

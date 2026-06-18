@@ -873,7 +873,7 @@ function checkSelectors() {
   assert(/function quickPayoffMilestones/.test(appOnboardingSource), "Quick onboarding payoff milestones are missing");
   assert(/taste-payoff/.test(appSource + css), "Quick onboarding should render a payoff block");
   assert(/taste-payoff-ladder/.test(appSource + css), "Quick onboarding should render a 3/6/10 payoff ladder");
-  assert(/First spark/.test(appOnboardingSource) && /Safer read/.test(appOnboardingSource) && /Sharper picks/.test(appOnboardingSource), "Quick onboarding payoff should cover 3/6/10 moments");
+  assert(/First spark/.test(appOnboardingSource + i18nEnSource) && /Safer read/.test(appOnboardingSource + i18nEnSource) && /Sharper picks/.test(appOnboardingSource + i18nEnSource), "Quick onboarding payoff should cover 3/6/10 moments");
   assert(/function quickTasteConflictReport/.test(appOnboardingSource), "Quick onboarding should detect mixed early taste signals");
   assert(/function conflictResolutionScore/.test(appOnboardingSource), "Quick onboarding should score conflict-resolution follow-ups");
   assert(/function tasteEngineProfile/.test(appScoreSource), "Taste Engine v2 profile builder is missing");
@@ -891,7 +891,7 @@ function checkSelectors() {
   assert(/const nextGame = nextDiagnosticGame\(\);/.test(appSource), "Swipe deck should use adaptive next-game selection");
   assert(/function quickSwipeFocusLabel/.test(appOnboardingSource), "Swipe deck should expose a user-friendly follow-up label");
   assert(/function quickSwipeFollowUpHint/.test(appOnboardingSource), "Swipe deck should expose a light follow-up hint");
-  assert(/Good follow-up/.test(appOnboardingSource), "Swipe deck should keep targeted follow-ups magical rather than mechanical");
+  assert(/Good follow-up/.test(appOnboardingSource + i18nEnSource), "Swipe deck should keep targeted follow-ups magical rather than mechanical");
   assert(/Clarifying/.test(appOnboardingSource), "Internal selector should still understand targeted conflict follow-ups");
   assert(/conflictScore: conflictResolutionScore/.test(appOnboardingSource), "Adaptive selector should keep a conflict-resolution score");
   assert(/10000 \+ .*conflictScore/.test(appOnboardingSource), "Conflict-resolution candidates should outrank ordinary coverage");
@@ -901,7 +901,7 @@ function checkSelectors() {
   assert(/quick-swipe-main/.test(appSource), "Swipe deck should have a focused main area");
   assert(/quick-swipe-proof/.test(appSource), "Swipe deck should show why the first signals already create value");
   assert(/data-quick-swipe-contract/.test(appSource), "Swipe deck should show the 30-second value contract");
-  assert(/click.*to first pick/.test(appSource), "Swipe deck should tell users how close they are to the first pick");
+  assert(/click.*to first pick/.test(appSource + i18nEnSource), "Swipe deck should tell users how close they are to the first pick");
   assert(/quick-swipe-meters/.test(appSource), "Swipe deck should show progress meters");
   assert(/quick-swipe-track/.test(appSource), "Swipe deck should render progress tracks");
   assert(/quick-swipe-atom-row/.test(appSource), "Swipe deck atom row is missing");
@@ -1243,12 +1243,12 @@ function checkSelectors() {
   assert(/Paste text/.test(html), "Deep route should accept pasted ratings");
   assert(/function entryLabel/.test(appEntrySource), "Entry label function is missing from entry module");
   assert(/function entryRouteProofCopy/.test(appEntrySource), "Entry route proof copy is missing from entry module");
-  assert(/Usable after \$\{QUICK_TASTE_FIRST_TARGET\} signals/.test(appEntrySource), "Entry proof should communicate fast-start threshold");
+  assert(/settings\.entry\.proofInitialLabel/.test(appEntrySource) && /Usable after \{target\} signals/.test(i18nEnSource), "Entry proof should communicate fast-start threshold");
   assert(/First hypothesis/.test(appAnswerSource + appEntrySource + html), "Quick onboarding should call the early payoff a hypothesis");
   assert(/PlaySputnikEntry/.test(appEntrySource), "Entry module must export PlaySputnikEntry");
   assert(/PlaySputnikEntry/.test(appSource), "app.js must reference PlaySputnikEntry");
   assert(!/function entryRouteProofCopy/.test(appSource), "entryRouteProofCopy must not remain in app.js");
-  assert(/Mixed first hypothesis/.test(appAnswerSource + appOnboardingSource + appSource), "Quick onboarding should avoid overclaiming contradictory signals");
+  assert(/Mixed first hypothesis/.test(appAnswerSource + appOnboardingSource + appSource + i18nEnSource), "Quick onboarding should avoid overclaiming contradictory signals");
   assert(/function renderQuickSwipeDeck/.test(appSource), "Swipe-style quick taste deck renderer is missing");
   assert(/data-swipe-reaction="unplayed"/.test(appSource), "Swipe deck should support not-played answers");
   assert(/function renderTasteGate/.test(appSource), "Known-games gate renderer is missing");
@@ -1273,7 +1273,7 @@ function checkSelectors() {
   assert(/continuityAction/.test(appSource), "Continuity actions are missing");
   assert(/Sample profile live/.test(appSource + i18nEnSource), "Demo profile should read like a product review mode");
   assert(/demo-profile-smoke/.test(demoProfileSmokeSource), "Demo profile smoke test is missing");
-  assert(/Load demo profile/.test(demoProfileSmokeSource), "Demo smoke should verify loading a demo profile");
+  assert(/data-continuity-action="load-demo"/.test(demoProfileSmokeSource), "Demo smoke should verify loading a demo profile through a stable hook");
   assert(/data-continuity-action="discover"/.test(demoProfileSmokeSource), "Demo smoke should verify Discover continuity");
   assert(/function firstRunTasteProof/.test(appAnswerSource), "First-run taste proof is missing");
   assert(/first-run-taste-proof/.test(appAnswerSource + appSource), "First-run taste proof renderer is missing");

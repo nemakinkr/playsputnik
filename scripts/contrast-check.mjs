@@ -26,7 +26,7 @@ const LUM_THRESHOLD = 225;
 
 // Runs in the page: seed a profile, set theme, scan all views.
 function scanInPage(LUM, mode) {
-  const demoBtn = [...document.querySelectorAll("button")].find((b) => /load demo profile/i.test(b.textContent));
+  const demoBtn = document.querySelector('[data-continuity-action="load-demo"]');
   if (demoBtn) demoBtn.click();
   ["Hades", "Stray", "Bloodborne", "Celeste", "Returnal"].forEach((t, i) => { try { setGameRating(t, ((i % 5) + 1) * 20); } catch (e) {} });
   try { render(); } catch (e) {}

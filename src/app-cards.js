@@ -57,13 +57,13 @@
       row.innerHTML = `
         <div class="profile-game-copy">
           <strong>${game.title}</strong>
-          <span>${game.axis || "Taste signal"}</span>
+          <span>${game.axis || t("settings.quickSwipe.tasteSignal")}</span>
           <small>${game.atoms.join(" / ")}</small>
         </div>
-        <div class="quick-reactions" role="group" aria-label="${game.title} reaction">
-          <button class="${reaction === "loved" ? "is-selected" : ""}" data-quick-reaction="loved" type="button" aria-pressed="${reaction === "loved"}">Like</button>
-          <button class="${reaction === "not_for_me" ? "is-selected" : ""}" data-quick-reaction="not_for_me" type="button" aria-pressed="${reaction === "not_for_me"}">No</button>
-          <button class="${reaction === "unplayed" ? "is-selected" : ""}" data-quick-reaction="unplayed" type="button" aria-pressed="${reaction === "unplayed"}">Not played</button>
+        <div class="quick-reactions" role="group" aria-label="${t("settings.reactions.aria", { title: game.title })}">
+          <button class="${reaction === "loved" ? "is-selected" : ""}" data-quick-reaction="loved" type="button" aria-pressed="${reaction === "loved"}">${t("settings.reactions.like")}</button>
+          <button class="${reaction === "not_for_me" ? "is-selected" : ""}" data-quick-reaction="not_for_me" type="button" aria-pressed="${reaction === "not_for_me"}">${t("settings.reactions.no")}</button>
+          <button class="${reaction === "unplayed" ? "is-selected" : ""}" data-quick-reaction="unplayed" type="button" aria-pressed="${reaction === "unplayed"}">${t("settings.reactions.notPlayed")}</button>
         </div>
       `;
       row.querySelectorAll("[data-quick-reaction]").forEach((button) => {

@@ -16,10 +16,10 @@
   }) {
     function entryLabel() {
       const state = getState();
-      if (state.entryPath === "demo") return "Demo profile";
-      if (state.entryPath === "psn") return "Library guardrails";
-      if (state.entryPath === "deep") return "Imported taste";
-      return "Fast profile";
+      if (state.entryPath === "demo") return t("settings.entry.labelDemo");
+      if (state.entryPath === "psn") return t("settings.entry.labelPsn");
+      if (state.entryPath === "deep") return t("settings.entry.labelDeep");
+      return t("settings.entry.labelQuick");
     }
 
     function entryRouteProofCopy() {
@@ -29,22 +29,22 @@
 
       if (state.entryPath === "demo") {
         return {
-          label: "Full loop loaded",
-          value: "Taste, library, wishlist, ratings, and search context are ready for product review.",
+          label: t("settings.entry.proofDemoLabel"),
+          value: t("settings.entry.proofDemoValue"),
         };
       }
 
       if (state.entryPath === "psn") {
         return {
-          label: "Library-first",
-          value: "Use owned and subscription games before any buy advice.",
+          label: t("settings.entry.proofPsnLabel"),
+          value: t("settings.entry.proofPsnValue"),
         };
       }
 
       if (state.entryPath === "deep") {
         return {
-          label: "Paste any format",
-          value: "Long ratings sharpen forecasts, but the first hypothesis can come earlier.",
+          label: t("settings.entry.proofDeepLabel"),
+          value: t("settings.entry.proofDeepValue"),
         };
       }
 
@@ -52,37 +52,47 @@
 
       if (signalCount >= QUICK_TASTE_SHARP_TARGET) {
         return {
-          label: "Sharper profile",
-          value: `${signalCount} taste signals already support better ranking forecasts.`,
+          label: t("settings.entry.proofSharpLabel"),
+          value: t("settings.entry.proofSharpValue", { count: signalCount }),
         };
       }
 
       if (signalCount >= QUICK_TASTE_USABLE_TARGET) {
         return {
-          label: conflict.hasConflict ? "Usable but mixed" : "Usable starter profile",
+          label: conflict.hasConflict
+            ? t("settings.entry.proofUsableMixedLabel")
+            : t("settings.entry.proofUsableLabel"),
           value: conflict.hasConflict
-            ? `Enough to suggest, but mixed around ${conflict.atoms.join(" / ")}.`
-            : `${signalCount} signals are enough for a reasonable starter profile.`,
+            ? t("settings.entry.proofUsableMixedValue", { atoms: conflict.atoms.join(" / ") })
+            : t("settings.entry.proofUsableValue", { count: signalCount }),
         };
       }
 
       if (signalCount >= QUICK_TASTE_FIRST_TARGET) {
         return {
-          label: conflict.hasConflict ? "First hypothesis only" : "First hypothesis ready",
-          value: `${signalCount} signals support a cautious first guess, not a final profile. ${QUICK_TASTE_USABLE_TARGET - signalCount} more make it safer.`,
+          label: conflict.hasConflict
+            ? t("settings.entry.proofFirstMixedLabel")
+            : t("settings.entry.proofFirstReadyLabel"),
+          value: t("settings.entry.proofFirstValue", {
+            count: signalCount,
+            remaining: QUICK_TASTE_USABLE_TARGET - signalCount,
+          }),
         };
       }
 
       if (answered) {
         return {
-          label: "Taste profile forming",
-          value: `${signalCount}/${QUICK_TASTE_FIRST_TARGET} taste signals. Not played keeps setup moving without fake ratings.`,
+          label: t("settings.entry.proofFormingLabel"),
+          value: t("settings.entry.proofFormingValue", {
+            count: signalCount,
+            target: QUICK_TASTE_FIRST_TARGET,
+          }),
         };
       }
 
       return {
-        label: `Usable after ${QUICK_TASTE_FIRST_TARGET} signals`,
-        value: "Start with like/dislike. PSN and pasted ratings can come later.",
+        label: t("settings.entry.proofInitialLabel", { target: QUICK_TASTE_FIRST_TARGET }),
+        value: t("settings.entry.proofInitialValue"),
       };
     }
 

@@ -41,8 +41,7 @@ try {
   await page.evaluate(() => localStorage.removeItem("playsputnik.prototype.state.v2"));
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   await page.waitForFunction(
-    () => Array.from(document.querySelectorAll("[data-continuity-action]"))
-      .some((button) => button.textContent.trim() === "Load demo profile"),
+    () => Boolean(document.querySelector('[data-continuity-action="load-demo"]')),
     null,
     { timeout: 10000 },
   );
@@ -54,7 +53,7 @@ try {
     overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
   }));
   assert(empty.panel, "Demo continuity panel is missing");
-  assert(empty.actions.includes("Load demo profile"), "Demo panel should offer Load demo profile");
+  assert(empty.actions.length >= 2, "Demo panel should offer its primary actions");
   assert(!empty.overflow, "Empty demo panel creates horizontal overflow");
 
   await page.evaluate(() => document.querySelector('[data-continuity-action="load-demo"]')?.click());
@@ -80,7 +79,7 @@ try {
     };
   });
   assert(loaded.activeView === "today", `Demo should land on Today, got ${loaded.activeView}`);
-  assert(/Demo profile/.test(loaded.entryStatus), `Entry status should show demo profile, got ${loaded.entryStatus}`);
+  assert(/Demo profile|Демо-профиль/.test(loaded.entryStatus), `Entry status should show demo profile, got ${loaded.entryStatus}`);
   assert(loaded.userGames >= 10, `Demo should seed at least 10 user games, got ${loaded.userGames}`);
   assert(loaded.saved >= 3, `Demo should seed wishlist games, got ${loaded.saved}`);
   assert(loaded.ratings >= 8, `Demo should seed ratings, got ${loaded.ratings}`);

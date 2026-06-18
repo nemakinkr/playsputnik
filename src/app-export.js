@@ -260,12 +260,12 @@
         els.psnImportBtn.addEventListener("click", async () => {
           const npsso = els.psnNpssoInput?.value.trim() || "";
           if (npsso.length < 20) {
-            if (els.psnImportResult) els.psnImportResult.innerHTML = `<p class="import-error">Please paste your NPSSO token first.</p>`;
+            if (els.psnImportResult) els.psnImportResult.innerHTML = `<p class="import-error">${t("settings.psn.tokenRequired")}</p>`;
             return;
           }
           els.psnImportBtn.disabled = true;
-          els.psnImportBtn.textContent = "Importing…";
-          if (els.psnImportStatus) els.psnImportStatus.textContent = "Connecting to PSN…";
+          els.psnImportBtn.textContent = t("settings.psn.importing");
+          if (els.psnImportStatus) els.psnImportStatus.textContent = t("settings.psn.connecting");
           if (els.psnImportResult) els.psnImportResult.innerHTML = "";
           try {
             const trophyTitles = await importFromPsn(npsso);
@@ -278,11 +278,11 @@
             if (els.psnImportResult) {
               els.psnImportResult.innerHTML = `<p class="import-error">${err.message}</p>`;
             }
-            if (els.psnImportStatus) els.psnImportStatus.textContent = "Failed";
+            if (els.psnImportStatus) els.psnImportStatus.textContent = t("settings.psn.failed");
             console.warn("[PSN import]", err);
           } finally {
             els.psnImportBtn.disabled = false;
-            els.psnImportBtn.textContent = "Import from PSN";
+            els.psnImportBtn.textContent = t("settings.psn.import");
           }
         });
       }

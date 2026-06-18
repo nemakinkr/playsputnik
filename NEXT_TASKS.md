@@ -33,8 +33,12 @@ both audiences. This is a deliberate large project, done in phases with a commit
   (454 игры / 18 запомненных игр / 210 вариантов / 4 пропуска). qa-harness now
   also scans the i18n-en catalog for moved copy. No 375px overflow in RU across
   8 views. SW v29. (Top-recommendation block left to Phase 4 — it's narrative.)
-- **Phase 3 — settings sidebar** (the `⚙` panel: section titles, field labels,
-  start-path cards, demo button — when localized, fix the gate seed hook).
+- **Phase 3 — settings sidebar — DONE.** Localized the complete `⚙` panel:
+  section titles, fields, start-path cards and proof copy, known-games swipe
+  flow, taste/session/notebook statuses, PSN import states, and demo profile
+  continuity. Browser gates now seed through the stable
+  `data-continuity-action="load-demo"` hook instead of English button text.
+  Verified at 375px in RU with no horizontal overflow. SW v30.
 - **Phase 4 — narrative engine** (app-answer.js / app-recommend.js): the hard
   part — locale-aware templates with grammar/plurals, not fragment concat.
 - **Phase 5 — remaining views** (Library, Discover, Wishlist, Taste, Deals, Data,

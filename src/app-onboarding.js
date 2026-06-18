@@ -90,16 +90,16 @@
 
     function quickSwipeFocusLabel(game, missingAtoms = uncoveredDiagnosticAtoms(), conflict = quickTasteConflictReport()) {
       const focus = diagnosticFocusForGame(game, missingAtoms, conflict);
-      if (focus.startsWith("Clarifying")) return "Good follow-up";
-      if (focus.startsWith("Checking")) return "Fresh angle";
-      return "Next question";
+      if (focus.startsWith("Clarifying")) return t("settings.onboarding.focusFollowUp");
+      if (focus.startsWith("Checking")) return t("settings.onboarding.focusFresh");
+      return t("settings.onboarding.focusNext");
     }
 
     function quickSwipeFollowUpHint(game, missingAtoms = uncoveredDiagnosticAtoms(), conflict = quickTasteConflictReport()) {
       const focus = diagnosticFocusForGame(game, missingAtoms, conflict);
-      if (focus.startsWith("Clarifying")) return "A small calibration pick. It should make the early mixed signal clearer.";
-      if (focus.startsWith("Checking")) return "A different kind of game keeps the first read from getting too narrow.";
-      return "One more signal makes the next suggestion feel less random.";
+      if (focus.startsWith("Clarifying")) return t("settings.onboarding.hintFollowUp");
+      if (focus.startsWith("Checking")) return t("settings.onboarding.hintFresh");
+      return t("settings.onboarding.hintNext");
     }
 
     function quickSwipeAtomChips(game, missingAtoms = uncoveredDiagnosticAtoms(), conflict = quickTasteConflictReport()) {
@@ -185,7 +185,9 @@
       return {
         hasConflict: atoms.length > 0,
         atoms,
-        detail: atoms.length ? `mixed signal around ${atoms.join(" / ")}` : "no mixed atom signals yet",
+        detail: atoms.length
+          ? t("settings.onboarding.conflictMixed", { atoms: atoms.join(" / ") })
+          : t("settings.onboarding.conflictNone"),
       };
     }
 
@@ -195,86 +197,86 @@
       if (answered >= fullTarget && count >= QUICK_TASTE_SHARP_TARGET) {
         return {
           stage: "complete",
-          label: "Full quick profile",
-          title: "Quick profile complete",
-          detail: `${answered}/${fullTarget} games answered. PSN access or pasted ratings can now add library context, not rescue onboarding.`,
-          next: "Use the companion, then refine with real play history later.",
+          label: t("settings.onboarding.fullLabel"),
+          title: t("settings.onboarding.fullTitle"),
+          detail: t("settings.onboarding.fullDetail", { answered, total: fullTarget }),
+          next: t("settings.onboarding.fullNext"),
         };
       }
       if (count >= QUICK_TASTE_SHARP_TARGET) {
         return {
           stage: "sharp",
-          label: "Sharper profile",
-          title: "Sharper profile ready",
-          detail: `${count} like/dislike signals are enough for stronger personal ranking forecasts.`,
-          next: `The remaining ${fullTarget - answered} swipes are optional calibration.`,
+          label: t("settings.onboarding.sharpLabel"),
+          title: t("settings.onboarding.sharpTitle"),
+          detail: t("settings.onboarding.sharpDetail", { count }),
+          next: t("settings.onboarding.sharpNext", { count: fullTarget - answered }),
         };
       }
       if (count >= QUICK_TASTE_USABLE_TARGET) {
         return {
           stage: conflict.hasConflict ? "usable-mixed" : "usable",
-          label: conflict.hasConflict ? "Usable but mixed" : "Usable starter profile",
-          title: conflict.hasConflict ? "Usable, with mixed signals" : "Starter profile ready",
+          label: conflict.hasConflict ? t("settings.onboarding.usableMixedLabel") : t("settings.onboarding.usableLabel"),
+          title: conflict.hasConflict ? t("settings.onboarding.usableMixedTitle") : t("settings.onboarding.usableTitle"),
           detail: conflict.hasConflict
-            ? `${count} taste signals are enough to suggest, but ${conflict.detail}.`
-            : `${count} taste signals are enough for a reasonable starter profile.`,
-          next: `${QUICK_TASTE_SHARP_TARGET - count} more like/dislike signals make ranking forecasts sharper.`,
+            ? t("settings.onboarding.usableMixedDetail", { count, conflict: conflict.detail })
+            : t("settings.onboarding.usableDetail", { count }),
+          next: t("settings.onboarding.usableNext", { count: QUICK_TASTE_SHARP_TARGET - count }),
         };
       }
       if (count >= QUICK_TASTE_FIRST_TARGET) {
         return {
           stage: conflict.hasConflict ? "mixed" : "hypothesis",
-          label: conflict.hasConflict ? "Mixed first hypothesis" : "First hypothesis",
-          title: conflict.hasConflict ? "First hypothesis is mixed" : "First hypothesis is ready",
+          label: conflict.hasConflict ? t("settings.onboarding.firstMixedLabel") : t("settings.onboarding.firstLabel"),
+          title: conflict.hasConflict ? t("settings.onboarding.firstMixedTitle") : t("settings.onboarding.firstTitle"),
           detail: conflict.hasConflict
-            ? `${count} taste signals are enough for a cautious guess, but ${conflict.detail}.`
-            : `${count} taste signals are enough for a cautious first guess, not a final profile.`,
-          next: `${QUICK_TASTE_USABLE_TARGET - count} more like/dislike signals make the answer safer.`,
+            ? t("settings.onboarding.firstMixedDetail", { count, conflict: conflict.detail })
+            : t("settings.onboarding.firstDetail", { count }),
+          next: t("settings.onboarding.firstNext", { count: QUICK_TASTE_USABLE_TARGET - count }),
         };
       }
       return {
         stage: "learning",
-        label: "Learning",
-        title: `Mark ${Math.max(0, QUICK_TASTE_FIRST_TARGET - count)} more taste signal${QUICK_TASTE_FIRST_TARGET - count === 1 ? "" : "s"}`,
-        detail: "Like and Not for me both teach taste. Not played skips without inventing a rating.",
-        next: `You do not need PSN or a long rating list to get the first answer.`,
+        label: t("settings.onboarding.learningLabel"),
+        title: t("settings.onboarding.learningTitle", { count: Math.max(0, QUICK_TASTE_FIRST_TARGET - count) }),
+        detail: t("settings.onboarding.learningDetail"),
+        next: t("settings.onboarding.learningNext"),
       };
     }
 
     function quickPayoffStage(count) {
       if (count >= QUICK_TASTE_SHARP_TARGET) {
         return {
-          label: "Sharper picks",
-          title: "The companion can be bolder now.",
-          detail: "Enough signal for stronger ranking and tradeoff calls.",
+          label: t("settings.onboarding.payoffSharpLabel"),
+          title: t("settings.onboarding.payoffSharpTitle"),
+          detail: t("settings.onboarding.payoffSharpDetail"),
         };
       }
       if (count >= QUICK_TASTE_USABLE_TARGET) {
         return {
-          label: "Safer read",
-          title: "The first profile feels less fragile.",
-          detail: "A few patterns are repeating, so the next pick can carry more confidence.",
+          label: t("settings.onboarding.payoffUsableLabel"),
+          title: t("settings.onboarding.payoffUsableTitle"),
+          detail: t("settings.onboarding.payoffUsableDetail"),
         };
       }
       if (count >= QUICK_TASTE_FIRST_TARGET) {
         return {
-          label: "First hypothesis",
-          title: "There is enough signal for a cautious first pick.",
-          detail: "Still early, but no longer a blank slate.",
+          label: t("settings.onboarding.payoffFirstLabel"),
+          title: t("settings.onboarding.payoffFirstTitle"),
+          detail: t("settings.onboarding.payoffFirstDetail"),
         };
       }
       return {
-        label: "First spark",
-        title: "Three real signals unlock the first read.",
-        detail: "A like or a dislike both count. Skips stay honest.",
+        label: t("settings.onboarding.payoffSparkLabel"),
+        title: t("settings.onboarding.payoffSparkTitle"),
+        detail: t("settings.onboarding.payoffSparkDetail"),
       };
     }
 
     function quickPayoffMilestones(count) {
       return [
-        { target: QUICK_TASTE_FIRST_TARGET, label: "First hypothesis", detail: "cautious pick" },
-        { target: QUICK_TASTE_USABLE_TARGET, label: "Safer read", detail: "less fragile" },
-        { target: QUICK_TASTE_SHARP_TARGET, label: "Sharper picks", detail: "better ranking" },
+        { target: QUICK_TASTE_FIRST_TARGET, label: t("settings.onboarding.milestoneFirst"), detail: t("settings.onboarding.milestoneFirstDetail") },
+        { target: QUICK_TASTE_USABLE_TARGET, label: t("settings.onboarding.milestoneUsable"), detail: t("settings.onboarding.milestoneUsableDetail") },
+        { target: QUICK_TASTE_SHARP_TARGET, label: t("settings.onboarding.milestoneSharp"), detail: t("settings.onboarding.milestoneSharpDetail") },
       ].map((item) => ({
         ...item,
         state: count >= item.target ? "done" : "next",
@@ -312,16 +314,21 @@
         progress: Math.min(100, Math.round((count / minimum) * 100)),
         title: count >= minimum ? maturity.title : `Mark ${remaining} more taste signal${remaining === 1 ? "" : "s"}`,
         detail: count >= minimum
-          ? `${summary.loved} liked / ${summary.notForMe} no / ${summary.unplayed} not played. ${maturity.detail}`
+          ? t("settings.onboarding.summary", {
+              liked: summary.loved,
+              disliked: summary.notForMe,
+              unplayed: summary.unplayed,
+              detail: maturity.detail,
+            })
           : maturity.detail,
         maturity: count >= minimum
-          ? `${maturity.next} PSN library access or a pasted rating list can improve confidence later.`
+          ? t("settings.onboarding.maturityMore", { next: maturity.next })
           : maturity.next,
         insights: count >= minimum ? [
-          { label: "Confidence", value: maturity.label },
-          { label: "Pull", value: tasteSummary.pull.length ? tasteSummary.pull.join(" / ") : "early taste" },
-          { label: conflict.hasConflict ? "Mixed" : "Caution", value: conflict.hasConflict ? conflict.atoms.join(" / ") : tasteSummary.caution.length ? tasteSummary.caution.join(" / ") : "no strong dislikes yet" },
-          { label: "Next", value: nextGame ? `${nextFocus}: ${nextGame.title}` : "strong quick profile" },
+          { label: t("settings.onboarding.confidence"), value: maturity.label },
+          { label: t("settings.onboarding.pull"), value: tasteSummary.pull.length ? tasteSummary.pull.join(" / ") : t("settings.onboarding.earlyTaste") },
+          { label: conflict.hasConflict ? t("settings.onboarding.mixed") : t("settings.onboarding.caution"), value: conflict.hasConflict ? conflict.atoms.join(" / ") : tasteSummary.caution.length ? tasteSummary.caution.join(" / ") : t("settings.onboarding.noDislikes") },
+          { label: t("settings.onboarding.next"), value: nextGame ? `${nextFocus}: ${nextGame.title}` : t("settings.onboarding.strongProfile") },
         ] : [],
       };
     }

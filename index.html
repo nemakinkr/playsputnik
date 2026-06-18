@@ -28,45 +28,45 @@
   <body>
     <a href="#decision-surface-main" class="skip-link">Skip to recommendations</a>
     <main class="app-shell">
-      <aside class="setup-panel" id="setup-panel" aria-label="Player setup">
+      <aside class="setup-panel" id="setup-panel" aria-label="Player setup" data-i18n-attr="aria-label:settings.setupAria">
         <div class="brand-row">
           <span class="brand-logo" role="img" aria-label="PlaySputnik">
             <span class="bl-play">Play</span><span class="bl-sputnik">Sputn<i class="bl-i" aria-hidden="true">ı</i>k</span>
           </span>
-          <p class="brand-tagline">Your gaming companion</p>
+          <p class="brand-tagline" data-i18n="settings.brandTagline">Your gaming companion</p>
         </div>
 
         <section class="control-section entry-section" aria-labelledby="entry-title">
           <div class="section-heading">
-            <h2 id="entry-title">Start path</h2>
-            <span id="entry-status">30 sec value</span>
+            <h2 id="entry-title" data-i18n="settings.start.title">Start path</h2>
+            <span id="entry-status" data-i18n="settings.start.status">30 sec value</span>
           </div>
           <div class="entry-grid">
             <button class="entry-option" data-entry-path="quick" type="button">
-              <strong>Quick taste</strong>
-              <span>30-game swipe</span>
-              <small>First hypothesis after 3 taste signals</small>
-              <span class="entry-tags" aria-label="Quick taste strengths">
-                <em>Fastest</em>
-                <em>No account</em>
+              <strong data-i18n="settings.start.quickTitle">Quick taste</strong>
+              <span data-i18n="settings.start.quickSub">30-game swipe</span>
+              <small data-i18n="settings.start.quickDetail">First hypothesis after 3 taste signals</small>
+              <span class="entry-tags" aria-label="Quick taste strengths" data-i18n-attr="aria-label:settings.start.quickAria">
+                <em data-i18n="settings.start.fastest">Fastest</em>
+                <em data-i18n="settings.start.noAccount">No account</em>
               </span>
             </button>
             <button class="entry-option" data-entry-path="psn" type="button">
-              <strong>PSN library</strong>
-              <span>Demo import</span>
-              <small>Best playable game first, fewer duplicate buys</small>
-              <span class="entry-tags" aria-label="PSN library strengths">
-                <em>Library-first</em>
-                <em>Future sync</em>
+              <strong data-i18n="settings.start.psnTitle">PSN library</strong>
+              <span data-i18n="settings.start.psnSub">Demo import</span>
+              <small data-i18n="settings.start.psnDetail">Best playable game first, fewer duplicate buys</small>
+              <span class="entry-tags" aria-label="PSN library strengths" data-i18n-attr="aria-label:settings.start.psnAria">
+                <em data-i18n="settings.start.libraryFirst">Library-first</em>
+                <em data-i18n="settings.start.futureSync">Future sync</em>
               </span>
             </button>
             <button class="entry-option" data-entry-path="deep" type="button">
-              <strong>Deep rating</strong>
-              <span>Paste text</span>
-              <small>Any rating list can sharpen the companion</small>
-              <span class="entry-tags" aria-label="Deep rating strengths">
-                <em>Strongest</em>
-                <em>Optional</em>
+              <strong data-i18n="settings.start.deepTitle">Deep rating</strong>
+              <span data-i18n="settings.start.deepSub">Paste text</span>
+              <small data-i18n="settings.start.deepDetail">Any rating list can sharpen the companion</small>
+              <span class="entry-tags" aria-label="Deep rating strengths" data-i18n-attr="aria-label:settings.start.deepAria">
+                <em data-i18n="settings.start.strongest">Strongest</em>
+                <em data-i18n="settings.start.optional">Optional</em>
               </span>
             </button>
           </div>
@@ -76,34 +76,34 @@
 
         <section class="control-section psn-import-section" id="psn-import-section" aria-labelledby="psn-import-title" style="display:none">
           <div class="section-heading">
-            <h2 id="psn-import-title">PSN library import</h2>
+            <h2 id="psn-import-title" data-i18n="settings.psn.title">PSN library import</h2>
             <span id="psn-import-status"></span>
           </div>
-          <p class="panel-note">Paste your <code>npsso</code> cookie to import your PS5/PS4 library automatically.</p>
+          <p class="panel-note" data-i18n="settings.psn.note">Paste your npsso cookie to import your PS5/PS4 library automatically.</p>
           <details class="psn-npsso-howto">
-            <summary>How to find your NPSSO token</summary>
+            <summary data-i18n="settings.psn.howTo">How to find your NPSSO token</summary>
             <ol>
-              <li>Open <strong>my.playstation.com</strong> in a browser and sign in.</li>
-              <li>Press <kbd>F12</kbd> to open DevTools → <strong>Application</strong> tab.</li>
-              <li>Under <strong>Storage → Cookies</strong>, find <code>npsso</code>.</li>
-              <li>Copy the value (64 characters) and paste below.</li>
+              <li data-i18n="settings.psn.step1">Open my.playstation.com in a browser and sign in.</li>
+              <li data-i18n="settings.psn.step2">Press F12 to open DevTools, then open the Application tab.</li>
+              <li data-i18n="settings.psn.step3">Under Storage, then Cookies, find npsso.</li>
+              <li data-i18n="settings.psn.step4">Copy the 64-character value and paste it below.</li>
             </ol>
-            <p class="panel-note">The token is only sent to your local companion server (127.0.0.1) — never to any third party.</p>
+            <p class="panel-note" data-i18n="settings.psn.privacy">The token is sent only to your local companion server (127.0.0.1), never to a third party.</p>
           </details>
           <label class="field">
-            <span>NPSSO token</span>
-            <input id="psn-npsso-input" type="password" placeholder="Paste 64-character token" autocomplete="off" spellcheck="false" />
+            <span data-i18n="settings.psn.tokenLabel">NPSSO token</span>
+            <input id="psn-npsso-input" type="password" placeholder="Paste 64-character token" data-i18n-attr="placeholder:settings.psn.tokenPlaceholder" autocomplete="off" spellcheck="false" />
           </label>
           <div class="action-row">
-            <button class="secondary-action" id="psn-import-btn" type="button">Import from PSN</button>
-            <button class="secondary-action" id="psn-import-cancel" type="button">Cancel</button>
+            <button class="secondary-action" id="psn-import-btn" type="button" data-i18n="settings.psn.import">Import from PSN</button>
+            <button class="secondary-action" id="psn-import-cancel" type="button" data-i18n="settings.psn.cancel">Cancel</button>
           </div>
           <div id="psn-import-result"></div>
         </section>
 
         <section class="control-section" aria-labelledby="liked-title">
           <div class="section-heading">
-            <h2 id="liked-title">Known games</h2>
+            <h2 id="liked-title" data-i18n="settings.knownGames">Known games</h2>
             <span id="liked-count">0/30</span>
           </div>
           <div class="quick-swipe-deck" id="quick-swipe-deck"></div>
@@ -113,7 +113,7 @@
 
         <section class="control-section" id="taste-profile-section" aria-labelledby="taste-profile-title">
           <div class="section-heading">
-            <h2 id="taste-profile-title">Taste profile</h2>
+            <h2 id="taste-profile-title" data-i18n="settings.tasteProfile">Taste profile</h2>
             <span id="taste-profile-badge"></span>
           </div>
           <div id="taste-profile-summary"></div>
@@ -121,91 +121,91 @@
 
         <section class="control-section" aria-labelledby="import-title">
           <div class="section-heading">
-            <h2 id="import-title">Taste import</h2>
-            <span id="taste-summary">Manual profile</span>
+            <h2 id="import-title" data-i18n="settings.tasteImport.title">Taste import</h2>
+            <span id="taste-summary" data-i18n="settings.tasteImport.summary">Manual profile</span>
           </div>
           <label class="field">
-            <span>Paste ratings</span>
-            <textarea id="rating-import" rows="5" placeholder="Hades - 5/5&#10;Elden Ring - 9/10&#10;Stray - 4/5"></textarea>
+            <span data-i18n="settings.tasteImport.label">Paste ratings</span>
+            <textarea id="rating-import" rows="5" placeholder="Hades - 5/5&#10;Elden Ring - 9/10&#10;Stray - 4/5" data-i18n-attr="placeholder:settings.tasteImport.placeholder"></textarea>
           </label>
           <div class="action-row">
-            <button class="secondary-action" id="sample-ratings" type="button">Use sample</button>
-            <button class="secondary-action" id="analyze-ratings" type="button">Analyze taste</button>
+            <button class="secondary-action" id="sample-ratings" type="button" data-i18n="settings.tasteImport.sample">Use sample</button>
+            <button class="secondary-action" id="analyze-ratings" type="button" data-i18n="settings.tasteImport.analyze">Analyze taste</button>
           </div>
           <div class="taste-atoms" id="taste-atoms"></div>
         </section>
 
         <section class="control-section" aria-labelledby="session-stats-title" id="session-stats-panel">
           <div class="section-heading">
-            <h2 id="session-stats-title">Session</h2>
+            <h2 id="session-stats-title" data-i18n="settings.sessionStats.title">Session</h2>
             <span id="session-status"></span>
           </div>
           <div class="session-stats-grid" id="session-stats-grid">
-            <div class="session-stat"><span>Now</span><strong id="session-current">—</strong></div>
-            <div class="session-stat"><span>Total</span><strong id="session-total">—</strong></div>
-            <div class="session-stat"><span>Sessions</span><strong id="session-count">—</strong></div>
-            <div class="session-stat"><span>Avg</span><strong id="session-avg">—</strong></div>
+            <div class="session-stat"><span data-i18n="settings.sessionStats.now">Now</span><strong id="session-current">—</strong></div>
+            <div class="session-stat"><span data-i18n="settings.sessionStats.total">Total</span><strong id="session-total">—</strong></div>
+            <div class="session-stat"><span data-i18n="settings.sessionStats.sessions">Sessions</span><strong id="session-count">—</strong></div>
+            <div class="session-stat"><span data-i18n="settings.sessionStats.average">Avg</span><strong id="session-avg">—</strong></div>
           </div>
         </section>
 
         <details class="control-section advanced-section">
           <summary>
-            <span id="notebook-title">Advanced import</span>
-            <span id="notebook-summary">Optional</span>
+            <span id="notebook-title" data-i18n="settings.advanced.title">Advanced import</span>
+            <span id="notebook-summary" data-i18n="settings.advanced.optional">Optional</span>
           </summary>
           <label class="field">
-            <span>Power-user note</span>
-            <textarea id="notebook-import" rows="6" placeholder="Wishlist, access, prices, completed, ranked, upcoming"></textarea>
+            <span data-i18n="settings.advanced.label">Power-user note</span>
+            <textarea id="notebook-import" rows="6" placeholder="Wishlist, access, prices, completed, ranked, upcoming" data-i18n-attr="placeholder:settings.advanced.placeholder"></textarea>
           </label>
           <div class="action-row">
-            <button class="secondary-action" id="parse-notebook" type="button">Parse note</button>
-            <button class="secondary-action" id="clear-notebook" type="button">Clear note</button>
+            <button class="secondary-action" id="parse-notebook" type="button" data-i18n="settings.advanced.parse">Parse note</button>
+            <button class="secondary-action" id="clear-notebook" type="button" data-i18n="settings.advanced.clear">Clear note</button>
           </div>
           <div class="taste-atoms" id="notebook-pills"></div>
         </details>
 
         <section class="control-section" aria-labelledby="context-title">
-          <h2 id="context-title">Current context</h2>
+          <h2 id="context-title" data-i18n="settings.context.title">Current context</h2>
           <label class="field">
-            <span>Mood</span>
+            <span data-i18n="settings.context.mood">Mood</span>
             <select id="mood">
-              <option value="story">Story-rich</option>
-              <option value="adrenaline">High energy</option>
-              <option value="cozy">Relaxed</option>
-              <option value="systems">Systems and tactics</option>
+              <option value="story" data-i18n="settings.context.moodStory">Story-rich</option>
+              <option value="adrenaline" data-i18n="settings.context.moodEnergy">High energy</option>
+              <option value="cozy" data-i18n="settings.context.moodCozy">Relaxed</option>
+              <option value="systems" data-i18n="settings.context.moodSystems">Systems and tactics</option>
             </select>
           </label>
           <label class="field">
-            <span>Session</span>
+            <span data-i18n="settings.context.session">Session</span>
             <select id="session">
-              <option value="short">Under 45 minutes</option>
-              <option value="medium">1-2 hours</option>
-              <option value="long">Long evening</option>
+              <option value="short" data-i18n="settings.context.sessionShort">Under 45 minutes</option>
+              <option value="medium" data-i18n="settings.context.sessionMedium">1-2 hours</option>
+              <option value="long" data-i18n="settings.context.sessionLong">Long evening</option>
             </select>
           </label>
           <label class="field">
-            <span>Difficulty</span>
+            <span data-i18n="settings.context.difficulty">Difficulty</span>
             <select id="difficulty">
-              <option value="normal">Normal</option>
-              <option value="low">Low friction</option>
-              <option value="high">Challenging</option>
+              <option value="normal" data-i18n="settings.context.difficultyNormal">Normal</option>
+              <option value="low" data-i18n="settings.context.difficultyLow">Low friction</option>
+              <option value="high" data-i18n="settings.context.difficultyHigh">Challenging</option>
             </select>
           </label>
         </section>
 
         <section class="control-section" aria-labelledby="market-title">
-          <h2 id="market-title">Store signals</h2>
-          <div class="segmented" role="group" aria-label="Active PS Store region">
+          <h2 id="market-title" data-i18n="settings.store.title">Store signals</h2>
+          <div class="segmented" role="group" aria-label="Active PS Store region" data-i18n-attr="aria-label:settings.store.regionAria">
             <button class="segment is-active" data-region="US" type="button">US</button>
             <button class="segment" data-region="TR" type="button">TR</button>
             <button class="segment" data-region="UK" type="button">UK</button>
           </div>
           <label class="toggle-row">
             <input id="ps-plus" type="checkbox" checked />
-            <span>Use PS Plus Extra catalog</span>
+            <span data-i18n="settings.store.usePlus">Use PS Plus Extra catalog</span>
           </label>
           <label class="field">
-            <span>Buy-later ceiling</span>
+            <span data-i18n="settings.store.ceiling">Buy-later ceiling</span>
             <input id="budget" type="range" min="10" max="70" value="35" step="5" />
             <strong id="budget-label">$35</strong>
           </label>
@@ -213,9 +213,9 @@
 
         <button class="primary-action" id="refresh" type="button">
           <span aria-hidden="true">R</span>
-          Refresh guidance
+          <span data-i18n="settings.refresh">Refresh guidance</span>
         </button>
-        <button class="secondary-action" id="reset-state" type="button">Reset profile</button>
+        <button class="secondary-action" id="reset-state" type="button" data-i18n="settings.reset">Reset profile</button>
       </aside>
 
       <section class="decision-surface" id="decision-surface-main" aria-live="polite" tabindex="-1">
@@ -228,7 +228,7 @@
             <div class="region-pill" id="active-region">US Store</div>
             <button class="lang-toggle" id="lang-toggle" type="button" aria-label="Language" data-i18n-attr="aria-label:common.language;title:common.language">EN</button>
             <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" title="Toggle dark mode" aria-label="Toggle dark mode" data-i18n-attr="title:common.themeToggle;aria-label:common.themeToggle">🌙</button>
-            <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="setup-panel" title="Settings" data-i18n-attr="title:common.settings">⚙</button>
+            <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="setup-panel" title="Settings" aria-label="Settings" data-i18n-attr="title:common.settings;aria-label:common.settings">⚙</button>
           </div>
         </header>
 

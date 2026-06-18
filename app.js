@@ -2084,9 +2084,9 @@ function renderQuickSwipeDeck() {
   if (!nextGame) {
     els.quickSwipeDeck.innerHTML = `
       <div class="quick-swipe-card is-complete">
-        <span>Quick profile complete</span>
-        <strong>${answered}/${profileGames.length} games answered</strong>
-        <p>You can still improve the profile later with PSN access or any pasted rating list.</p>
+        <span>${t("settings.quickSwipe.complete")}</span>
+        <strong>${t("settings.quickSwipe.answered", { answered, total: profileGames.length })}</strong>
+        <p>${t("settings.quickSwipe.completeDetail")}</p>
         ${state.lastUndo?.action === "quick_taste" ? renderUndoStrip("quick-swipe-undo") : ""}
       </div>
     `;
@@ -2097,28 +2097,36 @@ function renderQuickSwipeDeck() {
   const answeredProgress = Math.round((answered / profileGames.length) * 100);
   const signalProgress = Math.min(100, Math.round((signalCount / QUICK_TASTE_FIRST_TARGET) * 100));
   const sharpProgress = Math.min(100, Math.round((signalCount / QUICK_TASTE_SHARP_TARGET) * 100));
-  const firstAnswerCopy = signalCount >= QUICK_TASTE_FIRST_TARGET ? "Ready" : `${Math.max(0, QUICK_TASTE_FIRST_TARGET - signalCount)} to go`;
-  const sharpCopy = signalCount >= QUICK_TASTE_SHARP_TARGET ? "Sharp" : `${Math.max(0, QUICK_TASTE_SHARP_TARGET - signalCount)} to sharp`;
+  const firstAnswerCopy = signalCount >= QUICK_TASTE_FIRST_TARGET
+    ? t("settings.quickSwipe.ready")
+    : t("settings.quickSwipe.toGo", { count: Math.max(0, QUICK_TASTE_FIRST_TARGET - signalCount) });
+  const sharpCopy = signalCount >= QUICK_TASTE_SHARP_TARGET
+    ? t("settings.quickSwipe.sharp")
+    : t("settings.quickSwipe.toSharp", { count: Math.max(0, QUICK_TASTE_SHARP_TARGET - signalCount) });
   const missingAtoms = uncoveredDiagnosticAtoms();
   const conflict = quickTasteConflictReport();
   const gate = tasteGateState();
   const followUpHint = quickSwipeFollowUpHint(nextGame, missingAtoms, conflict);
-  const proofTitle = gate.ready ? `${gate.maturityLabel}: cautious answer ready` : `${QUICK_TASTE_FIRST_TARGET} taste signals unlock the first hypothesis`;
+  const proofTitle = gate.ready
+    ? t("settings.quickSwipe.proofReady", { label: gate.maturityLabel })
+    : t("settings.quickSwipe.proofLocked", { count: QUICK_TASTE_FIRST_TARGET });
   const proofDetail = gate.ready
     ? gate.maturity
-    : "Liked and Not for me both teach taste. Not played just moves on without pretending you rated it.";
+    : t("settings.quickSwipe.proofDetail");
   const firstRemaining = Math.max(0, QUICK_TASTE_FIRST_TARGET - signalCount);
   const usableRemaining = Math.max(0, QUICK_TASTE_USABLE_TARGET - signalCount);
   const sharpRemaining = Math.max(0, QUICK_TASTE_SHARP_TARGET - signalCount);
-  const contractLabel = gate.ready ? "First pick unlocked" : `${firstRemaining} click${firstRemaining === 1 ? "" : "s"} to first pick`;
+  const contractLabel = gate.ready
+    ? t("settings.quickSwipe.firstPickUnlocked")
+    : t("settings.quickSwipe.clicksToPick", { count: firstRemaining });
   const nextMilestoneCopy = signalCount >= QUICK_TASTE_SHARP_TARGET
-    ? "The rest is optional calibration."
+    ? t("settings.quickSwipe.optionalCalibration")
     : signalCount >= QUICK_TASTE_USABLE_TARGET
-      ? `${sharpRemaining} more real signal${sharpRemaining === 1 ? "" : "s"} to sharper picks.`
-      : `${usableRemaining} more real signal${usableRemaining === 1 ? "" : "s"} to a safer read.`;
+      ? t("settings.quickSwipe.signalsToSharper", { count: sharpRemaining })
+      : t("settings.quickSwipe.signalsToSafer", { count: usableRemaining });
   const contractDetail = gate.ready
     ? nextMilestoneCopy
-    : "You can use the app after 3 real like/dislike answers. PSN and pasted ratings can wait.";
+    : t("settings.quickSwipe.contractDetail");
 
   els.quickSwipeDeck.innerHTML = `
     <div class="quick-swipe-card">
@@ -2127,7 +2135,7 @@ function renderQuickSwipeDeck() {
         <span class="quick-swipe-progress">${answered}/${profileGames.length}</span>
       </div>
       <div class="quick-swipe-main">
-        <span class="quick-swipe-axis">${nextGame.axis || "Taste signal"}</span>
+        <span class="quick-swipe-axis">${nextGame.axis || t("settings.quickSwipe.tasteSignal")}</span>
         <strong>${nextGame.title}</strong>
         <div class="quick-swipe-atom-row">${quickSwipeAtomChips(nextGame, missingAtoms, conflict)}</div>
       </div>
@@ -2147,25 +2155,25 @@ function renderQuickSwipeDeck() {
       </div>
       <div class="quick-swipe-meters">
         <div>
-          <span>Profile</span>
+          <span>${t("settings.quickSwipe.profile")}</span>
           <strong>${answered}/${profileGames.length}</strong>
           <span class="quick-swipe-track" aria-hidden="true"><span style="width:${answeredProgress}%"></span></span>
         </div>
         <div>
-          <span>First hypothesis</span>
+          <span>${t("settings.quickSwipe.firstHypothesis")}</span>
           <strong>${firstAnswerCopy}</strong>
           <span class="quick-swipe-track" aria-hidden="true"><span style="width:${signalProgress}%"></span></span>
         </div>
         <div>
-          <span>Sharper profile</span>
+          <span>${t("settings.quickSwipe.sharperProfile")}</span>
           <strong>${sharpCopy}</strong>
           <span class="quick-swipe-track" aria-hidden="true"><span style="width:${sharpProgress}%"></span></span>
         </div>
       </div>
-      <div class="quick-swipe-actions" role="group" aria-label="${nextGame.title} swipe reaction">
-        <button data-swipe-reaction="not_for_me" type="button">Not for me</button>
-        <button data-swipe-reaction="unplayed" type="button">Not played</button>
-        <button data-swipe-reaction="loved" type="button">Liked</button>
+      <div class="quick-swipe-actions" role="group" aria-label="${t("settings.reactions.swipeAria", { title: nextGame.title })}">
+        <button data-swipe-reaction="not_for_me" type="button">${t("settings.reactions.notForMe")}</button>
+        <button data-swipe-reaction="unplayed" type="button">${t("settings.reactions.notPlayed")}</button>
+        <button data-swipe-reaction="loved" type="button">${t("settings.reactions.liked")}</button>
       </div>
       ${state.lastUndo?.action === "quick_taste" ? renderUndoStrip("quick-swipe-undo") : ""}
     </div>
@@ -2190,7 +2198,7 @@ function renderTasteGate() {
       <span style="width:${gate.progress}%"></span>
     </div>
     <div class="taste-maturity">
-      <strong>${gate.ready ? "Your taste profile has started" : "First opinion in progress"}</strong>
+      <strong>${gate.ready ? t("settings.onboarding.started") : t("settings.onboarding.inProgress")}</strong>
       <p>${gate.maturity}</p>
     </div>
     <div class="taste-payoff">
@@ -2204,7 +2212,7 @@ function renderTasteGate() {
           <div class="taste-payoff-step ${item.state}">
             <span>${item.target}</span>
             <strong>${item.label}</strong>
-            <small>${item.state === "done" ? item.detail : `${item.remaining} more`}</small>
+            <small>${item.state === "done" ? item.detail : t("settings.onboarding.more", { count: item.remaining })}</small>
           </div>
         `).join("")}
       </div>
@@ -2229,15 +2237,31 @@ function renderEntryPaths() {
   const signalCount = quickTasteSignalCount();
   const routeProof = entryRouteProofCopy();
   const quickResult = reactionCount
-    ? `${reactionCount}/${profileGames.length} answered, ${signalCount} taste signals: ${reactionSummary.loved} liked / ${reactionSummary.notForMe} no / ${reactionSummary.unplayed} not played`
-    : state.entryResult;
+    ? t("settings.entry.resultQuick", {
+        answered: reactionCount,
+        total: profileGames.length,
+        signals: signalCount,
+        liked: reactionSummary.loved,
+        disliked: reactionSummary.notForMe,
+        unplayed: reactionSummary.unplayed,
+      })
+    : t("settings.entry.resultQuickPrompt", {
+        target: QUICK_TASTE_FIRST_TARGET,
+        total: profileGames.length,
+      });
   els.entryRouteProof.innerHTML = `
     <span>${routeProof.label}</span>
     <strong>${routeProof.value}</strong>
   `;
   els.entryResult.textContent = state.entryPath === "quick"
-    ? quickResult || `Mark ${QUICK_TASTE_FIRST_TARGET}+ taste signals, then keep swiping toward ${profileGames.length}`
-    : state.entryResult || "Pick a start path";
+    ? quickResult
+    : state.entryPath === "psn"
+      ? t("settings.entry.resultPsn")
+      : state.entryPath === "deep"
+        ? t("settings.entry.resultDeep")
+        : state.entryPath === "demo"
+          ? t("settings.entry.resultDemo")
+          : t("settings.entry.resultPick");
   els.entryCards.forEach((button) => {
     button.classList.toggle("is-selected", button.dataset.entryPath === state.entryPath);
   });
@@ -2290,15 +2314,15 @@ function renderDebug(game) {
 
 // ── Taste profile archetypes ─────────────────────────────────────────────────
 const TASTE_ARCHETYPES = [
-  { label: "Story Explorer",  atoms: ["story", "adventure", "narrative", "walking-sim"] },
-  { label: "Action Hunter",   atoms: ["action", "combat", "shooter", "hack-and-slash"] },
-  { label: "World Builder",   atoms: ["open-world", "rpg", "exploration", "sandbox"] },
-  { label: "Thrill Seeker",   atoms: ["horror", "survival", "stealth", "tension"] },
-  { label: "Puzzle Thinker",  atoms: ["puzzle", "indie", "logic", "mystery"] },
-  { label: "System Master",   atoms: ["roguelike", "strategy", "tactics", "deck-builder"] },
-  { label: "Souls Veteran",   atoms: ["souls-like", "hard", "precision", "boss-rush"] },
-  { label: "Platformer Fan",  atoms: ["platformer", "metroidvania", "precision", "collectathon"] },
-  { label: "Sport & Racing",  atoms: ["racing", "sports", "simulation", "driving"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypeStory", atoms: ["story", "adventure", "narrative", "walking-sim"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypeAction", atoms: ["action", "combat", "shooter", "hack-and-slash"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypeWorld", atoms: ["open-world", "rpg", "exploration", "sandbox"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypeThrill", atoms: ["horror", "survival", "stealth", "tension"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypePuzzle", atoms: ["puzzle", "indie", "logic", "mystery"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypeSystem", atoms: ["roguelike", "strategy", "tactics", "deck-builder"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypeSouls", atoms: ["souls-like", "hard", "precision", "boss-rush"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypePlatformer", atoms: ["platformer", "metroidvania", "precision", "collectathon"] },
+  { labelKey: "settings.tasteProfileDynamic.archetypeSport", atoms: ["racing", "sports", "simulation", "driving"] },
 ];
 
 function buildTasteProfileText() {
@@ -2345,7 +2369,7 @@ function buildTasteProfileText() {
 
   // Archetype
   const archetypeScores = TASTE_ARCHETYPES.map((a) => ({
-    label: a.label,
+    label: t(a.labelKey),
     score: a.atoms.filter((atom) => allPositive.includes(atom)).length
       - a.atoms.filter((atom) => negativeAtoms.includes(atom)).length,
   })).filter((a) => a.score > 0).sort((a, b) => b.score - a.score);
@@ -2362,8 +2386,8 @@ function renderTasteProfile() {
     .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
     .slice(0, 8);
   els.tasteSummary.textContent = state.importedRatings.length
-    ? `${state.importedRatings.length} ratings analyzed`
-    : "Manual profile";
+    ? t("settings.tasteImport.analyzed", { count: state.importedRatings.length })
+    : t("settings.tasteImport.summary");
   els.tasteAtoms.replaceChildren(
     ...sorted.map(([signal, weight]) => {
       const item = document.createElement("span");
@@ -2378,13 +2402,20 @@ function renderTasteProfile() {
   const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample } = buildTasteProfileText();
 
   if (els.tasteProfileBadge) {
-    els.tasteProfileBadge.textContent = totalSignals === 0 ? "No signals yet"
-      : strength === "weak" ? `${totalSignals} signals · Building…`
-      : `${totalSignals} signals · ${strength === "strong" ? "Strong" : "Moderate"} profile`;
+    els.tasteProfileBadge.textContent = totalSignals === 0
+      ? t("settings.tasteProfileDynamic.noSignals")
+      : strength === "weak"
+        ? t("settings.tasteProfileDynamic.building", { count: totalSignals })
+        : t("settings.tasteProfileDynamic.strength", {
+            count: totalSignals,
+            strength: strength === "strong"
+              ? t("settings.tasteProfileDynamic.strong")
+              : t("settings.tasteProfileDynamic.moderate"),
+          });
   }
 
   if (totalSignals === 0) {
-    els.tasteProfileSummary.innerHTML = `<p class="taste-profile-empty">Rate a few games to see your taste profile here.</p>`;
+    els.tasteProfileSummary.innerHTML = `<p class="taste-profile-empty">${t("settings.tasteProfileDynamic.empty")}</p>`;
     return;
   }
 
@@ -2397,17 +2428,19 @@ function renderTasteProfile() {
 
   if (allPositive.length) {
     const listed = allPositive.slice(0, 4).join(", ");
-    parts.push(`<p class="taste-line">You gravitate toward <em>${listed}</em> games.`
-      + (negativeAtoms.length ? ` You tend to skip <em>${negativeAtoms.slice(0, 2).join(", ")}</em>.` : "")
-      + `</p>`);
+    const positiveCopy = t("settings.tasteProfileDynamic.gravitates", { atoms: listed });
+    const negativeCopy = negativeAtoms.length
+      ? ` ${t("settings.tasteProfileDynamic.skips", { atoms: negativeAtoms.slice(0, 2).join(", ") })}`
+      : "";
+    parts.push(`<p class="taste-line">${positiveCopy}${negativeCopy}</p>`);
   }
 
   if (lovedSample.length) {
-    parts.push(`<p class="taste-line taste-liked-games">Liked: ${lovedSample.map((t) => `<span>${t}</span>`).join("")}</p>`);
+    parts.push(`<p class="taste-line taste-liked-games">${t("settings.tasteProfileDynamic.liked")} ${lovedSample.map((title) => `<span>${title}</span>`).join("")}</p>`);
   }
 
   if (state.importedRatings?.length) {
-    parts.push(`<p class="taste-line">Enriched with ${state.importedRatings.length} imported ratings.</p>`);
+    parts.push(`<p class="taste-line">${t("settings.tasteProfileDynamic.enriched", { count: state.importedRatings.length })}</p>`);
   }
 
   els.tasteProfileSummary.innerHTML = parts.join("\n");
@@ -2416,27 +2449,31 @@ function renderTasteProfile() {
 function renderSessionStats() {
   const summary = sessionSummary();
   const fmt = (min) => min >= 60
-    ? `${Math.floor(min / 60)}h ${min % 60}m`
-    : `${min}m`;
+    ? t("settings.sessionStats.hoursMinutes", { hours: Math.floor(min / 60), minutes: min % 60 })
+    : t("settings.sessionStats.minutes", { minutes: min });
   els.sessionCurrent.textContent = summary.currentMin > 0 ? fmt(summary.currentMin) : "—";
   els.sessionTotal.textContent = summary.totalMin > 0 ? fmt(summary.totalMin) : "—";
   els.sessionCount.textContent = summary.sessionCount || "—";
   els.sessionAvg.textContent = summary.avgMin > 0 ? fmt(summary.avgMin) : "—";
-  els.sessionStatus.textContent = summary.currentMin > 0 ? "Active" : "Idle";
+  els.sessionStatus.textContent = summary.currentMin > 0
+    ? t("settings.sessionStats.active")
+    : t("settings.sessionStats.idle");
 }
 
 function renderNotebookProfile() {
   const notebook = state.notebook;
   const counts = [
-    ["wish", notebook.wishlist.length],
-    ["access", notebook.access.length],
-    ["prices", notebook.prices.length],
-    ["done", notebook.completed.length],
-    ["ranked", notebook.ranked.length],
-    ["upcoming", notebook.upcoming.length],
+    [t("settings.advanced.pillWish"), notebook.wishlist.length],
+    [t("settings.advanced.pillAccess"), notebook.access.length],
+    [t("settings.advanced.pillPrices"), notebook.prices.length],
+    [t("settings.advanced.pillDone"), notebook.completed.length],
+    [t("settings.advanced.pillRanked"), notebook.ranked.length],
+    [t("settings.advanced.pillUpcoming"), notebook.upcoming.length],
   ];
   const total = counts.reduce((sum, [, value]) => sum + value, 0);
-  els.notebookSummary.textContent = total ? `${total} signals parsed` : "No note parsed";
+  els.notebookSummary.textContent = total
+    ? t("settings.advanced.parsed", { count: total })
+    : t("settings.advanced.noneParsed");
   els.notebookPills.replaceChildren(
     ...counts.map(([label, value]) => {
       const item = document.createElement("span");
