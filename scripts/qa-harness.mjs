@@ -1348,7 +1348,7 @@ function checkSelectors() {
   assert(/answer-agenda/.test(appSource), "Companion answer agenda renderer is missing");
   assert(/data-agenda-action/.test(appSource), "Companion answer agenda actions are missing");
   assert(/function runAnswerAction/.test(appSource), "Shared companion answer action handler is missing");
-  assert(/Buy guardrail/.test(appAnswerSource), "Companion buy guardrail is missing");
+  assert(/narrative\.answer\.guardLabel/.test(appAnswerSource), "Companion buy guardrail is missing");
   assert(/class="personal-evidence card-evidence"/.test(html), "Card personal evidence slot is missing");
   assert(/id="visual-catalog-list"/.test(html), "Visual catalog panel is missing");
   assert(/id="visual-catalog-metrics"/.test(html), "Visual catalog metrics are missing");

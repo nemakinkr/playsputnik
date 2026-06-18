@@ -43,6 +43,21 @@
     countValues,
     topEntries,
   }) {
+    function localizedConfidence(value) {
+      const keys = { Low: "narrative.common.confidenceLow", Medium: "narrative.common.confidenceMedium", High: "narrative.common.confidenceHigh" };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
+    function localizedSession(value) {
+      const keys = { short: "narrative.common.sessionShort", medium: "narrative.common.sessionMedium", long: "narrative.common.sessionLong" };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
+    function localizedSessionMode(value) {
+      const keys = { short: "narrative.answer.modeShort", medium: "narrative.answer.modeMedium", long: "narrative.answer.modeLong" };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
     function renderEvidenceRows(evidence, limit = 4) {
       return evidence.lines.slice(0, limit).map((item) => `
         <div class="evidence-row">
@@ -94,9 +109,9 @@
 
     function companionAgendaActions(game) {
       return [
-        { id: "play", label: "Play", title: game.title },
-        { id: "save", label: "Save", title: game.title },
-        { id: "snooze", label: "Not tonight", title: game.title },
+        { id: "play", label: t("narrative.answer.agendaPlay"), title: game.title },
+        { id: "save", label: t("narrative.answer.agendaSave"), title: game.title },
+        { id: "snooze", label: t("narrative.answer.agendaSnooze"), title: game.title },
       ];
     }
 
@@ -118,7 +133,9 @@
       return uniqueAnswerGames([accessAlternative, sessionAlternative, pureTasteAlternative])
         .slice(0, 2)
         .map((game, index) => ({
-          label: index === 0 && isAnswerAccessible(game) ? "Access alt" : `Alt ${index + 1}`,
+          label: index === 0 && isAnswerAccessible(game)
+            ? t("narrative.answer.alternativeAccess")
+            : t("narrative.answer.alternative", { number: index + 1 }),
           title: game.title,
           detail: answerFitLine(game),
           tone: isAnswerAccessible(game) ? "access" : "neutral",
@@ -136,29 +153,27 @@
       const buyLater = getBuyLaterCandidate(ranked);
 
       if (availablePick) {
-        const access = answerAccessLabel(availablePick);
         return {
-          label: "Buy guardrail",
-          title: "No store needed tonight",
-          detail: `${availablePick.title} is ${access || "already available"}. Start there before turning this into a purchase decision.`,
+          label: t("narrative.answer.guardLabel"),
+          title: t("narrative.answer.guardNoStoreTitle"),
+          detail: t("narrative.answer.guardNoStoreDetail", { title: availablePick.title }),
           tone: "guard",
         };
       }
 
       if (buyLater) {
-        const status = priceStatus(buyLater, region);
         return {
-          label: "Buy guardrail",
-          title: `Watch ${buyLater.title}`,
-          detail: `${formatPrice(buyLater, region)} is inside the budget, but the ${status.label} price signal should be verified before buying.`,
+          label: t("narrative.answer.guardLabel"),
+          title: t("narrative.answer.guardWatchTitle", { title: buyLater.title }),
+          detail: t("narrative.answer.guardWatchDetail", { price: formatPrice(buyLater, region) }),
           tone: "guard",
         };
       }
 
       return {
-        label: "Buy guardrail",
-        title: "Keep the store quiet",
-        detail: "Make one play decision first. Price hunting should wait until the evening pick fails or the wishlist gets a real discount signal.",
+        label: t("narrative.answer.guardLabel"),
+        title: t("narrative.answer.guardQuietTitle"),
+        detail: t("narrative.answer.guardQuietDetail"),
         tone: "guard",
       };
     }
@@ -182,7 +197,11 @@
       const primaryAccess = answerAccessLabel(topGame);
       return [
         {
-          label: getIsLibraryFirstMode(topGame) ? "Library start" : primaryAccess ? "Start from access" : "Start",
+          label: getIsLibraryFirstMode(topGame)
+            ? t("narrative.answer.agendaLibrary")
+            : primaryAccess
+              ? t("narrative.answer.agendaAccess")
+              : t("narrative.answer.agendaStart"),
           title: topGame.title,
           detail: decisionRationale(topGame).headline,
           tone: isAnswerAccessible(topGame) ? "access" : "primary",
@@ -199,45 +218,58 @@
       const topGame = getPrimaryDecisionGame(ranked);
       if (!topGame) {
         return {
-          status: "No pick",
-          title: "I need a little more signal.",
-          paragraphs: ["Choose a few liked games or import ratings, then I can make a sharper call."],
+          status: t("narrative.answer.noPickStatus"),
+          title: t("narrative.answer.noPickTitle"),
+          paragraphs: [t("narrative.answer.noPickDetail")],
           agenda: [],
-          chips: ["taste needed"],
-          actions: state.snoozed.size ? [{ id: "clear-snoozes", label: "Reset tonight" }] : [],
+          chips: [t("narrative.answer.tasteNeeded")],
+          actions: state.snoozed.size ? [{ id: "clear-snoozes", label: t("narrative.answer.actionReset") }] : [],
         };
       }
       const { confidence } = explain(topGame, topGame.score);
       const watchout = watchOutCopy(topGame);
       const evidence = personalEvidence(topGame);
-      const rationale = decisionRationale(topGame);
       const memory = getTasteMemory();
       const topLikes = memory.likes.map((item) => item.label).slice(0, 3);
       const libraryMode = getIsLibraryFirstMode(topGame);
       const queued = getPlayLaterQueue()[0];
       const fallback = ranked.find((game) => !titleMatches(game.title, topGame.title));
-      const fallbackCopy = fallback
-        ? `If that does not click, switch to ${fallback.title} instead of browsing the store.`
-        : "If that does not click, mark it Not for me and I will adjust.";
       const queueCopy = queued
-        ? `${queued.title} is safely parked in Play later, so the drop can stay quiet for now.`
-        : "Subscription drops can stay in the inbox until a real decision is needed.";
+        ? t("narrative.answer.queueSaved", { title: queued.title })
+        : t("narrative.answer.queueEmpty");
+      const riskKey = watchout.label === "Low risk"
+        ? fallback ? "narrative.answer.lowRiskFallback" : "narrative.answer.lowRiskNoFallback"
+        : fallback ? "narrative.answer.cautionFallback" : "narrative.answer.cautionNoFallback";
+      const riskCopy = t(riskKey, { fallback: fallback?.title || "" });
+      const session = localizedSession(state.session);
+      const primaryCopy = libraryMode
+        ? t("narrative.answer.primaryLibrary", { title: topGame.title, session })
+        : topLikes.length
+          ? t("narrative.answer.primaryTasteWithLikes", { title: topGame.title, session, likes: topLikes.join(" + ") })
+          : t("narrative.answer.primaryTaste", { title: topGame.title, session });
+      const mode = libraryMode ? t("narrative.answer.modeLibrary") : localizedSessionMode(state.session);
+      const confidenceLabel = localizedConfidence(confidence);
+      const status = state.snoozed.size
+        ? t("narrative.answer.statusWithSkips", { confidence: confidenceLabel, mode, count: state.snoozed.size })
+        : t("narrative.answer.status", { confidence: confidenceLabel, mode });
       return {
-        status: `${confidence} confidence / ${libraryMode ? "library-first" : state.session}${state.snoozed.size ? ` / ${state.snoozed.size} skipped` : ""}`,
-        title: `I would play ${topGame.title}${libraryMode ? " from your library" : ""} tonight.`,
+        status,
+        title: libraryMode
+          ? t("narrative.answer.titleLibrary", { title: topGame.title })
+          : t("narrative.answer.titleGeneral", { title: topGame.title }),
         paragraphs: [
-          `${rationale.headline}${topLikes.length ? ` It also follows your ${topLikes.join(" + ")} taste.` : ""}`,
-          `${rationale.risk} ${fallbackCopy}`,
+          primaryCopy,
+          riskCopy,
           queueCopy,
         ],
         evidence,
         agenda: companionAnswerAgenda(ranked, topGame),
         chips: [topGame.session, confidence, watchout.label, state.activeRegion],
         actions: [
-          { id: "play", label: "Play now", title: topGame.title },
-          { id: "save", label: "Save", title: topGame.title },
-          { id: "snooze", label: "Not tonight", title: topGame.title },
-          ...(state.snoozed.size ? [{ id: "clear-snoozes", label: "Reset tonight" }] : []),
+          { id: "play", label: t("narrative.answer.actionPlay"), title: topGame.title },
+          { id: "save", label: t("narrative.answer.actionSave"), title: topGame.title },
+          { id: "snooze", label: t("narrative.answer.actionSnooze"), title: topGame.title },
+          ...(state.snoozed.size ? [{ id: "clear-snoozes", label: t("narrative.answer.actionReset") }] : []),
         ],
       };
     }
