@@ -237,7 +237,7 @@
       const queueCopy = queued
         ? t("narrative.answer.queueSaved", { title: queued.title })
         : t("narrative.answer.queueEmpty");
-      const riskKey = watchout.label === "Low risk"
+      const riskKey = watchout.kind === "low"
         ? fallback ? "narrative.answer.lowRiskFallback" : "narrative.answer.lowRiskNoFallback"
         : fallback ? "narrative.answer.cautionFallback" : "narrative.answer.cautionNoFallback";
       const riskCopy = t(riskKey, { fallback: fallback?.title || "" });

@@ -79,9 +79,11 @@ function scanInPage(MIN_TOUCH, locale) {
 
   try { openAppView("today"); } catch (e) {}
   const answerTitle = (document.querySelector("#answer-copy .answer-main strong")?.textContent || "").trim();
+  const evidenceLabel = (document.querySelector("#answer-copy .answer-evidence .evidence-row span")?.textContent || "").trim();
   return JSON.stringify({
     locale,
     answerTitle,
+    evidenceLabel,
     overflow,
     cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
   });
@@ -103,7 +105,11 @@ export const gate = {
     return {
       overflow: passes.flatMap((pass) => pass.overflow || []),
       cramped: passes.flatMap((pass) => pass.cramped || []),
-      localizedAnswers: passes.map((pass) => ({ locale: pass.locale, answerTitle: pass.answerTitle || "" })),
+      localizedAnswers: passes.map((pass) => ({
+        locale: pass.locale,
+        answerTitle: pass.answerTitle || "",
+        evidenceLabel: pass.evidenceLabel || "",
+      })),
     };
   },
   analyze({ overflow, cramped, localizedAnswers }) {
@@ -124,14 +130,20 @@ export const gate = {
       lines.push(`primary controls a min-height >= ${MIN_TOUCH}px (often via the mobile @media block).`);
     }
     const answerByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.answerTitle]));
+    const evidenceByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.evidenceLabel]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
     const ruOk = /^(Сегодня я бы выбрал|Мне нужно)/.test(answerByLocale.ru || "");
-    const leakedKey = Object.values(answerByLocale).some((value) => /^narrative\./.test(value));
-    if (!enOk || !ruOk || leakedKey) {
+    const evidenceEnOk = /[A-Za-z]/.test(evidenceByLocale.en || "") && !/[А-Яа-яЁё]/.test(evidenceByLocale.en || "");
+    const evidenceRuOk = /[А-Яа-яЁё]/.test(evidenceByLocale.ru || "");
+    const leakedKey = [...Object.values(answerByLocale), ...Object.values(evidenceByLocale)]
+      .some((value) => /^narrative\./.test(value));
+    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || leakedKey) {
       ok = false;
-      lines.push("❌ Dynamic i18n answer title did not switch cleanly between EN and RU:");
-      lines.push(`   - en: "${answerByLocale.en || "missing"}"`);
-      lines.push(`   - ru: "${answerByLocale.ru || "missing"}"`);
+      lines.push("❌ Dynamic i18n answer narrative did not switch cleanly between EN and RU:");
+      lines.push(`   - en title: "${answerByLocale.en || "missing"}"`);
+      lines.push(`   - en evidence: "${evidenceByLocale.en || "missing"}"`);
+      lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
+      lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };

@@ -883,8 +883,8 @@ function checkSelectors() {
   assert(/Taste engine pull/.test(appScoreSource), "Score breakdown should expose Taste Engine pull");
   assert(/Taste engine caution/.test(appScoreSource), "Score breakdown should expose Taste Engine caution");
   assert(/Taste uncertainty/.test(appScoreSource), "Score breakdown should expose Taste Engine uncertainty");
-  assert(/your taste model is cautious about/.test(appRecommendSource), "Watch-outs should explain negative taste signals");
-  assert(/early signals are still mixed/.test(appRecommendSource), "Watch-outs should explain mixed taste signals");
+  assert(/narrative\.recommend\.watchNegative/.test(appRecommendSource), "Watch-outs should explain negative taste signals");
+  assert(/narrative\.recommend\.watchMixed/.test(appRecommendSource), "Watch-outs should explain mixed taste signals");
   assert(/function quickTasteSignalAtoms/.test(appOnboardingSource), "Adaptive onboarding should track signaled atoms");
   assert(/function diagnosticNeedScore/.test(appOnboardingSource), "Adaptive onboarding need scoring is missing");
   assert(/function nextDiagnosticGame/.test(appOnboardingSource), "Adaptive next-game selector is missing");
@@ -1231,7 +1231,7 @@ function checkSelectors() {
   assert(/function decisionRationale/.test(appRecommendSource), "Shared decision rationale is missing");
   assert(/function personalRankForecast/.test(appRecommendSource), "Personal ranking forecast is missing");
   assert(/hasRankingBaseline/.test(appRecommendSource), "Ranking forecast should require a ranking baseline");
-  assert(/Fit tier:/.test(appRecommendSource), "Ranking forecast should fall back to fit tier without a ranking");
+  assert(/narrative\.recommend\.forecastFitLabel/.test(appRecommendSource), "Ranking forecast should fall back to fit tier without a ranking");
   assert(/class="rank-forecast"/.test(appSource), "Ranking forecast renderer is missing");
   assert(/function firstRunBridge/.test(appAnswerSource), "First-run answer bridge is missing");
   assert(/function tasteGateState/.test(appOnboardingSource), "Known-games minimum gate is missing");

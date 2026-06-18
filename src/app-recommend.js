@@ -26,6 +26,88 @@
     titleKey,
     USER_STATE_LABELS,
   }) {
+    function localizedState(value) {
+      const keys = {
+        owned: "narrative.recommend.stateOwned",
+        owned_forever: "narrative.recommend.stateForever",
+        subscription: "narrative.recommend.stateSubscription",
+        playing: "narrative.recommend.statePlaying",
+        paused: "narrative.recommend.statePaused",
+        want_to_finish: "narrative.recommend.stateFinish",
+        completed: "narrative.recommend.stateCompleted",
+        dropped: "narrative.recommend.stateDropped",
+        saved: "narrative.recommend.stateSaved",
+        hidden: "narrative.recommend.stateHidden",
+      };
+      return keys[value] ? t(keys[value]) : USER_STATE_LABELS[value] || value;
+    }
+
+    function localizedSession(value) {
+      const keys = {
+        short: "narrative.recommend.sessionShort",
+        medium: "narrative.recommend.sessionMedium",
+        long: "narrative.recommend.sessionLong",
+      };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
+    function localizedUserSession(value) {
+      const keys = {
+        short: "narrative.recommend.userSessionShort",
+        medium: "narrative.recommend.userSessionMedium",
+        long: "narrative.recommend.userSessionLong",
+      };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
+    function localizedAdultFit(value) {
+      const keys = {
+        anytime: "narrative.recommend.adultAnytime",
+        background: "narrative.recommend.adultBackground",
+        evening: "narrative.recommend.adultEvening",
+        vacation: "narrative.recommend.adultVacation",
+        weekend: "narrative.recommend.adultWeekend",
+        weeknight: "narrative.recommend.adultWeeknight",
+      };
+      return keys[value] ? t(keys[value]) : value || t("narrative.recommend.adultAnytime");
+    }
+
+    function localizedBurden(value) {
+      const keys = {
+        low: "narrative.recommend.burdenLow",
+        medium: "narrative.recommend.burdenMedium",
+        high: "narrative.recommend.burdenHigh",
+      };
+      return keys[value] ? t(keys[value]) : t("narrative.recommend.burdenUnknown");
+    }
+
+    function localizedCommitment(value) {
+      const keys = {
+        low: "narrative.recommend.commitmentLow",
+        medium: "narrative.recommend.commitmentMedium",
+        high: "narrative.recommend.commitmentHigh",
+      };
+      return keys[value] ? t(keys[value]) : t("narrative.recommend.commitmentUnknown");
+    }
+
+    function localizedFitBand(score) {
+      if (score >= 90) return t("narrative.recommend.fitVeryStrong");
+      if (score >= 65) return t("narrative.recommend.fitStrong");
+      if (score >= 45) return t("narrative.recommend.fitPromising");
+      return t("narrative.recommend.fitExperiment");
+    }
+
+    function localizedConfidence(value) {
+      const keys = {
+        Low: "narrative.common.confidenceLow",
+        Medium: "narrative.common.confidenceMedium",
+        High: "narrative.common.confidenceHigh",
+        Known: "narrative.recommend.forecastKnownConfidence",
+        "Ranking estimate": "narrative.recommend.forecastEstimateConfidence",
+      };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
     function snapshotAgeHours(checkedAt) {
       const timestamp = Date.parse(checkedAt);
       if (Number.isNaN(timestamp)) return Infinity;
@@ -106,29 +188,29 @@
       const tasteSignals = tasteEngineGameSignals(game);
       const negativeSignals = tasteSignals.negative.slice(0, 2);
       const mixedSignals = tasteSignals.mixed.slice(0, 2);
-      if (negativeSignals.length) warnings.push(`your taste model is cautious about ${negativeSignals.join(" + ")}`);
-      if (mixedSignals.length && !negativeSignals.length) warnings.push(`early signals are still mixed around ${mixedSignals.join(" + ")}`);
-      if (state.session === "short" && game.commitment === "high") warnings.push("may be too heavy for a short evening");
-      if (game.session !== state.session && game.session === "long") warnings.push("wants a longer session");
-      if (game.reviewBurden === "high") warnings.push("needs more review/context before starting");
-      if (game.difficulty === "high" && state.difficulty === "low") warnings.push("may be more demanding than today's mood");
-      if (game.content === "dark" && state.mood === "cozy") warnings.push("tone may be darker than the current mood");
-      if (!warnings.length && game.commitment === "medium") warnings.push("not a pure low-commitment snack");
+      if (negativeSignals.length) warnings.push(t("narrative.recommend.watchNegative", { signals: negativeSignals.join(" + ") }));
+      if (mixedSignals.length && !negativeSignals.length) warnings.push(t("narrative.recommend.watchMixed", { signals: mixedSignals.join(" + ") }));
+      if (state.session === "short" && game.commitment === "high") warnings.push(t("narrative.recommend.watchHeavyShort"));
+      if (game.session !== state.session && game.session === "long") warnings.push(t("narrative.recommend.watchLongSession"));
+      if (game.reviewBurden === "high") warnings.push(t("narrative.recommend.watchReview"));
+      if (game.difficulty === "high" && state.difficulty === "low") warnings.push(t("narrative.recommend.watchDifficulty"));
+      if (game.content === "dark" && state.mood === "cozy") warnings.push(t("narrative.recommend.watchDark"));
+      if (!warnings.length && game.commitment === "medium") warnings.push(t("narrative.recommend.watchMediumCommitment"));
       return warnings.slice(0, 2);
     }
 
     function watchOutCopy(game) {
       const warnings = watchOuts(game);
       return warnings.length
-        ? { label: "Watch out", detail: warnings.join("; ") }
-        : { label: "Low risk", detail: "no major warning from current memory" };
+        ? { kind: "warning", label: t("narrative.recommend.watchLabel"), detail: warnings.join("; ") }
+        : { kind: "low", label: t("narrative.recommend.lowRiskLabel"), detail: t("narrative.recommend.lowRiskDetail") };
     }
 
     function answerAccessLabel(game) {
       const state = getState();
       const access = effectiveGameState(game);
-      if (access) return USER_STATE_LABELS[access] || access;
-      if (state.psPlus && game.psPlus.includes(state.activeRegion)) return "PS Plus signal";
+      if (access) return localizedState(access);
+      if (state.psPlus && game.psPlus.includes(state.activeRegion)) return t("narrative.recommend.plusSignal");
       return "";
     }
 
@@ -138,34 +220,39 @@
       const facts = [];
       const tasteProfile = tasteEngineProfile();
       const tasteSignals = tasteEngineGameSignals(game, tasteProfile);
-      if (tasteSignals.positive.length) facts.push(`matches your ${tasteSignals.positive.slice(0, 2).join(" + ")} taste`);
-      if (tasteSignals.mixed.length) facts.push(`is still a calibration pick around ${tasteSignals.mixed.slice(0, 2).join(" + ")}`);
-      if (notebookWishlistWeight(game.title)) facts.push(`has ${notebookWishlistWeight(game.title)} wishlist hearts`);
-      if (notebookAccessKind(game.title)) facts.push(`${notebookAccessKind(game.title)} access`);
-      if (game.session === state.session) facts.push(`fits a ${state.session} session`);
+      if (tasteSignals.positive.length) facts.push(t("narrative.recommend.factTaste", { signals: tasteSignals.positive.slice(0, 2).join(" + ") }));
+      if (tasteSignals.mixed.length) facts.push(t("narrative.recommend.factMixed", { signals: tasteSignals.mixed.slice(0, 2).join(" + ") }));
+      if (notebookWishlistWeight(game.title)) facts.push(t("narrative.recommend.factWishlist", { count: notebookWishlistWeight(game.title) }));
+      if (notebookAccessKind(game.title)) facts.push(t("narrative.recommend.factAccess", { access: notebookAccessKind(game.title) }));
+      if (game.session === state.session) facts.push(t("narrative.recommend.factSession", { session: localizedSession(state.session) }));
       if (game.psPlus.includes(region) && state.psPlus) {
         const status = subscriptionStatus(game, region);
-        facts.push(status.canConfirm ? `available in PS Plus for ${region}` : `has a PS Plus signal for ${region}`);
+        facts.push(status.canConfirm
+          ? t("narrative.recommend.factPlus", { region })
+          : t("narrative.recommend.factPlusSignal", { region }));
       }
-      if (game.adultTimeFit === "weeknight") facts.push("easy to choose on a weeknight");
-      if (game.reviewBurden === "low") facts.push("low review burden");
-      if (game.backlog) facts.push("already in your backlog");
-      if (game.wishlist) facts.push("already on your wishlist");
+      if (game.adultTimeFit === "weeknight") facts.push(t("narrative.recommend.factWeeknight"));
+      if (game.reviewBurden === "low") facts.push(t("narrative.recommend.factReview"));
+      if (game.backlog) facts.push(t("narrative.recommend.factBacklog"));
+      if (game.wishlist) facts.push(t("narrative.recommend.factWishlistSeed"));
       if (game.prices[region] <= Number(state.budget)) {
         const status = priceStatus(game, region);
-        facts.push(status.canConfirm ? `under your $${state.budget} ceiling` : `last price signal is under your $${state.budget} ceiling`);
+        const budget = formatMoney(Number(state.budget));
+        facts.push(status.canConfirm
+          ? t("narrative.recommend.factBudget", { budget })
+          : t("narrative.recommend.factBudgetSignal", { budget }));
       }
       const reason = facts.length
-        ? `Recommended because it ${facts.slice(0, 3).join(", ")}.`
-        : "Recommended as a diversified pick while the profile is still sparse.";
-      const confidence = tasteProfile.confidence === "Early"
+        ? t("narrative.recommend.reasonFacts", { facts: facts.slice(0, 3).join(" · ") })
+        : t("narrative.recommend.reasonSparse");
+      const rawConfidence = tasteProfile.confidence === "Early"
         ? "Low"
         : score > 80 && tasteProfile.confidence !== "Starter"
           ? "High"
           : score > 55
             ? "Medium"
             : "Low";
-      return { reason, confidence };
+      return { reason, confidence: localizedConfidence(rawConfidence), confidenceKind: rawConfidence.toLowerCase() };
     }
 
     function personalReferenceGames(game) {
@@ -185,8 +272,11 @@
 
       profileGames.forEach((profileGame) => {
         const reaction = getQuickReaction(profileGame.title);
-        if (state.liked.has(profileGame.title) || reaction === "loved") add(profileGame.title, 10, "loved");
-        else if (reaction === "played") add(profileGame.title, 4, "played");
+        if (state.liked.has(profileGame.title) || reaction === "loved") {
+          add(profileGame.title, 10, t("narrative.recommend.referenceLoved"));
+        } else if (reaction === "played") {
+          add(profileGame.title, 4, t("narrative.recommend.referencePlayed"));
+        }
       });
 
       state.importedRatings.forEach((rating) => {
@@ -195,11 +285,18 @@
 
       state.notebook.ranked
         .filter((entry) => entry.rank <= 30)
-        .forEach((entry) => add(entry.title, Math.max(2, 12 - Math.floor(entry.rank / 4)), `rank #${entry.rank}`));
+        .forEach((entry) => add(
+          entry.title,
+          Math.max(2, 12 - Math.floor(entry.rank / 4)),
+          t("narrative.recommend.referenceRank", { rank: entry.rank }),
+        ));
 
       getRecommendationPool()
         .filter((item) => ["completed", "want_to_finish", "playing"].includes(effectiveGameState(item)))
-        .forEach((item) => add(item.title, effectiveGameState(item) === "completed" ? 8 : 6, USER_STATE_LABELS[effectiveGameState(item)]));
+        .forEach((item) => {
+          const userState = effectiveGameState(item);
+          add(item.title, userState === "completed" ? 8 : 6, localizedState(userState));
+        });
 
       return [...byTitle.values()].sort((a, b) => b.score - a.score).slice(0, 3);
     }
@@ -215,7 +312,7 @@
       const warning = watchOuts(game)[0];
       const score = scoreGame(game);
       const signalCount = tasteProfile.evidenceCount;
-      const confidence = rankedEntry
+      const confidenceKind = rankedEntry
         ? "Known"
         : hasRankingBaseline
           ? "Ranking estimate"
@@ -224,35 +321,67 @@
             : signalCount >= 5 || references.length
               ? "Medium"
               : "Low";
+      const confidence = localizedConfidence(confidenceKind);
 
       const reasons = [];
-      if (rankedEntry) reasons.push(`already in imported ranking at #${rankedEntry.rank}`);
-      if (references.length) reasons.push(`near ${references.map((item) => item.title).slice(0, 2).join(" + ")}`);
-      if (positiveAtoms.length) reasons.push(`strong ${positiveAtoms.join(" + ")} signal`);
-      if (answerAccessLabel(game)) reasons.push(`${answerAccessLabel(game)} lowers friction`);
-      if (!reasons.length) reasons.push(personalFitBand(score));
+      if (rankedEntry) reasons.push(t("narrative.recommend.forecastReasonRank", { rank: rankedEntry.rank }));
+      if (references.length) {
+        reasons.push(t("narrative.recommend.forecastReasonNear", {
+          titles: references.map((item) => item.title).slice(0, 2).join(" + "),
+        }));
+      }
+      if (positiveAtoms.length) {
+        reasons.push(t("narrative.recommend.forecastReasonSignal", { signals: positiveAtoms.join(" + ") }));
+      }
+      const accessLabel = answerAccessLabel(game);
+      if (accessLabel) reasons.push(t("narrative.recommend.forecastReasonAccess", { access: accessLabel }));
+      if (!reasons.length) reasons.push(t("narrative.recommend.forecastReasonFit", { fit: localizedFitBand(score) }));
+
+      const detail = warning
+        ? t("narrative.recommend.forecastDetailRisk", {
+            confidence,
+            reasons: reasons.slice(0, 2).join("; "),
+            risk: warning,
+          })
+        : t("narrative.recommend.forecastDetail", {
+            confidence,
+            reasons: reasons.slice(0, 2).join("; "),
+          });
 
       if (rankedEntry) {
         return {
-          label: `Known rank #${rankedEntry.rank}`,
+          label: t("narrative.recommend.forecastKnownLabel", { rank: rankedEntry.rank }),
           confidence,
-          detail: `${confidence}: ${reasons.slice(0, 2).join("; ")}${warning ? `. Risk: ${warning}` : "."}`,
+          confidenceKind,
+          detail,
         };
       }
 
       if (hasRankingBaseline) {
         const [low, high] = rankRangeForScore(score);
         return {
-          label: `Forecast #${low}-${high}`,
+          label: t("narrative.recommend.forecastLabel", { low, high }),
           confidence,
-          detail: `${confidence}: ${reasons.slice(0, 2).join("; ")}${warning ? `. Risk: ${warning}` : "."}`,
+          confidenceKind,
+          detail,
         };
       }
 
+      const fit = localizedFitBand(score);
       return {
-        label: `Fit tier: ${personalFitBand(score)}`,
+        label: t("narrative.recommend.forecastFitLabel", { fit }),
         confidence,
-        detail: `${confidence} fit estimate, not a rank: ${reasons.slice(0, 2).join("; ")}${warning ? `. Risk: ${warning}` : "."}`,
+        confidenceKind,
+        detail: warning
+          ? t("narrative.recommend.forecastFitDetailRisk", {
+              confidence,
+              reasons: reasons.slice(0, 2).join("; "),
+              risk: warning,
+            })
+          : t("narrative.recommend.forecastFitDetail", {
+              confidence,
+              reasons: reasons.slice(0, 2).join("; "),
+            }),
       };
     }
 
@@ -262,7 +391,8 @@
       const tasteProfile = tasteEngineProfile();
       const tasteSignals = tasteEngineGameSignals(game, tasteProfile);
       const sharedAtoms = tasteSignals.positive.slice(0, 3);
-      const stateLabel = USER_STATE_LABELS[effectiveGameState(game)];
+      const userState = effectiveGameState(game);
+      const stateLabel = userState ? localizedState(userState) : "";
       const wishlistHearts = notebookWishlistWeight(game.title);
       const rankedEntry = state.notebook.ranked.find((entry) => titleMatches(entry.title, game.title));
       const warning = watchOuts(game)[0];
@@ -271,32 +401,64 @@
       if (references.length) {
         const names = references.map((item) => item.title).slice(0, 2).join(" + ");
         const atoms = [...new Set(references.flatMap((item) => item.shared))].slice(0, 3).join(" / ");
-        lines.push({ label: "Taste bridge", detail: `Closest to your ${names}; shared signals: ${atoms}.` });
+        lines.push({
+          label: t("narrative.recommend.evidenceTaste"),
+          detail: t("narrative.recommend.evidenceTasteReferences", { titles: names, signals: atoms }),
+        });
       } else if (sharedAtoms.length) {
-        lines.push({ label: "Taste bridge", detail: `Matches the taste engine's strongest current signals: ${sharedAtoms.join(" / ")}.` });
+        lines.push({
+          label: t("narrative.recommend.evidenceTaste"),
+          detail: t("narrative.recommend.evidenceTasteSignals", { signals: sharedAtoms.join(" / ") }),
+        });
       }
 
       if (stateLabel) {
-        lines.push({ label: "Library logic", detail: `${stateLabel} means this can become a decision, not another store-browsing loop.` });
+        lines.push({
+          label: t("narrative.recommend.evidenceLibrary"),
+          detail: t("narrative.recommend.evidenceLibraryDetail", { state: stateLabel }),
+        });
       } else if (wishlistHearts) {
-        lines.push({ label: "Intent", detail: `${wishlistHearts} wishlist hearts make it a hot personal candidate.` });
+        lines.push({
+          label: t("narrative.recommend.evidenceIntent"),
+          detail: t("narrative.recommend.evidenceHearts", { count: wishlistHearts }),
+        });
       } else if (game.wishlist) {
-        lines.push({ label: "Intent", detail: "Already carries wishlist intent in the seed catalog." });
+        lines.push({
+          label: t("narrative.recommend.evidenceIntent"),
+          detail: t("narrative.recommend.evidenceSeedWishlist"),
+        });
       }
 
       if (rankedEntry) {
-        lines.push({ label: "Ranking memory", detail: `Your imported ranking already places it at #${rankedEntry.rank}.` });
+        lines.push({
+          label: t("narrative.recommend.evidenceRanking"),
+          detail: t("narrative.recommend.evidenceRankingDetail", { rank: rankedEntry.rank }),
+        });
       } else {
-        lines.push({ label: "Fit band", detail: `${personalFitBand(scoreGame(game))}; best shape is ${game.session} / ${game.adultTimeFit || "flexible"}.` });
+        lines.push({
+          label: t("narrative.recommend.evidenceFit"),
+          detail: t("narrative.recommend.evidenceFitDetail", {
+            fit: localizedFitBand(scoreGame(game)),
+            session: localizedSession(game.session),
+            adultFit: localizedAdultFit(game.adultTimeFit),
+          }),
+        });
       }
 
       lines.push({
-        label: warning ? "Personal risk" : "Friction",
-        detail: warning || `${game.reviewBurden || "unknown"} review burden, ${game.commitment || "unknown"} commitment.`,
+        label: warning
+          ? t("narrative.recommend.evidenceRisk")
+          : t("narrative.recommend.evidenceFriction"),
+        detail: warning || t("narrative.recommend.evidenceFrictionDetail", {
+          burden: localizedBurden(game.reviewBurden),
+          commitment: localizedCommitment(game.commitment),
+        }),
       });
 
       return {
-        summary: lines[0]?.detail || `${personalFitBand(scoreGame(game))} from current taste memory.`,
+        summary: lines[0]?.detail || t("narrative.recommend.evidenceFallback", {
+          fit: localizedFitBand(scoreGame(game)),
+        }),
         references,
         lines: lines.slice(0, 4),
       };
@@ -311,32 +473,50 @@
       const watchout = watchOutCopy(game);
       const accessState = effectiveGameState(game);
       const accessLabel = answerAccessLabel(game);
-      const accessCopy = accessState
-        ? `${USER_STATE_LABELS[accessState] || accessState}: use memory before browsing.`
+      const headline = accessState
+        ? t("narrative.recommend.rationaleState", {
+            state: localizedState(accessState),
+            forecast: forecast.label,
+            gameSession: localizedSession(game.session),
+            session: localizedUserSession(state.session),
+          })
         : accessLabel
-          ? `${accessLabel}: test access before buying.`
-          : "No access shortcut: use taste fit before opening the store.";
-      const sessionCopy = {
-        short: "short evening",
-        medium: "1-2 hour session",
-        long: "long session",
-      }[state.session] || `${state.session} session`;
+          ? t("narrative.recommend.rationaleAccess", {
+              access: accessLabel,
+              forecast: forecast.label,
+              gameSession: localizedSession(game.session),
+              session: localizedUserSession(state.session),
+            })
+          : t("narrative.recommend.rationaleNoAccess", {
+              forecast: forecast.label,
+              gameSession: localizedSession(game.session),
+              session: localizedUserSession(state.session),
+            });
       const priceCopy = typeof game.prices?.[region] === "number"
         ? `${region} ${formatPrice(game, region)}`
-        : "price pending";
+        : t("narrative.recommend.pricePending");
 
       return {
-        label: accessState || accessLabel ? "Same logic: play before buy" : "Same logic: taste before store",
-        headline: `${accessCopy} ${forecast.label}; ${game.session} game for a ${sessionCopy}.`,
-        detail: `${reason} ${evidence.summary}`,
+        label: accessState || accessLabel
+          ? t("narrative.recommend.rationalePlay")
+          : t("narrative.recommend.rationaleTaste"),
+        headline,
+        detail: t("narrative.recommend.rationaleDetail", { reason, evidence: evidence.summary }),
         proof: evidence.summary,
-        risk: `${watchout.label}: ${watchout.detail}.`,
+        risk: t("narrative.recommend.rationaleRisk", {
+          label: watchout.label,
+          detail: watchout.detail,
+        }),
         price: priceCopy,
         confidence,
         forecast,
         watchout,
         evidence,
-        chips: [confidence, forecast.label, accessState ? USER_STATE_LABELS[accessState] || accessState : accessLabel || priceCopy].filter(Boolean),
+        chips: [
+          confidence,
+          forecast.label,
+          accessState ? localizedState(accessState) : accessLabel || priceCopy,
+        ].filter(Boolean),
       };
     }
 

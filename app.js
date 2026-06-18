@@ -4057,7 +4057,7 @@ function detailCockpitHtml(game, { move, forecast, evidence, watchout, valueCard
     { label: "Why now", value: rationale.label, detail: rationale.headline },
     { label: "Forecast", value: forecast.label, detail: forecast.detail },
     { label: "Taste proof", value: evidence.lines[0]?.label || "Early signal", detail: evidence.summary },
-    { label: watchout.label, value: watchout.label === "Low risk" ? "No major blocker" : "Check first", detail: watchout.detail },
+    { label: watchout.label, value: watchout.kind === "low" ? "No major blocker" : "Check first", detail: watchout.detail },
     { label: "Value", value: valueCopy, detail: valueCard?.roi?.perHourLabel ? `${valueCard.roi.perHourLabel} per hour` : "Uses price, HLTB and critic signal when available." },
   ];
   return `
