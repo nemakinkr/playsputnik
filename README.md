@@ -216,6 +216,20 @@ node scripts/search-provider-server.mjs --port 4191
 
 Set `RAWG_API_KEY` before launch to use RAWG. Without it, the endpoint returns fixture fallback results in the same normalized shape.
 
+The same local server exposes the optional AI Narrative Layer at
+`POST /api/narrative`. With `ANTHROPIC_API_KEY` configured, the main companion
+answer is rewritten automatically in the selected language and the game drawer
+can request a fresh short description plus personal fit explanation. The app
+sends structured taste/game facts, forbids invented price/subscription claims,
+and caches by language + narrative kind + taste-context fingerprint. If the
+server or key is unavailable, the existing deterministic EN/RU recommendation
+stays visible without an error or loading delay.
+
+GitHub Pages is a static deployment, so production AI generation needs a small
+HTTPS backend or serverless proxy with the API key stored as a secret. Never put
+the key in browser code or GitHub Pages assets. Until that backend is deployed,
+the live site intentionally uses deterministic fallback narratives.
+
 Check the provider endpoint once without starting a long-running server:
 
 ```sh

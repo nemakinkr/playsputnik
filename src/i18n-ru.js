@@ -249,6 +249,14 @@
       reset: "Сбросить профиль",
     },
     narrative: {
+      ai: {
+        detailTitle: "ИИ-компаньон",
+        detailPlaceholder: "Запросите новое описание и личную оценку сразу на русском языке.",
+        detailButton: "Спросить компаньона",
+        thinking: "Думаю",
+        asking: "Формулирую личный ответ…",
+        unavailable: "Сейчас ИИ-формулировка недоступна. Проверенная рекомендация приложения остаётся выше.",
+      },
       common: {
         confidenceLow: "Низкая", confidenceMedium: "Средняя", confidenceHigh: "Высокая",
         sessionShort: "короткой", sessionMedium: "средней", sessionLong: "долгой",

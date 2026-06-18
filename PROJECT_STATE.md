@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v34 (cache-first static / network-first data), **disabled on
+- Service worker v35 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -41,6 +41,12 @@ reviews, catalogs, sale pages, and announcements.
   locale-aware status, actions, alternatives, buy guardrails, personal
   forecast, evidence, and risk rationale. The complete first-run payoff is
   localized too: readiness, verdict, proof, next steps, and journey actions.
+- AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
+  produce a short game description/personal take directly in the selected
+  language. Results are cached by locale + kind + taste-context fingerprint;
+  deterministic narratives remain the instant fallback. The local proxy is
+  implemented and gated, but public Pages still needs an HTTPS/serverless
+  backend before live AI generation can be enabled safely.
 - Onboarding: 30-game swipe deck, visible 30-second contract, 3/6/10
   milestones, animated hero exit, first-pick payoff after 3 real taste
   signals, and "use now / improve later" guidance for swipes, library access,

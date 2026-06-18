@@ -250,6 +250,14 @@
       reset: "Reset profile",
     },
     narrative: {
+      ai: {
+        detailTitle: "AI companion",
+        detailPlaceholder: "Ask for a fresh description and personal take in your current language.",
+        detailButton: "Ask companion",
+        thinking: "Thinking",
+        asking: "Writing a personal answer…",
+        unavailable: "AI wording is unavailable right now. The verified on-device recommendation remains above.",
+      },
       common: {
         confidenceLow: "Low", confidenceMedium: "Medium", confidenceHigh: "High",
         sessionShort: "short", sessionMedium: "medium", sessionLong: "long",

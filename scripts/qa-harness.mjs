@@ -983,12 +983,21 @@ function checkSelectors() {
   assert(/function createAiTools/.test(appAiSource), "AI tools factory is missing from app-ai.js");
   assert(/function fetchExplanation/.test(appAiSource), "fetchExplanation is missing from app-ai.js");
   assert(/function cachedExplanation/.test(appAiSource), "cachedExplanation is missing from app-ai.js");
+  assert(/function fetchNarrative/.test(appAiSource), "locale-aware fetchNarrative is missing from app-ai.js");
+  assert(/function cachedNarrative/.test(appAiSource), "locale-aware cachedNarrative is missing from app-ai.js");
+  assert(/CACHE_SCHEMA = "ai-narrative-v2"/.test(appAiSource), "AI cache schema version is missing");
+  assert(/getLocale/.test(appAiSource) && /fingerprint/.test(appAiSource), "AI cache must include locale and context fingerprinting");
   assert(/PlaySputnikAi/.test(appAiSource), "AI module must export PlaySputnikAi");
   assert(/PlaySputnikAi/.test(appSource), "app.js must reference PlaySputnikAi");
   assert(/fetchExplanation/.test(appSource), "app.js must wire fetchExplanation into detail drawer");
+  assert(/fetchNarrative\("companion"/.test(appSource), "app.js must hydrate the main companion answer with AI narrative");
+  assert(/textContent = explanation/.test(appSource), "AI detail output must be inserted as text, not trusted HTML");
   assert(/app-ai\.js/.test(html), "app-ai.js must be in the load chain");
   assert(/ANTHROPIC_API_KEY/.test(searchProviderSource), "Search provider server must read ANTHROPIC_API_KEY");
   assert(/\/api\/explain/.test(searchProviderSource), "Search provider server must expose /api/explain endpoint");
+  assert(/\/api\/narrative/.test(searchProviderSource), "Search provider server must expose /api/narrative endpoint");
+  assert(/GET, POST, OPTIONS/.test(searchProviderSource), "AI provider CORS must allow POST");
+  assert(/Never invent prices/.test(searchProviderSource), "AI narrative prompt must forbid fabricated commerce facts");
   assert(/aiExplanations/.test(appStateSource), "aiExplanations must be in defaultState");
   assert(/detail-ai-btn/.test(appSource), "Detail drawer must have an AI explain button");
 

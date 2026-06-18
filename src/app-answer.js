@@ -252,6 +252,7 @@
         ? t("narrative.answer.statusWithSkips", { confidence: confidenceLabel, mode, count: state.snoozed.size })
         : t("narrative.answer.status", { confidence: confidenceLabel, mode });
       return {
+        gameTitle: topGame.title,
         status,
         title: libraryMode
           ? t("narrative.answer.titleLibrary", { title: topGame.title })

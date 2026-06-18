@@ -817,12 +817,16 @@ const {
 let renderRefreshPolicy, renderSourceHealth, renderDevHealth, renderDataWorkbench, renderCatalogBackbone, renderCatalogWorkbench, refreshQueue;
 
 const {
+  cachedNarrative,
+  fetchNarrative,
+  narrativeAvailable,
   cachedExplanation,
   fetchExplanation,
   clearExplanationCache,
 } = window.PlaySputnikAi.createAiTools({
   getState: () => state,
   getSourceGames: () => sourceGames(),
+  getLocale: () => window.PlaySputnikI18n.getLocale(),
   gameSignals,
   combinedTasteWeight,
   titleKey,
@@ -3087,11 +3091,29 @@ function runAnswerAction(action, title) {
 }
 function renderCompanionAnswer(ranked) {
   const answer = companionAnswer(ranked);
+  const narrativeGame = answer.gameTitle
+    ? ranked.find((game) => titleMatches(game.title, answer.gameTitle))
+    : null;
+  const narrativeContext = narrativeGame ? {
+    fallback: answer.paragraphs.slice(0, 2),
+    evidence: answer.evidence?.summary || "",
+    forecast: answer.agenda?.[0]?.forecast?.label || "",
+    decision: answer.agenda?.[0]?.detail || "",
+    session: state.session,
+  } : null;
+  const aiNarrative = narrativeGame
+    ? cachedNarrative("companion", narrativeGame, narrativeContext)
+    : null;
   els.answerStatus.textContent = answer.status;
   els.answerCopy.innerHTML = `
     <div class="answer-main">
       <strong>${answer.title}</strong>
-      ${answer.paragraphs.map((item) => `<p>${item}</p>`).join("")}
+      <div class="answer-narrative" data-ai-companion-title="${detailAttr(answer.gameTitle || "")}" aria-live="polite">
+        ${aiNarrative
+          ? `<p data-ai-companion-copy></p>`
+          : answer.paragraphs.slice(0, 2).map((item) => `<p>${item}</p>`).join("")}
+      </div>
+      ${answer.paragraphs.slice(2).map((item) => `<p>${item}</p>`).join("")}
     </div>
     ${answer.evidence ? `<div class="personal-evidence answer-evidence">${renderEvidenceRows(answer.evidence, 4)}</div>` : ""}
     ${answer.agenda?.length ? `
@@ -3126,6 +3148,29 @@ function renderCompanionAnswer(ranked) {
     </div>
     ${renderUndoStrip("answer-undo")}
   `;
+  if (aiNarrative) {
+    const generated = els.answerCopy.querySelector("[data-ai-companion-copy]");
+    if (generated) generated.textContent = aiNarrative;
+  } else if (narrativeGame) {
+    const requestedLocale = window.PlaySputnikI18n.getLocale();
+    void (async () => {
+      if (!await narrativeAvailable()) return;
+      try {
+        const text = await fetchNarrative("companion", narrativeGame, narrativeContext);
+        saveState();
+        if (window.PlaySputnikI18n.getLocale() !== requestedLocale) return;
+        const container = els.answerCopy.querySelector("[data-ai-companion-title]");
+        if (!container || container.dataset.aiCompanionTitle !== answer.gameTitle) return;
+        container.replaceChildren();
+        const paragraph = document.createElement("p");
+        paragraph.dataset.aiCompanionCopy = "";
+        paragraph.textContent = text;
+        container.append(paragraph);
+      } catch (error) {
+        console.warn("[PlaySputnik] AI companion narrative unavailable:", error);
+      }
+    })();
+  }
   els.answerCopy.querySelectorAll("[data-answer-action]").forEach((button) => {
     button.addEventListener("click", () => {
       runAnswerAction(button.dataset.answerAction, button.dataset.answerTitle);
@@ -4247,6 +4292,15 @@ function renderGameDetail(shouldFocus = false) {
   const facts = factList(game).slice(0, 6);
   const valueCard = gameValueCard(game);
   const trustRows = detailSourceTrustRows(game);
+  const aiContext = {
+    fallbackDescription: description,
+    personalReason: rationale.detail,
+    evidence: evidence.summary,
+    forecast: forecast.label,
+    risk: watchout.detail,
+    access: answerAccessLabel(game),
+  };
+  const cachedAiExplanation = cachedExplanation(game.title, aiContext);
 
   els.gameDetail.classList.remove("is-hidden");
   els.gameDetail.setAttribute("aria-hidden", "false");
@@ -4365,10 +4419,12 @@ function renderGameDetail(shouldFocus = false) {
       <div class="facts">${facts.map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`).join("")}</div>
       ${passport}
     </section>
-    <section class="game-detail-section game-detail-ai" id="detail-ai-section">
-      <h3>AI match</h3>
-      <div id="detail-ai-body" class="detail-ai-body">${cachedExplanation(game.title) ? `<p>${cachedExplanation(game.title)}</p>` : `<p class="detail-ai-placeholder">Press "Why this game?" to get a personalised explanation.</p>`}</div>
-      <button class="secondary-action detail-ai-btn" id="detail-ai-btn" type="button">Why this game?</button>
+    <section class="game-detail-section game-detail-ai" id="detail-ai-section" ${cachedAiExplanation ? "" : "hidden"}>
+      <h3>${t("narrative.ai.detailTitle")}</h3>
+      <div id="detail-ai-body" class="detail-ai-body" aria-live="polite">${cachedAiExplanation
+        ? `<p data-ai-detail-copy></p>`
+        : `<p class="detail-ai-placeholder">${t("narrative.ai.detailPlaceholder")}</p>`}</div>
+      <button class="secondary-action detail-ai-btn" id="detail-ai-btn" type="button">${t("narrative.ai.detailButton")}</button>
     </section>
     ${(() => {
       const similar = findSimilarGames(game);
@@ -4432,21 +4488,42 @@ function renderGameDetail(shouldFocus = false) {
   // Wire "Why this game?" AI explain button
   const aiBtn = els.gameDetailBody.querySelector("#detail-ai-btn");
   const aiBody = els.gameDetailBody.querySelector("#detail-ai-body");
+  const aiSection = els.gameDetailBody.querySelector("#detail-ai-section");
   if (aiBtn && aiBody) {
+    const cachedCopy = aiBody.querySelector("[data-ai-detail-copy]");
+    if (cachedCopy && cachedAiExplanation) cachedCopy.textContent = cachedAiExplanation;
+    if (!cachedAiExplanation && aiSection) {
+      void narrativeAvailable().then((available) => {
+        if (available && aiSection.isConnected) aiSection.hidden = false;
+      });
+    }
     aiBtn.addEventListener("click", async () => {
       aiBtn.disabled = true;
-      aiBtn.textContent = "Thinking…";
-      aiBody.innerHTML = `<p class="detail-ai-placeholder">Asking your personal AI companion…</p>`;
+      aiBtn.textContent = `${t("narrative.ai.thinking")}…`;
+      aiBody.replaceChildren();
+      const pending = document.createElement("p");
+      pending.className = "detail-ai-placeholder";
+      pending.textContent = t("narrative.ai.asking");
+      aiBody.append(pending);
       try {
-        const explanation = await fetchExplanation(game);
-        aiBody.innerHTML = `<p>${explanation}</p>`;
+        if (!await narrativeAvailable()) throw new Error("AI narrative provider unavailable");
+        const explanation = await fetchExplanation(game, aiContext);
+        aiBody.replaceChildren();
+        const paragraph = document.createElement("p");
+        paragraph.dataset.aiDetailCopy = "";
+        paragraph.textContent = explanation;
+        aiBody.append(paragraph);
         saveState();
       } catch (err) {
-        aiBody.innerHTML = `<p class="detail-ai-error">Could not get explanation. Make sure the local server is running (<code>node scripts/search-provider-server.mjs</code>) and ANTHROPIC_API_KEY is set.</p>`;
+        aiBody.replaceChildren();
+        const error = document.createElement("p");
+        error.className = "detail-ai-error";
+        error.textContent = t("narrative.ai.unavailable");
+        aiBody.append(error);
         console.warn("[PlaySputnik] AI explain failed:", err);
       } finally {
         aiBtn.disabled = false;
-        aiBtn.textContent = "Why this game?";
+        aiBtn.textContent = t("narrative.ai.detailButton");
       }
     });
   }

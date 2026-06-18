@@ -52,6 +52,22 @@ both audiences. This is a deliberate large project, done in phases with a commit
   decide approach (parallel ru fields vs. separate file).
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).
 
+## Track: AI Narrative Layer
+
+Status: local architecture done. `src/app-ai.js` now generates/cache-isolates
+localized narratives by language, kind, and taste-context fingerprint.
+`POST /api/narrative` rewrites the main companion recommendation and generates
+a short description + personal fit explanation in the game drawer. Prompts
+accept only structured facts and explicitly forbid invented price, Plus,
+platform, language, release, and ranking claims. Existing deterministic EN/RU
+copy is the instant fallback. `ai-narrative-test.mjs` prevents locale-cache
+leaks and stale-context reuse.
+
+Public activation remains: GitHub Pages cannot protect an API key. Deploy a
+small HTTPS/serverless proxy, store the model key there, and set
+`window.__playsputnikAiOrigin` to that origin. Do not put provider secrets in
+the static app.
+
 ## Track: Polish
 
 ### 1. Wishlist price alerts UI
