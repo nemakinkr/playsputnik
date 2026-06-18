@@ -5047,7 +5047,11 @@ function renderAppViewShell() {
   if (state.activeView !== activeView) state.activeView = activeView;
   const view = APP_VIEWS[activeView];
 
-  els.appViewStatus.textContent = view.summary;
+  // Localized per-view summary; fall back to the English config for any view
+  // not yet in the catalog (t() returns the key on a miss).
+  const summaryKey = `views.${activeView}.summary`;
+  const localizedSummary = t(summaryKey);
+  els.appViewStatus.textContent = localizedSummary === summaryKey ? view.summary : localizedSummary;
   els.appViewTabs.forEach((button) => {
     const isActive = button.dataset.appView === activeView;
     button.classList.toggle("is-active", isActive);
@@ -5706,6 +5710,21 @@ if (els.dataErrorToastClose) {
       syncButton();
     });
   }
+})();
+
+// ── Language toggle ───────────────────────────────────────────────────────────
+(function initLanguageToggle() {
+  const i18n = window.PlaySputnikI18n;
+  const btn = document.querySelector("#lang-toggle");
+  if (!i18n || !btn) return;
+  // The button shows the language you'll switch TO.
+  const sync = () => { btn.textContent = i18n.getLocale() === "ru" ? "EN" : "RU"; };
+  sync();
+  btn.addEventListener("click", () => {
+    i18n.setLocale(i18n.getLocale() === "ru" ? "en" : "ru");
+  });
+  // setLocale() re-applies static markup; re-render dynamic content + re-sync.
+  i18n.onLocaleChange(() => { sync(); try { render(); } catch (e) { /* ignore */ } });
 })();
 
 els.refresh.addEventListener("click", render);

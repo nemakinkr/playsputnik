@@ -95,6 +95,34 @@ lesson as the perf budget). Two shared light surfaces are already tokenized:
 `#f1f5f9 → --chip-bg`, `#f8fafc → --surface-2` (prefer reusing/extending these
 over adding more hardcoded hexes).
 
+## i18n / localization (EN + RU, more later)
+
+Goal: full EN + RU. Engine `src/app-i18n.js` loads FIRST in the index.html chain
+and exposes a global `t(key, params)` (+ `window.PlaySputnikI18n`). Catalogs are
+`src/i18n-en.js` / `src/i18n-ru.js` — keep them **structurally in sync**
+(namespaced keys: `nav.*`, `header.*`, `views.*`, …). Locale: saved choice →
+`navigator.language` (ru* → ru) → en; switch via the header `#lang-toggle`.
+
+**How to localize a string:**
+- **Static HTML** → add `data-i18n="ns.key"` (textContent) or
+  `data-i18n-attr="aria-label:ns.key;title:ns.key2"` (attributes). `applyStatic()`
+  runs on load + every locale change.
+- **Dynamic (rendered in app.js / src)** → `t("ns.key", { name, count })`.
+  `{param}` interpolation; a value may be a plural object `{ one, few, many }`
+  (ru) / `{ one, other }` (en) selected by `params.count`. Use `t()` for plurals,
+  never hand-built "N games".
+- **Per-view config strings** (APP_VIEWS summaries) use graceful fallback:
+  `t(key) === key ? englishConfig : t(key)` so untranslated views still render EN.
+
+`setLocale()` re-applies static markup and fires `onLocaleChange` → app.js
+re-renders. A missing key renders the key itself (visible, never throws) — so an
+untranslated surface shows English/the key, not a crash. Migrate view-by-view.
+**Gates** seed via the English "Load demo profile" button text; headless Chrome
+defaults to en so they pass. When you localize that button, update the seed hook
+in `scripts/*-check.mjs` (or force `setLocale('en')` there). Russian text is
+longer — once a view's dynamic copy is translated, re-run mobile-check for
+375px overflow.
+
 ## Data pipeline
 
 `data/*.json` refreshed daily by `.github/workflows/update-data.yml`

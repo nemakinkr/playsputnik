@@ -1,7 +1,7 @@
 /* PlaySputnik Service Worker — offline-first static assets, network-first data */
 "use strict";
 
-const CACHE_VERSION = "v27";
+const CACHE_VERSION = "v28";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -15,6 +15,9 @@ const STATIC_ASSETS = [
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./src/app-i18n.js",
+  "./src/i18n-en.js",
+  "./src/i18n-ru.js",
   "./src/app-storage.js",
   "./src/app-config.js",
   "./src/app-state.js",

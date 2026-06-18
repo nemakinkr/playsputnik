@@ -221,51 +221,52 @@
       <section class="decision-surface" id="decision-surface-main" aria-live="polite" tabindex="-1">
         <header class="surface-header">
           <div>
-            <p class="eyebrow">For players with money, not time</p>
-            <h2>What should I play tonight?</h2>
+            <p class="eyebrow" data-i18n="header.eyebrow">For players with money, not time</p>
+            <h2 data-i18n="header.title">What should I play tonight?</h2>
           </div>
           <div class="surface-header-right">
             <div class="region-pill" id="active-region">US Store</div>
-            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
-            <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="setup-panel" title="Settings">⚙</button>
+            <button class="lang-toggle" id="lang-toggle" type="button" aria-label="Language" data-i18n-attr="aria-label:common.language;title:common.language">EN</button>
+            <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" title="Toggle dark mode" aria-label="Toggle dark mode" data-i18n-attr="title:common.themeToggle;aria-label:common.themeToggle">🌙</button>
+            <button class="settings-toggle" id="settings-toggle" type="button" aria-expanded="false" aria-controls="setup-panel" title="Settings" data-i18n-attr="title:common.settings">⚙</button>
           </div>
         </header>
 
-        <nav class="app-view-nav" aria-label="Product areas">
+        <nav class="app-view-nav" aria-label="Product areas" data-i18n-attr="aria-label:nav.ariaProductAreas">
           <button class="app-view-tab is-active" data-app-view="today" type="button">
-            <strong>Today</strong>
-            <span>Play now</span>
+            <strong data-i18n="nav.todayTitle">Today</strong>
+            <span data-i18n="nav.todaySub">Play now</span>
           </button>
           <button class="app-view-tab" data-app-view="library" type="button">
-            <strong>Library</strong>
-            <span>Owned queue</span>
+            <strong data-i18n="nav.libraryTitle">Library</strong>
+            <span data-i18n="nav.librarySub">Owned queue</span>
           </button>
           <button class="app-view-tab" data-app-view="discover" type="button">
-            <strong>Discover</strong>
-            <span>Find games</span>
+            <strong data-i18n="nav.discoverTitle">Discover</strong>
+            <span data-i18n="nav.discoverSub">Find games</span>
           </button>
           <button class="app-view-tab" data-app-view="wishlist" type="button">
-            <strong>Wishlist</strong>
-            <span>Buy smarter</span>
+            <strong data-i18n="nav.wishlistTitle">Wishlist</strong>
+            <span data-i18n="nav.wishlistSub">Buy smarter</span>
           </button>
           <button class="app-view-tab" data-app-view="taste" type="button">
-            <strong>Taste</strong>
-            <span>Profile</span>
+            <strong data-i18n="nav.tasteTitle">Taste</strong>
+            <span data-i18n="nav.tasteSub">Profile</span>
           </button>
           <button class="app-view-tab" data-app-view="deals" type="button">
-            <strong>Deals</strong>
-            <span>On sale</span>
+            <strong data-i18n="nav.dealsTitle">Deals</strong>
+            <span data-i18n="nav.dealsSub">On sale</span>
           </button>
           <button class="app-view-tab" data-app-view="data" type="button">
-            <strong>Data</strong>
-            <span>Sources</span>
+            <strong data-i18n="nav.dataTitle">Data</strong>
+            <span data-i18n="nav.dataSub">Sources</span>
           </button>
           <button class="app-view-tab" data-app-view="stats" type="button">
-            <strong>Stats</strong>
-            <span>My library</span>
+            <strong data-i18n="nav.statsTitle">Stats</strong>
+            <span data-i18n="nav.statsSub">My library</span>
           </button>
         </nav>
-        <p class="app-view-copy" id="app-view-status">Tonight pick, first value proof, and the short plan.</p>
+        <p class="app-view-copy" id="app-view-status" data-i18n="views.today.summary">Tonight pick, first value proof, and the short plan.</p>
 
         <section class="value-strip" aria-label="Decision metrics" data-view-section="today library discover wishlist taste">
           <div>
@@ -982,7 +983,27 @@
       };
       document.body.appendChild(configScript);
       };
-      document.body.appendChild(storageScript);
+      // i18n loads FIRST so every module + app.js can call the global t().
+      const i18nScript = document.createElement("script");
+      i18nScript.src = `src/app-i18n.js?v=${cacheBust}`;
+      i18nScript.onerror = () => handleScriptError("app-i18n.js");
+      i18nScript.onload = () => {
+        const enScript = document.createElement("script");
+        enScript.src = `src/i18n-en.js?v=${cacheBust}`;
+        enScript.onerror = () => handleScriptError("i18n-en.js");
+        enScript.onload = () => {
+          const ruScript = document.createElement("script");
+          ruScript.src = `src/i18n-ru.js?v=${cacheBust}`;
+          ruScript.onerror = () => handleScriptError("i18n-ru.js");
+          ruScript.onload = () => {
+            window.PlaySputnikI18n.applyStatic();
+            document.body.appendChild(storageScript);
+          };
+          document.body.appendChild(ruScript);
+        };
+        document.body.appendChild(enScript);
+      };
+      document.body.appendChild(i18nScript);
     </script>
     <script>
       // Dev mode: no service worker on localhost — cache-first SW made every

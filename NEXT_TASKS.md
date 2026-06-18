@@ -16,7 +16,31 @@ needed, then still run the required final `./scripts/check.sh`. Avoid catalog
 expansion, broad redesigns, provider research, and multi-screen refactors until
 the user explicitly switches back to deeper work.
 
-## Track: Polish (current focus)
+## Track: Localization (EN + RU) — ACTIVE, large multi-phase project
+
+Decision (2026-06-18): ship a full EN + RU app (more languages later); target
+both audiences. This is a deliberate large project, done in phases with a commit
++ green gates after each. See CLAUDE.md "i18n / localization" for the pattern.
+
+- **Phase 1 — foundation + first screen — DONE.** `src/app-i18n.js` engine
+  (global `t()`, plural rules, `applyStatic()`), `src/i18n-en.js`/`i18n-ru.js`
+  catalogs, header `#lang-toggle`, SW v28. Localized: header eyebrow/title, the
+  8 nav tabs + subs, all 8 view summaries (graceful EN fallback for untranslated
+  views). All gates green. Switch verified both directions.
+- **Phase 2 — Today dynamic copy:** metric cards (SCREENED/RADAR/TIME FIT/LIBRARY/
+  GUARDED labels + "N games" plurals), sample-profile panel, time selector
+  ("Tonight I have" + chips + fit note), top-recommendation labels.
+- **Phase 3 — settings sidebar** (the `⚙` panel: section titles, field labels,
+  start-path cards, demo button — when localized, fix the gate seed hook).
+- **Phase 4 — narrative engine** (app-answer.js / app-recommend.js): the hard
+  part — locale-aware templates with grammar/plurals, not fragment concat.
+- **Phase 5 — remaining views** (Library, Discover, Wishlist, Taste, Deals, Data,
+  Stats) dynamic copy + the detail cockpit drawer.
+- **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
+  decide approach (parallel ru fields vs. separate file).
+- After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).
+
+## Track: Polish
 
 ### 1. Wishlist price alerts UI
 

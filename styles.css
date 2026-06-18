@@ -7422,7 +7422,8 @@ textarea {
 }
 
 /* Theme toggle button */
-.theme-toggle {
+.theme-toggle,
+.lang-toggle {
   min-height: 32px;
   min-width: 32px;
   border: 1px solid var(--line);
@@ -7435,7 +7436,15 @@ textarea {
   justify-content: center;
 }
 
-.theme-toggle:hover {
+.lang-toggle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0 8px;
+}
+
+.theme-toggle:hover,
+.lang-toggle:hover {
   border-color: var(--blue);
 }
 
