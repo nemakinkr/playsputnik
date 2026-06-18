@@ -1,37 +1,10 @@
 [
   {
-    "title": "Control Ultimate Edition",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Tunic",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Sifu",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
     "title": "Sea of Stars",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -40,7 +13,16 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
+    "freshnessState": "live",
+    "confidence": "medium"
+  },
+  {
+    "title": "Astro Bot",
+    "region": "US",
+    "tier": "Extra",
+    "source": "ps_store_catalog",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -49,25 +31,16 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Lies of P",
+    "title": "Hollow Knight",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 4",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -76,7 +49,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -85,7 +58,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -94,7 +67,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -103,52 +76,34 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "The Witcher 3: Wild Hunt",
+    "title": "Stardew Valley",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Mafia: The Old Country",
+    "title": "The Last of Us Part I",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "The Outer Worlds",
+    "title": "The Last of Us Part II Remastered",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Village",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Divinity: Original Sin 2",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -157,16 +112,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Code: Veronica",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -175,16 +121,16 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Hades",
+    "title": "The Last of Us Part II",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -193,7 +139,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -202,25 +148,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Disco Elysium",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Death Road to Canada",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -229,7 +157,16 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
+    "freshnessState": "live",
+    "confidence": "medium"
+  },
+  {
+    "title": "Odin Sphere Leifthrasir",
+    "region": "US",
+    "tier": "Extra",
+    "source": "ps_store_catalog",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -238,43 +175,34 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Max Payne",
+    "title": "Astro Bot Rescue Mission",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "What Remains of Edith Finch",
+    "title": "Night in the Woods",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Injustice 2",
+    "title": "Tony Hawk's Pro Skater 1 + 2",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Kerbal Space Program",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -283,7 +211,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -292,25 +220,25 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Divinity: Original Sin",
+    "title": "Super Meat Boy",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Marvel's Spider-Man",
+    "title": "Final Fantasy XII: The Zodiac Age",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -319,16 +247,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Overcooked! All You Can Eat",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -337,34 +256,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "DiRT Rally",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Rise of the Tomb Raider",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Saints Row IV",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -373,7 +265,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -382,25 +274,25 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Resident Evil 7: Biohazard",
+    "title": "Middle-earth: Shadow of Mordor",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Hotline Miami",
+    "title": "Tales from the Borderlands: A Telltale Game Series",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -409,7 +301,16 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
+    "freshnessState": "live",
+    "confidence": "medium"
+  },
+  {
+    "title": "Sayonara Wild Hearts",
+    "region": "US",
+    "tier": "Extra",
+    "source": "ps_store_catalog",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -418,7 +319,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -427,43 +328,16 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Enter the Gungeon",
+    "title": "FAR: Lone Sails",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Control",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Crash Bandicoot 4: It’s About Time",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Fallout 4",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -472,7 +346,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -481,97 +355,52 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Thronebreaker: The Witcher Tales",
+    "title": "Tom Clancy’s The Division 2",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Chicken Police – Paint it RED!",
+    "title": "Minecraft",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Resident Evil 4 (2005)",
+    "title": "Crash Team Racing Nitro-Fueled",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "DiRT Rally 2.0",
+    "title": "Warhammer: Vermintide 2",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "L.A. Noire",
+    "title": "Risk of Rain 2",
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Zero",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Borderlands 3",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Subnautica",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Stray",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Mortal Kombat 11",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -580,25 +409,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Dead Rising",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Octopath Traveler",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -607,34 +418,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Batman: Arkham Knight",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Max Payne 3",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Marvel's Spider-Man: Miles Morales",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -643,7 +427,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -652,7 +436,25 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
+    "freshnessState": "live",
+    "confidence": "medium"
+  },
+  {
+    "title": "Heavy Rain",
+    "region": "US",
+    "tier": "Extra",
+    "source": "ps_store_catalog",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
+    "freshnessState": "live",
+    "confidence": "medium"
+  },
+  {
+    "title": "Crash Bandicoot N. Sane Trilogy",
+    "region": "US",
+    "tier": "Extra",
+    "source": "ps_store_catalog",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -661,7 +463,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -670,7 +472,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -679,394 +481,7 @@
     "region": "US",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Forest",
-    "region": "US",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Control Ultimate Edition",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Outer Wilds",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Tunic",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Sifu",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Dave the Diver",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy VII Rebirth",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Like a Dragon: Infinite Wealth",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 4",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Cyberpunk 2077",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Elden Ring",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "God of War",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Stardew Valley",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Witcher 3: Wild Hunt",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Mafia: The Old Country",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Outer Worlds",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Village",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Divinity: Original Sin 2",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Code: Veronica",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Hades",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Grand Theft Auto V",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Disco Elysium",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Dishonored",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Syphon Filter",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Sekiro: Shadows Die Twice",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "FINAL FANTASY VIII",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "What Remains of Edith Finch",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Night in the Woods",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Psychonauts 2",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Injustice 2",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Battlefield 1",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy XVI",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Kerbal Space Program",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Doom 3",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Divinity: Original Sin",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy XII: The Zodiac Age",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Psychonauts",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Pistol Whip",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "DRAGON BALL FighterZ",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Onimusha: Warlords",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Rise of the Tomb Raider",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Gone Home",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Saints Row IV",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -1075,43 +490,16 @@
     "region": "GB",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Resident Evil 5",
+    "title": "Assetto Corsa",
     "region": "GB",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Binding of Isaac: Rebirth",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 7: Biohazard",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Sayonara Wild Hearts",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -1120,115 +508,7 @@
     "region": "GB",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Cities: Skylines",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Control",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Crash Bandicoot 4: It’s About Time",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Fallout 4",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Devil May Cry",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy IX",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy VII (1997)",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Don't Starve Together",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 4 (2005)",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Zero",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Tom Clancy’s The Division 2",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Dishonored: Death of the Outsider",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -1237,16 +517,7 @@
     "region": "GB",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Mortal Kombat 11",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -1255,349 +526,25 @@
     "region": "GB",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Overcooked! 2",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Last Campfire",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Life and Suffering of Sir Brante",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "A Plague Tale: Innocence",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Octopath Traveler",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "FINAL FANTASY XV",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Blasphemous",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy X",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Mass Effect Legendary Edition",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "No Man's Sky",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Forest",
-    "region": "GB",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Control Ultimate Edition",
+    "title": "Journey",
     "region": "DE",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Tunic",
+    "title": "Doom 3",
     "region": "DE",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Dave the Diver",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Inscryption",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Like a Dragon: Infinite Wealth",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 4",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Cyberpunk 2077",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Elden Ring",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "God of War",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Witcher 3: Wild Hunt",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Mafia: The Old Country",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Village",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Divinity: Original Sin 2",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Red Dead Redemption",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Code: Veronica",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Hades",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Rez Infinite",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Sekiro: Shadows Die Twice",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Gravity Circuit",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "What Remains of Edith Finch",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Psychonauts 2",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Divinity: Original Sin",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Psychonauts",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Wolfenstein II: The New Colossus",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Until You Fall",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Onimusha: Warlords",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Rise of the Tomb Raider",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -1606,52 +553,7 @@
     "region": "DE",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 5",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 7: Biohazard",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Fahrenheit (Indigo Prophecy)",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Assetto Corsa",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Guilty Gear -Strive",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -1660,142 +562,25 @@
     "region": "DE",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Cities: Skylines",
+    "title": "AI: The Somnium Files",
     "region": "DE",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Salt and Sanctuary",
+    "title": "Among Us",
     "region": "DE",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Control",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "SOMA",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Thronebreaker: The Witcher Tales",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Buried Stars",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Broforce",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Don't Starve Together",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 4 (2005)",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Life is Strange",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Zero",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Borderlands 3",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Mortal Kombat 11",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "A Plague Tale: Innocence",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Octopath Traveler",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -1804,232 +589,7 @@
     "region": "DE",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy X",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "No Man's Sky",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Forest",
-    "region": "DE",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Control Ultimate Edition",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Sifu",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 4",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Cyberpunk 2077",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Elden Ring",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "God of War",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Witcher 3: Wild Hunt",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Mafia: The Old Country",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Grounded",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Village",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Code: Veronica",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Disco Elysium",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Sekiro: Shadows Die Twice",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "What Remains of Edith Finch",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Ratchet & Clank: Rift Apart",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Psychonauts 2",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Injustice 2",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Battlefield 1",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Marvel's Spider-Man",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Psychonauts",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Overcooked! All You Can Eat",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Wolfenstein II: The New Colossus",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -2038,34 +598,7 @@
     "region": "TR",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 5",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 7: Biohazard",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Ratchet & Clank",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -2074,97 +607,7 @@
     "region": "TR",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Streets of Rage 4",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Control",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Deus Ex: Mankind Divided",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Don't Starve Together",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil 4 (2005)",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Life is Strange",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Resident Evil Zero",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Borderlands 3",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Stray",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Evil Within 2",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -2173,79 +616,16 @@
     "region": "TR",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
   {
-    "title": "Mortal Kombat 11",
+    "title": "Among Us",
     "region": "TR",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Overcooked! 2",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "The Last Campfire",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "A Plague Tale: Innocence",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "TEKKEN 7",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Octopath Traveler",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Plants vs. Zombies Garden Warfare 2",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Marvel's Spider-Man: Miles Morales",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   },
@@ -2254,25 +634,7 @@
     "region": "TR",
     "tier": "Extra",
     "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "Final Fantasy X",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
-    "freshnessState": "live",
-    "confidence": "medium"
-  },
-  {
-    "title": "No Man's Sky",
-    "region": "TR",
-    "tier": "Extra",
-    "source": "ps_store_catalog",
-    "checkedAt": "2026-06-17T17:44:19.638Z",
+    "checkedAt": "2026-06-18T17:57:10.388Z",
     "freshnessState": "live",
     "confidence": "medium"
   }
