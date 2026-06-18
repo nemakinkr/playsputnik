@@ -37,7 +37,7 @@ retrofit every hex, but the gate + tokens-for-new-code gets ~90% of the way.
 ## Non-negotiables
 
 - Before claiming a task done: `./scripts/check.sh` (full gate: data → i18n
-  catalogs → qa-harness → browser smoke → perf budget → browser gates).
+  catalogs/usage → qa-harness → browser smoke → perf budget → browser gates).
   `--fast` for quick loops.
 - After a completed checked task, commit and push to `main` immediately unless
   the user explicitly asks not to. Do not ask for a separate "commit + push"
@@ -58,15 +58,16 @@ retrofit every hex, but the gate + tokens-for-new-code gets ~90% of the way.
   prices/Plus status without per-record source + freshness; PSN import is
   demo logic.
 - Pushing to `main` auto-deploys to https://nemakinkr.github.io/playsputnik/
-  (~20s). CI (validate + i18n catalogs + qa-harness + browser gates) runs on
-  every push.
+  (~20s). CI (validate + i18n catalogs/usage + qa-harness + browser gates)
+  runs on every push.
 - Keep all app paths RELATIVE (the site lives under a /playsputnik/ subpath).
 - Dark mode: every component must work in dark. Use theme tokens for
   backgrounds (`var(--card-bg)`/`--card-bg-soft`/`--chip-bg`/`--surface-2`/
   `--accent-bg`/`--panel`/`--surface`) and text (`--text-mid`/`--text-strong`/
   `--ink`) — NEVER a hardcoded light-hex background or dark-hex text color.
   `scripts/contrast-check.mjs` (check.sh + CI) fails on any light background or
-  dark-on-dark text in dark mode; `scripts/mobile-check.mjs` fails on 375px
-  overflow or controls < 24px; `scripts/a11y-check.mjs` fails on unnamed
+  dark-on-dark text in dark mode; `scripts/mobile-check.mjs` checks EN + RU
+  across 8 views plus the open settings sidebar and fails on 375px overflow or
+  controls < 24px; `scripts/a11y-check.mjs` fails on unnamed
   interactive controls. Test with a SEEDED profile, not empty. See
   CLAUDE.md "Dark mode rules".

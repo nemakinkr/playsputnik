@@ -221,9 +221,9 @@ switch, with compact metrics for taste, memory, wishlist, and price intent.
 
 The recurring dark-mode regression across handoffs is now structurally
 prevented, not memory-managed. `check.sh` is a 6-stage gate (validate-data,
-**i18n catalogs**, qa-harness, browser smoke, perf budget, **browser gates**)
-and CI independently runs validate-data, i18n catalogs, qa-harness, and the
-browser gates.
+**i18n catalogs + usage**, qa-harness, browser smoke, perf budget,
+**browser gates**) and CI independently runs validate-data, i18n
+catalogs/usage, qa-harness, and the browser gates.
 The browser gates — **dark/light contrast**, **mobile 375px**, **a11y**,
 **stale-hidden** — are
 dependency-free CDP (system Chrome, no install), seed a demo profile (empty
@@ -235,6 +235,11 @@ the class can recur invisibly → if so add a gate (see CLAUDE.md "Core principl
 EN/RU catalog structure has the same protection:
 `scripts/i18n-catalog-check.mjs` checks logical keys, plural schemas, message
 types, empty values, and interpolation placeholders locally and in CI.
+`scripts/i18n-usage-check.mjs` catches missing literal keys referenced from
+HTML attributes or `t()` calls. The mobile gate now checks both EN and RU
+across all 8 views plus the open settings sidebar at 375px. Its first expanded
+run found real 18px settings controls; advanced import, the PS Plus checkbox,
+and the budget range now have mobile-safe touch heights. SW v31.
 
 ## Done (this session series — see HANDOFF.md for detail)
 

@@ -10,7 +10,8 @@
  * intentionally small and are not treated as primary touch targets.
  *
  * Boots a SEEDED profile (empty profiles hide most components) at a 375px
- * mobile viewport and walks all 8 views.
+ * mobile viewport and walks all 8 views plus the open settings sidebar in both
+ * English and Russian (Russian copy is longer and catches different overflows).
  *
  * Usage: node scripts/mobile-check.mjs [url]   (standalone; one Chrome)
  *        — or run via scripts/browser-gates.mjs with the other gates (one Chrome).
@@ -19,7 +20,8 @@ import { APP_READY, evaluate, isMain, rootUrlFromArgv, runStandalone, waitFor } 
 
 const MIN_TOUCH = 24; // px — primary controls shorter than this are cramped
 
-function scanInPage(MIN_TOUCH) {
+function scanInPage(MIN_TOUCH, locale) {
+  try { window.PlaySputnikI18n?.setLocale(locale); } catch (e) {}
   const demoBtn = document.querySelector('[data-continuity-action="load-demo"]');
   if (demoBtn) demoBtn.click();
   ["Hades", "Stray", "Bloodborne", "Celeste", "Returnal"].forEach((t, i) => { try { setGameRating(t, ((i % 5) + 1) * 20); } catch (e) {} });
@@ -29,8 +31,7 @@ function scanInPage(MIN_TOUCH) {
   const overflow = [];
   const cramped = {};
   const W = document.documentElement.clientWidth;
-  views.forEach((v) => {
-    try { openAppView(v); render(); } catch (e) {}
+  const collect = (surface) => {
     if (document.documentElement.scrollWidth > W + 1) {
       // find the widest offending element for the message
       let widest = null;
@@ -41,7 +42,7 @@ function scanInPage(MIN_TOUCH) {
           widest = { cls: (typeof el.className === "string" && el.className) ? el.className.split(" ")[0] : el.tagName, w: Math.round(r.width) };
         }
       });
-      overflow.push({ view: v, scrollW: document.documentElement.scrollWidth, viewportW: W, widest });
+      overflow.push({ locale, surface, scrollW: document.documentElement.scrollWidth, viewportW: W, widest });
     }
     document.querySelectorAll("main button, main summary, main input, main select").forEach((el) => {
       if (el.offsetParent === null) return;
@@ -49,13 +50,39 @@ function scanInPage(MIN_TOUCH) {
       if (r.width < 1 || r.height < 1) return;
       if (r.height < MIN_TOUCH) {
         const cls = (typeof el.className === "string" && el.className) ? el.className.split(" ")[0] : el.tagName;
-        const key = cls + " (" + el.tagName + ")";
-        if (!cramped[key]) cramped[key] = { h: Math.round(r.height), text: (el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 16) };
+        const key = locale + "::" + cls + " (" + el.tagName + ")";
+        if (!cramped[key]) cramped[key] = { locale, h: Math.round(r.height), text: (el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 16) };
       }
     });
+  };
+
+  views.forEach((v) => {
+    try { openAppView(v); render(); } catch (e) {}
+    collect(v);
   });
+
+  const setupPanel = document.querySelector("#setup-panel");
+  if (setupPanel) {
+    setupPanel.classList.add("is-open");
+    if (setupPanel.scrollWidth > setupPanel.clientWidth + 1) {
+      overflow.push({
+        locale,
+        surface: "settings",
+        scrollW: setupPanel.scrollWidth,
+        viewportW: setupPanel.clientWidth,
+        widest: { cls: "setup-panel", w: setupPanel.scrollWidth },
+      });
+    }
+    collect("settings");
+    setupPanel.classList.remove("is-open");
+  }
+
   try { openAppView("today"); } catch (e) {}
-  return JSON.stringify({ overflow, cramped: Object.entries(cramped).map(([k, val]) => ({ el: k, ...val })) });
+  return JSON.stringify({
+    locale,
+    overflow,
+    cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
+  });
 }
 
 export const gate = {
@@ -66,8 +93,15 @@ export const gate = {
     await cdp.send("Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 2, mobile: true });
     await cdp.send("Page.navigate", { url: pageUrl });
     await waitFor(cdp, APP_READY);
-    const raw = await evaluate(cdp, `(${scanInPage.toString()})(${MIN_TOUCH})`);
-    return JSON.parse(raw || "{}");
+    const passes = [];
+    for (const locale of ["en", "ru"]) {
+      const raw = await evaluate(cdp, `(${scanInPage.toString()})(${MIN_TOUCH}, ${JSON.stringify(locale)})`);
+      passes.push(JSON.parse(raw || "{}"));
+    }
+    return {
+      overflow: passes.flatMap((pass) => pass.overflow || []),
+      cramped: passes.flatMap((pass) => pass.cramped || []),
+    };
   },
   analyze({ overflow, cramped }) {
     const lines = [];
@@ -75,19 +109,19 @@ export const gate = {
     if (overflow && overflow.length) {
       ok = false;
       lines.push(`❌ Horizontal overflow at 375px on ${overflow.length} view(s):`);
-      overflow.forEach((o) => lines.push(`   - ${o.view}: page ${o.scrollW}px > viewport ${o.viewportW}px${o.widest ? ` (widest: ${o.widest.cls} ${o.widest.w}px)` : ""}`));
+      overflow.forEach((o) => lines.push(`   - ${o.locale}/${o.surface}: page ${o.scrollW}px > viewport ${o.viewportW}px${o.widest ? ` (widest: ${o.widest.cls} ${o.widest.w}px)` : ""}`));
     }
     if (cramped && cramped.length) {
       ok = false;
       lines.push(`❌ ${cramped.length} cramped touch target(s) (< ${MIN_TOUCH}px tall):`);
-      cramped.forEach((c) => lines.push(`   - ${c.el}  ${c.h}px  "${c.text}"`));
+      cramped.forEach((c) => lines.push(`   - ${c.locale}/${c.el}  ${c.h}px  "${c.text}"`));
     }
     if (!ok) {
       lines.push("\nFix: ensure no element exceeds the viewport (wrap/scroll inner content), and give");
       lines.push(`primary controls a min-height >= ${MIN_TOUCH}px (often via the mobile @media block).`);
       return { ok, lines };
     }
-    return { ok: true, lines: [`✅ Mobile OK (no 375px overflow, no controls under ${MIN_TOUCH}px across 8 views)`] };
+    return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };
   },
 };
 

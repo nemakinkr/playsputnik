@@ -26,9 +26,9 @@ reviews, catalogs, sale pages, and announcements.
   refresh at 06:17 UTC (`update-data.yml`: ITAD prices / PS Store Plus /
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
-  catalogs + qa-harness + browser gates).
+  catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v19 (cache-first static / network-first data), **disabled on
+- Service worker v31 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -126,6 +126,10 @@ the active view.
 ./scripts/check.sh          # validate → i18n → qa → browser smoke → perf → browser gates (~45s)
 ./scripts/check.sh --fast   # ~3s, skips browser stages
 ```
+
+The i18n stage validates EN/RU catalog structure and every literal
+`data-i18n*` / `t("...")` reference. The mobile browser gate runs both locales
+across all 8 views plus the open settings sidebar at 375px.
 
 `node` is not on PATH; bundled node at
 `~/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node`

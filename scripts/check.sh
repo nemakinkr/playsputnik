@@ -19,8 +19,9 @@ fi
 echo "── 1/6 validate-data ──────────────────────────"
 "$NODE" scripts/validate-data.mjs
 
-echo "── 2/6 i18n catalogs ──────────────────────────"
+echo "── 2/6 i18n catalogs + usage ──────────────────"
 "$NODE" scripts/i18n-catalog-check.mjs
+"$NODE" scripts/i18n-usage-check.mjs
 
 echo "── 3/6 qa-harness ─────────────────────────────"
 "$NODE" scripts/qa-harness.mjs

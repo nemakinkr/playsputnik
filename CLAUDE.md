@@ -120,10 +120,12 @@ untranslated surface shows English/the key, not a crash. Migrate view-by-view.
 `scripts/i18n-catalog-check.mjs` runs in check.sh + CI and fails on missing
 logical keys, string/plural type drift, wrong locale-specific plural branches,
 empty messages, or mismatched `{placeholders}`.
+`scripts/i18n-usage-check.mjs` validates literal `data-i18n`,
+`data-i18n-attr`, and `t("literal.key")` references against the catalogs.
 **Gates** seed via the stable
 `[data-continuity-action="load-demo"]` hook, never localized button text.
-Russian text is longer — once a view's dynamic copy is translated, re-run
-mobile-check for 375px overflow.
+The mobile gate runs both EN and RU across all 8 views plus the open settings
+sidebar at 375px, because Russian copy is often longer.
 
 ## Data pipeline
 

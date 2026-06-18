@@ -8061,11 +8061,19 @@ select:focus-visible,
 /* Mobile touch targets — the "More states" disclosure summary (14px tall) and
    the queue Details button (24px) are too thin to tap comfortably on phones. */
 @media (max-width: 640px) {
+  .advanced-section summary,
   .my-game-more-actions summary,
   .export-import-sources summary {
     display: flex;
     align-items: center;
     min-height: 32px;
+  }
+  .setup-panel .toggle-row input {
+    width: 24px;
+    height: 24px;
+  }
+  .setup-panel input[type="range"] {
+    min-height: 24px;
   }
   .queue-detail-button,
   .deals-filter-btn {

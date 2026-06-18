@@ -18,8 +18,10 @@ jobs:
           node-version: 24
       - name: Validate data
         run: node scripts/validate-data.mjs
-      - name: Validate i18n catalogs
-        run: node scripts/i18n-catalog-check.mjs
+      - name: Validate i18n catalogs and usage
+        run: |
+          node scripts/i18n-catalog-check.mjs
+          node scripts/i18n-usage-check.mjs
       - name: QA harness (module logic, no browser)
         run: node scripts/qa-harness.mjs
       # Browser gates (contrast + mobile 375px + a11y + stale-hidden) — catch regressions that

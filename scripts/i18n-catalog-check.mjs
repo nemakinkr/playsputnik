@@ -29,7 +29,7 @@ function sourceUrl(arg, fallback) {
   return arg ? new URL(arg, `file://${process.cwd()}/`) : fallback;
 }
 
-async function loadCatalog(url, locale) {
+export async function loadCatalog(url, locale) {
   const source = await readFile(url, "utf8");
   const context = { window: { PlaySputnikMessages: {} } };
   vm.createContext(context);
@@ -42,6 +42,10 @@ async function loadCatalog(url, locale) {
     throw new Error(`${locale}: catalog did not register window.PlaySputnikMessages.${locale}`);
   }
   return catalog;
+}
+
+export function logicalKeySet(catalog, locale = "en") {
+  return new Set(collectLeaves(catalog, locale).leaves.keys());
 }
 
 function placeholders(value) {
