@@ -14,6 +14,53 @@
     LIBRARY_QUEUE_FILTERS,
     COMPLETION_STATUS_STATES,
   } = window.PlaySputnikConfig;
+  const t = window.PlaySputnikI18n.t;
+
+  const STATE_KEYS = {
+    later: "library.stateLater", saved: "library.stateSaved", want_to_finish: "library.stateFinish",
+    paused: "library.statePaused", owned: "library.stateOwned", owned_forever: "library.stateForever",
+    subscription: "library.stateSubscription", playing: "library.statePlaying", completed: "library.stateCompleted",
+    dropped: "library.stateDropped", hidden: "library.stateHidden",
+  };
+  const SESSION_KEYS = {
+    short: "narrative.recommend.sessionShort",
+    medium: "narrative.recommend.sessionMedium",
+    long: "narrative.recommend.sessionLong",
+  };
+  const ADULT_FIT_KEYS = {
+    anytime: "narrative.recommend.adultAnytime", background: "narrative.recommend.adultBackground",
+    evening: "narrative.recommend.adultEvening", vacation: "narrative.recommend.adultVacation",
+    weekend: "narrative.recommend.adultWeekend", weeknight: "narrative.recommend.adultWeeknight",
+  };
+  const ACTION_KEYS = {
+    Start: "library.actionStart", Pause: "library.actionPause", Done: "library.actionDone",
+    Resume: "library.actionResume", Finish: "library.actionFinish", Drop: "library.actionDrop",
+    Owned: "library.actionOwned", Forever: "library.actionForever", Clear: "library.actionClear",
+    Plus: "library.actionPlus", No: "library.actionNo",
+  };
+  const FILTER_KEYS = {
+    all: ["library.filterAll", "library.filterAllSummary"],
+    active: ["library.filterActive", "library.filterActiveSummary"],
+    access: ["library.filterAccess", "library.filterAccessSummary"],
+    wishlist: ["library.filterWishlist", "library.filterWishlistSummary"],
+    finished: ["library.filterFinished", "library.filterFinishedSummary"],
+  };
+
+  function localizedState(value) {
+    return STATE_KEYS[value] ? t(STATE_KEYS[value]) : value;
+  }
+
+  function localizedSession(value) {
+    return SESSION_KEYS[value] ? t(SESSION_KEYS[value]) : value;
+  }
+
+  function localizedAdultFit(value) {
+    return ADULT_FIT_KEYS[value] ? t(ADULT_FIT_KEYS[value]) : value;
+  }
+
+  function action(label, state) {
+    return { label: t(ACTION_KEYS[label]), state };
+  }
 
   function createLibraryTools({
     // app.js data/state
@@ -65,10 +112,10 @@
           const dropItem = getMonthlyDropItem(item.title);
           return {
             title: item.title,
-            source: "Drop inbox",
-            detail: dropItem ? `${dropItem.trialWindow} / ${dropItem.predictedRank}` : "Saved for later",
+            source: t("library.dropInbox"),
+            detail: dropItem ? `${dropItem.trialWindow} / ${dropItem.predictedRank}` : t("library.savedForLater"),
             atoms: dropItem?.atoms || [],
-            nextAction: dropItem?.nextAction || "Try when there is a matching evening slot.",
+            nextAction: dropItem?.nextAction || t("library.matchingEvening"),
           };
         });
     }
@@ -253,75 +300,80 @@
 
       if (finish) {
         push({
-          label: "Finish", title: finish.title, tag: "want to finish", tone: "finish",
-          detail: "You already marked this as worth finishing, so it should outrank random browsing.",
+          label: t("library.planFinish"), title: finish.title, tag: t("library.tagWantFinish"), tone: "finish",
+          detail: t("library.detailFinish"),
           game: finish,
-          actions: [{ label: "Start", state: "playing" }, { label: "Pause", state: "paused" }, { label: "Done", state: "completed" }],
+          actions: [action("Start", "playing"), action("Pause", "paused"), action("Done", "completed")],
         });
       }
 
       if (playing) {
         push({
-          label: "Resume", title: playing.title, tag: "in progress", tone: "resume",
-          detail: "Highest-fit active game. Keep momentum instead of starting a new long decision loop.",
+          label: t("library.planResume"), title: playing.title, tag: t("library.tagInProgress"), tone: "resume",
+          detail: t("library.detailResume"),
           game: playing,
-          actions: [{ label: "Done", state: "completed" }, { label: "Pause", state: "paused" }],
+          actions: [action("Done", "completed"), action("Pause", "paused")],
         });
       }
 
       if (paused) {
         push({
-          label: "Return later", title: paused.title, tag: "paused", tone: "paused",
-          detail: "Keep it visible, but below games you actively want to finish tonight.",
+          label: t("library.planReturn"), title: paused.title, tag: t("library.tagPaused"), tone: "paused",
+          detail: t("library.detailReturn"),
           game: paused,
-          actions: [{ label: "Resume", state: "playing" }, { label: "Finish", state: "want_to_finish" }, { label: "Drop", state: "dropped" }],
+          actions: [action("Resume", "playing"), action("Finish", "want_to_finish"), action("Drop", "dropped")],
         });
       }
 
       if (access) {
-        const stateLabel = USER_STATE_LABELS[gameState(access)] || gameState(access);
+        const stateLabel = localizedState(gameState(access));
         push({
-          label: "Use access", title: access.title, tag: stateLabel, tone: "access",
-          detail: `${stateLabel} and strong taste fit. Treat this as the default before checking sales.`,
+          label: t("library.planUseAccess"), title: access.title, tag: stateLabel, tone: "access",
+          detail: t("library.detailAccess", { state: stateLabel }),
           game: access,
-          actions: [{ label: "Start", state: "playing" }, { label: "Finish", state: "want_to_finish" }, { label: "Drop", state: "dropped" }],
+          actions: [action("Start", "playing"), action("Finish", "want_to_finish"), action("Drop", "dropped")],
         });
       }
 
       if (saved) {
         push({
-          label: "Wishlist", title: saved.title, tag: "hot intent", tone: "wishlist",
-          detail: "Keep it in the hot list. Price checks should focus here, not on the whole store.",
+          label: t("library.planWishlist"), title: saved.title, tag: t("library.tagHotIntent"), tone: "wishlist",
+          detail: t("library.detailWishlist"),
           game: saved,
-          actions: [{ label: "Owned", state: "owned" }, { label: "Forever", state: "owned_forever" }, { label: "Start", state: "playing" }, { label: "Clear", state: "" }],
+          actions: [action("Owned", "owned"), action("Forever", "owned_forever"), action("Start", "playing"), action("Clear", "")],
         });
       }
 
       if (plusSignal) {
         push({
-          label: "Included", title: plusSignal.title, tag: "PS Plus", tone: "included",
-          detail: `Looks relevant and may be available through subscription context in ${region}. Try before buying.`,
+          label: t("library.planIncluded"), title: plusSignal.title, tag: "PS Plus", tone: "included",
+          detail: t("library.detailIncluded", { region }),
           game: plusSignal,
-          actions: [{ label: "Start", state: "playing" }, { label: "Plus", state: "subscription" }, { label: "No", state: "hidden" }],
+          actions: [action("Start", "playing"), action("Plus", "subscription"), action("No", "hidden")],
         });
       }
 
       const memoryRow = {
-        label: "Memory",
-        title: `${completedCount} completed / ${playableCount} playable`,
-        tag: `${savedCount} saved`,
+        label: t("library.planMemory"),
+        title: t("library.memoryTitle", { completed: completedCount, playable: playableCount }),
+        tag: t("library.memoryTag", { saved: savedCount }),
         tone: "memory",
         detail: completedCount
-          ? "Completed and dropped games stay as taste evidence; playable and saved games become the active queue."
-          : "Mark a few finished games to make recommendations less generic.",
-        facts: [`${completedCount} done`, `${playableCount} playable`, `${droppedCount} dropped`, "taste memory"],
+          ? t("library.memoryWithHistory")
+          : t("library.memoryWithoutHistory"),
+        facts: [
+          t("library.factDone", { count: completedCount }),
+          t("library.factPlayable", { count: playableCount }),
+          t("library.factDropped", { count: droppedCount }),
+          t("library.factTasteMemory"),
+        ],
       };
 
       if (rows.length === 0 && !completedCount && !playableCount && !savedCount) {
         rows.unshift({
-          label: "Next", title: "Import or mark 3 games", tag: "setup", tone: "setup",
-          detail: "A PSN import, quick manual states, or a pasted note is enough to build the first personal queue.",
-          facts: ["quick setup", "manual ok", "PSN later"],
+          label: t("library.planNext"), title: t("library.setupTitle"), tag: t("library.tagSetup"), tone: "setup",
+          detail: t("library.setupDetail"),
+          facts: [t("library.factQuickSetup"), t("library.factManualOk"), t("library.factPsnLater")],
         });
       }
 
@@ -331,11 +383,11 @@
     function libraryPlanFacts(item) {
       if (item.facts) return item.facts.map((label) => ({ label, type: "access" }));
       if (!item.game) return [];
-      const stateLabel = USER_STATE_LABELS[effectiveGameState(item.game)];
+      const stateLabel = localizedState(effectiveGameState(item.game));
       return [
         stateLabel ? { label: stateLabel, type: "access" } : null,
-        { label: `${item.game.session} session`, type: "time" },
-        item.game.adultTimeFit ? { label: item.game.adultTimeFit, type: "time" } : null,
+        { label: t("library.factSession", { session: localizedSession(item.game.session) }), type: "time" },
+        item.game.adultTimeFit ? { label: localizedAdultFit(item.game.adultTimeFit), type: "time" } : null,
         ...item.game.atoms.slice(0, 2).map((atom) => ({ label: atom, type: "tone" })),
       ].filter(Boolean);
     }
@@ -347,10 +399,10 @@
 
     function personalRatingFacet(game) {
       const userGame = effectiveUserGame(game);
-      if (typeof userGame?.rating === "number") return { label: `${userGame.rating}/100`, source: "Manual" };
+      if (typeof userGame?.rating === "number") return { label: `${userGame.rating}/100`, source: "manual" };
       const imported = importedRatingForGame(game);
-      if (imported) return { label: `${Math.round(imported.rating * 10)}/100`, source: "Import" };
-      return { label: "No rating", source: "Taste only" };
+      if (imported) return { label: `${Math.round(imported.rating * 10)}/100`, source: "import" };
+      return { label: t("library.noRating"), source: "taste" };
     }
 
     function memoryFacets(game) {
@@ -358,21 +410,21 @@
       const rating = personalRatingFacet(game);
       return [
         {
-          label: "Access",
-          value: userGame.access ? USER_STATE_LABELS[userGame.access] || userGame.access : userGame.saved ? "Wishlist" : "No access",
+          label: t("library.facetAccess"),
+          value: userGame.access ? localizedState(userGame.access) : userGame.saved ? t("library.planWishlist") : t("library.noAccess"),
           tone: userGame.access ? "access" : userGame.saved ? "saved" : "empty",
         },
         {
-          label: "Progress",
+          label: t("library.facetProgress"),
           value: userGame.completionStatus
-            ? USER_STATE_LABELS[userGame.completionStatus] || userGame.completionStatus
-            : userGame.hidden ? "Hidden" : "Not started",
+            ? localizedState(userGame.completionStatus)
+            : userGame.hidden ? localizedState("hidden") : t("library.notStarted"),
           tone: userGame.completionStatus || userGame.hidden ? "progress" : "empty",
         },
         {
-          label: "Rating",
+          label: t("library.facetRating"),
           value: rating.label,
-          tone: rating.source === "Manual" ? "rating" : rating.source === "Import" ? "imported" : "empty",
+          tone: rating.source === "manual" ? "rating" : rating.source === "import" ? "imported" : "empty",
         },
       ];
     }
@@ -381,29 +433,29 @@
       const userGame = effectiveUserGame(game) || {};
       const lane = libraryLaneForGame(game);
       if (userGame.completionStatus === "want_to_finish") {
-        return { label: "Next", detail: "Finish is the clearest action; keep it above new starts.", tone: "active" };
+        return { label: t("library.next"), detail: t("library.nextFinish"), tone: "active" };
       }
       if (userGame.completionStatus === "playing") {
-        return { label: "Next", detail: "Resume or mark Done before opening another long game.", tone: "active" };
+        return { label: t("library.next"), detail: t("library.nextPlaying"), tone: "active" };
       }
       if (userGame.completionStatus === "paused") {
-        return { label: "Next", detail: "Resume, finish later, or drop it so it stops blocking the queue.", tone: "active" };
+        return { label: t("library.next"), detail: t("library.nextPaused"), tone: "active" };
       }
       if (ACCESS_STATES.includes(userGame.access)) {
-        return { label: "No-spend", detail: "Playable now; try this before turning Wishlist into a purchase.", tone: "access" };
+        return { label: t("library.noSpend"), detail: t("library.nextAccess"), tone: "access" };
       }
       if (userGame.saved || game.wishlist || notebookWishlistWeight(game.title)) {
-        return { label: "Intent", detail: "Keep watching price and fit; do not treat it as urgent until a signal improves.", tone: "wishlist" };
+        return { label: t("library.intent"), detail: t("library.nextWishlist"), tone: "wishlist" };
       }
       if (userGame.completionStatus === "completed") {
-        return { label: "Memory", detail: "Done games stay as taste evidence and should not compete for tonight.", tone: "finished" };
+        return { label: t("library.memory"), detail: t("library.nextCompleted"), tone: "finished" };
       }
       if (userGame.completionStatus === "dropped" || userGame.hidden) {
-        return { label: "Memory", detail: "Kept as a negative signal; hidden games stay out of active picks.", tone: "finished" };
+        return { label: t("library.memory"), detail: t("library.nextDropped"), tone: "finished" };
       }
       return {
-        label: lane === "suggested" ? "Try later" : "Next",
-        detail: "Add access, progress, or rating when you know what this game means to you.",
+        label: lane === "suggested" ? t("library.tryLater") : t("library.next"),
+        detail: t("library.nextUnknown"),
         tone: lane,
       };
     }
@@ -419,11 +471,11 @@
 
     function memoryHint(game, index) {
       const gameState = effectiveGameState(game);
-      if (gameState) return USER_STATE_LABELS[gameState] || gameState;
-      if (notebookWishlistWeight(game.title)) return `${notebookWishlistWeight(game.title)} wishlist hearts`;
-      if (game.wishlist) return "Wishlist signal";
-      if (index === 0) return "Top tonight";
-      return `${game.session} session`;
+      if (gameState) return localizedState(gameState);
+      if (notebookWishlistWeight(game.title)) return t("library.wishlistHearts", { count: notebookWishlistWeight(game.title) });
+      if (game.wishlist) return t("library.wishlistSignal");
+      if (index === 0) return t("library.topTonight");
+      return t("library.factSession", { session: localizedSession(game.session) });
     }
 
     function libraryMemoryRecords(ranked) {
@@ -468,44 +520,52 @@
       return [
         resume
           ? {
-              label: "Continue", title: resume.game.title,
-              detail: `${USER_STATE_LABELS[resume.userGame.completionStatus]} / ${resume.game.session} session / ${Math.max(resume.score, 0)} fit.`,
-              actionLabel: resume.userGame.completionStatus === "want_to_finish" ? "Finish" : "Play",
+              label: t("library.dashboardContinue"), title: resume.game.title,
+              detail: t("library.dashboardContinueDetail", {
+                state: localizedState(resume.userGame.completionStatus),
+                session: localizedSession(resume.game.session),
+                fit: Math.max(resume.score, 0),
+              }),
+              actionLabel: resume.userGame.completionStatus === "want_to_finish" ? t("library.actionFinish") : t("library.actionPlay"),
               actionState: resume.userGame.completionStatus === "want_to_finish" ? "completed" : "playing",
               actionTitle: resume.game.title, tone: "play",
             }
           : access
             ? {
-                label: "Start", title: access.game.title,
-                detail: `${USER_STATE_LABELS[access.userGame.access]} / no purchase needed / ${Math.max(access.score, 0)} fit.`,
-                actionLabel: "Play", actionState: "playing", actionTitle: access.game.title, tone: "access",
+                label: t("library.dashboardStart"), title: access.game.title,
+                detail: t("library.dashboardStartDetail", {
+                  state: localizedState(access.userGame.access),
+                  session: localizedSession(access.game.session),
+                  fit: Math.max(access.score, 0),
+                }),
+                actionLabel: t("library.actionPlay"), actionState: "playing", actionTitle: access.game.title, tone: "access",
               }
             : {
-                label: "Start", title: "No active queue yet",
-                detail: "Mark a few games as owned, subscription, playing, or play later to make this section useful.",
-                actionLabel: "Discover", actionView: "discover", tone: "empty",
+                label: t("library.dashboardStart"), title: t("library.dashboardNoQueue"),
+                detail: t("library.dashboardNoQueueDetail"),
+                actionLabel: t("library.actionDiscover"), actionView: "discover", tone: "empty",
               },
         {
-          label: "No-spend",
-          title: access ? access.game.title : `${records.filter(({ userGame }) => ACCESS_STATES.includes(userGame.access)).length} access games`,
+          label: t("library.dashboardNoSpend"),
+          title: access ? access.game.title : t("library.dashboardAccessGames", { count: records.filter(({ userGame }) => ACCESS_STATES.includes(userGame.access)).length }),
           detail: access
-            ? `${USER_STATE_LABELS[access.userGame.access]} is the best library-first option before buying more.`
-            : "Connect/import a library or mark owned games to unlock purchase guardrails.",
-          actionLabel: access ? "Play" : "Taste",
+            ? t("library.dashboardAccessDetail", { state: localizedState(access.userGame.access) })
+            : t("library.dashboardNoAccessDetail"),
+          actionLabel: access ? t("library.actionPlay") : t("library.actionTaste"),
           actionState: access ? "playing" : "",
           actionTitle: access?.game.title || "",
           actionView: access ? "" : "taste",
           tone: "access",
         },
         {
-          label: "Wishlist", title: `${wishlistRecords.length} watched`,
-          detail: `${wishlistBuyable} inside budget now. Use Wishlist to buy, wait, or mark as already owned.`,
-          actionLabel: "Open", actionView: "wishlist", tone: "wishlist",
+          label: t("library.dashboardWishlist"), title: t("library.dashboardWatched", { count: wishlistRecords.length }),
+          detail: t("library.dashboardWishlistDetail", { count: wishlistBuyable }),
+          actionLabel: t("library.actionOpen"), actionView: "wishlist", tone: "wishlist",
         },
         {
-          label: "Taste memory", title: `${ratedCount} rated / ${completedCount} done`,
-          detail: `${activeCount} active queue items. More ratings make rank forecasts less hand-wavy.`,
-          actionLabel: "Refine", actionView: "taste", tone: "taste",
+          label: t("library.dashboardTaste"), title: t("library.dashboardRated", { rated: ratedCount, completed: completedCount }),
+          detail: t("library.dashboardTasteDetail", { count: activeCount }),
+          actionLabel: t("library.actionRefine"), actionView: "taste", tone: "taste",
         },
       ];
     }
@@ -540,14 +600,14 @@
     }
 
     function libraryFilterSummary(filter, visibleCount, totalCount) {
-      const copy = LIBRARY_QUEUE_FILTERS[filter] || LIBRARY_QUEUE_FILTERS.all;
-      return `${copy.label}: ${visibleCount}/${totalCount}. ${copy.summary}`;
+      const key = LIBRARY_QUEUE_FILTERS[filter] ? filter : "all";
+      return `${t(FILTER_KEYS[key][0])}: ${visibleCount}/${totalCount}. ${t(FILTER_KEYS[key][1])}`;
     }
 
     function queueLaneLabel(lane) {
-      if (lane === "queued") return "Play later";
-      if (lane === "suggested") return "Suggested";
-      return LIBRARY_QUEUE_FILTERS[lane]?.label || lane;
+      if (lane === "queued") return t("library.laneQueued");
+      if (lane === "suggested") return t("library.laneSuggested");
+      return LIBRARY_QUEUE_FILTERS[lane] ? t(FILTER_KEYS[lane][0]) : lane;
     }
 
     return {

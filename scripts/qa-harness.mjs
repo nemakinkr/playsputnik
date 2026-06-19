@@ -1290,7 +1290,7 @@ function checkSelectors() {
   assert(/function bestLibraryPick/.test(appLibrarySource), "Library-first primary pick is missing");
   assert(/function primaryDecisionGame/.test(appLibrarySource), "Primary decision game selector is missing");
   assert(/decisionRationale\(topGame\)/.test(appAnswerSource) && /decisionRationale\(topGame\)/.test(appLibrarySource), "Today and Library should share decision rationale");
-  assert(/library-first/.test(appLibrarySource + appAnswerSource + appSource), "Companion answer should expose library-first mode");
+  assert(/library-first/.test(appLibrarySource + appAnswerSource + appSource + i18nEnSource), "Companion answer should expose library-first mode");
   assert(/userGames/.test(appSource), "Normalized user-game memory store is missing");
   assert(/function effectiveUserGame/.test(appSource), "Effective user-game resolver is missing");
   assert(/src\/app-state\.js/.test(html) && /PlaySputnikState/.test(appSource), "State module is not wired into app.js");

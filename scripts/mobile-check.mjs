@@ -77,6 +77,14 @@ function scanInPage(MIN_TOUCH, locale) {
     setupPanel.classList.remove("is-open");
   }
 
+  try {
+    openAppView("library");
+    render();
+    renderMyGames(rankedGames());
+  } catch (e) {}
+  const libraryPlanTitle = (document.querySelector("#library-plan-title")?.textContent || "").trim();
+  const libraryGamesTitle = (document.querySelector("#my-games-title")?.textContent || "").trim();
+  const libraryDashboardLabel = (document.querySelector(".library-dashboard-card > span")?.textContent || "").trim();
   try { openAppView("today"); } catch (e) {}
   const answerTitle = (document.querySelector("#answer-copy .answer-main strong")?.textContent || "").trim();
   const evidenceLabel = (document.querySelector("#answer-copy .answer-evidence .evidence-row span")?.textContent || "").trim();
@@ -92,6 +100,9 @@ function scanInPage(MIN_TOUCH, locale) {
     firstRunVerdict,
     detailHeading,
     detailMove,
+    libraryPlanTitle,
+    libraryGamesTitle,
+    libraryDashboardLabel,
     overflow,
     cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
   });
@@ -120,6 +131,9 @@ export const gate = {
         firstRunVerdict: pass.firstRunVerdict || "",
         detailHeading: pass.detailHeading || "",
         detailMove: pass.detailMove || "",
+        libraryPlanTitle: pass.libraryPlanTitle || "",
+        libraryGamesTitle: pass.libraryGamesTitle || "",
+        libraryDashboardLabel: pass.libraryDashboardLabel || "",
       })),
     };
   },
@@ -145,6 +159,9 @@ export const gate = {
     const firstRunByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.firstRunVerdict]));
     const detailHeadingByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.detailHeading]));
     const detailMoveByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.detailMove]));
+    const libraryPlanByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.libraryPlanTitle]));
+    const libraryGamesByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.libraryGamesTitle]));
+    const libraryDashboardByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.libraryDashboardLabel]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
     const ruOk = /^(Сегодня я бы выбрал|Мне нужно)/.test(answerByLocale.ru || "");
     const evidenceEnOk = /[A-Za-z]/.test(evidenceByLocale.en || "") && !/[А-Яа-яЁё]/.test(evidenceByLocale.en || "");
@@ -153,25 +170,36 @@ export const gate = {
     const firstRunRuOk = firstRunByLocale.ru === "Что я понял";
     const detailEnOk = detailHeadingByLocale.en === "Why this pick" && detailMoveByLocale.en === "Next move";
     const detailRuOk = detailHeadingByLocale.ru === "Почему эта игра" && detailMoveByLocale.ru === "Следующий шаг";
+    const libraryEnOk = libraryPlanByLocale.en === "Library plan"
+      && libraryGamesByLocale.en === "My games"
+      && /^(Continue|Start)$/.test(libraryDashboardByLocale.en || "");
+    const libraryRuOk = libraryPlanByLocale.ru === "План библиотеки"
+      && libraryGamesByLocale.ru === "Мои игры"
+      && /^(Продолжить|Начать)$/.test(libraryDashboardByLocale.ru || "");
     const leakedKey = [
       ...Object.values(answerByLocale),
       ...Object.values(evidenceByLocale),
       ...Object.values(firstRunByLocale),
       ...Object.values(detailHeadingByLocale),
       ...Object.values(detailMoveByLocale),
+      ...Object.values(libraryPlanByLocale),
+      ...Object.values(libraryGamesByLocale),
+      ...Object.values(libraryDashboardByLocale),
     ]
-      .some((value) => /^narrative\./.test(value));
-    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || leakedKey) {
+      .some((value) => /^(narrative|library)\./.test(value));
+    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || leakedKey) {
       ok = false;
       lines.push("❌ Dynamic i18n answer narrative did not switch cleanly between EN and RU:");
       lines.push(`   - en title: "${answerByLocale.en || "missing"}"`);
       lines.push(`   - en evidence: "${evidenceByLocale.en || "missing"}"`);
       lines.push(`   - en first run: "${firstRunByLocale.en || "missing"}"`);
       lines.push(`   - en detail: "${detailHeadingByLocale.en || "missing"}" / "${detailMoveByLocale.en || "missing"}"`);
+      lines.push(`   - en library: "${libraryPlanByLocale.en || "missing"}" / "${libraryGamesByLocale.en || "missing"}" / "${libraryDashboardByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
       lines.push(`   - ru first run: "${firstRunByLocale.ru || "missing"}"`);
       lines.push(`   - ru detail: "${detailHeadingByLocale.ru || "missing"}" / "${detailMoveByLocale.ru || "missing"}"`);
+      lines.push(`   - ru library: "${libraryPlanByLocale.ru || "missing"}" / "${libraryGamesByLocale.ru || "missing"}" / "${libraryDashboardByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };

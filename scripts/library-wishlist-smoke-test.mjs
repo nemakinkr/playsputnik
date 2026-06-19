@@ -333,14 +333,14 @@ try {
   assert(library.filters >= 5, `Expected library filters, got ${library.filters}`);
   assert(library.activeFilter === "all", `Expected all library filter by default, got ${library.activeFilter}`);
   assert(libraryFiltered.activeFilter === "access", `Expected access library filter, got ${libraryFiltered.activeFilter}`);
-  assert(/Access:/.test(libraryFiltered.summary), "Expected access library filter summary to render");
-  assert(/Access: \d+\/\d+/.test(libraryFiltered.summary), "Expected access filter to report visible/total rows");
+  assert(/Access:|Доступные:/.test(libraryFiltered.summary), "Expected access library filter summary to render");
+  assert(/(?:Access|Доступные): \d+\/\d+/.test(libraryFiltered.summary), "Expected access filter to report visible/total rows");
   assert(library.myRows >= 4, `Expected My games rows after PSN demo, got ${library.myRows}`);
   assert(library.nextSteps >= library.myRows, `Expected next-step guidance for each My games row, got ${library.nextSteps}/${library.myRows}`);
-  assert(/Next|No-spend|Intent|Memory/.test(library.nextStepText), "Expected actionable next-step copy in Library rows");
+  assert(/Next|No-spend|Intent|Memory|Дальше|Без трат|Намерение|Память/.test(library.nextStepText), "Expected actionable next-step copy in Library rows");
   assert(library.quickActions >= library.myRows, `Expected compact quick actions for each My games row, got ${library.quickActions}/${library.myRows}`);
   assert(library.moreActions >= library.myRows, `Expected advanced state disclosure for each My games row, got ${library.moreActions}/${library.myRows}`);
-  assert(/No-spend|Wishlist|Taste memory/.test(library.dashboardText), "Library dashboard should expose product-level summaries");
+  assert(/No-spend|Wishlist|Taste memory|Без трат|Желаемое|Память вкуса/.test(library.dashboardText), "Library dashboard should expose product-level summaries");
   assert(wishlistBefore.activeView === "wishlist", `Expected Wishlist view, got ${wishlistBefore.activeView}`);
   assert(wishlistBefore.dashboardCards >= 3, `Expected wishlist dashboard cards, got ${wishlistBefore.dashboardCards}`);
   assert(wishlistBefore.filters >= 5, `Expected wishlist filters, got ${wishlistBefore.filters}`);

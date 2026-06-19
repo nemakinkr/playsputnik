@@ -3312,6 +3312,57 @@ function renderFirstValueReceipt(ranked) {
   );
 }
 
+function libraryStateLabel(value) {
+  const keys = {
+    later: "library.stateLater", saved: "library.stateSaved", want_to_finish: "library.stateFinish",
+    paused: "library.statePaused", owned: "library.stateOwned", owned_forever: "library.stateForever",
+    subscription: "library.stateSubscription", playing: "library.statePlaying", completed: "library.stateCompleted",
+    dropped: "library.stateDropped", hidden: "library.stateHidden",
+  };
+  return keys[value] ? t(keys[value]) : value;
+}
+
+function librarySessionLabel(value) {
+  const keys = {
+    short: "narrative.recommend.sessionShort",
+    medium: "narrative.recommend.sessionMedium",
+    long: "narrative.recommend.sessionLong",
+  };
+  return keys[value] ? t(keys[value]) : value;
+}
+
+function libraryAdultFitLabel(value) {
+  const keys = {
+    anytime: "narrative.recommend.adultAnytime", background: "narrative.recommend.adultBackground",
+    evening: "narrative.recommend.adultEvening", vacation: "narrative.recommend.adultVacation",
+    weekend: "narrative.recommend.adultWeekend", weeknight: "narrative.recommend.adultWeeknight",
+  };
+  return keys[value] ? t(keys[value]) : value;
+}
+
+function localizedConfidence(value) {
+  const key = {
+    low: "narrative.common.confidenceLow",
+    medium: "narrative.common.confidenceMedium",
+    high: "narrative.common.confidenceHigh",
+  }[String(value).toLowerCase()];
+  return key ? t(key) : value;
+}
+
+function libraryActionGroupLabel(index) {
+  return t(["library.groupPlay", "library.groupAccess", "library.groupOutcome"][index] || "library.groupOutcome");
+}
+
+function libraryMemoryActionLabel(memoryState) {
+  const keys = {
+    playing: "library.statePlaying", paused: "library.actionPause", want_to_finish: "library.actionFinish",
+    saved: "library.actionWishlist", owned: "library.actionOwned", owned_forever: "library.actionForever",
+    subscription: "library.actionPlus", completed: "library.actionDone", dropped: "library.actionDrop",
+    hidden: "library.actionNo", "": "library.actionClear",
+  };
+  return t(keys[memoryState] || "library.actionClear");
+}
+
 function renderLibrary() {
   const pool = recommendationPool();
   const buckets = {
@@ -3353,15 +3404,15 @@ function renderLibrary() {
     "hidden",
   ];
   const total = visibleBuckets.reduce((sum, key) => sum + buckets[key].length, 0);
-  els.librarySummary.textContent = `${total} states`;
+  els.librarySummary.textContent = t("library.states", { count: total });
   els.libraryGrid.replaceChildren(
     ...visibleBuckets.map((key) => {
       const item = document.createElement("div");
       item.className = `library-bucket state-${stateClassName(key)} ${buckets[key].length ? "has-items" : "is-empty"}`;
       const names = buckets[key].slice(0, 5);
       item.innerHTML = `
-        <strong>${USER_STATE_LABELS[key]} (${buckets[key].length})</strong>
-        ${names.length ? names.map((name) => `<span>${name}</span>`).join("") : "<span>Empty</span>"}
+        <strong>${libraryStateLabel(key)} (${buckets[key].length})</strong>
+        ${names.length ? names.map((name) => `<span>${name}</span>`).join("") : `<span>${t("library.empty")}</span>`}
       `;
       return item;
     }),
@@ -3388,8 +3439,11 @@ function renderCompanionPlan(ranked) {
 }
 function renderLibraryPlan(ranked) {
   const plan = libraryPlan(ranked);
-  els.libraryPlanSummary.textContent =
-    `${plan.playableCount} playable / ${plan.completedCount} done / ${plan.savedCount} saved`;
+  els.libraryPlanSummary.textContent = t("library.planSummary", {
+    playable: plan.playableCount,
+    completed: plan.completedCount,
+    saved: plan.savedCount,
+  });
 
   els.libraryPlanList.replaceChildren(
     ...plan.rows.map((item) => {
@@ -3435,27 +3489,38 @@ function renderLibraryPlan(ranked) {
 }
 function renderTasteMemory() {
   const memory = tasteMemory();
-  els.memoryStatus.textContent = `${memory.confidence} confidence / ${memory.evidenceCount} signals`;
+  els.memoryStatus.textContent = t("library.confidence", {
+    confidence: localizedConfidence(memory.confidence),
+    count: memory.evidenceCount,
+  });
   const cards = [
     {
-      label: "Likes",
-      value: memory.likes.length ? memory.likes.map((item) => item.label).join(" + ") : "story + action",
-      sub: "Taste signals",
+      label: t("library.memoryLikes"),
+      value: memory.likes.length ? memory.likes.map((item) => item.label).join(" + ") : t("library.memoryStoryAction"),
+      sub: t("library.memoryTasteSignals"),
     },
     {
-      label: "Careful with",
-      value: memory.cautions.length ? memory.cautions.map((item) => item.label).join(" + ") : "none yet",
-      sub: memory.mixed.length ? `Mixed: ${memory.mixed.slice(0, 2).join(" / ")}` : memory.feedbackCount ? `${memory.feedbackCount} button signals` : "Negative or weak signals",
+      label: t("library.memoryCareful"),
+      value: memory.cautions.length ? memory.cautions.map((item) => item.label).join(" + ") : t("library.memoryNone"),
+      sub: memory.mixed.length
+        ? t("library.memoryMixed", { signals: memory.mixed.slice(0, 2).join(" / ") })
+        : memory.feedbackCount
+          ? t("library.memoryButtons", { count: memory.feedbackCount })
+          : t("library.memoryWeak"),
     },
     {
-      label: "Session shape",
-      value: memory.session.length ? memory.session.map((item) => item.label).join(" / ") : state.session,
-      sub: "Likely play window",
+      label: t("library.memorySession"),
+      value: memory.session.length
+        ? memory.session.map((item) => librarySessionLabel(item.label)).join(" / ")
+        : librarySessionLabel(state.session),
+      sub: t("library.memoryPlayWindow"),
     },
     {
-      label: "Adult fit",
-      value: memory.timeFit.length ? memory.timeFit.map((item) => item.label).join(" / ") : "weeknight",
-      sub: "When it fits life",
+      label: t("library.memoryAdult"),
+      value: memory.timeFit.length
+        ? memory.timeFit.map((item) => libraryAdultFitLabel(item.label)).join(" / ")
+        : libraryAdultFitLabel("weeknight"),
+      sub: t("library.memoryLifeFit"),
     },
   ];
   els.memoryGrid.replaceChildren(
@@ -3510,16 +3575,16 @@ function renderQueuedGame(item, lane = "queued") {
       <div class="my-game-title-line">
         <strong>${item.title}</strong>
         <span class="queue-lane tone-${lane}">${queueLaneLabel(lane)}</span>
-        <button class="queue-detail-button" data-queue-detail type="button">Details</button>
+        <button class="queue-detail-button" data-queue-detail type="button">${t("library.details")}</button>
       </div>
-      <span>Play later / ${item.source} / ${item.detail}</span>
-      <div class="facts">${atoms}<span class="fact access">queued</span></div>
+      <span>${t("library.queuedLine", { source: item.source, detail: item.detail })}</span>
+      <div class="facts">${atoms}<span class="fact access">${t("library.queued")}</span></div>
     </div>
     <div class="my-game-actions">
-      <button data-queue-action="playing" type="button">Playing</button>
-      <button data-queue-action="completed" type="button">Done</button>
-      <button data-queue-action="not_for_me" type="button">No</button>
-      <button data-queue-action="" type="button">Clear</button>
+      <button data-queue-action="playing" type="button">${t("library.statePlaying")}</button>
+      <button data-queue-action="completed" type="button">${t("library.actionDone")}</button>
+      <button data-queue-action="not_for_me" type="button">${t("library.actionNo")}</button>
+      <button data-queue-action="" type="button">${t("library.actionClear")}</button>
     </div>
   `;
   row.querySelector("[data-queue-detail]").addEventListener("click", () => openGameDetail(item.title));
@@ -3618,40 +3683,44 @@ function renderMyGames(ranked) {
   const allRows = [...queuedRows, ...candidateRows];
   const visibleRows = allRows.filter((item) => libraryFilterMatches(item.lane, activeFilter));
 
-  els.myGamesSummary.textContent = `${remembered + queued.length} remembered / ${visibleRows.length}/${allRows.length} shown`;
+  els.myGamesSummary.textContent = t("library.rememberedSummary", {
+    remembered: remembered + queued.length,
+    visible: visibleRows.length,
+    total: allRows.length,
+  });
   els.myGamesFilterSummary.textContent = libraryFilterSummary(activeFilter, visibleRows.length, allRows.length);
   renderFilterButtons(els.libraryFilterButtons, activeFilter, "libraryFilter");
   renderLibraryDashboard(ranked);
   els.myGamesList.replaceChildren(
     ...(visibleRows.length
       ? visibleRows.map((item) => (item.type === "queued" ? renderQueuedGame(item.item, item.lane) : renderMyGameRow(item.game, item.index, item.lane)))
-      : [createQueueEmpty("Nothing in this lane yet", "Change the filter or mark a few games as active, owned, saved, or finished.")]),
+      : [createQueueEmpty(t("library.emptyLaneTitle"), t("library.emptyLaneDetail"))]),
   );
 }
 
 function libraryQuickActions(game, userGame, lane) {
   if (userGame.completionStatus === "want_to_finish") {
-    return [["playing", "Start"], ["completed", "Done"], ["paused", "Pause"]];
+    return [["playing", t("library.actionStart")], ["completed", t("library.actionDone")], ["paused", t("library.actionPause")]];
   }
   if (userGame.completionStatus === "playing") {
-    return [["completed", "Done"], ["paused", "Pause"], ["dropped", "Drop"]];
+    return [["completed", t("library.actionDone")], ["paused", t("library.actionPause")], ["dropped", t("library.actionDrop")]];
   }
   if (userGame.completionStatus === "paused") {
-    return [["playing", "Resume"], ["want_to_finish", "Finish"], ["dropped", "Drop"]];
+    return [["playing", t("library.actionResume")], ["want_to_finish", t("library.actionFinish")], ["dropped", t("library.actionDrop")]];
   }
   if (["completed", "dropped"].includes(userGame.completionStatus) || userGame.hidden) {
-    return [["playing", "Replay"], ["saved", "Wishlist"], ["", "Clear"]];
+    return [["playing", t("library.actionReplay")], ["saved", t("library.actionWishlist")], ["", t("library.actionClear")]];
   }
   if (userGame.access) {
-    return [["playing", "Play"], ["want_to_finish", "Finish"], ["saved", "Wishlist"]];
+    return [["playing", t("library.actionPlay")], ["want_to_finish", t("library.actionFinish")], ["saved", t("library.actionWishlist")]];
   }
   if (userGame.saved || game.wishlist || notebookWishlistWeight(game.title)) {
-    return [["owned_forever", "Bought"], ["playing", "Start"], ["", "Clear"]];
+    return [["owned_forever", t("library.actionBought")], ["playing", t("library.actionStart")], ["", t("library.actionClear")]];
   }
   if (lane === "suggested") {
-    return [["saved", "Wishlist"], ["owned", "Owned"], ["subscription", "Plus"]];
+    return [["saved", t("library.actionWishlist")], ["owned", t("library.actionOwned")], ["subscription", t("library.actionPlus")]];
   }
-  return [["playing", "Play"], ["saved", "Wishlist"], ["", "Clear"]];
+  return [["playing", t("library.actionPlay")], ["saved", t("library.actionWishlist")], ["", t("library.actionClear")]];
 }
 
 function renderMyGameRow(game, index, lane = "suggested") {
@@ -3672,22 +3741,22 @@ function renderMyGameRow(game, index, lane = "suggested") {
         .join("");
       const sourcePassport = game.externalMeta ? sourcePassportHtml(gameSourcePassport(game), "compact") : "";
       const enrichment = game.externalMeta ? aiEnrichmentHtml(game, "compact") : "";
-      const actionGroups = MEMORY_STATE_GROUPS.map((group) => `
+      const actionGroups = MEMORY_STATE_GROUPS.map((group, groupIndex) => `
           <div class="my-game-action-group">
-            <span>${group.label}</span>
+            <span>${libraryActionGroupLabel(groupIndex)}</span>
             <div class="my-game-action-buttons">
-              ${group.actions.map(([memoryState, label]) => `
-                <button class="${isMemoryStateSelected(userGame, memoryState) ? "is-selected" : ""}" data-memory-state="${memoryState}" type="button">${label}</button>
+              ${group.actions.map(([memoryState]) => `
+                <button class="${isMemoryStateSelected(userGame, memoryState) ? "is-selected" : ""}" data-memory-state="${memoryState}" type="button">${libraryMemoryActionLabel(memoryState)}</button>
               `).join("")}
             </div>
           </div>
         `).join("");
       const ratingGroup = `
         <div class="my-game-action-group rating-actions">
-          <span>Rating</span>
+          <span>${t("library.facetRating")}</span>
           <div class="my-game-action-buttons">
             ${RATING_ACTIONS.map(([rating, label]) => `
-              <button class="${userGame.rating === rating ? "is-selected" : ""}" data-memory-rating="${rating}" type="button">${label}</button>
+              <button class="${userGame.rating === rating ? "is-selected" : ""}" data-memory-rating="${rating}" type="button">${rating === "" ? t("library.actionClear") : label}</button>
             `).join("")}
           </div>
         </div>
@@ -3697,7 +3766,7 @@ function renderMyGameRow(game, index, lane = "suggested") {
           <div class="my-game-title-line">
             <strong>${game.title}</strong>
             <span class="queue-lane tone-${lane}">${queueLaneLabel(lane)}</span>
-            <button class="queue-detail-button" data-memory-detail type="button">Details</button>
+            <button class="queue-detail-button" data-memory-detail type="button">${t("library.details")}</button>
           </div>
           <span>${memoryHint(game, index)} / ${game.vibe}</span>
           <div class="my-game-facets">${facets}</div>
@@ -3710,13 +3779,13 @@ function renderMyGameRow(game, index, lane = "suggested") {
           ${enrichment}
         </div>
         <div class="my-game-actions">
-          <div class="my-game-quick-actions" aria-label="${game.title} quick actions">
+          <div class="my-game-quick-actions" aria-label="${t("library.quickActionsAria", { title: game.title })}">
             ${quickActions.map(([memoryState, label]) => `
               <button class="${isMemoryStateSelected(userGame, memoryState) ? "is-selected" : ""}" data-memory-state="${memoryState}" type="button">${label}</button>
             `).join("")}
           </div>
           <details class="my-game-more-actions">
-            <summary>More states</summary>
+            <summary>${t("library.moreStates")}</summary>
             <div class="my-game-action-matrix">
               ${actionGroups}
               ${ratingGroup}
