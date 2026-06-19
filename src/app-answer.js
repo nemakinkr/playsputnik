@@ -9,6 +9,23 @@
     QUICK_TASTE_USABLE_TARGET,
     QUICK_TASTE_SHARP_TARGET,
   } = window.PlaySputnikConfig;
+  const SESSION_KEYS = {
+    short: "narrative.recommend.sessionShort",
+    medium: "narrative.recommend.sessionMedium",
+    long: "narrative.recommend.sessionLong",
+  };
+  const STATE_KEYS = {
+    owned: "narrative.recommend.stateOwned",
+    owned_forever: "narrative.recommend.stateForever",
+    subscription: "narrative.recommend.stateSubscription",
+    playing: "narrative.recommend.statePlaying",
+    paused: "narrative.recommend.statePaused",
+    want_to_finish: "narrative.recommend.stateFinish",
+    completed: "narrative.recommend.stateCompleted",
+    dropped: "narrative.recommend.stateDropped",
+    saved: "narrative.recommend.stateSaved",
+    hidden: "narrative.recommend.stateHidden",
+  };
 
   function createAnswerTools({
     getState,
@@ -538,16 +555,19 @@
       const tasteAtoms = topEntries(countValues([...getSelectedAtoms(), ...importedAtoms]), 3);
       const tasteLine = tasteAtoms.length
         ? tasteAtoms.map((item) => item.label).join(" + ")
-        : "early taste";
+        : t("taste.receiptEarlyTaste");
       const cards = [];
       const hasReceiptTitle = (title) => cards.some((card) => titleMatches(card.title, title));
 
       if (topGame) {
         cards.push({
-          label: getIsLibraryFirstMode(topGame) ? "Play from library" : "Play tonight",
+          label: t(getIsLibraryFirstMode(topGame) ? "taste.receiptLibrary" : "taste.receiptTonight"),
           title: topGame.title,
-          detail: `${topGame.session} session / ${explain(topGame, topGame.score).confidence} confidence`,
-          action: "Play now",
+          detail: t("taste.receiptGameDetail", {
+            session: t(SESSION_KEYS[topGame.session] || SESSION_KEYS.medium),
+            confidence: explain(topGame, topGame.score).confidence,
+          }),
+          action: t("taste.receiptPlayNow"),
           stateAction: "playing",
           gameTitle: topGame.title,
         });
@@ -556,18 +576,20 @@
       if (accessGame) {
         const access = effectiveGameState(accessGame) || "PS Plus signal";
         cards.push({
-          label: "Use access",
+          label: t("taste.receiptUseAccess"),
           title: accessGame.title,
-          detail: `${access}. Try what is already available before buying more.`,
-          action: "Mark playing",
+          detail: t("taste.receiptAccessDetail", { access: t(STATE_KEYS[access] || "narrative.recommend.plusSignal") }),
+          action: t("taste.receiptMarkPlaying"),
           stateAction: "playing",
           gameTitle: accessGame.title,
         });
       } else if (guardedGame) {
         cards.push({
-          label: "Do not buy",
+          label: t("taste.receiptDoNotBuy"),
           title: guardedGame.title,
-          detail: `Already ${effectiveGameState(guardedGame)} in your memory.`,
+          detail: t("taste.receiptAlready", {
+            state: t(STATE_KEYS[effectiveGameState(guardedGame)] || "narrative.recommend.stateSaved"),
+          }),
           action: "",
         });
       }
@@ -575,17 +597,21 @@
       if (buyLater && !hasReceiptTitle(buyLater.title)) {
         const status = priceStatus(buyLater, region);
         cards.push({
-          label: "Buy later",
+          label: t("taste.receiptBuyLater"),
           title: buyLater.title,
-          detail: `${region} ${formatPrice(buyLater, region)} / ${status.canConfirm ? "fresh" : "verify"} price signal.`,
+          detail: t("taste.receiptPrice", {
+            region,
+            price: formatPrice(buyLater, region),
+            freshness: t(status.canConfirm ? "taste.receiptFresh" : "taste.receiptVerify"),
+          }),
           action: "",
         });
       }
 
       cards.push({
-        label: "Taste learned",
+        label: t("taste.receiptLearned"),
         title: tasteLine,
-        detail: `${memory.confidence} confidence from ${memory.evidenceCount} signals.`,
+        detail: t("taste.receiptConfidence", { confidence: memory.confidence, count: memory.evidenceCount }),
         action: "",
       });
 

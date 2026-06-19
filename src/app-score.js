@@ -1,4 +1,18 @@
 (() => {
+  const t = window.PlaySputnikI18n?.t || ((key) => key);
+  const FEEDBACK_ACTION_KEYS = {
+    playing: "taste.actionPlaying", want_to_finish: "taste.actionFinish", paused: "taste.actionPaused",
+    completed: "taste.actionCompleted", good_fit: "taste.actionLiked", saved: "taste.actionSaved",
+    owned: "taste.actionOwned", owned_forever: "taste.actionForever", subscription: "taste.actionPlus",
+    dropped: "taste.actionDropped", hidden: "taste.actionHidden",
+    quick_loved: "taste.actionQuickLoved", quick_played: "taste.actionQuickPlayed",
+    quick_not_for_me: "taste.actionQuickRejected", rated_5: "taste.actionRated5",
+    rated_4: "taste.actionRated4", rated_3: "taste.actionRated3", rated_2: "taste.actionRated2",
+    rated_1: "taste.actionRated1", rating_cleared: "taste.actionRatingCleared",
+    quick_clear: "taste.actionQuickCleared", drop_play_later: "taste.actionDropLater",
+    drop_not_for_me: "taste.actionDropRejected", drop_claim_only: "taste.actionClaimOnly",
+    not_for_me: "taste.actionHidden",
+  };
   function createScoreTools({
     getState,
     getProfileGames,
@@ -58,42 +72,16 @@
     }
 
     function feedbackActionLabel(action) {
-      return {
-        playing: "started playing",
-        want_to_finish: "wants to finish",
-        paused: "paused",
-        completed: "finished",
-        good_fit: "liked",
-        saved: "saved",
-        owned: "owns",
-        owned_forever: "owns forever",
-        subscription: "has in Plus",
-        dropped: "dropped",
-        hidden: "not for me",
-        quick_loved: "loved in quick check",
-        quick_played: "played in quick check",
-        quick_not_for_me: "rejected in quick check",
-        rated_5: "rated 5/5 sputniks",
-        rated_4: "rated 4/5 sputniks",
-        rated_3: "rated 3/5 sputniks",
-        rated_2: "rated 2/5 sputniks",
-        rated_1: "rated 1/5 sputniks",
-        rating_cleared: "cleared rating",
-        quick_clear: "cleared quick check",
-        drop_play_later: "saved for later",
-        drop_not_for_me: "rejected drop pick",
-        drop_claim_only: "claim only",
-        not_for_me: "not for me",
-      }[action] || action.replaceAll("_", " ");
+      return FEEDBACK_ACTION_KEYS[action] ? t(FEEDBACK_ACTION_KEYS[action]) : action.replaceAll("_", " ");
     }
 
     function feedbackEffectLabel(action) {
       const weight = feedbackWeightForAction(action);
-      if (weight > 1) return "boosted";
-      if (weight > 0) return "nudged";
-      if (weight < -1) return "reduced";
-      if (weight < 0) return "soft reduced";
-      return "noted";
+      if (weight > 1) return t("taste.effectBoosted");
+      if (weight > 0) return t("taste.effectNudged");
+      if (weight < -1) return t("taste.effectReduced");
+      if (weight < 0) return t("taste.effectSoftReduced");
+      return t("taste.effectNoted");
     }
 
     function addTasteWeight(weights, signal, value) {

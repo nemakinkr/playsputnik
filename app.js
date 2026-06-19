@@ -3293,7 +3293,10 @@ function renderBacklogAmnesty(ranked) {
 function renderFirstValueReceipt(ranked) {
   const cards = firstValueReceipt(ranked);
   const memory = tasteMemory();
-  els.receiptSummary.textContent = `${entryLabel()} / ${memory.confidence} confidence`;
+  els.receiptSummary.textContent = t("taste.proofStatus", {
+    entry: entryLabel(),
+    confidence: localizedConfidence(memory.confidence),
+  });
   els.receiptGrid.replaceChildren(
     ...cards.map((card) => {
       const item = document.createElement("div");
@@ -3545,11 +3548,13 @@ function renderTasteMemory() {
 }
 function renderRecentLearning() {
   const events = recentLearningEvents();
-  els.learningStatus.textContent = events.length ? `${events.length} fresh signals` : "No button signals";
+  els.learningStatus.textContent = events.length
+    ? t("taste.learningFresh", { count: events.length })
+    : t("taste.learningNone");
   if (!events.length) {
     const empty = document.createElement("div");
     empty.className = "learning-empty";
-    empty.textContent = "Use Play now, Done, Not for me, or Play later to teach the companion.";
+    empty.textContent = t("taste.learningEmpty");
     els.learningList.replaceChildren(empty);
     return;
   }
@@ -3562,7 +3567,11 @@ function renderRecentLearning() {
         <span class="learning-effect">${event.effect}</span>
         <div>
           <strong>${event.title}</strong>
-          <p>${event.actionLabel} -> ${event.effect} ${event.atoms.join(" + ") || "taste"}.</p>
+          <p>${t("taste.learningLine", {
+            action: event.actionLabel,
+            effect: event.effect,
+            signals: event.atoms.join(" + ") || t("taste.learningTaste"),
+          })}</p>
           <div class="facts">${atoms}</div>
         </div>
       `;
@@ -5874,7 +5883,11 @@ function tasteShareSummary(payload) {
     .slice(0, 3)
     .map(([k]) => k)
     .join(", ");
-  return `${atomCount} atom weights · ${reactionCount} game reactions${topAtoms ? ` · loves ${topAtoms}` : ""}`;
+  return t("taste.shareSummary", {
+    atoms: atomCount,
+    reactions: reactionCount,
+    top: topAtoms ? t("taste.shareTop", { atoms: topAtoms }) : "",
+  });
 }
 
 function mergeTastePayload(payload) {
@@ -5903,7 +5916,7 @@ els.tasteShareBtn.addEventListener("click", () => {
   els.tasteShareUrl.textContent = url;
   els.tasteShareUrl.style.display = "";
   els.tasteShareCopy.style.display = "";
-  els.tasteShareStatus.textContent = "Link ready";
+  els.tasteShareStatus.textContent = t("taste.shareReady");
   setTimeout(() => { els.tasteShareStatus.textContent = ""; }, 3000);
 });
 
@@ -5912,9 +5925,9 @@ els.tasteShareCopy.addEventListener("click", async () => {
   const url = els.tasteShareUrl.textContent;
   try {
     await navigator.clipboard.writeText(url);
-    els.tasteShareStatus.textContent = "Copied ✓";
+    els.tasteShareStatus.textContent = `${t("taste.shareCopied")} ✓`;
   } catch {
-    els.tasteShareStatus.textContent = "Select the link and copy manually";
+    els.tasteShareStatus.textContent = t("taste.shareManual");
   }
   setTimeout(() => { els.tasteShareStatus.textContent = ""; }, 3000);
 });
@@ -5926,8 +5939,11 @@ els.tasteShareCopy.addEventListener("click", async () => {
   if (!encoded) return;
   const payload = decodeTastePayload(encoded);
   if (!payload || payload.v !== TASTE_SHARE_VERSION) return;
-  const summary = tasteShareSummary(payload);
-  els.tasteImportBannerDesc.textContent = summary;
+  const renderImportSummary = () => {
+    els.tasteImportBannerDesc.textContent = tasteShareSummary(payload);
+  };
+  renderImportSummary();
+  window.PlaySputnikI18n.onLocaleChange(renderImportSummary);
   els.tasteImportBanner.style.display = "";
   els.tasteImportConfirm.addEventListener("click", () => {
     mergeTastePayload(payload);
@@ -5936,7 +5952,7 @@ els.tasteShareCopy.addEventListener("click", async () => {
     const clean = new URL(window.location.href);
     clean.searchParams.delete(TASTE_SHARE_PARAM);
     history.replaceState(null, "", clean.toString());
-    els.tasteShareStatus.textContent = "Taste merged ✓";
+    els.tasteShareStatus.textContent = `${t("taste.importMerged")} ✓`;
     setTimeout(() => { els.tasteShareStatus.textContent = ""; }, 4000);
   });
   els.tasteImportDismiss.addEventListener("click", () => {

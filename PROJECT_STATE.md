@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v39 (cache-first static / network-first data), **disabled on
+- Service worker v40 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -42,11 +42,11 @@ reviews, catalogs, sale pages, and announcements.
   forecast, evidence, and risk rationale. The complete first-run payoff is
   localized too: readiness, verdict, proof, next steps, and journey actions.
 - Phase 5 localization includes the complete game-detail decision cockpit,
-  Library, Wishlist, and Discover workflows. Global search, source honesty,
-  search-to-memory actions, visual catalog shelves/filters/sorts, cover states,
-  radar shell, and subscription-drop controls now switch between EN/RU. A
-  seeded mobile browser gate verifies dynamic Library, Wishlist, and Discover
-  copy in both locales; editorial game descriptions remain a Phase 6 concern.
+  Library, Wishlist, Discover, and Taste workflows. Taste covers the 30-second
+  proof, recent learning events, feedback effects/actions, and profile
+  share/import. A seeded mobile browser gate verifies dynamic Library,
+  Wishlist, Discover, and Taste copy in both locales; editorial game
+  descriptions remain a Phase 6 concern.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;

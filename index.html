@@ -357,8 +357,8 @@
 
         <section class="receipt-panel" aria-labelledby="receipt-title" data-view-section="today taste">
           <div class="section-heading">
-            <h2 id="receipt-title">30-sec proof</h2>
-            <span id="receipt-summary">Loading</span>
+            <h2 id="receipt-title" data-i18n="taste.proofTitle">30-sec proof</h2>
+            <span id="receipt-summary" data-i18n="taste.loading">Loading</span>
           </div>
           <div class="receipt-grid" id="receipt-grid"></div>
         </section>
@@ -389,32 +389,32 @@
 
         <section class="learning-panel" aria-labelledby="learning-title" data-view-section="taste">
           <div class="section-heading">
-            <h2 id="learning-title">Recently learned</h2>
-            <span id="learning-status">Waiting</span>
+            <h2 id="learning-title" data-i18n="taste.learningTitle">Recently learned</h2>
+            <span id="learning-status" data-i18n="taste.learningWaiting">Waiting</span>
           </div>
           <div id="learning-list"></div>
         </section>
 
         <section class="taste-share-panel" aria-labelledby="taste-share-title" data-view-section="taste" id="taste-share-panel">
           <div class="section-heading">
-            <h2 id="taste-share-title">Share taste</h2>
+            <h2 id="taste-share-title" data-i18n="taste.shareTitle">Share taste</h2>
             <span id="taste-share-status"></span>
           </div>
-          <p class="panel-note">Generate a link that encodes your atom weights and top reactions — a friend can import it to see what you'd both enjoy.</p>
+          <p class="panel-note" data-i18n="taste.shareNote">Generate a link that encodes your atom weights and top reactions — a friend can import it to see what you'd both enjoy.</p>
           <div class="taste-share-actions">
-            <button class="secondary-action" id="taste-share-btn" type="button">Generate share link</button>
-            <button class="secondary-action" id="taste-share-copy" type="button" style="display:none">Copy link</button>
+            <button class="secondary-action" id="taste-share-btn" type="button" data-i18n="taste.shareGenerate">Generate share link</button>
+            <button class="secondary-action" id="taste-share-copy" type="button" style="display:none" data-i18n="taste.shareCopy">Copy link</button>
           </div>
           <div class="taste-share-url" id="taste-share-url" style="display:none"></div>
         </section>
 
         <section class="taste-import-banner" id="taste-import-banner" style="display:none" aria-live="polite">
           <div class="taste-import-banner-body">
-            <strong id="taste-import-banner-title">Someone shared their taste with you</strong>
+            <strong id="taste-import-banner-title" data-i18n="taste.importTitle">Someone shared their taste with you</strong>
             <span id="taste-import-banner-desc"></span>
             <div class="taste-import-banner-actions">
-              <button class="primary-action" id="taste-import-confirm" type="button">Merge into my profile</button>
-              <button class="secondary-action" id="taste-import-dismiss" type="button">Dismiss</button>
+              <button class="primary-action" id="taste-import-confirm" type="button" data-i18n="taste.importConfirm">Merge into my profile</button>
+              <button class="secondary-action" id="taste-import-dismiss" type="button" data-i18n="taste.importDismiss">Dismiss</button>
             </div>
           </div>
         </section>

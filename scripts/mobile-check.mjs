@@ -105,6 +105,16 @@ function scanInPage(MIN_TOUCH, locale) {
   const discoverMemoryLabel = (document.querySelector("[data-search-memory-panel] strong")?.textContent || "").trim();
   const discoverCatalogTitle = (document.querySelector("#visual-catalog-title")?.textContent || "").trim();
   const discoverMetricLabel = (document.querySelector("#visual-catalog-metrics span")?.textContent || "").trim();
+  try {
+    openAppView("taste");
+    render();
+    renderRecentLearning();
+    renderFirstValueReceipt(rankedGames());
+  } catch (e) {}
+  const tasteLearningTitle = (document.querySelector("#learning-title")?.textContent || "").trim();
+  const tasteLearningStatus = (document.querySelector("#learning-status")?.textContent || "").trim();
+  const tasteShareTitle = (document.querySelector("#taste-share-title")?.textContent || "").trim();
+  const tasteReceiptLabel = (document.querySelector(".receipt-card > span")?.textContent || "").trim();
   try { openAppView("today"); } catch (e) {}
   const answerTitle = (document.querySelector("#answer-copy .answer-main strong")?.textContent || "").trim();
   const evidenceLabel = (document.querySelector("#answer-copy .answer-evidence .evidence-row span")?.textContent || "").trim();
@@ -130,6 +140,10 @@ function scanInPage(MIN_TOUCH, locale) {
     discoverMemoryLabel,
     discoverCatalogTitle,
     discoverMetricLabel,
+    tasteLearningTitle,
+    tasteLearningStatus,
+    tasteShareTitle,
+    tasteReceiptLabel,
     overflow,
     cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
   });
@@ -168,6 +182,10 @@ export const gate = {
         discoverMemoryLabel: pass.discoverMemoryLabel || "",
         discoverCatalogTitle: pass.discoverCatalogTitle || "",
         discoverMetricLabel: pass.discoverMetricLabel || "",
+        tasteLearningTitle: pass.tasteLearningTitle || "",
+        tasteLearningStatus: pass.tasteLearningStatus || "",
+        tasteShareTitle: pass.tasteShareTitle || "",
+        tasteReceiptLabel: pass.tasteReceiptLabel || "",
       })),
     };
   },
@@ -203,6 +221,10 @@ export const gate = {
     const discoverMemoryByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.discoverMemoryLabel]));
     const discoverCatalogByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.discoverCatalogTitle]));
     const discoverMetricByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.discoverMetricLabel]));
+    const tasteLearningByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.tasteLearningTitle]));
+    const tasteStatusByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.tasteLearningStatus]));
+    const tasteShareByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.tasteShareTitle]));
+    const tasteReceiptByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.tasteReceiptLabel]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
     const ruOk = /^(Сегодня я бы выбрал|Мне нужно)/.test(answerByLocale.ru || "");
     const evidenceEnOk = /[A-Za-z]/.test(evidenceByLocale.en || "") && !/[А-Яа-яЁё]/.test(evidenceByLocale.en || "");
@@ -231,6 +253,14 @@ export const gate = {
       && /^(Можно добавить|Добавлено в Желаемое|Добавлено в Библиотеку|Добавлен доступ Plus)$/.test(discoverMemoryByLocale.ru || "")
       && discoverCatalogByLocale.ru === "Каталог игр"
       && discoverMetricByLocale.ru === "обложек";
+    const tasteEnOk = tasteLearningByLocale.en === "Recently learned"
+      && /signal/i.test(tasteStatusByLocale.en || "")
+      && tasteShareByLocale.en === "Share taste"
+      && /^(Play from Library|Play tonight)$/.test(tasteReceiptByLocale.en || "");
+    const tasteRuOk = tasteLearningByLocale.ru === "Что изучено недавно"
+      && /сигнал/i.test(tasteStatusByLocale.ru || "")
+      && tasteShareByLocale.ru === "Поделиться вкусом"
+      && /^(Играть из Библиотеки|Играть сегодня)$/.test(tasteReceiptByLocale.ru || "");
     const leakedKey = [
       ...Object.values(answerByLocale),
       ...Object.values(evidenceByLocale),
@@ -247,9 +277,13 @@ export const gate = {
       ...Object.values(discoverMemoryByLocale),
       ...Object.values(discoverCatalogByLocale),
       ...Object.values(discoverMetricByLocale),
+      ...Object.values(tasteLearningByLocale),
+      ...Object.values(tasteStatusByLocale),
+      ...Object.values(tasteShareByLocale),
+      ...Object.values(tasteReceiptByLocale),
     ]
-      .some((value) => /^(narrative|library|wishlist|discover)\./.test(value));
-    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || !wishlistEnOk || !wishlistRuOk || !discoverEnOk || !discoverRuOk || leakedKey) {
+      .some((value) => /^(narrative|library|wishlist|discover|taste)\./.test(value));
+    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || !wishlistEnOk || !wishlistRuOk || !discoverEnOk || !discoverRuOk || !tasteEnOk || !tasteRuOk || leakedKey) {
       ok = false;
       lines.push("❌ Dynamic i18n answer narrative did not switch cleanly between EN and RU:");
       lines.push(`   - en title: "${answerByLocale.en || "missing"}"`);
@@ -259,6 +293,7 @@ export const gate = {
       lines.push(`   - en library: "${libraryPlanByLocale.en || "missing"}" / "${libraryGamesByLocale.en || "missing"}" / "${libraryDashboardByLocale.en || "missing"}"`);
       lines.push(`   - en wishlist: "${wishlistTitleByLocale.en || "missing"}" / "${wishlistDecisionByLocale.en || "missing"}" / "${wishlistDashboardByLocale.en || "missing"}"`);
       lines.push(`   - en discover: "${discoverSearchByLocale.en || "missing"}" / "${discoverMemoryByLocale.en || "missing"}" / "${discoverCatalogByLocale.en || "missing"}" / "${discoverMetricByLocale.en || "missing"}"`);
+      lines.push(`   - en taste: "${tasteLearningByLocale.en || "missing"}" / "${tasteStatusByLocale.en || "missing"}" / "${tasteShareByLocale.en || "missing"}" / "${tasteReceiptByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
       lines.push(`   - ru first run: "${firstRunByLocale.ru || "missing"}"`);
@@ -266,6 +301,7 @@ export const gate = {
       lines.push(`   - ru library: "${libraryPlanByLocale.ru || "missing"}" / "${libraryGamesByLocale.ru || "missing"}" / "${libraryDashboardByLocale.ru || "missing"}"`);
       lines.push(`   - ru wishlist: "${wishlistTitleByLocale.ru || "missing"}" / "${wishlistDecisionByLocale.ru || "missing"}" / "${wishlistDashboardByLocale.ru || "missing"}"`);
       lines.push(`   - ru discover: "${discoverSearchByLocale.ru || "missing"}" / "${discoverMemoryByLocale.ru || "missing"}" / "${discoverCatalogByLocale.ru || "missing"}" / "${discoverMetricByLocale.ru || "missing"}"`);
+      lines.push(`   - ru taste: "${tasteLearningByLocale.ru || "missing"}" / "${tasteStatusByLocale.ru || "missing"}" / "${tasteShareByLocale.ru || "missing"}" / "${tasteReceiptByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };
