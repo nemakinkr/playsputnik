@@ -1399,7 +1399,7 @@ function checkSelectors() {
   assert(/function renderGameDetail/.test(appSource), "Game detail renderer is missing");
   assert(/function detailPrimaryMove/.test(appSource), "Game detail primary move helper is missing");
   assert(/function detailCockpitHtml/.test(appSource), "Game detail cockpit renderer is missing");
-  assert(/Why now/.test(appSource) && /Same logic/.test(appSource), "Detail cockpit should reuse the shared decision rationale");
+  assert(/narrative\.detail\.whyNow/.test(appSource) && /narrative\.detail\.sameLogic/.test(appSource), "Detail cockpit should reuse the shared decision rationale");
   assert(/function detailTasteFitHtml/.test(appSource), "Game detail taste fit renderer is missing");
   assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
   assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
@@ -1456,7 +1456,7 @@ function checkSelectors() {
   assert(/hero-cover-source/.test(appSource + appCardsSource + css), "Hero cover candidates should have source attribution");
   assert(/card-cover-source/.test(html + appSource + appCardsSource + css), "Recommendation cards should have source attribution");
   assert((/target = "_blank"/.test(appSource) || /target = "_blank"/.test(appCardsSource)) && (/sourceUrl/.test(appSource) || /sourceUrl/.test(appCardsSource)), "RAWG source attribution should link to sourceUrl");
-  assert(/Source: RAWG/.test(appCoverSource), "RAWG cover candidates should be visibly attributed in UI copy");
+  assert(/narrative\.detail\.sourceNamed/.test(appCoverSource) && /RAWG/.test(appCoverSource), "RAWG cover candidates should be visibly attributed in localized UI copy");
   assert(catalogSources.coverPolicy.selectedPath.some((step) => step.id === "rawg_cover_candidate"), "Catalog source policy should select RAWG as the early cover candidate path");
   assert(catalogSources.coverPolicy.attribution.rawg.includes("sourceUrl"), "RAWG attribution policy should require sourceUrl links");
   assert(/RAWG_API_KEY/.test(coverResolverSource), "Cover resolver should use an optional RAWG_API_KEY");

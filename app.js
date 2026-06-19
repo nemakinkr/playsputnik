@@ -3771,8 +3771,8 @@ function searchResultMemoryStatus(result) {
 
 function editionLabelForItem(item) {
   if (!item?.editionLabel) return "";
-  if (item.editionRole === "legacy") return `${item.editionLabel} / related edition`;
-  if (item.editionRole === "primary") return `${item.editionLabel} / primary edition`;
+  if (item.editionRole === "legacy") return `${item.editionLabel} / ${t("narrative.detail.legacyEdition")}`;
+  if (item.editionRole === "primary") return `${item.editionLabel} / ${t("narrative.detail.primaryEdition")}`;
   return item.editionLabel;
 }
 
@@ -3785,14 +3785,19 @@ function editionBadgeHtml(item, modifier = "") {
 function editionNoteHtml(game) {
   if (!game?.editionLabel && !game?.priceCanonicalTitle) return "";
   const priceNote = game.priceCanonicalTitle && game.priceCanonicalTitle !== game.title
-    ? ` Price tracking is anchored to ${game.priceCanonicalTitle}.`
+    ? t("narrative.detail.editionPriceNote", { title: game.priceCanonicalTitle })
     : "";
+  const editionNote = game.editionRole === "primary"
+    ? t("narrative.detail.primaryEditionNote")
+    : game.editionRole === "legacy"
+      ? t("narrative.detail.legacyEditionNote")
+      : t("narrative.detail.editionFallback");
   return `
     <section class="game-detail-section edition-note">
       <div>
-        <span>Edition</span>
-        <strong>${editionLabelForItem(game) || "Related edition"}</strong>
-        <p>${game.editionNote || "This title is linked to another catalog edition."}${priceNote}</p>
+        <span>${t("narrative.detail.edition")}</span>
+        <strong>${editionLabelForItem(game) || t("narrative.detail.relatedEdition")}</strong>
+        <p>${editionNote}${priceNote}</p>
       </div>
     </section>
   `;
@@ -4000,10 +4005,32 @@ function applyDetailState(game, userState) {
   }
 }
 
+function localizedSignalStatus(value) {
+  const keys = {
+    fresh: "narrative.detail.signalFresh",
+    aging: "narrative.detail.signalAging",
+    stale: "narrative.detail.signalStale",
+    sample: "narrative.detail.signalSample",
+    verify: "narrative.detail.signalVerify",
+    missing: "narrative.detail.signalMissing",
+  };
+  return keys[value] ? t(keys[value]) : value;
+}
+
+function localizedCoverReadiness(game) {
+  const keys = {
+    verified: "narrative.detail.coverVerified",
+    candidate: "narrative.detail.coverCandidate",
+    fallback: "narrative.detail.coverGenerated",
+    missing: "narrative.detail.coverMissing",
+  };
+  return t(keys[game.coverMeta?.status] || "narrative.detail.coverCheck");
+}
+
 function detailPrimaryMove(game) {
   const region = state.activeRegion;
   const accessState = effectiveGameState(game);
-  const accessLabel = accessState ? USER_STATE_LABELS[accessState] || accessState : "";
+  const accessLabel = accessState ? answerAccessLabel(game) : "";
   const chunk = gameChunkProfile(game);
   const hasPrice = typeof game.prices?.[region] === "number";
   const priceFitsBudget = hasPrice && game.prices[region] <= Number(state.budget);
@@ -4015,11 +4042,21 @@ function detailPrimaryMove(game) {
   if (isAlreadyAvailable(game)) {
     return {
       tone: "play",
-      label: accessState === "playing" ? "Keep playing" : "Play before buying",
-      detail: `${accessLabel} access is already in memory. Natural session: ${chunk.label}, about ${chunk.minutes} min.`,
+      label: accessState === "playing"
+        ? t("narrative.detail.keepPlaying")
+        : t("narrative.detail.playBeforeBuy"),
+      detail: t("narrative.detail.accessDetail", {
+        access: accessLabel,
+        chunk: chunk.label,
+        minutes: chunk.minutes,
+      }),
       action: { kind: "state", state: "playing" },
-      actionLabel: accessState === "playing" ? "Keep playing" : "Start playing",
-      actionHint: accessState === "playing" ? "Leaves it in your active queue." : "Moves it into your active play queue.",
+      actionLabel: accessState === "playing"
+        ? t("narrative.detail.keepPlaying")
+        : t("narrative.detail.startPlaying"),
+      actionHint: accessState === "playing"
+        ? t("narrative.detail.keepPlayingHint")
+        : t("narrative.detail.startPlayingHint"),
     };
   }
 
@@ -4027,13 +4064,13 @@ function detailPrimaryMove(game) {
     const status = subscriptionStatus(game, region);
     return {
       tone: status.canConfirm ? "plus" : "verify",
-      label: status.canConfirm ? "Try through Plus" : "Verify Plus access",
+      label: status.canConfirm ? t("narrative.detail.tryPlus") : t("narrative.detail.verifyPlus"),
       detail: status.canConfirm
-        ? `${region} subscription signal is fresh enough to treat this as low-friction.`
-        : `${region} subscription signal exists, but should be checked before promising access.`,
+        ? t("narrative.detail.plusFresh", { region })
+        : t("narrative.detail.plusVerify", { region }),
       action: { kind: "state", state: "subscription" },
-      actionLabel: status.canConfirm ? "Add Plus access" : "Mark Plus access",
-      actionHint: "Adds it to your playable library so recommendations stop treating it as a purchase.",
+      actionLabel: status.canConfirm ? t("narrative.detail.addPlus") : t("narrative.detail.markPlus"),
+      actionHint: t("narrative.detail.plusHint"),
     };
   }
 
@@ -4041,32 +4078,37 @@ function detailPrimaryMove(game) {
     const storeUrl = priceSnapshot?.storeUrl || "";
     return {
       tone: "buy",
-      label: "Buy candidate",
-      detail: `${region} ${formatPrice(game, region)} is inside your ${formatMoney(Number(state.budget))} ceiling, with price source marked ${priceStatus(game, region).label}.`,
+      label: t("narrative.detail.buyCandidate"),
+      detail: t("narrative.detail.buyDetail", {
+        region,
+        price: formatPrice(game, region),
+        budget: formatMoney(Number(state.budget)),
+        status: localizedSignalStatus(priceStatus(game, region).state),
+      }),
       action: storeUrl ? { kind: "url", url: storeUrl } : { kind: "state", state: "saved" },
-      actionLabel: storeUrl ? "Open PS Store" : "Watch price",
-      actionHint: storeUrl ? "Opens the source; confirm Bought only after purchase." : "Keeps it watched until a store link is available.",
+      actionLabel: storeUrl ? t("narrative.detail.openStore") : t("narrative.detail.watchPrice"),
+      actionHint: storeUrl ? t("narrative.detail.openStoreHint") : t("narrative.detail.watchLinkHint"),
     };
   }
 
   if (userGame.saved || notebookWishlistWeight(game.title) || game.wishlist) {
     return {
       tone: "watch",
-      label: "Keep watched",
-      detail: "Wishlist intent is already present. Let price alerts and taste evidence decide when it becomes urgent.",
+      label: t("narrative.detail.keepWatched"),
+      detail: t("narrative.detail.keepWatchedDetail"),
       action: { kind: "state", state: "saved" },
-      actionLabel: "Watch price",
-      actionHint: "Keeps it in Wishlist and lets alert targets do the work.",
+      actionLabel: t("narrative.detail.watchPrice"),
+      actionHint: t("narrative.detail.keepWatchedHint"),
     };
   }
 
   return {
     tone: "save",
-    label: "Add to wishlist",
-    detail: "No access or trusted buy signal yet. Saving it teaches taste and lets price/source checks catch up.",
+    label: t("narrative.detail.addWishlist"),
+    detail: t("narrative.detail.addWishlistDetail"),
     action: { kind: "state", state: "saved" },
-    actionLabel: "Wishlist",
-    actionHint: "Saves it as taste and purchase intent.",
+    actionLabel: t("narrative.detail.wishlistAction"),
+    actionHint: t("narrative.detail.wishlistHint"),
   };
 }
 
@@ -4082,7 +4124,7 @@ function detailPrimaryCtaHtml(move) {
       <button class="detail-primary-cta tone-${move.tone}" data-detail-primary-action ${actionAttrs} type="button">
         ${move.actionLabel || move.label}
       </button>
-      <small>${move.actionHint || "Updates this game's memory."}</small>
+      <small>${move.actionHint || t("narrative.detail.memoryHint")}</small>
     </div>
   `;
 }
@@ -4114,7 +4156,7 @@ function detailAtomSignalHtml(game) {
     ...(game.atoms || []),
   ], 10);
   if (!atoms.length) {
-    return `<span class="detail-atom-signal tone-neutral"><strong>Needs tags</strong><small>no atom evidence yet</small></span>`;
+    return `<span class="detail-atom-signal tone-neutral"><strong>${t("narrative.detail.needsTags")}</strong><small>${t("narrative.detail.noAtomEvidence")}</small></span>`;
   }
   return atoms.map((atom) => {
     const tone = signals.positive.includes(atom)
@@ -4125,10 +4167,10 @@ function detailAtomSignalHtml(game) {
           ? "mixed"
           : "neutral";
     const label = {
-      positive: "pull",
-      negative: "caution",
-      mixed: "mixed",
-      neutral: "atom",
+      positive: t("narrative.detail.atomPull"),
+      negative: t("narrative.detail.atomCaution"),
+      mixed: t("narrative.detail.atomMixed"),
+      neutral: t("narrative.detail.atomNeutral"),
     }[tone];
     return `<span class="detail-atom-signal tone-${tone}"><strong>${atom}</strong><small>${label}</small></span>`;
   }).join("");
@@ -4141,18 +4183,24 @@ function detailCockpitHtml(game, { move, forecast, evidence, watchout, valueCard
     ? `${valueCard.valueScore} ${valueCard.valueScoreLabel}`
     : typeof game.prices?.[state.activeRegion] === "number"
       ? `${state.activeRegion} ${formatPrice(game, state.activeRegion)}`
-      : "Price missing";
+      : t("narrative.detail.priceMissing");
   const rows = [
-    { label: "Why now", value: rationale.label, detail: rationale.headline },
-    { label: "Forecast", value: forecast.label, detail: forecast.detail },
-    { label: "Taste proof", value: evidence.lines[0]?.label || "Early signal", detail: evidence.summary },
-    { label: watchout.label, value: watchout.kind === "low" ? "No major blocker" : "Check first", detail: watchout.detail },
-    { label: "Value", value: valueCopy, detail: valueCard?.roi?.perHourLabel ? `${valueCard.roi.perHourLabel} per hour` : "Uses price, HLTB and critic signal when available." },
+    { label: t("narrative.detail.whyNow"), value: rationale.label, detail: rationale.headline },
+    { label: t("narrative.detail.forecast"), value: forecast.label, detail: forecast.detail },
+    { label: t("narrative.detail.tasteProof"), value: evidence.lines[0]?.label || t("narrative.detail.earlySignal"), detail: evidence.summary },
+    { label: watchout.label, value: watchout.kind === "low" ? t("narrative.detail.noBlocker") : t("narrative.detail.checkFirst"), detail: watchout.detail },
+    {
+      label: t("narrative.detail.value"),
+      value: valueCopy,
+      detail: valueCard?.roi?.perHourLabel
+        ? t("narrative.detail.perHour", { price: valueCard.roi.perHourLabel })
+        : t("narrative.detail.valueFallback"),
+    },
   ];
   return `
     <section class="game-detail-section detail-cockpit" data-detail-cockpit>
       <div class="detail-cockpit-head tone-${primaryMove.tone}">
-        <span>Next move</span>
+        <span>${t("narrative.detail.nextMove")}</span>
         <strong>${primaryMove.label}</strong>
         <p>${primaryMove.detail}</p>
         ${detailPrimaryCtaHtml(primaryMove)}
@@ -4172,9 +4220,18 @@ function detailCockpitHtml(game, { move, forecast, evidence, watchout, valueCard
 
 function detailHeroBadgesHtml(game, { forecast, valueCard, move }) {
   const region = state.activeRegion;
-  const price = typeof game.prices?.[region] === "number" ? `${region} ${formatPrice(game, region)}` : "Price pending";
-  const length = game.hltbHours ? `${game.hltbHours}h HLTB` : `${game.session} session`;
-  const next = move?.actionLabel || move?.label || "Next move";
+  const price = typeof game.prices?.[region] === "number"
+    ? `${region} ${formatPrice(game, region)}`
+    : t("narrative.recommend.pricePending");
+  const sessionKey = {
+    short: "narrative.recommend.sessionShort",
+    medium: "narrative.recommend.sessionMedium",
+    long: "narrative.recommend.sessionLong",
+  }[game.session] || "narrative.recommend.sessionMedium";
+  const length = game.hltbHours
+    ? `${game.hltbHours}h HLTB`
+    : t("narrative.recommend.factSession", { session: t(sessionKey) });
+  const next = move?.actionLabel || move?.label || t("narrative.detail.nextMove");
   const badges = [
     { label: forecast.label, tone: "fit" },
     { label: length, tone: "time" },
@@ -4188,7 +4245,7 @@ function detailTasteFitHtml(game, evidence) {
   const references = evidence.references || [];
   return `
     <section class="game-detail-section detail-taste-fit" data-detail-taste-fit>
-      <h3>Taste fit</h3>
+      <h3>${t("narrative.detail.tasteFit")}</h3>
       <p>${evidence.summary}</p>
       <div class="detail-evidence-list">
         ${evidence.lines.map((line) => `
@@ -4199,7 +4256,7 @@ function detailTasteFitHtml(game, evidence) {
         `).join("")}
       </div>
       ${references.length ? `
-        <div class="detail-reference-list" aria-label="Reference games">
+        <div class="detail-reference-list" aria-label="${t("narrative.detail.referenceGamesAria")}">
           ${references.map((reference) => `
             <button class="detail-reference-chip" data-similar-title="${reference.title}" type="button">
               <strong>${reference.title}</strong>
@@ -4223,50 +4280,52 @@ function detailSourceTrustRows(game) {
   const hasPrice = typeof game.prices?.[region] === "number";
   const hasPlusSignal = (game.psPlus || []).includes(region);
   const atomSource = seed
-    ? "Seed atoms"
+    ? t("narrative.detail.seedAtoms")
     : game.externalMeta?.atoms?.length
-      ? "Source tags"
+      ? t("narrative.detail.sourceTags")
       : game.externalMeta?.inferredAtoms?.length
-        ? "AI inferred"
+        ? t("narrative.detail.aiInferred")
         : (game.atoms || []).length
-          ? "Catalog atoms"
-          : "Missing";
+          ? t("narrative.detail.catalogAtoms")
+          : t("narrative.detail.missing");
   return [
     {
-      label: "Catalog",
-      value: seed ? "Seed catalog" : game.externalMeta?.catalogStatus || "Memory candidate",
-      detail: seed ? "Curated prototype entry" : "Resolved from search or user memory",
+      label: t("narrative.detail.catalog"),
+      value: seed ? t("narrative.detail.seedCatalog") : game.externalMeta?.catalogStatus || t("narrative.detail.memoryCandidate"),
+      detail: seed ? t("narrative.detail.curatedEntry") : t("narrative.detail.resolvedMemory"),
       tone: seed ? "good" : "verify",
     },
     {
-      label: "Cover",
-      value: coverReadinessLabel(game),
+      label: t("narrative.detail.cover"),
+      value: localizedCoverReadiness(game),
       detail: coverSourceLabel(game),
       tone: ["verified", "candidate"].includes(game.coverMeta?.status) ? "good" : "verify",
     },
     {
-      label: "Price",
-      value: hasPrice ? priceSignal.label : "missing",
-      detail: hasPrice ? `${region} ${formatPrice(game, region)}${priceMeta?.checkedAt ? ` / ${priceMeta.checkedAt.slice(0, 10)}` : ""}` : "No usable price source yet",
+      label: t("narrative.detail.price"),
+      value: hasPrice ? localizedSignalStatus(priceSignal.state) : t("narrative.detail.signalMissing"),
+      detail: hasPrice
+        ? `${region} ${formatPrice(game, region)}${priceMeta?.checkedAt ? ` / ${priceMeta.checkedAt.slice(0, 10)}` : ""}`
+        : t("narrative.detail.noPriceSource"),
       tone: priceSignal.canConfirm ? "good" : hasPrice ? "verify" : "warn",
     },
     ...(game.priceCanonicalTitle && game.priceCanonicalTitle !== game.title ? [{
-      label: "Edition price",
-      value: "canonical link",
-      detail: `Treat ${game.priceCanonicalTitle} as the purchase-tracking edition; keep this one for library/history memory.`,
+      label: t("narrative.detail.editionPrice"),
+      value: t("narrative.detail.canonicalLink"),
+      detail: t("narrative.detail.canonicalDetail", { title: game.priceCanonicalTitle }),
       tone: "verify",
     }] : []),
     {
-      label: "Plus",
-      value: hasPlusSignal ? plusSignal.label : "not listed",
-      detail: hasPlusSignal ? `${subMeta?.tier || "PS Plus"} / ${region}` : "No active subscription signal for region",
+      label: t("narrative.detail.plus"),
+      value: hasPlusSignal ? localizedSignalStatus(plusSignal.state) : t("narrative.detail.notListed"),
+      detail: hasPlusSignal ? `${subMeta?.tier || "PS Plus"} / ${region}` : t("narrative.detail.noSubscription"),
       tone: hasPlusSignal && plusSignal.canConfirm ? "good" : hasPlusSignal ? "verify" : "neutral",
     },
     {
-      label: "Atoms",
+      label: t("narrative.detail.atoms"),
       value: atomSource,
-      detail: `${(game.atoms || []).slice(0, 4).join(" / ") || "Needs enrichment"}`,
-      tone: atomSource === "Missing" ? "warn" : "good",
+      detail: `${(game.atoms || []).slice(0, 4).join(" / ") || t("narrative.detail.needsEnrichment")}`,
+      tone: atomSource === t("narrative.detail.missing") ? "warn" : "good",
     },
   ];
 }
@@ -4305,7 +4364,16 @@ function renderGameDetail(shouldFocus = false) {
   els.gameDetail.classList.remove("is-hidden");
   els.gameDetail.setAttribute("aria-hidden", "false");
   els.gameDetailTitle.textContent = game.title;
-  els.gameDetailMeta.textContent = `${confidence} confidence / ${Math.max(game.score, 0)} fit / ${game.session} session`;
+  const metaSessionKey = {
+    short: "narrative.recommend.sessionShort",
+    medium: "narrative.recommend.sessionMedium",
+    long: "narrative.recommend.sessionLong",
+  }[game.session] || "narrative.recommend.sessionMedium";
+  els.gameDetailMeta.textContent = t("narrative.detail.meta", {
+    confidence,
+    fit: Math.max(game.score, 0),
+    session: t(metaSessionKey),
+  });
   els.gameDetailVisual.replaceChildren();
   // The fit tier already appears as a badge in detailHeroBadgesHtml; don't also
   // render it as a floating eyebrow (it duplicated the same text in the hero).
@@ -4316,7 +4384,7 @@ function renderGameDetail(shouldFocus = false) {
   applyCoverVisual(els.gameDetailVisual, game);
   renderCoverSourceInto(els.gameDetailCoverSource, game);
   els.gameDetailBody.innerHTML = `
-    <section class="game-detail-status" aria-label="Game state summary">
+    <section class="game-detail-status" aria-label="${t("narrative.detail.stateSummaryAria")}">
       ${statusCards.map((item) => `
         <div class="detail-status-card tone-${item.tone}">
           <span>${item.label}</span>
@@ -4328,9 +4396,9 @@ function renderGameDetail(shouldFocus = false) {
     ${editionNoteHtml(game)}
     ${detailCockpitHtml(game, { move: primaryMove, forecast, evidence, watchout, valueCard })}
     <section class="game-detail-section detail-decision-copy">
-      <h3>Why this pick</h3>
+      <h3>${t("narrative.detail.whyPick")}</h3>
       <p>${description}</p>
-      <p><strong>Same logic:</strong> ${rationale.detail}</p>
+      <p><strong>${t("narrative.detail.sameLogic")}:</strong> ${rationale.detail}</p>
       <p><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
     </section>
     ${detailTasteFitHtml(game, evidence)}
@@ -4339,40 +4407,40 @@ function renderGameDetail(shouldFocus = false) {
       if (!isAmnestiedUserGame(userGame)) return "";
       const meta = normalizeBacklogAmnestyMeta(userGame.amnesty);
       return `<section class="game-detail-section game-detail-amnesty-restore">
-        <h3>Backlog amnesty</h3>
-        <p>Archived after ${meta.skips} skips. It is hidden, not deleted, and can come back to your wishlist whenever you want.</p>
+        <h3>${t("narrative.detail.amnesty")}</h3>
+        <p>${t("narrative.detail.amnestyDetail", { count: meta.skips })}</p>
         <div class="amnesty-actions amnesty-actions--inline">
-          <button data-amnesty-restore type="button">Restore to wishlist</button>
+          <button data-amnesty-restore type="button">${t("narrative.detail.restoreWishlist")}</button>
         </div>
       </section>`;
     })()}
     ${valueCard ? `
     <section class="game-detail-section game-detail-value">
-      <h3>Value</h3>
+      <h3>${t("narrative.detail.valueTitle")}</h3>
       <div class="value-cards">
         ${valueCard.criticScore != null ? `
           <div class="value-chip band-${valueCard.criticScoreBand}">
-            <span>Critic</span>
+            <span>${t("narrative.detail.critic")}</span>
             <strong>${valueCard.criticScoreLabel}</strong>
           </div>` : ""}
         ${valueCard.hltbHours != null ? `
           <div class="value-chip">
-            <span>Length</span>
+            <span>${t("narrative.detail.length")}</span>
             <strong>${valueCard.hltbHoursLabel}</strong>
           </div>` : ""}
         ${valueCard.valueScore != null ? `
           <div class="value-chip band-${valueCard.valueScoreBand}">
-            <span>Value score</span>
+            <span>${t("narrative.detail.valueScore")}</span>
             <strong>${valueCard.valueScore} · ${valueCard.valueScoreLabel}</strong>
           </div>` : ""}
         ${valueCard.progress != null ? `
           <div class="value-chip">
-            <span>Progress</span>
+            <span>${t("narrative.detail.progressValue")}</span>
             <strong>${valueCard.progress.label} (${valueCard.progress.pct}%)</strong>
           </div>` : ""}
         ${valueCard.roi?.perHourLabel != null ? `
           <div class="value-chip">
-            <span>Cost per hour</span>
+            <span>${t("narrative.detail.costPerHour")}</span>
             <strong>${valueCard.roi.perHourLabel} · ${valueCard.roi.verdict}</strong>
           </div>` : ""}
         ${(() => {
@@ -4382,7 +4450,7 @@ function renderGameDetail(shouldFocus = false) {
           const subMeta = game.subscriptionMeta?.[region];
           const inPlusList = (game.psPlus || []).includes(region);
           const plusHtml = inPlusList
-            ? `<div class="value-chip value-chip--plus"><span>PS Plus ${subMeta?.tier || "Extra"}</span><strong>Included in subscription</strong></div>`
+            ? `<div class="value-chip value-chip--plus"><span>PS Plus ${subMeta?.tier || "Extra"}</span><strong>${t("narrative.detail.included")}</strong></div>`
             : "";
           if (!snap || snap.price == null) return plusHtml;
           const spark = hist?.length >= 2 ? priceSparkline(game.title, region, { width: 64, height: 24, color: "var(--teal)" }) : "";
@@ -4390,7 +4458,7 @@ function renderGameDetail(shouldFocus = false) {
           const discountBadge = snap.discount > 0 ? ` <span class="detail-discount-badge">-${snap.discount}%</span>` : "";
           return `${plusHtml}
           <div class="value-chip value-chip--price">
-            <span>${region} price${discountBadge}</span>
+            <span>${t("narrative.detail.regionPriceLabel", { region })}${discountBadge}</span>
             <strong>${snap.currency} ${snap.price.toFixed(2)}${storeLink}</strong>
             ${spark}
           </div>`;
@@ -4401,12 +4469,12 @@ function renderGameDetail(shouldFocus = false) {
       const control = priceWatchControlHtml(game, { context: "detail" });
       if (!control) return "";
       return `<section class="game-detail-section game-detail-price-alert">
-        <h3>Price alert</h3>
+        <h3>${t("narrative.detail.priceAlert")}</h3>
         ${control}
       </section>`;
     })()}
     <section class="game-detail-section detail-source-trust" data-detail-source-trust>
-      <h3>Data trust</h3>
+      <h3>${t("narrative.detail.dataTrust")}</h3>
       <div class="detail-source-grid">
         ${trustRows.map((row) => `
           <div class="detail-source-row tone-${row.tone}">
@@ -4435,20 +4503,20 @@ function renderGameDetail(shouldFocus = false) {
           <span>${shared.slice(0, 3).join(" · ")}</span>
         </button>`).join("");
       return `<section class="game-detail-section">
-        <h3>You might also like</h3>
+        <h3>${t("narrative.detail.similar")}</h3>
         <div class="similar-games-list">${cards}</div>
       </section>`;
     })()}
     <section class="game-detail-section">
-      <h3>Actions</h3>
+      <h3>${t("narrative.detail.actions")}</h3>
       <div class="game-detail-actions">
-        <button class="${detailActionClass(game, "saved")}" data-detail-state="saved" type="button">Wishlist</button>
-        <button class="${detailActionClass(game, "playing")}" data-detail-state="playing" type="button">Play</button>
-        <button class="${detailActionClass(game, "owned")}" data-detail-state="owned" type="button">Owned</button>
-        <button class="${detailActionClass(game, "subscription")}" data-detail-state="subscription" type="button">Plus</button>
-        <button class="${detailActionClass(game, "owned_forever")}" data-detail-state="owned_forever" type="button">Bought</button>
-        <button class="${detailActionClass(game, "completed")}" data-detail-state="completed" type="button">Done</button>
-        <button class="${detailActionClass(game, "hidden")}" data-detail-state="hidden" type="button">Hide</button>
+        <button class="${detailActionClass(game, "saved")}" data-detail-state="saved" type="button">${t("narrative.detail.wishlist")}</button>
+        <button class="${detailActionClass(game, "playing")}" data-detail-state="playing" type="button">${t("narrative.detail.actionPlay")}</button>
+        <button class="${detailActionClass(game, "owned")}" data-detail-state="owned" type="button">${t("narrative.detail.actionOwned")}</button>
+        <button class="${detailActionClass(game, "subscription")}" data-detail-state="subscription" type="button">${t("narrative.detail.actionPlus")}</button>
+        <button class="${detailActionClass(game, "owned_forever")}" data-detail-state="owned_forever" type="button">${t("narrative.detail.actionBought")}</button>
+        <button class="${detailActionClass(game, "completed")}" data-detail-state="completed" type="button">${t("narrative.detail.actionDone")}</button>
+        <button class="${detailActionClass(game, "hidden")}" data-detail-state="hidden" type="button">${t("narrative.detail.actionHide")}</button>
       </div>
     </section>
     ${(() => {
@@ -4456,14 +4524,16 @@ function renderGameDetail(shouldFocus = false) {
       const currentSputniks = typeof userGame?.rating === "number" ? Math.round(userGame.rating / 20) : 0;
       const sputnikSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13" rx="9" ry="4.2" transform="rotate(-24 12 13)" fill="none" stroke="currentColor" stroke-width="1.7" opacity="0.55"/><circle cx="12" cy="13" r="4.4" fill="currentColor"/><circle cx="19.2" cy="8.6" r="1.9" fill="currentColor"/></svg>`;
       return `<section class="game-detail-section">
-        <h3>Your rating</h3>
-        <div class="sputnik-rating" role="radiogroup" aria-label="Rate ${game.title}, 1 to 5 sputniks">
+        <h3>${t("narrative.detail.yourRating")}</h3>
+        <div class="sputnik-rating" role="radiogroup" aria-label="${t("narrative.detail.rateAria", { title: game.title })}">
           ${[1, 2, 3, 4, 5].map((n) => `
             <button class="sputnik-btn ${currentSputniks >= n ? "is-filled" : ""}" data-rate-sputniks="${n}"
-              type="button" role="radio" aria-checked="${currentSputniks === n}" aria-label="${n} of 5 sputniks">
+              type="button" role="radio" aria-checked="${currentSputniks === n}" aria-label="${t("narrative.detail.ratingButtonAria", { count: n })}">
               ${sputnikSvg}
             </button>`).join("")}
-          <span class="sputnik-rating-label">${currentSputniks ? `${currentSputniks}/5 — teaches your taste` : "Tap to rate — sharpens picks"}</span>
+          <span class="sputnik-rating-label">${currentSputniks
+            ? t("narrative.detail.ratingKnown", { count: currentSputniks })
+            : t("narrative.detail.ratingEmpty")}</span>
         </div>
       </section>`;
     })()}
@@ -4473,12 +4543,12 @@ function renderGameDetail(shouldFocus = false) {
       const chunk = gameChunkProfile(game);
       const links = [
         snap?.storeUrl ? { href: snap.storeUrl, label: "PS Store", kind: "store" } : null,
-        game.coverMeta?.sourceUrl ? { href: game.coverMeta.sourceUrl, label: "Game info (RAWG)", kind: "info" } : null,
+        game.coverMeta?.sourceUrl ? { href: game.coverMeta.sourceUrl, label: t("narrative.detail.gameInfoRawg"), kind: "info" } : null,
         { href: `https://howlongtobeat.com/?q=${encodeURIComponent(game.title)}`, label: "HowLongToBeat", kind: "info" },
       ].filter(Boolean);
       return `<section class="game-detail-section">
-        <h3>Get it</h3>
-        <p class="detail-chunk-note">Natural session: ${chunk.label}, ~${chunk.minutes} min.</p>
+        <h3>${t("narrative.detail.getIt")}</h3>
+        <p class="detail-chunk-note">${t("narrative.detail.naturalSession", { chunk: chunk.label, minutes: chunk.minutes })}</p>
         <div class="detail-get-links">
           ${links.map((l) => `<a class="detail-get-link detail-get-link--${l.kind}" href="${l.href}" target="_blank" rel="noopener noreferrer">${l.label} ↗</a>`).join("")}
         </div>
@@ -4845,32 +4915,34 @@ function priceWatchControlHtml(game, { context = "row" } = {}) {
   const targetCopy = formatMoney(activeTarget, currency);
   const currentCopy = formatMoney(watch.currentPrice, currency);
   const deltaCopy = typeof watch.targetDelta === "number" && watch.targetDelta > 0
-    ? `${formatMoney(watch.targetDelta, currency)} above target`
-    : "at or below target";
+    ? t("narrative.detail.aboveTarget", { price: formatMoney(watch.targetDelta, currency) })
+    : t("narrative.detail.atTarget");
   const statusCopy = watch.isBelowTarget
-    ? `Below target now: ${currentCopy}`
+    ? t("narrative.detail.belowTargetNow", { price: currentCopy })
     : `${currentCopy} / ${deltaCopy}`;
   return `
     <div class="price-alert price-alert--${context} ${watch.isBelowTarget ? "is-triggered" : ""}" data-price-alert>
       <div class="price-alert-summary">
         <span class="price-alert-icon" aria-hidden="true">$</span>
         <div>
-          <span>${watch.isBelowTarget ? "Target hit" : "Price alert"}</span>
-          <strong>${customTarget !== null ? `Alert below ${targetCopy}` : `Using budget ${targetCopy}`}</strong>
+          <span>${watch.isBelowTarget ? t("narrative.detail.targetHit") : t("narrative.detail.priceAlert")}</span>
+          <strong>${customTarget !== null
+            ? t("narrative.detail.alertBelow", { price: targetCopy })
+            : t("narrative.detail.usingBudget", { price: targetCopy })}</strong>
           <small>${statusCopy}</small>
         </div>
       </div>
       <div class="price-alert-edit">
         <label>
-          <span>Alert below</span>
+          <span>${t("narrative.detail.alertBelowLabel")}</span>
           <span class="price-alert-input-wrap">
             <span>${currency}</span>
-            <input data-price-target-input type="number" min="1" step="0.01" inputmode="decimal" value="${customTarget !== null ? priceTargetInputValue(customTarget) : ""}" placeholder="${priceTargetInputValue(activeTarget)}" aria-label="Alert below price for ${game.title}">
+            <input data-price-target-input type="number" min="1" step="0.01" inputmode="decimal" value="${customTarget !== null ? priceTargetInputValue(customTarget) : ""}" placeholder="${priceTargetInputValue(activeTarget)}" aria-label="${t("narrative.detail.alertInputAria", { title: game.title })}">
           </span>
         </label>
         <div class="price-alert-buttons">
-          <button class="price-alert-save" data-price-target-save type="button">Save</button>
-          ${customTarget !== null ? `<button data-price-target-clear type="button">Clear</button>` : ""}
+          <button class="price-alert-save" data-price-target-save type="button">${t("narrative.detail.save")}</button>
+          ${customTarget !== null ? `<button data-price-target-clear type="button">${t("narrative.detail.clear")}</button>` : ""}
         </div>
       </div>
     </div>

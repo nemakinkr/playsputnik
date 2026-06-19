@@ -81,11 +81,17 @@ function scanInPage(MIN_TOUCH, locale) {
   const answerTitle = (document.querySelector("#answer-copy .answer-main strong")?.textContent || "").trim();
   const evidenceLabel = (document.querySelector("#answer-copy .answer-evidence .evidence-row span")?.textContent || "").trim();
   const firstRunVerdict = (document.querySelector("#first-run-bridge .first-run-verdict span")?.textContent || "").trim();
+  try { document.querySelector("[data-hero-detail]")?.click(); } catch (e) {}
+  const detailHeading = (document.querySelector(".detail-decision-copy h3")?.textContent || "").trim();
+  const detailMove = (document.querySelector(".detail-cockpit-head > span")?.textContent || "").trim();
+  try { document.querySelector("[data-detail-close]")?.click(); } catch (e) {}
   return JSON.stringify({
     locale,
     answerTitle,
     evidenceLabel,
     firstRunVerdict,
+    detailHeading,
+    detailMove,
     overflow,
     cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
   });
@@ -112,6 +118,8 @@ export const gate = {
         answerTitle: pass.answerTitle || "",
         evidenceLabel: pass.evidenceLabel || "",
         firstRunVerdict: pass.firstRunVerdict || "",
+        detailHeading: pass.detailHeading || "",
+        detailMove: pass.detailMove || "",
       })),
     };
   },
@@ -135,27 +143,35 @@ export const gate = {
     const answerByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.answerTitle]));
     const evidenceByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.evidenceLabel]));
     const firstRunByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.firstRunVerdict]));
+    const detailHeadingByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.detailHeading]));
+    const detailMoveByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.detailMove]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
     const ruOk = /^(Сегодня я бы выбрал|Мне нужно)/.test(answerByLocale.ru || "");
     const evidenceEnOk = /[A-Za-z]/.test(evidenceByLocale.en || "") && !/[А-Яа-яЁё]/.test(evidenceByLocale.en || "");
     const evidenceRuOk = /[А-Яа-яЁё]/.test(evidenceByLocale.ru || "");
     const firstRunEnOk = firstRunByLocale.en === "What I learned";
     const firstRunRuOk = firstRunByLocale.ru === "Что я понял";
+    const detailEnOk = detailHeadingByLocale.en === "Why this pick" && detailMoveByLocale.en === "Next move";
+    const detailRuOk = detailHeadingByLocale.ru === "Почему эта игра" && detailMoveByLocale.ru === "Следующий шаг";
     const leakedKey = [
       ...Object.values(answerByLocale),
       ...Object.values(evidenceByLocale),
       ...Object.values(firstRunByLocale),
+      ...Object.values(detailHeadingByLocale),
+      ...Object.values(detailMoveByLocale),
     ]
       .some((value) => /^narrative\./.test(value));
-    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || leakedKey) {
+    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || leakedKey) {
       ok = false;
       lines.push("❌ Dynamic i18n answer narrative did not switch cleanly between EN and RU:");
       lines.push(`   - en title: "${answerByLocale.en || "missing"}"`);
       lines.push(`   - en evidence: "${evidenceByLocale.en || "missing"}"`);
       lines.push(`   - en first run: "${firstRunByLocale.en || "missing"}"`);
+      lines.push(`   - en detail: "${detailHeadingByLocale.en || "missing"}" / "${detailMoveByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
       lines.push(`   - ru first run: "${firstRunByLocale.ru || "missing"}"`);
+      lines.push(`   - ru detail: "${detailHeadingByLocale.ru || "missing"}" / "${detailMoveByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };

@@ -28,11 +28,11 @@
     function valueScoreLabel(game) {
       const score = valueScore(game);
       if (score === null) return null;
-      if (score >= 7) return "Exceptional";
-      if (score >= 5) return "Great";
-      if (score >= 3.5) return "Good";
-      if (score >= 2) return "Average";
-      return "Long haul";
+      if (score >= 7) return t("narrative.detail.valueExceptional");
+      if (score >= 5) return t("narrative.detail.valueGreat");
+      if (score >= 3.5) return t("narrative.detail.valueGood");
+      if (score >= 2) return t("narrative.detail.valueAverage");
+      return t("narrative.detail.valueLong");
     }
 
     function valueScoreBand(game) {
@@ -73,7 +73,15 @@
         pricePaid: ug.pricePaid ?? null,
         perHour: roi,
         perHourLabel: roi !== null ? roiLabel(title) : null,
-        verdict: roi === null ? null : roi <= 1 ? "Incredible value" : roi <= 3 ? "Good value" : roi <= 7 ? "Fair" : "Expensive per hour",
+        verdict: roi === null
+          ? null
+          : roi <= 1
+            ? t("narrative.detail.roiIncredible")
+            : roi <= 3
+              ? t("narrative.detail.roiGood")
+              : roi <= 7
+                ? t("narrative.detail.roiFair")
+                : t("narrative.detail.roiExpensive"),
       };
     }
 
@@ -111,7 +119,7 @@
         played: ug.hoursPlayed,
         total: src.hltbHours,
         pct,
-        label: `${ug.hoursPlayed}h of ${src.hltbHours}h`,
+        label: t("narrative.detail.progressHours", { played: ug.hoursPlayed, total: src.hltbHours }),
         remaining: Math.max(0, src.hltbHours - ug.hoursPlayed),
       };
     }

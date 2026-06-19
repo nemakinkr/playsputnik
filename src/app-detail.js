@@ -36,9 +36,25 @@
     // from library module
     personalRatingFacet,
   }) {
+    function localizedState(value) {
+      const keys = {
+        owned: "narrative.recommend.stateOwned",
+        owned_forever: "narrative.recommend.stateForever",
+        subscription: "narrative.recommend.stateSubscription",
+        playing: "narrative.recommend.statePlaying",
+        paused: "narrative.recommend.statePaused",
+        want_to_finish: "narrative.recommend.stateFinish",
+        completed: "narrative.recommend.stateCompleted",
+        dropped: "narrative.recommend.stateDropped",
+        saved: "narrative.recommend.stateSaved",
+        hidden: "narrative.recommend.stateHidden",
+      };
+      return keys[value] ? t(keys[value]) : USER_STATE_LABELS[value] || value;
+    }
+
     function normalizeDetailGame(game, title = "") {
       const base = {
-        title: title || "Unknown game",
+        title: title || t("narrative.detail.gameFallback"),
         atoms: [],
         vibe: "Game memory item",
         session: "medium",
@@ -145,18 +161,27 @@
       const state = getState();
       const region = state.activeRegion;
       const hasPrice = typeof game.prices?.[region] === "number";
-      if (!hasPrice) return { label: "Price", value: "Missing", detail: "No usable price source yet." };
+      if (!hasPrice) {
+        return {
+          label: t("narrative.detail.price"),
+          value: t("narrative.detail.missing"),
+          detail: t("narrative.detail.noPriceSource"),
+        };
+      }
       const status = priceStatus(game, region);
       const discount = game.discount?.[region] || 0;
       const watch = priceCanGuideBuy(game, region) ? priceWatchRecord(game, region, 0) : null;
       const currency = game.priceMeta?.[region]?.currency || "USD";
       const editionPriceNote = game.priceCanonicalTitle && game.priceCanonicalTitle !== game.title
-        ? ` / tracked via ${game.priceCanonicalTitle}`
+        ? ` / ${t("narrative.detail.trackedVia", { title: game.priceCanonicalTitle })}`
         : "";
       return {
-        label: `${region} price`,
+        label: t("narrative.detail.regionPrice", { region }),
         value: formatPrice(game, region),
-        detail: `${discount}% ${status.canConfirm ? "off" : "signal"}${watch ? ` / ${historicalLowCopy(watch, currency)}` : ""}${editionPriceNote}`,
+        detail: `${t("narrative.detail.discount", {
+          discount,
+          kind: status.canConfirm ? t("narrative.detail.discountOff") : t("narrative.detail.discountSignal"),
+        })}${watch ? ` / ${historicalLowCopy(watch, currency)}` : ""}${editionPriceNote}`,
       };
     }
 
@@ -166,27 +191,33 @@
       const price = detailPriceSummary(game);
       return [
         {
-          label: "Access",
-          value: userGame.access ? USER_STATE_LABELS[userGame.access] || userGame.access : userGame.saved ? "Wishlist" : "No access",
+          label: t("narrative.detail.access"),
+          value: userGame.access
+            ? localizedState(userGame.access)
+            : userGame.saved
+              ? t("narrative.detail.wishlist")
+              : t("narrative.detail.noAccess"),
           tone: userGame.access ? "access" : userGame.saved ? "wishlist" : "empty",
         },
         {
-          label: "Progress",
+          label: t("narrative.detail.progress"),
           value: userGame.completionStatus
-            ? USER_STATE_LABELS[userGame.completionStatus] || userGame.completionStatus
-            : userGame.hidden ? "Hidden" : "Not started",
+            ? localizedState(userGame.completionStatus)
+            : userGame.hidden
+              ? t("narrative.detail.hidden")
+              : t("narrative.detail.notStarted"),
           tone: userGame.completionStatus ? "progress" : userGame.hidden ? "hidden" : "empty",
         },
         {
-          label: "Rating",
-          value: rating.label,
+          label: t("narrative.detail.rating"),
+          value: rating.label === "No rating" ? t("narrative.detail.noRating") : rating.label,
           tone: rating.source === "Manual" ? "rating" : rating.source === "Import" ? "imported" : "empty",
         },
         {
           label: price.label,
           value: price.value,
           detail: price.detail,
-          tone: price.value === "Missing" ? "empty" : "price",
+          tone: price.value === t("narrative.detail.missing") ? "empty" : "price",
         },
       ];
     }

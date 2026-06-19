@@ -126,7 +126,7 @@ try {
   console.log(JSON.stringify(result, null, 2));
 
   assert(before.title, "Expected detail drawer title");
-  assert(/fit/.test(before.meta), `Expected fit metadata, got ${before.meta}`);
+  assert(/fit|совпадение/i.test(before.meta), `Expected localized fit metadata, got ${before.meta}`);
   assert(before.statusCards >= 4, `Expected status cards, got ${before.statusCards}`);
   assert(before.cockpit === 1, "Expected detail decision cockpit");
   assert(before.tasteFit === 1, "Expected detail taste fit block");

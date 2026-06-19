@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v35 (cache-first static / network-first data), **disabled on
+- Service worker v36 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -41,6 +41,10 @@ reviews, catalogs, sale pages, and announcements.
   locale-aware status, actions, alternatives, buy guardrails, personal
   forecast, evidence, and risk rationale. The complete first-run payoff is
   localized too: readiness, verdict, proof, next steps, and journey actions.
+- Phase 5 localization has started with the complete game-detail decision
+  cockpit: status, next move, rationale, taste fit, value, price alert, data
+  trust, actions, ratings, links, and drawer accessibility copy now switch
+  between EN/RU. A seeded mobile browser gate opens the drawer in both locales.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;

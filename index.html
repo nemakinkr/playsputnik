@@ -732,16 +732,16 @@
     </main>
 
     <section class="game-detail-shell is-hidden" id="game-detail" aria-hidden="true">
-      <button class="game-detail-backdrop" data-detail-close type="button" aria-label="Close game detail"></button>
+      <button class="game-detail-backdrop" data-detail-close type="button" aria-label="Close game detail" data-i18n-attr="aria-label:narrative.detail.closeAria"></button>
       <article class="game-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="game-detail-title" tabindex="-1">
         <div class="drawer-drag-handle" aria-hidden="true"></div>
         <header class="game-detail-header">
           <div>
-            <p class="eyebrow">Game detail</p>
-            <h2 id="game-detail-title">Game</h2>
+            <p class="eyebrow" data-i18n="narrative.detail.eyebrow">Game detail</p>
+            <h2 id="game-detail-title" data-i18n="narrative.detail.gameFallback">Game</h2>
             <p id="game-detail-meta"></p>
           </div>
-          <button class="game-detail-close" data-detail-close type="button" aria-label="Close game detail">Close</button>
+          <button class="game-detail-close" data-detail-close type="button" aria-label="Close game detail" data-i18n="narrative.detail.close" data-i18n-attr="aria-label:narrative.detail.closeAria">Close</button>
         </header>
         <div class="game-detail-visual"></div>
         <small class="game-detail-cover-source"></small>

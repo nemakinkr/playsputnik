@@ -100,9 +100,11 @@
     }
 
     function historicalLowCopy(watch, currency = "USD") {
-      if (!watch.historyCount || typeof watch.historicalLow !== "number") return "no history yet";
+      if (!watch.historyCount || typeof watch.historicalLow !== "number") return t("narrative.detail.noHistory");
       const low = formatMoney(watch.historicalLow, currency);
-      return watch.isHistoricalLow ? `matches low ${low}` : `low was ${low}`;
+      return watch.isHistoricalLow
+        ? t("narrative.detail.matchesLow", { price: low })
+        : t("narrative.detail.lowWas", { price: low });
     }
 
     function priceWatchRecords(ranked) {

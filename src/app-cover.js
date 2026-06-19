@@ -76,12 +76,14 @@
 
     function coverSourceLabel(game) {
       const cover = game.coverMeta;
-      if (!cover) return "Source pending";
-      if (cover.source === "rawg") return "Source: RAWG";
-      if (cover.source === "igdb") return "Source: IGDB";
-      if (cover.source === "official_store") return "Source: official store";
-      if (cover.source === "generated_poster" || cover.status === "fallback") return "Local generated art";
-      return cover.source ? `Source: ${cover.source}` : "Source pending";
+      if (!cover) return t("narrative.detail.sourcePending");
+      if (cover.source === "rawg") return t("narrative.detail.sourceNamed", { source: "RAWG" });
+      if (cover.source === "igdb") return t("narrative.detail.sourceNamed", { source: "IGDB" });
+      if (cover.source === "official_store") return t("narrative.detail.sourceOfficial");
+      if (cover.source === "generated_poster" || cover.status === "fallback") return t("narrative.detail.sourceGenerated");
+      return cover.source
+        ? t("narrative.detail.sourceNamed", { source: cover.source })
+        : t("narrative.detail.sourcePending");
     }
 
     function gameSourcePassport(game) {
@@ -89,28 +91,44 @@
       const userGame = effectiveUserGame(game) || game.externalMeta || {};
       const seed = knownSeedGame(game.title);
       const region = state.activeRegion;
-      const catalog = seed ? "seed" : userGame.catalogStatus || "manual_unverified";
+      const catalog = seed ? t("narrative.detail.passportSeed") : userGame.catalogStatus || t("narrative.detail.catalogManual");
       const cover = seed ? game.coverMeta?.status || "fallback" : userGame.coverStatus || game.coverMeta?.status || "missing";
-      const price = seed ? priceStatus(game, region).label : userGame.priceStatus || "missing";
+      const priceState = seed ? priceStatus(game, region).state : userGame.priceStatus || "missing";
+      const statusKeys = {
+        fresh: "narrative.detail.signalFresh",
+        aging: "narrative.detail.signalAging",
+        stale: "narrative.detail.signalStale",
+        sample: "narrative.detail.signalSample",
+        verify: "narrative.detail.signalVerify",
+        missing: "narrative.detail.signalMissing",
+      };
+      const price = t(statusKeys[priceState] || "narrative.detail.signalMissing");
       const platforms = seed
-        ? "seed"
+        ? t("narrative.detail.passportSeed")
         : userGame.platforms?.length
           ? userGame.platforms.slice(0, 3).join(" / ")
-          : "missing";
+          : t("narrative.detail.passportMissing");
       const atomStatus = (game.atoms || []).length
         ? userGame.atoms?.length
-          ? "source tags"
+          ? t("narrative.detail.passportSourceTags")
           : userGame.inferredAtoms?.length
-            ? "AI inferred"
-            : "seed atoms"
-        : "missing";
+            ? t("narrative.detail.passportAi")
+            : t("narrative.detail.passportSeedAtoms")
+        : t("narrative.detail.passportMissing");
+      const coverKeys = {
+        verified: "narrative.detail.coverVerified",
+        candidate: "narrative.detail.coverCandidate",
+        fallback: "narrative.detail.coverGenerated",
+        missing: "narrative.detail.coverMissing",
+      };
+      const coverValue = t(coverKeys[cover] || "narrative.detail.coverCheck");
 
       return [
-        sourcePassportItem("Catalog", catalog, seed ? "good" : confidenceTone(catalog)),
-        sourcePassportItem("Cover", cover),
-        sourcePassportItem("Price", price),
-        sourcePassportItem("Atoms", atomStatus, atomStatus === "missing" ? "warn" : "good"),
-        sourcePassportItem("Platform", platforms, platforms === "missing" ? "warn" : "neutral"),
+        sourcePassportItem(t("narrative.detail.catalog"), catalog, seed ? "good" : confidenceTone(catalog)),
+        sourcePassportItem(t("narrative.detail.cover"), coverValue),
+        sourcePassportItem(t("narrative.detail.price"), price),
+        sourcePassportItem(t("narrative.detail.atoms"), atomStatus, atomStatus === t("narrative.detail.passportMissing") ? "warn" : "good"),
+        sourcePassportItem(t("narrative.detail.platform"), platforms, platforms === t("narrative.detail.passportMissing") ? "warn" : "neutral"),
       ];
     }
 

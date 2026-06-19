@@ -108,6 +108,33 @@
       return keys[value] ? t(keys[value]) : value;
     }
 
+    function localizedLength(value) {
+      const keys = {
+        short: "narrative.detail.lengthShort",
+        medium: "narrative.detail.lengthMedium",
+        long: "narrative.detail.lengthLong",
+        massive: "narrative.detail.lengthMassive",
+      };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
+    function localizedTone(value) {
+      const keys = {
+        dark: "narrative.detail.toneDark",
+        epic: "narrative.detail.toneEpic",
+        funny: "narrative.detail.toneFunny",
+        grim: "narrative.detail.toneGrim",
+        light: "narrative.detail.toneLight",
+        melancholic: "narrative.detail.toneMelancholic",
+        moody: "narrative.detail.toneMoody",
+        neutral: "narrative.detail.toneNeutral",
+        strange: "narrative.detail.toneStrange",
+        tense: "narrative.detail.toneTense",
+        warm: "narrative.detail.toneWarm",
+      };
+      return keys[value] ? t(keys[value]) : value;
+    }
+
     function snapshotAgeHours(checkedAt) {
       const timestamp = Date.parse(checkedAt);
       if (Number.isNaN(timestamp)) return Infinity;
@@ -177,9 +204,17 @@
     }
 
     function gameDescription(game) {
-      const atoms = (game.atoms || []).slice(0, 2).join(" + ");
-      const timeFit = game.adultTimeFit ? `Best fit: ${game.adultTimeFit}` : "Flexible session fit";
-      return `${game.vibe}. ${atoms} pick with ${game.length} length and ${game.reviewBurden || "unknown"} review burden. ${timeFit}.`;
+      const atoms = (game.atoms || []).slice(0, 2).join(" + ") || t("narrative.detail.needsTags");
+      const timeFit = game.adultTimeFit
+        ? t("narrative.recommend.descriptionBestFit", { fit: localizedAdultFit(game.adultTimeFit) })
+        : t("narrative.recommend.descriptionFlexible");
+      return t("narrative.recommend.description", {
+        vibe: game.vibe,
+        atoms,
+        length: game.length,
+        burden: localizedBurden(game.reviewBurden),
+        timeFit,
+      });
     }
 
     function watchOuts(game) {
@@ -531,33 +566,56 @@
       const facts = hasPrice
         ? [
             { label: `${region} ${formatPrice(game, region)}`, type: priceSignal.canConfirm ? "price" : "warn" },
-            { label: `${discount}% ${priceSignal.canConfirm ? "off" : "signal"}`, type: priceSignal.canConfirm ? "price" : "warn" },
+            {
+              label: t("narrative.detail.discount", {
+                discount,
+                kind: priceSignal.canConfirm
+                  ? t("narrative.detail.discountOff")
+                  : t("narrative.detail.discountSignal"),
+              }),
+              type: priceSignal.canConfirm ? "price" : "warn",
+            },
           ]
         : [
-            { label: "Price missing", type: "warn" },
-            { label: "Store verify", type: "warn" },
+            { label: t("narrative.detail.priceMissing"), type: "warn" },
+            { label: t("narrative.detail.storeVerify"), type: "warn" },
           ];
 
       facts.push({
-        label: isPlusListed ? plusSignal.canConfirm ? "PS Plus" : "Plus signal" : game.externalCandidate ? "Plus unknown" : "Not in Plus",
+        label: isPlusListed
+          ? plusSignal.canConfirm ? "PS Plus" : t("narrative.detail.plusSignal")
+          : game.externalCandidate ? t("narrative.detail.plusUnknown") : t("narrative.detail.notInPlus"),
         type: isPlusListed ? plusSignal.canConfirm ? "plus" : "warn" : "warn",
       });
-      facts.push({ label: game.length, type: "" });
-      if (game.backlog) facts.push({ label: "Backlog", type: "" });
-      if (game.wishlist) facts.push({ label: "Wishlist", type: "" });
+      facts.push({ label: localizedLength(game.length), type: "" });
+      if (game.backlog) facts.push({ label: t("narrative.detail.backlog"), type: "" });
+      if (game.wishlist) facts.push({ label: t("narrative.detail.wishlist"), type: "" });
       if (game.externalCandidate) {
         const userGame = effectiveUserGame(game) || {};
-        facts.push({ label: userGame.atoms?.length ? "Source tags" : "AI inferred", type: "tone" });
+        facts.push({
+          label: userGame.atoms?.length
+            ? t("narrative.detail.sourceTags")
+            : t("narrative.detail.aiInferred"),
+          type: "tone",
+        });
       }
       const notebookHearts = notebookWishlistWeight(game.title);
       const access = notebookAccessKind(game.title);
       const userState = effectiveGameState(game);
-      if (notebookHearts) facts.push({ label: `${notebookHearts} hearts`, type: "intent" });
-      if (userState) facts.push({ label: USER_STATE_LABELS[userState] || userState, type: "access" });
+      if (notebookHearts) facts.push({ label: t("narrative.detail.hearts", { count: notebookHearts }), type: "intent" });
+      if (userState) facts.push({ label: localizedState(userState), type: "access" });
       else if (access) facts.push({ label: access, type: "access" });
-      facts.push({ label: coverLabel(game), type: game.coverMeta?.status === "fallback" ? "cover" : "price" });
-      if (game.adultTimeFit) facts.push({ label: game.adultTimeFit, type: "time" });
-      if (game.tone) facts.push({ label: game.tone, type: "tone" });
+      const coverKeys = {
+        verified: "narrative.detail.coverVerified",
+        candidate: "narrative.detail.coverCandidate",
+        fallback: "narrative.detail.coverGenerated",
+      };
+      facts.push({
+        label: t(coverKeys[game.coverMeta?.status] || "narrative.detail.coverCheck"),
+        type: game.coverMeta?.status === "fallback" ? "cover" : "price",
+      });
+      if (game.adultTimeFit) facts.push({ label: localizedAdultFit(game.adultTimeFit), type: "time" });
+      if (game.tone) facts.push({ label: localizedTone(game.tone), type: "tone" });
       return facts;
     }
 
