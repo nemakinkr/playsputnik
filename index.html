@@ -440,58 +440,58 @@
 
         <section class="game-search-panel" aria-labelledby="game-search-title" data-view-section="discover wishlist">
           <div class="section-heading">
-            <h2 id="game-search-title">Game search</h2>
-            <span id="game-search-status">Local</span>
+            <h2 id="game-search-title" data-i18n="discover.searchTitle">Game search</h2>
+            <span id="game-search-status" data-i18n="discover.searchLocal">Local</span>
           </div>
           <div class="game-search-controls">
-            <input id="game-search-input" type="search" placeholder="Search a game" autocomplete="off" aria-label="Search games" />
-            <button class="secondary-action" id="game-search-submit" type="button">Search</button>
+            <input id="game-search-input" type="search" placeholder="Search a game" autocomplete="off" aria-label="Search games" data-i18n-attr="placeholder:discover.searchPlaceholder;aria-label:discover.searchAria" />
+            <button class="secondary-action" id="game-search-submit" type="button" data-i18n="discover.searchButton">Search</button>
           </div>
-          <p class="panel-note" id="game-search-source">Seed, backbone, external index</p>
+          <p class="panel-note" id="game-search-source" data-i18n="discover.searchSourceInitial">Seed, backbone, external index</p>
           <div id="game-search-list"></div>
         </section>
 
         <section class="visual-catalog-panel" aria-labelledby="visual-catalog-title" data-view-section="today library discover wishlist">
           <div class="section-heading">
-            <h2 id="visual-catalog-title">Visual catalog</h2>
-            <span id="visual-catalog-status">Loading</span>
+            <h2 id="visual-catalog-title" data-i18n="discover.visualTitle">Visual catalog</h2>
+            <span id="visual-catalog-status" data-i18n="discover.loading">Loading</span>
           </div>
-          <div class="visual-catalog-toolbar" role="tablist" aria-label="Visual catalog shelves">
-            <button class="visual-shelf is-active" data-visual-shelf="smart" type="button">Smart</button>
-            <button class="visual-shelf" data-visual-shelf="tonight" type="button">Tonight</button>
-            <button class="visual-shelf" data-visual-shelf="included" type="button">Included</button>
-            <button class="visual-shelf" data-visual-shelf="deals" type="button">Deals</button>
-            <button class="visual-shelf" data-visual-shelf="wishlist" type="button">Wishlist</button>
-            <button class="visual-shelf" data-visual-shelf="library" type="button">Library</button>
-            <button class="visual-shelf" data-visual-shelf="catalog" type="button">Catalog</button>
+          <div class="visual-catalog-toolbar" role="tablist" aria-label="Visual catalog shelves" data-i18n-attr="aria-label:discover.shelvesAria">
+            <button class="visual-shelf is-active" data-visual-shelf="smart" type="button" data-i18n="discover.shelfSmart">Smart</button>
+            <button class="visual-shelf" data-visual-shelf="tonight" type="button" data-i18n="discover.shelfTonight">Tonight</button>
+            <button class="visual-shelf" data-visual-shelf="included" type="button" data-i18n="discover.shelfIncluded">Included</button>
+            <button class="visual-shelf" data-visual-shelf="deals" type="button" data-i18n="discover.shelfDeals">Deals</button>
+            <button class="visual-shelf" data-visual-shelf="wishlist" type="button" data-i18n="discover.shelfWishlist">Wishlist</button>
+            <button class="visual-shelf" data-visual-shelf="library" type="button" data-i18n="discover.shelfLibrary">Library</button>
+            <button class="visual-shelf" data-visual-shelf="catalog" type="button" data-i18n="discover.shelfCatalog">Catalog</button>
           </div>
           <div class="visual-catalog-filters" id="visual-catalog-filters">
             <div class="catalog-filter-group" data-filter-group="atom">
-              <button class="catalog-filter-chip is-active" data-catalog-filter-atom="" type="button">All</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="action" type="button">Action</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="rpg" type="button">RPG</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="story" type="button">Story</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="indie" type="button">Indie</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="platformer" type="button">Platformer</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="roguelike" type="button">Roguelike</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="strategy" type="button">Strategy</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="horror" type="button">Horror</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="puzzle" type="button">Puzzle</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="open-world" type="button">Open world</button>
-              <button class="catalog-filter-chip" data-catalog-filter-atom="souls-like" type="button">Souls-like</button>
+              <button class="catalog-filter-chip is-active" data-catalog-filter-atom="" type="button" data-i18n="discover.filterAll">All</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="action" type="button" data-i18n="discover.filterAction">Action</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="rpg" type="button" data-i18n="discover.filterRpg">RPG</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="story" type="button" data-i18n="discover.filterStory">Story</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="indie" type="button" data-i18n="discover.filterIndie">Indie</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="platformer" type="button" data-i18n="discover.filterPlatformer">Platformer</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="roguelike" type="button" data-i18n="discover.filterRoguelike">Roguelike</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="strategy" type="button" data-i18n="discover.filterStrategy">Strategy</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="horror" type="button" data-i18n="discover.filterHorror">Horror</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="puzzle" type="button" data-i18n="discover.filterPuzzle">Puzzle</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="open-world" type="button" data-i18n="discover.filterOpenWorld">Open world</button>
+              <button class="catalog-filter-chip" data-catalog-filter-atom="souls-like" type="button" data-i18n="discover.filterSouls">Souls-like</button>
             </div>
             <div class="catalog-filter-group" data-filter-group="length">
-              <button class="catalog-filter-chip catalog-filter-chip--meta is-active" data-catalog-filter-length="" type="button">Any length</button>
-              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="short" type="button">Short</button>
-              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="medium" type="button">Medium</button>
-              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="long" type="button">Long</button>
-              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="massive" type="button">Massive</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta is-active" data-catalog-filter-length="" type="button" data-i18n="discover.lengthAny">Any length</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="short" type="button" data-i18n="discover.lengthShort">Short</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="medium" type="button" data-i18n="discover.lengthMedium">Medium</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="long" type="button" data-i18n="discover.lengthLong">Long</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-length="massive" type="button" data-i18n="discover.lengthMassive">Massive</button>
             </div>
             <div class="catalog-filter-group" data-filter-group="difficulty">
-              <button class="catalog-filter-chip catalog-filter-chip--meta is-active" data-catalog-filter-difficulty="" type="button">Any difficulty</button>
-              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="easy" type="button">Easy</button>
-              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="normal" type="button">Normal</button>
-              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="hard" type="button">Hard</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta is-active" data-catalog-filter-difficulty="" type="button" data-i18n="discover.difficultyAny">Any difficulty</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="easy" type="button" data-i18n="discover.difficultyEasy">Easy</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="normal" type="button" data-i18n="discover.difficultyNormal">Normal</button>
+              <button class="catalog-filter-chip catalog-filter-chip--meta" data-catalog-filter-difficulty="hard" type="button" data-i18n="discover.difficultyHard">Hard</button>
             </div>
           </div>
 
@@ -502,15 +502,16 @@
               placeholder="Search catalog…"
               autocomplete="off"
               aria-label="Search games in catalog"
+              data-i18n-attr="placeholder:discover.catalogSearchPlaceholder;aria-label:discover.catalogSearchAria"
             />
             <span id="catalog-search-count"></span>
           </div>
-          <div class="visual-catalog-sort" id="visual-catalog-sort" role="group" aria-label="Sort catalog">
-            <span class="sort-label">Sort:</span>
-            <button class="sort-btn is-active" data-catalog-sort="score" type="button">Best fit</button>
-            <button class="sort-btn" data-catalog-sort="alpha" type="button">A–Z</button>
-            <button class="sort-btn" data-catalog-sort="length" type="button">Length</button>
-            <button class="sort-btn" data-catalog-sort="price" type="button">Price</button>
+          <div class="visual-catalog-sort" id="visual-catalog-sort" role="group" aria-label="Sort catalog" data-i18n-attr="aria-label:discover.catalogSortAria">
+            <span class="sort-label" data-i18n="discover.sortLabel">Sort:</span>
+            <button class="sort-btn is-active" data-catalog-sort="score" type="button" data-i18n="discover.sortBest">Best fit</button>
+            <button class="sort-btn" data-catalog-sort="alpha" type="button" data-i18n="discover.sortAlpha">A–Z</button>
+            <button class="sort-btn" data-catalog-sort="length" type="button" data-i18n="discover.sortLength">Length</button>
+            <button class="sort-btn" data-catalog-sort="price" type="button" data-i18n="discover.sortPrice">Price</button>
           </div>
           <div class="visual-catalog-metrics" id="visual-catalog-metrics"></div>
           <p class="panel-note" id="visual-catalog-summary"></p>
@@ -518,12 +519,12 @@
           <div id="visual-catalog-load-more"></div>
         </section>
 
-        <nav class="tabs" aria-label="Recommendation groups" data-view-section="today library discover wishlist">
-          <button class="tab is-active" data-cluster="play" type="button">Play</button>
-          <button class="tab" data-cluster="plus" type="button">PS Plus</button>
-          <button class="tab" data-cluster="buy" type="button">Buy later</button>
-          <button class="tab" data-cluster="backlog" type="button">Backlog</button>
-          <button class="tab" data-cluster="library" type="button">Library</button>
+        <nav class="tabs" aria-label="Recommendation groups" data-view-section="today library discover wishlist" data-i18n-attr="aria-label:discover.tabsAria">
+          <button class="tab is-active" data-cluster="play" type="button" data-i18n="discover.tabPlay">Play</button>
+          <button class="tab" data-cluster="plus" type="button" data-i18n="discover.tabPlus">PS Plus</button>
+          <button class="tab" data-cluster="buy" type="button" data-i18n="discover.tabBuy">Buy later</button>
+          <button class="tab" data-cluster="backlog" type="button" data-i18n="discover.tabBacklog">Backlog</button>
+          <button class="tab" data-cluster="library" type="button" data-i18n="discover.tabLibrary">Library</button>
         </nav>
 
         <section class="cluster-grid" id="cluster-grid" data-view-section="today library discover wishlist"></section>
@@ -538,8 +539,8 @@
 
         <section class="radar-panel" aria-labelledby="radar-title" data-view-section="discover taste">
           <div class="section-heading">
-            <h2 id="radar-title">Taste radar</h2>
-            <span id="radar-status">Loading</span>
+            <h2 id="radar-title" data-i18n="discover.radarTitle">Taste radar</h2>
+            <span id="radar-status" data-i18n="discover.loading">Loading</span>
           </div>
           <div id="radar-list"></div>
         </section>
@@ -580,8 +581,8 @@
 
         <section class="drop-panel" aria-labelledby="drop-title" data-view-section="discover">
           <div class="section-heading">
-            <h2 id="drop-title">Drop inbox</h2>
-            <span id="drop-status">Loading</span>
+            <h2 id="drop-title" data-i18n="discover.dropTitle">Drop inbox</h2>
+            <span id="drop-status" data-i18n="discover.loading">Loading</span>
           </div>
           <div class="drop-calendar" id="drop-calendar"></div>
           <div id="drop-list"></div>

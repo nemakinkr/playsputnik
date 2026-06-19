@@ -1181,10 +1181,10 @@ function checkSelectors() {
   assert(/function searchResultSourcePassport/.test(appEnrichmentSource), "Search results should expose source passport facts");
   assert(/matchKind/.test(appSearchSource + searchProviderSource + appSource), "Search results should keep match kind visible");
   assert(/function aiEnrichmentForGame/.test(appSource), "External games should get AI enrichment");
-  assert(/AI inferred/.test(appSource), "AI enrichment should be visibly labeled as inferred");
+  assert(/AI inferred/.test(appSource + i18nEnSource), "AI enrichment should be visibly labeled as inferred");
   assert(/inferredAtoms/.test(appSource), "User-game memory should keep inferred atoms separate from source atoms");
   assert(/source-passport/.test(appEnrichmentSource + appSource) && /source-passport/.test(html + appSource + appEnrichmentSource), "Source passport renderer is missing");
-  assert(appSource.includes("check ${missing}"), "AI enrichment should show a missing-facts checklist");
+  assert(/enrichmentCheckFact/.test(appSource + i18nEnSource), "AI enrichment should show a missing-facts checklist");
   assert(/rawgSearch/.test(searchProviderSource), "RAWG provider adapter is missing");
   assert(/loadLocalEnv/.test(searchProviderSource), "Search provider should read local env config");
   assert(/providerSearchPayload/.test(searchProviderSource), "Provider search payload builder is missing");

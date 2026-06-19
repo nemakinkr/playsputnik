@@ -30,14 +30,15 @@
     }
 
     function posterThemeLabel(theme) {
-      return {
-        noir: "Noir poster",
-        warm: "Warm poster",
-        signal: "Signal poster",
-        kinetic: "Kinetic poster",
-        expedition: "Expedition poster",
-        studio: "Studio poster",
-      }[theme] || "Studio poster";
+      const keys = {
+        noir: "discover.coverNoir",
+        warm: "discover.coverWarm",
+        signal: "discover.coverSignal",
+        kinetic: "discover.coverKinetic",
+        expedition: "discover.coverExpedition",
+        studio: "discover.coverStudio",
+      };
+      return t(keys[theme] || "discover.coverStudio");
     }
 
     function generatedPosterBackground(game) {
@@ -68,10 +69,10 @@
 
     function coverReadinessLabel(game) {
       const status = game.coverMeta?.status || "missing";
-      if (status === "verified") return "real cover";
-      if (status === "candidate") return "cover candidate";
+      if (status === "verified") return t("discover.coverReal");
+      if (status === "candidate") return t("discover.coverCandidate");
       if (status === "fallback") return posterThemeLabel(posterTheme(game));
-      return "needs cover";
+      return t("discover.coverNeeds");
     }
 
     function coverSourceLabel(game) {

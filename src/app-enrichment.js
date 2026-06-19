@@ -1,4 +1,29 @@
 (() => {
+  const t = window.PlaySputnikI18n.t;
+  const STATUS_KEYS = {
+    missing: "discover.statusMissing",
+    fallback: "discover.statusFallback",
+    candidate: "discover.statusCandidate",
+    verified: "discover.statusVerified",
+    seed: "discover.catalogSeed",
+    backbone: "discover.catalogBackbone",
+    external_fixture: "discover.catalogExternal",
+    manual_unverified: "discover.catalogManual",
+    exact: "discover.matchExact",
+    alias: "discover.matchAlias",
+    alias_manual: "discover.matchAlias",
+    prefix: "discover.matchPrefix",
+    contains: "discover.matchContains",
+    alias_partial: "discover.matchAlias",
+    text: "discover.matchText",
+    token: "discover.matchToken",
+    manual: "discover.matchManual",
+    high: "discover.confidenceHigh",
+    medium: "discover.confidenceMedium",
+    low: "discover.confidenceLow",
+    pending: "discover.confidencePending",
+  };
+
   function createEnrichmentTools({
     normalizeTitle,
     titleKey,
@@ -6,7 +31,8 @@
     getTitleEnrichmentRules,
   }) {
     function compactStatus(value) {
-      return String(value || "unknown").replaceAll("_", " ");
+      const normalized = String(value || "missing");
+      return STATUS_KEYS[normalized] ? t(STATUS_KEYS[normalized]) : normalized.replaceAll("_", " ");
     }
 
     function countValues(values) {
@@ -91,11 +117,18 @@
 
     function searchResultSourcePassport(result) {
       return [
-        sourcePassportItem("Catalog", result.catalogStatus, result.sourceId === "seed_catalog" ? "good" : confidenceTone(result.catalogStatus)),
-        sourcePassportItem("Match", result.matchKind ? `${result.matchConfidence} / ${result.matchKind}` : result.matchConfidence),
-        sourcePassportItem("Cover", result.coverStatus),
-        sourcePassportItem("Price", result.priceStatus),
-        sourcePassportItem("Platform", result.platforms?.length ? result.platforms.slice(0, 3).join(" / ") : "missing", result.platforms?.length ? "neutral" : "warn"),
+        sourcePassportItem(t("narrative.detail.catalog"), result.catalogStatus, result.sourceId === "seed_catalog" ? "good" : confidenceTone(result.catalogStatus)),
+        sourcePassportItem(
+          t("discover.passportMatch"),
+          result.matchKind ? `${compactStatus(result.matchConfidence)} / ${compactStatus(result.matchKind)}` : compactStatus(result.matchConfidence),
+        ),
+        sourcePassportItem(t("narrative.detail.cover"), result.coverStatus),
+        sourcePassportItem(t("narrative.detail.price"), result.priceStatus),
+        sourcePassportItem(
+          t("narrative.detail.platform"),
+          result.platforms?.length ? result.platforms.slice(0, 3).join(" / ") : t("discover.statusMissing"),
+          result.platforms?.length ? "neutral" : "warn",
+        ),
       ];
     }
 

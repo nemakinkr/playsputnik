@@ -175,10 +175,10 @@ try {
   assert(afterSearchSave.record?.source?.startsWith("search_"), `Expected direct search save source memory, got ${afterSearchSave.record?.source}`);
   assert(afterSearchSave.activeSaved, "Expected direct Wishlist button to become selected");
   assert(afterSearchSave.pressedSaved === "true", `Expected Wishlist aria-pressed=true, got ${afterSearchSave.pressedSaved}`);
-  assert(/Saved to wishlist/.test(afterSearchSave.memoryStatus), `Expected search memory confirmation, got ${afterSearchSave.memoryStatus}`);
+  assert(/Saved to Wishlist|Добавлено в Желаемое/i.test(afterSearchSave.memoryStatus), `Expected search memory confirmation, got ${afterSearchSave.memoryStatus}`);
   assert(afterSearchSave.userState === "saved", `Expected saved userState after direct search action, got ${afterSearchSave.userState}`);
   assert(detail.title === expectedTitle, `Expected ${expectedTitle} detail drawer, got ${detail.title}`);
-  assert(/fit/.test(detail.meta), `Expected detail fit metadata, got ${detail.meta}`);
+  assert(/fit|совпадение/i.test(detail.meta), `Expected detail fit metadata, got ${detail.meta}`);
   assert(detail.actions >= 7, `Expected detail actions including Plus, got ${detail.actions}`);
   assert(detail.plusAction, "Expected detail Plus action");
   assert(detail.passportChecks >= 5, `Expected detail source passport checks, got ${detail.passportChecks}`);

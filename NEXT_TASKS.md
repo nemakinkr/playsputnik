@@ -47,11 +47,12 @@ both audiences. This is a deliberate large project, done in phases with a commit
   branching uses machine state instead of translated display text. Remaining
   top-level/detail labels belong to Phase 5. SW v34.
 - **Phase 5 — remaining views — IN PROGRESS.** Game-detail decision cockpit,
-  Library, and Wishlist are done. Wishlist now localizes purchase decisions,
-  dashboard guardrails, filters/sorts, price targets, source freshness,
-  buy/wait planning, and share/import copy. The seeded mobile gate asserts
-  dynamic Library and Wishlist decisions in both locales. Remaining: Discover,
-  Taste, Deals, Data, and Stats dynamic copy. SW v38.
+  Library, Wishlist, and Discover are done. Discover now localizes global
+  search, source honesty, search-to-memory actions, visual catalog shelves,
+  filters/sorts, cover states, radar shell, and subscription-drop controls.
+  The seeded mobile gate asserts dynamic Library, Wishlist, and Discover copy
+  in both locales. Remaining: Taste, Deals, Data, and Stats dynamic copy.
+  Editorial game descriptions remain Phase 6. SW v39.
 - **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
   decide approach (parallel ru fields vs. separate file).
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).

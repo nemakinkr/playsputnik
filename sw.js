@@ -1,7 +1,7 @@
 /* PlaySputnik Service Worker — offline-first static assets, network-first data */
 "use strict";
 
-const CACHE_VERSION = "v38";
+const CACHE_VERSION = "v39";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 

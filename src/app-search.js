@@ -1,4 +1,17 @@
 (() => {
+  const t = window.PlaySputnikI18n.t;
+  const SOURCE_KEYS = {
+    seed_catalog: "discover.sourceSeed",
+    catalog_backbone: "discover.sourceBackbone",
+    prototype_external_index: "discover.sourceExternal",
+    manual_unverified: "discover.sourceManual",
+    rawg_provider_hook: "discover.sourceProvider",
+  };
+
+  function localizedSourceLabel(id, fallback = "") {
+    return SOURCE_KEYS[id] ? t(SOURCE_KEYS[id]) : fallback || t("discover.sourceProvider");
+  }
+
   function createSearchTools({
     getTitleAliases,
     getSearchSources,
@@ -146,7 +159,7 @@
       return {
         title: game.title,
         sourceId: "seed_catalog",
-        sourceLabel: searchSourceById("seed_catalog")?.label || "Seed catalog",
+        sourceLabel: localizedSourceLabel("seed_catalog"),
         catalogStatus: "seed",
         matchConfidence: "high",
         coverStatus: game.coverMeta?.status || "fallback",
@@ -154,7 +167,7 @@
         platforms: [],
         atoms: game.atoms || [],
         vibe: game.vibe,
-        reason: "Already in the promoted seed catalog.",
+        reason: t("discover.reasonSeed"),
         editionGroup: game.editionGroup || "",
         editionRole: game.editionRole || "",
         editionLabel: game.editionLabel || "",
@@ -173,7 +186,7 @@
       return {
         title: record.title,
         sourceId: "catalog_backbone",
-        sourceLabel: searchSourceById("catalog_backbone")?.label || "Catalog backbone",
+        sourceLabel: localizedSourceLabel("catalog_backbone"),
         catalogStatus: record.status || "backbone",
         matchConfidence: record.status === "ready_for_seed" ? "medium" : "low",
         coverStatus: record.coverStatus || "missing",
@@ -181,7 +194,7 @@
         platforms: record.platforms || [],
         atoms: record.atoms || [],
         vibe: record.reason || "Curated backbone candidate.",
-        reason: record.reason || "Queued for catalog review.",
+        reason: record.reason || t("discover.reasonBackbone"),
         score: match.score - 5,
         matchKind: match.kind,
       };
@@ -194,7 +207,7 @@
       return {
         title: record.title,
         sourceId: "prototype_external_index",
-        sourceLabel: searchSourceById("prototype_external_index")?.label || "Prototype external index",
+        sourceLabel: localizedSourceLabel("prototype_external_index"),
         catalogStatus: "external_fixture",
         matchConfidence: record.matchConfidence || "low",
         coverStatus: record.coverStatus || "missing",
@@ -204,7 +217,7 @@
         platforms: record.platforms || [],
         atoms: record.atoms || [],
         vibe: record.vibe || "External search candidate",
-        reason: record.reason || "External lookup fixture.",
+        reason: record.reason || t("discover.reasonExternal"),
         score: match.score - 12,
         matchKind: match.kind,
       };
@@ -219,7 +232,7 @@
       return {
         title,
         sourceId: "manual_unverified",
-        sourceLabel: searchSourceById("manual_unverified")?.label || "Manual unverified title",
+        sourceLabel: localizedSourceLabel("manual_unverified"),
         catalogStatus: "manual_unverified",
         matchConfidence: "low",
         coverStatus: "missing",
@@ -231,8 +244,8 @@
         inferredAtoms: enrichment.atoms,
         vibe: enrichment.summary || "Unverified wishlist candidate",
         reason: alias
-          ? "Typed title matched a known alias, but catalog metadata still needs provider resolution before price, cover, and subscription status can be trusted."
-          : "Typed title can enter wishlist immediately. Taste read is AI-inferred; metadata, cover, price, and subscription status still need provider resolution.",
+          ? t("discover.reasonManualAlias")
+          : t("discover.reasonManual"),
         score: 10,
         matchKind: alias ? "alias_manual" : "manual",
       };
@@ -245,7 +258,7 @@
       return {
         title: record.title,
         sourceId: record.sourceId || "rawg_provider_hook",
-        sourceLabel: record.sourceLabel || searchSourceById(record.sourceId || "rawg_provider_hook")?.label || "Provider result",
+        sourceLabel: localizedSourceLabel(record.sourceId || "rawg_provider_hook", record.sourceLabel),
         catalogStatus: record.catalogStatus || "provider_result",
         matchConfidence: record.matchConfidence || "medium",
         coverStatus: record.coverStatus || (record.coverUrl ? "candidate" : "missing"),
@@ -256,7 +269,7 @@
         platforms: Array.isArray(record.platforms) ? record.platforms : [],
         atoms: Array.isArray(record.atoms) ? record.atoms : [],
         vibe: record.vibe || "Provider search candidate",
-        reason: record.reason || "Provider metadata result; price and subscription status still need store-backed checks.",
+        reason: record.reason || t("discover.reasonProvider"),
         reconciliation,
         duplicateOf: record.duplicateOf || reconciliation?.duplicateOf || "",
         duplicateSource: record.duplicateSource || reconciliation?.duplicateSource || "",

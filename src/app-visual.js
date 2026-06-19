@@ -5,7 +5,18 @@
   if (!window.PlaySputnikRecommend) throw new Error("app-recommend must load before app-visual");
   if (!window.PlaySputnikRanking) throw new Error("app-ranking must load before app-visual");
 
-  const { PLAYABLE_STATES, USER_STATE_LABELS } = window.PlaySputnikConfig;
+  const { PLAYABLE_STATES } = window.PlaySputnikConfig;
+  const t = window.PlaySputnikI18n.t;
+  const STATE_KEYS = {
+    saved: "discover.stateSaved", playing: "discover.statePlaying", paused: "discover.statePaused",
+    want_to_finish: "discover.stateFinish", owned: "discover.stateOwned",
+    owned_forever: "discover.stateForever", subscription: "discover.stateSubscription",
+    completed: "discover.stateCompleted", dropped: "discover.stateDropped", hidden: "discover.stateHidden",
+  };
+
+  function localizedState(value) {
+    return STATE_KEYS[value] ? t(STATE_KEYS[value]) : value;
+  }
 
   function createVisualTools({
     getState,
@@ -39,9 +50,13 @@
 
     function visualCatalogReason(game, lane = "") {
       if (lane === "Deal") return dealReason(game);
-      if (lane === "Included") return "included access";
-      if (lane === "Wishlist") return notebookWishlistWeight(game.title) ? `${notebookWishlistWeight(game.title)} hearts` : "saved intent";
-      if (lane === "Library") return USER_STATE_LABELS[effectiveGameState(game)] || "in your memory";
+      if (lane === "Included") return t("discover.reasonIncluded");
+      if (lane === "Wishlist") {
+        return notebookWishlistWeight(game.title)
+          ? t("discover.reasonHearts", { count: notebookWishlistWeight(game.title) })
+          : t("discover.reasonSaved");
+      }
+      if (lane === "Library") return localizedState(effectiveGameState(game)) || t("discover.reasonMemory");
       if (lane === "Catalog") return game.vibe;
       return personalFitBand(game.score || scoreGame(game));
     }
@@ -97,11 +112,11 @@
         return items;
       }
 
-      add(primaryDecisionGame(ranked), "Tonight", "top companion pick");
+      add(primaryDecisionGame(ranked), "Tonight", t("discover.reasonTop"));
       clusters.play.slice(0, 5).forEach((game) => add(game, "Taste", personalFitBand(game.score)));
-      clusters.plus.slice(0, 4).forEach((game) => add(game, "Included", "try before buying"));
+      clusters.plus.slice(0, 4).forEach((game) => add(game, "Included", t("discover.reasonTryBeforeBuy")));
       clusters.buy.slice(0, 4).forEach((game) => add(game, "Deal", dealReason(game)));
-      clusters.backlog.slice(0, 4).forEach((game) => add(game, "Memory", USER_STATE_LABELS[effectiveGameState(game)] || "remembered"));
+      clusters.backlog.slice(0, 4).forEach((game) => add(game, "Memory", localizedState(effectiveGameState(game)) || t("discover.reasonRemembered")));
 
       return items.slice(0, 18);
     }

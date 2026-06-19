@@ -1569,22 +1569,20 @@ function aiEnrichmentForGame(item) {
     .filter((atom) => combinedTasteWeight(atom) < 0)
     .slice(0, 2);
   const missing = missingChecksForItem(item);
-  const status = explicitAtoms.length
-    ? "AI supported by source tags"
-    : inferredAtoms.length || rule
-      ? "AI inferred"
-      : "AI title-only";
+  const status = explicitAtoms.length || inferredAtoms.length || rule
+    ? t("discover.enrichmentInferred")
+    : t("discover.enrichmentTitleOnly");
   const fit = positiveAtoms.length >= 2
-    ? "Promising fit"
+    ? t("discover.enrichmentPromising")
     : positiveAtoms.length
-      ? "Taste hint"
-      : "Needs taste check";
+      ? t("discover.enrichmentHint")
+      : t("discover.enrichmentCheck");
   const summary = positiveAtoms.length
-    ? `Touches ${positiveAtoms.join(" / ")} taste signals.`
-    : rule?.summary || item.vibe || "Preliminary title-only read; metadata still needs a provider pass.";
+    ? t("discover.enrichmentSignals", { signals: positiveAtoms.join(" / ") })
+    : t("discover.enrichmentPreliminary");
   const risk = cautionAtoms.length
-    ? `Possible friction: ${cautionAtoms.join(" / ")}.`
-    : rule?.risk || "Price, subscription, language, cover, and exact platform facts are not verified yet.";
+    ? t("discover.enrichmentFriction", { signals: cautionAtoms.join(" / ") })
+    : t("discover.enrichmentRisk");
 
   return {
     status,
@@ -1599,7 +1597,16 @@ function aiEnrichmentForGame(item) {
 
 function aiEnrichmentHtml(item, modifier = "") {
   const enrichment = aiEnrichmentForGame(item);
-  const missing = enrichment.missing.length ? enrichment.missing.slice(0, 4).join(" / ") : "nothing critical";
+  const missingKeys = {
+    platforms: "discover.missingPlatforms",
+    cover: "discover.missingCover",
+    price: "discover.missingPrice",
+    atoms: "discover.missingAtoms",
+    "PS Plus": "discover.missingPlus",
+  };
+  const missing = enrichment.missing.length
+    ? enrichment.missing.slice(0, 4).map((value) => t(missingKeys[value] || "discover.missingAtoms")).join(" / ")
+    : t("discover.enrichmentNothing");
   const atoms = enrichment.atoms.slice(0, 4).map((atom) => `<span class="fact tone">${atom}</span>`).join("");
   return `
     <div class="ai-enrichment ${modifier}">
@@ -1608,7 +1615,7 @@ function aiEnrichmentHtml(item, modifier = "") {
         <strong>${enrichment.fit}</strong>
       </div>
       <p>${enrichment.summary} ${enrichment.risk}</p>
-      <div class="facts">${atoms}<span class="fact warn">check ${missing}</span></div>
+      <div class="facts">${atoms}<span class="fact warn">${t("discover.enrichmentCheckFact", { missing })}</span></div>
     </div>
   `;
 }
@@ -3809,32 +3816,67 @@ function renderMyGameRow(game, index, lane = "suggested") {
       return row;
 }
 
+function discoverConfidenceLabel(value) {
+  const keys = {
+    high: "discover.confidenceHigh",
+    medium: "discover.confidenceMedium",
+    low: "discover.confidenceLow",
+    pending: "discover.confidencePending",
+  };
+  return t(keys[value] || "discover.confidenceLow");
+}
+
+function discoverCatalogStatus(value) {
+  const keys = {
+    seed: "discover.catalogSeed",
+    backbone: "discover.catalogBackbone",
+    ready_for_seed: "discover.catalogBackbone",
+    external_fixture: "discover.catalogExternal",
+    manual_unverified: "discover.catalogManual",
+    provider_result: "discover.catalogExternal",
+  };
+  return t(keys[value] || "discover.catalogExternal");
+}
+
+function discoverAssetStatus(value) {
+  const keys = {
+    missing: "discover.statusMissing",
+    fallback: "discover.statusFallback",
+    candidate: "discover.statusCandidate",
+    verified: "discover.statusVerified",
+    fresh: "wishlist.freshnessFresh",
+    sample: "wishlist.freshnessSample",
+    stale: "wishlist.freshnessStale",
+  };
+  return t(keys[value] || "discover.statusMissing");
+}
+
 function searchResultMemoryStatus(result) {
   if (resultStateSelected(result, "subscription")) {
     return {
       tone: "access",
-      label: "Plus access added",
-      detail: "It is now in Library as subscription access; no price claim was created.",
+      label: t("discover.memoryPlus"),
+      detail: t("discover.memoryPlusDetail"),
     };
   }
   if (resultStateSelected(result, "owned")) {
     return {
       tone: "owned",
-      label: "Added to library",
-      detail: "It can now shape recommendations and backlog planning.",
+      label: t("discover.memoryOwned"),
+      detail: t("discover.memoryOwnedDetail"),
     };
   }
   if (resultAlreadySaved(result)) {
     return {
       tone: "saved",
-      label: "Saved to wishlist",
-      detail: "It now contributes taste and price-watch intent.",
+      label: t("discover.memorySaved"),
+      detail: t("discover.memorySavedDetail"),
     };
   }
   return {
     tone: "empty",
-    label: "Ready to add",
-    detail: "Choose Wishlist, Library, or Plus now; details and rating can come later.",
+    label: t("discover.memoryReady"),
+    detail: t("discover.memoryReadyDetail"),
   };
 }
 
@@ -3878,32 +3920,46 @@ function renderGameSearch() {
   const sourceCount = searchSources?.sources?.length || 0;
   const localIndexReady = searchIndexStatus === "ready";
   const localSourceCopy = localIndexReady
-    ? `${sourceCount} sources`
+    ? t("discover.sources", { count: sourceCount })
     : searchIndexStatus === "failed"
-      ? "source index failed"
-      : `${sourceCount || "local"} sources loading`;
+      ? t("discover.sourceIndexFailed")
+      : sourceCount
+        ? t("discover.sourcesLoading", { count: sourceCount })
+        : t("discover.localSourcesLoading");
   const provider = state.providerSearch || {};
   const providerLabel = provider.status === "loading"
-    ? "provider loading"
+    ? t("discover.providerLoading")
     : provider.status === "live"
-      ? `live ${provider.provider}`
+      ? t("discover.providerLive", { provider: provider.provider })
       : provider.status === "fallback"
-        ? `fallback ${provider.provider}${provider.recoverable ? " / recoverable" : ""}`
+        ? `${t("discover.providerFallback", { provider: provider.provider })}${provider.recoverable ? ` / ${t("discover.providerRecoverable")}` : ""}`
         : provider.status === "offline"
-          ? "provider offline / recoverable"
-          : "provider idle";
-  const localIndexCopy = localIndexReady ? "local index ready" : searchIndexStatus === "failed" ? "local index failed" : "local index loading";
-  els.gameSearchStatus.textContent = query.length >= 2 ? `${results.length} results / ${providerLabel} / ${localIndexCopy}` : "Ready";
-  els.gameSearchSubmit.textContent = provider.status === "loading" ? "Searching" : "Provider";
-  els.gameSearchSource.textContent =
-    `${localSourceCopy} / ${provider.sourceHealth || "local first"}${provider.sourceHealthDetail ? ` / ${provider.sourceHealthDetail}` : ""} / no live price or subscription claims for external results`;
+          ? t("discover.providerOffline")
+          : t("discover.providerIdle");
+  const localIndexCopy = localIndexReady
+    ? t("discover.localReady")
+    : searchIndexStatus === "failed"
+      ? t("discover.localFailed")
+      : t("discover.localLoading");
+  els.gameSearchStatus.textContent = query.length >= 2
+    ? `${t("discover.results", { count: results.length })} / ${providerLabel} / ${localIndexCopy}`
+    : t("discover.searchReady");
+  els.gameSearchSubmit.textContent = provider.status === "loading" ? t("discover.searching") : t("discover.searchButton");
+  const providerDetail = window.PlaySputnikI18n.getLocale() === "en" && provider.sourceHealthDetail
+    ? ` / ${provider.sourceHealthDetail}`
+    : "";
+  els.gameSearchSource.textContent = t("discover.sourcePromise", {
+    sources: localSourceCopy,
+    health: provider.status ? providerLabel : t("discover.localFirst"),
+    detail: providerDetail,
+  });
 
   if (query.length < 2) {
     const empty = document.createElement("div");
     empty.className = "search-empty";
     empty.innerHTML = `
-      <strong>Search seed, backbone, or add a title</strong>
-      <span>External results can enter wishlist before metadata and prices are resolved.</span>
+      <strong>${t("discover.emptySearchTitle")}</strong>
+      <span>${t("discover.emptySearchDetail")}</span>
     `;
     els.gameSearchList.replaceChildren(empty);
     return;
@@ -3914,10 +3970,10 @@ function renderGameSearch() {
     const notice = document.createElement("div");
     notice.className = "search-empty source-warning";
     notice.innerHTML = `
-      <strong>${searchIndexStatus === "failed" ? "Search sources need refresh" : "Search sources are still loading"}</strong>
+      <strong>${t(searchIndexStatus === "failed" ? "discover.sourcesRefresh" : "discover.sourcesStillLoading")}</strong>
       <span>${searchIndexStatus === "failed"
-        ? "Seed results and manual add still work, but external fixture ranking is unavailable."
-        : "Early seed/backbone results can appear first; exact external matches may reorder in a moment."}</span>
+        ? t("discover.sourcesFailedDetail")
+        : t("discover.sourcesLoadingDetail")}</span>
     `;
     notices.push(notice);
   }
@@ -3925,8 +3981,14 @@ function renderGameSearch() {
     const notice = document.createElement("div");
     notice.className = "search-empty source-warning";
     notice.innerHTML = `
-      <strong>${provider.sourceHealth === "rawg_rate_limited" ? "Provider rate-limited" : provider.status === "offline" ? "Provider endpoint offline" : "Provider fallback active"}</strong>
-      <span>${provider.sourceHealthDetail || "Local search and manual add remain available; try provider again later."}</span>
+      <strong>${t(provider.sourceHealth === "rawg_rate_limited"
+        ? "discover.providerRateLimited"
+        : provider.status === "offline"
+          ? "discover.providerEndpointOffline"
+          : "discover.providerFallbackActive")}</strong>
+      <span>${window.PlaySputnikI18n.getLocale() === "en" && provider.sourceHealthDetail
+        ? provider.sourceHealthDetail
+        : t("discover.providerFallbackDetail")}</span>
     `;
     notices.push(notice);
   }
@@ -3938,7 +4000,7 @@ function renderGameSearch() {
       const platforms = (result.platforms || []).slice(0, 3).map((platform) => `<span class="fact access">${platform}</span>`).join("");
       const reconciliation = result.reconciliation?.status || result.duplicateSource || "";
       const reconciliationFact = reconciliation
-        ? `<span class="fact ${reconciliation === "new_external" ? "warn" : "access"}">${reconciliation}</span>`
+        ? `<span class="fact ${reconciliation === "new_external" ? "warn" : "access"}">${compactStatus(reconciliation)}</span>`
         : "";
       const saved = resultAlreadySaved(result);
       const sourcePassport = sourcePassportHtml(searchResultSourcePassport(result), "compact");
@@ -3949,30 +4011,30 @@ function renderGameSearch() {
       row.innerHTML = `
         <div>
           <strong>${result.title}</strong>
-          <span>${result.sourceLabel} / ${result.matchConfidence} confidence</span>
+          <span>${result.sourceLabel} / ${t("discover.confidence", { value: discoverConfidenceLabel(result.matchConfidence) })}</span>
           <p>${result.reason}</p>
           <div class="facts">
             ${atoms}
             ${platforms}
             ${editionBadgeHtml(result)}
-            <span class="fact access">${result.catalogStatus}</span>
+            <span class="fact access">${t("discover.catalogFact", { value: discoverCatalogStatus(result.catalogStatus) })}</span>
             ${reconciliationFact}
-            <span class="fact ${result.coverStatus === "missing" ? "warn" : "cover"}">cover ${result.coverStatus}</span>
-            <span class="fact ${result.priceStatus === "missing" ? "warn" : "price"}">price ${result.priceStatus}</span>
+            <span class="fact ${result.coverStatus === "missing" ? "warn" : "cover"}">${t("discover.coverFact", { value: discoverAssetStatus(result.coverStatus) })}</span>
+            <span class="fact ${result.priceStatus === "missing" ? "warn" : "price"}">${t("discover.priceFact", { value: discoverAssetStatus(result.priceStatus) })}</span>
           </div>
           ${sourcePassport}
           ${enrichment}
         </div>
         <div class="game-search-actions">
           <div class="game-search-memory tone-${memory.tone}" data-search-memory-panel>
-            <span>Memory</span>
+            <span>${t("discover.memory")}</span>
             <strong>${memory.label}</strong>
             <small>${memory.detail}</small>
           </div>
-          <button class="memory-action search-primary-action ${saved ? "is-selected" : ""}" data-search-state="saved" aria-pressed="${saved}" type="button">${saved ? "Saved" : "Wishlist"}</button>
-          <button class="memory-action ${owned ? "is-selected" : ""}" data-search-state="owned" aria-pressed="${owned}" type="button">Library</button>
-          <button class="memory-action ${subscription ? "is-selected" : ""}" data-search-state="subscription" aria-pressed="${subscription}" type="button">Plus</button>
-          <button class="memory-action" data-search-detail="${detailAttr(result.title)}" type="button">Details</button>
+          <button class="memory-action search-primary-action ${saved ? "is-selected" : ""}" data-search-state="saved" aria-pressed="${saved}" type="button">${saved ? t("discover.actionSaved") : t("discover.actionWishlist")}</button>
+          <button class="memory-action ${owned ? "is-selected" : ""}" data-search-state="owned" aria-pressed="${owned}" type="button">${t("discover.actionLibrary")}</button>
+          <button class="memory-action ${subscription ? "is-selected" : ""}" data-search-state="subscription" aria-pressed="${subscription}" type="button">${t("discover.actionPlus")}</button>
+          <button class="memory-action" data-search-detail="${detailAttr(result.title)}" type="button">${t("discover.actionDetails")}</button>
         </div>
       `;
       row.querySelector("[data-search-detail]").addEventListener("click", () => openGameDetail(result.title));
@@ -3989,14 +4051,28 @@ function renderGameSearch() {
 }
 
 const VISUAL_CATALOG_SHELVES = {
-  smart: "Smart shelf",
-  tonight: "Tonight",
-  included: "Included",
-  deals: "Deals",
-  wishlist: "Wishlist",
-  library: "Library",
-  catalog: "Catalog",
+  smart: "discover.shelfSmartSummary",
+  tonight: "discover.shelfTonightSummary",
+  included: "discover.shelfIncludedSummary",
+  deals: "discover.shelfDealsSummary",
+  wishlist: "discover.shelfWishlistSummary",
+  library: "discover.shelfLibrarySummary",
+  catalog: "discover.shelfCatalogSummary",
 };
+
+function discoverLaneLabel(lane) {
+  const keys = {
+    Tonight: "discover.laneTonight",
+    Taste: "discover.laneTaste",
+    Included: "discover.laneIncluded",
+    Deal: "discover.laneDeal",
+    Wishlist: "discover.laneWishlist",
+    Library: "discover.laneLibrary",
+    Catalog: "discover.laneCatalog",
+    Memory: "discover.laneMemory",
+  };
+  return t(keys[lane] || "discover.laneCatalog");
+}
 
 let drawerReturnFocus = null;
 
@@ -4702,17 +4778,18 @@ function createVisualCatalogCard(item) {
   const { game, lane, reason } = item;
   const gameState = effectiveGameState(game);
   const price = game.prices?.[state.activeRegion];
-  const priceCopy = typeof price === "number" ? formatMoney(price) : "No price";
+  const priceCopy = typeof price === "number" ? formatMoney(price) : t("discover.noPrice");
   const inPsPlus = (game.psPlus || []).includes(state.activeRegion);
   const plusTier = inPsPlus ? (game.subscriptionMeta?.[state.activeRegion]?.tier || "Extra") : null;
-  const stateCopy = gameState ? USER_STATE_LABELS[gameState] || gameState : "Unsorted";
+  const stateCopy = gameState ? libraryStateLabel(gameState) : t("discover.unsorted");
+  const laneCopy = discoverLaneLabel(lane);
   const article = document.createElement("article");
   article.className = `visual-catalog-card ${gameState ? "has-state" : ""}`;
   article.dataset.visualTitle = game.title;
   article.dataset.visualLane = lane;
   article.innerHTML = `
     <div class="visual-catalog-poster">
-      <span>${lane}</span>
+      <span>${laneCopy}</span>
       <strong>${game.title}</strong>
     </div>
     <div class="visual-catalog-copy">
@@ -4730,10 +4807,10 @@ function createVisualCatalogCard(item) {
         ${(game.atoms || []).slice(0, 3).map((atom) => `<span>${atom}</span>`).join("")}
       </div>
       <div class="visual-catalog-actions">
-        <button data-visual-detail type="button">Details</button>
-        <button data-visual-state="saved" type="button">Wishlist</button>
-        <button data-visual-state="playing" type="button">Play</button>
-        <button data-visual-state="completed" type="button">Done</button>
+        <button data-visual-detail type="button">${t("discover.actionDetails")}</button>
+        <button data-visual-state="saved" type="button">${t("discover.actionWishlist")}</button>
+        <button data-visual-state="playing" type="button">${t("discover.actionPlay")}</button>
+        <button data-visual-state="completed" type="button">${t("discover.actionDone")}</button>
       </div>
     </div>
   `;
@@ -4816,7 +4893,7 @@ function renderVisualCatalog(ranked) {
   const fallbackCount = pagedItems.filter((item) => item.game.coverMeta?.status === "fallback").length;
   const realCount = pagedItems.filter((item) => ["verified", "candidate"].includes(item.game.coverMeta?.status)).length;
   const stats = visualCatalogStats();
-  const shelf = VISUAL_CATALOG_SHELVES[state.visualCatalogShelf] || VISUAL_CATALOG_SHELVES.smart;
+  const shelf = t(VISUAL_CATALOG_SHELVES[state.visualCatalogShelf] || VISUAL_CATALOG_SHELVES.smart);
   document.querySelectorAll("[data-visual-shelf]").forEach((button) => {
     const active = button.dataset.visualShelf === (state.visualCatalogShelf || "smart");
     button.classList.toggle("is-active", active);
@@ -4826,12 +4903,12 @@ function renderVisualCatalog(ranked) {
   if (els.catalogSearchInput && els.catalogSearchInput !== document.activeElement) {
     els.catalogSearchInput.value = state.catalogSearch || "";
   }
-  els.catalogSearchCount.textContent = searchQuery.length >= 2 ? `${totalFiltered} results` : "";
+  els.catalogSearchCount.textContent = searchQuery.length >= 2 ? t("discover.results", { count: totalFiltered }) : "";
   els.visualCatalogMetrics.replaceChildren(
     ...[
-      [`${stats.coverCount}/${stats.totalCount}`, "covers"],
-      [`${stats.playableCount}`, "playable"],
-      [`${stats.wishlistCount}`, "wishlist"],
+      [`${stats.coverCount}/${stats.totalCount}`, t("discover.metricCovers")],
+      [`${stats.playableCount}`, t("discover.metricPlayable")],
+      [`${stats.wishlistCount}`, t("discover.metricWishlist")],
     ].map(([value, label]) => {
       const item = document.createElement("div");
       item.className = "visual-catalog-metric";
@@ -4840,10 +4917,13 @@ function renderVisualCatalog(ranked) {
     }),
   );
   els.visualCatalogStatus.textContent = searchQuery.length >= 2
-    ? `${totalFiltered} found`
-    : `${pagedItems.length} of ${totalFiltered} shown`;
-  els.visualCatalogSummary.textContent =
-    `${shelf} / ${realCount} image candidates / ${fallbackCount} generated posters / quick states update memory instantly.`;
+    ? t("discover.found", { count: totalFiltered })
+    : t("discover.shown", { shown: pagedItems.length, total: totalFiltered });
+  els.visualCatalogSummary.textContent = t("discover.catalogSummary", {
+    shelf,
+    real: realCount,
+    fallback: fallbackCount,
+  });
   els.visualCatalogList.replaceChildren(...pagedItems.map(createVisualCatalogCard));
 
   // Load more button
@@ -4853,7 +4933,7 @@ function renderVisualCatalog(ranked) {
       const btn = document.createElement("button");
       btn.className = "load-more-btn";
       btn.type = "button";
-      btn.textContent = `Show more (${totalFiltered - pagedItems.length} left)`;
+      btn.textContent = t("discover.showMore", { count: totalFiltered - pagedItems.length });
       btn.addEventListener("click", () => {
         state.catalogPage = (state.catalogPage || 1) + 1;
         renderVisualCatalog(rankedGames());
@@ -4870,13 +4950,14 @@ function renderDropCalendar() {
     ...drops.map((drop) => {
       const row = document.createElement("div");
       row.className = "calendar-row";
+      const isMonthly = drop.id === "monthly-games";
       row.innerHTML = `
         <div>
-          <strong>${drop.label}</strong>
-          <span>${drop.cadence}</span>
+          <strong>${t(isMonthly ? "discover.calendarMonthly" : "discover.calendarRefresh")}</strong>
+          <span>${t(isMonthly ? "discover.calendarMonthlyCadence" : "discover.calendarRefreshCadence")}</span>
         </div>
-        <p>${drop.userAction}</p>
-        <span class="calendar-status">${drop.sourceStatus}</span>
+        <p>${t(isMonthly ? "discover.calendarMonthlyAction" : "discover.calendarRefreshAction")}</p>
+        <span class="calendar-status">${t("discover.calendarNeedsSource")}</span>
       `;
       return row;
     }),
@@ -4890,15 +4971,15 @@ function renderMonthlyDrop() {
   const visibleDrop = undecided.slice(0, 3);
   const cooldownDays = dropCalendar?.lifecycle?.cooldownDays || 14;
   els.dropStatus.textContent = undecided.length
-    ? `${undecided.length} open / ${savedForLater} saved / ${cooldownDays}d cooldown`
-    : `handled / ${savedForLater} saved / ${cooldownDays}d cooldown`;
+    ? t("discover.dropOpen", { open: undecided.length, saved: savedForLater, days: cooldownDays })
+    : t("discover.dropHandledStatus", { saved: savedForLater, days: cooldownDays });
   renderDropCalendar();
   if (!visibleDrop.length) {
     const empty = document.createElement("div");
     empty.className = "drop-empty";
     empty.innerHTML = `
-      <strong>Drop handled</strong>
-      <span>Saved picks stay in memory. This inbox can stay quiet until the next checkpoint.</span>
+      <strong>${t("discover.dropHandled")}</strong>
+      <span>${t("discover.dropHandledDetail")}</span>
     `;
     els.dropList.replaceChildren(empty);
     return;
@@ -4908,11 +4989,18 @@ function renderMonthlyDrop() {
       const row = document.createElement("div");
       row.className = "drop-row";
       const decision = dropDecision(item.title);
+      const decisionKeys = {
+        play_later: "discover.decisionPlayLater",
+        claim_only: "discover.decisionClaimOnly",
+        not_for_me: "discover.decisionNotForMe",
+      };
       const fitClass = item.fit.includes("low") ? "warn" : item.fit.includes("plus") ? "price" : "time";
       row.innerHTML = `
         <div>
           <strong>${item.title}</strong>
-          <span>${decision ? `Decided: ${decision.replace("_", " ")}` : `${item.access} / ${item.predictedRank}`}</span>
+          <span>${decision
+            ? t("discover.dropDecision", { decision: t(decisionKeys[decision] || "discover.decisionNotForMe") })
+            : `${item.access} / ${item.predictedRank}`}</span>
         </div>
         <span class="drop-verdict ${fitClass}">${item.verdict}</span>
         <p>${item.nextAction}</p>
@@ -4922,12 +5010,12 @@ function renderMonthlyDrop() {
           <span class="fact ${item.playDecision.toLowerCase().includes("skip") ? "warn" : "tone"}">${item.playDecision}</span>
           <span class="fact ${fitClass}">${item.trialWindow}</span>
           <span class="fact tone">${item.fit}</span>
-          <span class="fact warn">${item.freshnessState}</span>
+          <span class="fact warn">${discoverAssetStatus(item.freshnessState)}</span>
         </div>
         <div class="drop-actions">
-          <button class="${decision === "play_later" ? "is-selected" : ""}" data-drop-decision="play_later" type="button">Play later</button>
-          <button class="${decision === "claim_only" ? "is-selected" : ""}" data-drop-decision="claim_only" type="button">Claim only</button>
-          <button class="${decision === "not_for_me" ? "is-selected" : ""}" data-drop-decision="not_for_me" type="button">Not for me</button>
+          <button class="${decision === "play_later" ? "is-selected" : ""}" data-drop-decision="play_later" type="button">${t("discover.actionPlayLater")}</button>
+          <button class="${decision === "claim_only" ? "is-selected" : ""}" data-drop-decision="claim_only" type="button">${t("discover.actionClaimOnly")}</button>
+          <button class="${decision === "not_for_me" ? "is-selected" : ""}" data-drop-decision="not_for_me" type="button">${t("discover.actionNotForMe")}</button>
         </div>
       `;
       row.querySelectorAll("[data-drop-decision]").forEach((button) => {
@@ -4944,7 +5032,7 @@ function renderMonthlyDrop() {
 function renderTasteRadar() {
   const allRadar = rankedRadar();
   const radar = allRadar.slice(0, 4);
-  els.radarStatus.textContent = `Top ${radar.length} of ${allRadar.length} sample leads`;
+  els.radarStatus.textContent = t("discover.radarStatus", { shown: radar.length, total: allRadar.length });
   els.radarList.replaceChildren(
     ...radar.map((item) => {
       const row = document.createElement("div");
@@ -4953,10 +5041,14 @@ function renderTasteRadar() {
       row.innerHTML = `
         <div>
           <strong>${item.title}</strong>
-          <span>${item.window} / ${item.freshnessState} ${item.confidence}</span>
+          <span>${t("discover.radarMeta", {
+            window: item.window,
+            freshness: discoverAssetStatus(item.freshnessState),
+            confidence: discoverConfidenceLabel(item.confidence),
+          })}</span>
         </div>
         <p>${item.reason}</p>
-        <div class="facts">${atoms}<span class="fact time">${item.adultTimeFit}</span></div>
+        <div class="facts">${atoms}<span class="fact time">${libraryAdultFitLabel(item.adultTimeFit)}</span></div>
         <span class="score">${Math.max(item.score, 0)}</span>
       `;
       return row;

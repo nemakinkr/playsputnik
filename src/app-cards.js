@@ -158,6 +158,26 @@
         facts.appendChild(item);
       });
       renderCoverSourceInto(card.querySelector(".card-cover-source"), game);
+      card.querySelector('[data-action="detail"]').textContent = t("discover.actionDetails");
+      card.querySelector('[data-action="save"]').textContent = t("discover.actionWishlist");
+      card.querySelector('[data-action="good"]').textContent = t("discover.actionLike");
+      card.querySelector('[data-action="hide"]').textContent = t("discover.actionNotForMe");
+      const stateLabels = {
+        "": "discover.setState",
+        saved: "discover.stateSaved",
+        want_to_finish: "discover.stateFinish",
+        paused: "discover.statePaused",
+        owned: "discover.stateOwned",
+        owned_forever: "discover.stateForever",
+        subscription: "discover.stateSubscription",
+        playing: "discover.statePlaying",
+        completed: "discover.stateCompleted",
+        dropped: "discover.stateDropped",
+        hidden: "discover.stateHidden",
+      };
+      card.querySelectorAll(".state-select option").forEach((option) => {
+        option.textContent = t(stateLabels[option.value] || "discover.setState");
+      });
 
       card.querySelector('[data-action="detail"]').addEventListener("click", () => openGameDetail(game.title));
       card.querySelector('[data-action="save"]').addEventListener("click", () => {
