@@ -546,34 +546,34 @@
 
         <section class="price-watch" aria-labelledby="price-watch-title" data-view-section="wishlist">
           <div class="section-heading">
-            <h2 id="price-watch-title">Buy-later watch</h2>
+            <h2 id="price-watch-title" data-i18n="wishlist.title">Buy-later watch</h2>
             <span id="price-watch-region">US</span>
           </div>
           <div class="wishlist-dashboard" id="wishlist-dashboard"></div>
-          <div class="queue-toolbar" aria-label="Wishlist queue filters">
+          <div class="queue-toolbar" aria-label="Wishlist queue filters" data-i18n-attr="aria-label:wishlist.filtersAria">
             <div class="queue-filter-tabs">
-              <button class="queue-filter is-active" data-wishlist-filter="all" type="button">All</button>
-              <button class="queue-filter" data-wishlist-filter="buy" type="button">Buy</button>
-              <button class="queue-filter" data-wishlist-filter="wait" type="button">Wait</button>
-              <button class="queue-filter" data-wishlist-filter="verify" type="button">Verify</button>
-              <button class="queue-filter" data-wishlist-filter="missing" type="button">Missing</button>
+              <button class="queue-filter is-active" data-wishlist-filter="all" type="button" data-i18n="wishlist.filterAll">All</button>
+              <button class="queue-filter" data-wishlist-filter="buy" type="button" data-i18n="wishlist.filterBuy">Buy</button>
+              <button class="queue-filter" data-wishlist-filter="wait" type="button" data-i18n="wishlist.filterWait">Wait</button>
+              <button class="queue-filter" data-wishlist-filter="verify" type="button" data-i18n="wishlist.filterVerify">Verify</button>
+              <button class="queue-filter" data-wishlist-filter="missing" type="button" data-i18n="wishlist.filterMissing">Missing</button>
             </div>
-            <span id="wishlist-filter-summary">All watched games</span>
+            <span id="wishlist-filter-summary" data-i18n="wishlist.filterAllSummary">All watched games</span>
           </div>
-          <div class="wishlist-sort-row" role="group" aria-label="Sort wishlist">
-            <span class="sort-label">Sort:</span>
-            <button class="sort-btn is-active" data-wishlist-sort="score" type="button">Best fit</button>
-            <button class="sort-btn" data-wishlist-sort="price" type="button">Price ↑</button>
-            <button class="sort-btn" data-wishlist-sort="discount" type="button">Discount ↓</button>
-            <button class="sort-btn" data-wishlist-sort="alpha" type="button">A–Z</button>
+          <div class="wishlist-sort-row" role="group" aria-label="Sort wishlist" data-i18n-attr="aria-label:wishlist.sortAria">
+            <span class="sort-label" data-i18n="wishlist.sortLabel">Sort:</span>
+            <button class="sort-btn is-active" data-wishlist-sort="score" type="button" data-i18n="wishlist.sortBest">Best fit</button>
+            <button class="sort-btn" data-wishlist-sort="price" type="button" data-i18n="wishlist.sortPrice">Price ↑</button>
+            <button class="sort-btn" data-wishlist-sort="discount" type="button" data-i18n="wishlist.sortDiscount">Discount ↓</button>
+            <button class="sort-btn" data-wishlist-sort="alpha" type="button" data-i18n="wishlist.sortAlpha">A–Z</button>
           </div>
           <div id="price-watch-list"></div>
         </section>
 
         <section class="buy-decision-panel" aria-labelledby="buy-decision-title" data-view-section="wishlist">
           <div class="section-heading">
-            <h2 id="buy-decision-title">Buy decision</h2>
-            <span id="buy-decision-status">Loading</span>
+            <h2 id="buy-decision-title" data-i18n="wishlist.decisionTitle">Buy decision</h2>
+            <span id="buy-decision-status" data-i18n="wishlist.loading">Loading</span>
           </div>
           <div id="buy-decision-list"></div>
         </section>
@@ -706,13 +706,13 @@
         <!-- ── Wishlist share ─────────────────────────────────────────── -->
         <section class="wishlist-share-panel" aria-labelledby="wishlist-share-title" data-view-section="wishlist" id="wishlist-share-panel">
           <div class="section-heading">
-            <h2 id="wishlist-share-title">Share wishlist</h2>
+            <h2 id="wishlist-share-title" data-i18n="wishlist.shareTitle">Share wishlist</h2>
             <span id="wishlist-share-status"></span>
           </div>
-          <p class="panel-note">Send a link to share your saved games. The receiver can add all titles to their own wishlist in one click.</p>
+          <p class="panel-note" data-i18n="wishlist.shareNote">Send a link to share your saved games. The receiver can add all titles to their own wishlist in one click.</p>
           <div class="taste-share-actions">
-            <button class="secondary-action" id="wishlist-share-btn" type="button">Generate link</button>
-            <button class="secondary-action" id="wishlist-share-copy" type="button" style="display:none">Copy link</button>
+            <button class="secondary-action" id="wishlist-share-btn" type="button" data-i18n="wishlist.shareGenerate">Generate link</button>
+            <button class="secondary-action" id="wishlist-share-copy" type="button" style="display:none" data-i18n="wishlist.shareCopy">Copy link</button>
           </div>
           <div class="taste-share-url" id="wishlist-share-url" style="display:none"></div>
         </section>
@@ -720,11 +720,11 @@
         <!-- ── Wishlist import banner ─────────────────────────────────── -->
         <section class="taste-import-banner" id="wishlist-import-banner" style="display:none" aria-live="polite">
           <div class="taste-import-banner-body">
-            <strong id="wishlist-import-banner-title">Someone shared their wishlist with you</strong>
+            <strong id="wishlist-import-banner-title" data-i18n="wishlist.importTitle">Someone shared their wishlist with you</strong>
             <p id="wishlist-import-banner-summary"></p>
             <div class="action-row">
-              <button class="primary-action" id="wishlist-import-confirm" type="button">Add to my wishlist</button>
-              <button class="secondary-action" id="wishlist-import-dismiss" type="button">Dismiss</button>
+              <button class="primary-action" id="wishlist-import-confirm" type="button" data-i18n="wishlist.importConfirm">Add to my wishlist</button>
+              <button class="secondary-action" id="wishlist-import-dismiss" type="button" data-i18n="wishlist.importDismiss">Dismiss</button>
             </div>
           </div>
         </section>

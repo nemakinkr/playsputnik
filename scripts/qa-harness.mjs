@@ -1176,7 +1176,7 @@ function checkSelectors() {
   assert(/function recommendationPool/.test(appSource), "External wishlist games should enter the recommendation pool");
   assert(/recommendationPool/.test(appSource + appRankingSource), "Ranked games should use the recommendation pool");
   assert(/External discovery/.test(appScoreSource), "External discovery should have an explicit scoring line");
-  assert(/Price missing/.test(appSource), "External recommendation cards should not fake missing prices");
+  assert(/Price missing/.test(appSource + i18nEnSource), "External recommendation cards should not fake missing prices");
   assert(/function gameSourcePassport/.test(appCoverSource), "External games should expose a source passport");
   assert(/function searchResultSourcePassport/.test(appEnrichmentSource), "Search results should expose source passport facts");
   assert(/matchKind/.test(appSearchSource + searchProviderSource + appSource), "Search results should keep match kind visible");

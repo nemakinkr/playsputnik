@@ -5,7 +5,24 @@
   if (!window.PlaySputnikRecommend) throw new Error("app-recommend must load before app-wishlist");
   if (!window.PlaySputnikRanking) throw new Error("app-ranking must load before app-wishlist");
 
-  const { USER_STATE_LABELS, WISHLIST_QUEUE_FILTERS } = window.PlaySputnikConfig;
+  const { WISHLIST_QUEUE_FILTERS } = window.PlaySputnikConfig;
+  const t = window.PlaySputnikI18n.t;
+  const FILTER_KEYS = {
+    all: ["wishlist.filterAll", "wishlist.filterAllSummary"],
+    buy: ["wishlist.filterBuy", "wishlist.filterBuySummary"],
+    wait: ["wishlist.filterWait", "wishlist.filterWaitSummary"],
+    verify: ["wishlist.filterVerify", "wishlist.filterVerifySummary"],
+    missing: ["wishlist.filterMissing", "wishlist.filterMissingSummary"],
+  };
+  const STATE_KEYS = {
+    owned: "wishlist.stateOwned",
+    owned_forever: "wishlist.stateForever",
+    subscription: "wishlist.stateSubscription",
+  };
+
+  function wishlistStateLabel(value) {
+    return STATE_KEYS[value] ? t(STATE_KEYS[value]) : value;
+  }
 
   function createWishlistTools({
     getState,
@@ -126,21 +143,21 @@
       const state = getState();
       const region = state.activeRegion;
       const byTitle = new Map();
-      const add = (game, lane = "Wishlist") => {
+      const add = (game, lane = "wishlist") => {
         if (!game) return;
         const key = titleKey(game.title);
         if (!byTitle.has(key)) byTitle.set(key, { game, lanes: new Set() });
         byTitle.get(key).lanes.add(lane);
       };
 
-      getPurchaseCandidates(ranked).forEach((game) => add(game, "Buy candidate"));
-      priceWatchRecords(ranked).forEach(({ game }) => add(game, "Deal watch"));
+      getPurchaseCandidates(ranked).forEach((game) => add(game, "buy"));
+      priceWatchRecords(ranked).forEach(({ game }) => add(game, "deal"));
       getRecommendationPool()
         .filter((game) => {
           const memory = effectiveUserGame(game) || {};
           return memory.saved || game.wishlist || notebookWishlistWeight(game.title);
         })
-        .forEach((game) => add(game, "Wishlist"));
+        .forEach((game) => add(game, "wishlist"));
 
       return [...byTitle.values()]
         .map(({ game, lanes }) => {
@@ -170,29 +187,40 @@
       const state = getState();
       const region = state.activeRegion;
       if (!record.hasPrice) {
-        return { label: "Missing price", tone: "missing", detail: "Keep it watched, but do not fake a buy recommendation until a source resolves price." };
+        return { label: t("wishlist.decisionMissing"), tone: "missing", detail: t("wishlist.decisionMissingDetail") };
       }
       if (!record.status.canConfirm) {
-        return { label: "Verify", tone: "verify", detail: "Price signal exists, but the source needs confirmation before this becomes a confident buy." };
+        return { label: t("wishlist.decisionVerify"), tone: "verify", detail: t("wishlist.decisionVerifyDetail") };
       }
       if (record.watch?.isBelowTarget && record.risk < 24) {
         return {
-          label: "Below target",
+          label: t("wishlist.decisionBelow"),
           tone: "buy",
-          detail: `${formatPrice(record.game, region)} is at or under your ${record.watch.hasCustomTarget ? "custom" : "budget"} alert.`,
+          detail: t("wishlist.decisionBelowDetail", {
+            price: formatPrice(record.game, region),
+            target: t(record.watch.hasCustomTarget ? "wishlist.targetCustom" : "wishlist.targetBudget"),
+          }),
         };
       }
       if ((record.game.prices[region] || 0) > (record.watch?.targetPrice ?? Number(state.budget)) || record.risk >= 24) {
         return {
-          label: "Wait",
+          label: t("wishlist.decisionWait"),
           tone: "wait",
-          detail: `Good fit, but price/risk says wait. ${record.watch ? historicalLowCopy(record.watch, record.game.priceMeta?.[region]?.currency || "USD") : "Watch next sale."}`,
+          detail: t("wishlist.decisionWaitDetail", {
+            history: record.watch
+              ? historicalLowCopy(record.watch, record.game.priceMeta?.[region]?.currency || "USD")
+              : t("wishlist.watchNextSale"),
+          }),
         };
       }
       return {
-        label: "Buy zone",
+        label: t("wishlist.decisionBuy"),
         tone: "buy",
-        detail: `${formatPrice(record.game, region)} / ${record.game.discount[region] || 0}% off / ${record.risk} risk.`,
+        detail: t("wishlist.decisionBuyDetail", {
+          price: formatPrice(record.game, region),
+          discount: record.game.discount[region] || 0,
+          risk: record.risk,
+        }),
       };
     }
 
@@ -208,47 +236,52 @@
       return [
         best
           ? {
-              label: "Best now",
+              label: t("wishlist.dashboardBest"),
               title: best.game.title,
               detail: best.hasPrice
-                ? `${region} ${formatPrice(best.game, region)} / ${best.game.discount[region] || 0}% off / ${best.score} value.`
-                : "Strong intent, but price is not resolved yet.",
-              actionLabel: best.hasPrice ? "Bought" : "Save",
+                ? t("wishlist.valueDetail", {
+                  region,
+                  price: formatPrice(best.game, region),
+                  discount: best.game.discount[region] || 0,
+                  score: best.score,
+                })
+                : t("wishlist.dashboardStrongIntent"),
+              actionLabel: best.hasPrice ? t("wishlist.dashboardBought") : t("wishlist.dashboardSave"),
               actionState: best.hasPrice ? "owned_forever" : "saved",
               actionTitle: best.game.title,
               tone: wishlistDecision(best).tone,
             }
           : {
-              label: "Best now",
-              title: "No watched games yet",
-              detail: "Add games from search or catalog; wishlist becomes a purchase cockpit after that.",
-              actionLabel: "Discover",
+              label: t("wishlist.dashboardBest"),
+              title: t("wishlist.dashboardNoGames"),
+              detail: t("wishlist.dashboardNoGamesDetail"),
+              actionLabel: t("wishlist.dashboardDiscover"),
               actionView: "discover",
               tone: "empty",
             },
         {
-          label: "Queue",
-          title: `${records.length} watched`,
-          detail: `${buyNow} buy-zone / ${waiting} wait-or-verify / ${missing} missing price.`,
-          actionLabel: "Discover",
+          label: t("wishlist.dashboardQueue"),
+          title: t("wishlist.dashboardWatched", { count: records.length }),
+          detail: t("wishlist.dashboardQueueDetail", { buy: buyNow, waiting, missing }),
+          actionLabel: t("wishlist.dashboardDiscover"),
           actionView: "discover",
           tone: "wishlist",
         },
         access
           ? {
-              label: "Before buying",
+              label: t("wishlist.dashboardBefore"),
               title: access.title,
-              detail: `${USER_STATE_LABELS[effectiveGameState(access)] || effectiveGameState(access)} can cover tonight with no spend.`,
-              actionLabel: "Play",
+              detail: t("wishlist.dashboardAccessDetail", { state: wishlistStateLabel(effectiveGameState(access)) }),
+              actionLabel: t("wishlist.dashboardPlay"),
               actionState: "playing",
               actionTitle: access.title,
               tone: "access",
             }
           : {
-              label: "Before buying",
-              title: "No library alternative",
-              detail: "Wishlist can still guide a purchase, but library import will make guardrails much stronger.",
-              actionLabel: "Library",
+              label: t("wishlist.dashboardBefore"),
+              title: t("wishlist.dashboardNoAlternative"),
+              detail: t("wishlist.dashboardNoAlternativeDetail"),
+              actionLabel: t("wishlist.dashboardLibrary"),
               actionView: "library",
               tone: "empty",
             },
@@ -256,8 +289,8 @@
     }
 
     function wishlistFilterSummary(filter, visibleCount, totalCount) {
-      const copy = WISHLIST_QUEUE_FILTERS[filter] || WISHLIST_QUEUE_FILTERS.all;
-      return `${copy.label}: ${visibleCount}/${totalCount}. ${copy.summary}`;
+      const key = WISHLIST_QUEUE_FILTERS[filter] ? filter : "all";
+      return `${t(FILTER_KEYS[key][0])}: ${visibleCount}/${totalCount}. ${t(FILTER_KEYS[key][1])}`;
     }
 
     function wishlistFilterMatches(record, filter) {

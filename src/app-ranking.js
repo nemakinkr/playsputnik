@@ -4,6 +4,12 @@
   if (!window.PlaySputnikConfig) throw new Error("app-config must load before app-ranking");
   if (!window.PlaySputnikScore) throw new Error("app-score must load before app-ranking");
   if (!window.PlaySputnikRecommend) throw new Error("app-recommend must load before app-ranking");
+  const t = window.PlaySputnikI18n.t;
+  const SESSION_KEYS = {
+    short: "narrative.recommend.sessionShort",
+    medium: "narrative.recommend.sessionMedium",
+    long: "narrative.recommend.sessionLong",
+  };
 
   function createRankingTools({
     getState,
@@ -76,16 +82,18 @@
       const parts = [];
       const atoms = getSelectedAtoms();
       const shared = game.atoms.filter((atom) => atoms.includes(atom));
-      if (shared.length) parts.push(`${shared[0]} fit`);
-      if (game.wishlist) parts.push("on wishlist");
-      if (game.backlog) parts.push("backlog memory");
+      if (shared.length) parts.push(t("wishlist.dealAtomFit", { atom: shared[0] }));
+      if (game.wishlist) parts.push(t("wishlist.dealWishlist"));
+      if (game.backlog) parts.push(t("wishlist.dealBacklog"));
       if (game.psPlus.includes(region) && state.psPlus) {
-        parts.push(subscriptionStatus(game, region).canConfirm ? "also in PS Plus" : "PS Plus signal");
+        parts.push(t(subscriptionStatus(game, region).canConfirm ? "wishlist.dealPlus" : "wishlist.dealPlusSignal"));
       }
-      if (game.session === state.session) parts.push(`${state.session} session`);
-      if (game.adultTimeFit === "weeknight") parts.push("weeknight fit");
-      if (game.reviewBurden === "low") parts.push("low review burden");
-      const fallback = priceStatus(game, region).canConfirm ? "solid discount, lower taste confidence" : "discount signal, verify before buying";
+      if (game.session === state.session) {
+        parts.push(t("wishlist.dealSession", { session: t(SESSION_KEYS[state.session] || SESSION_KEYS.medium) }));
+      }
+      if (game.adultTimeFit === "weeknight") parts.push(t("wishlist.dealWeeknight"));
+      if (game.reviewBurden === "low") parts.push(t("wishlist.dealLowReview"));
+      const fallback = t(priceStatus(game, region).canConfirm ? "wishlist.dealFallback" : "wishlist.dealFallbackVerify");
       return parts.slice(0, 3).join(" / ") || fallback;
     }
 

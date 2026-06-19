@@ -46,12 +46,12 @@ both audiences. This is a deliberate large project, done in phases with a commit
   accessibility labels; browser gates assert the live EN/RU verdict. Risk
   branching uses machine state instead of translated display text. Remaining
   top-level/detail labels belong to Phase 5. SW v34.
-- **Phase 5 — remaining views — IN PROGRESS.** Game-detail decision cockpit and
-  the complete Library workflow are done. Library plan, taste-memory summary,
-  dashboard, filters, queue rows, statuses, contextual actions, and empty
-  states now switch between EN/RU. The seeded mobile gate asserts both the
-  drawer and Library in each locale. Remaining: Discover, Wishlist, Taste,
-  Deals, Data, and Stats dynamic copy. SW v37.
+- **Phase 5 — remaining views — IN PROGRESS.** Game-detail decision cockpit,
+  Library, and Wishlist are done. Wishlist now localizes purchase decisions,
+  dashboard guardrails, filters/sorts, price targets, source freshness,
+  buy/wait planning, and share/import copy. The seeded mobile gate asserts
+  dynamic Library and Wishlist decisions in both locales. Remaining: Discover,
+  Taste, Deals, Data, and Stats dynamic copy. SW v38.
 - **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
   decide approach (parallel ru fields vs. separate file).
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).

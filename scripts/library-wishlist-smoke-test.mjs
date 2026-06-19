@@ -348,7 +348,7 @@ try {
   assert(wishlistBefore.priceAlerts >= 1, "Expected wishlist rows to expose price alert controls");
   assert(priceAlertTitle, "Expected at least one wishlist row with a price alert target");
   assert(wishlistTargetSet.hasClear, "Expected saved target price to expose a Clear button");
-  assert(/Alert below|target/i.test(wishlistTargetSet.text), "Expected saved target price copy in wishlist row");
+  assert(/Alert below|target|Сообщить ниже|цель/i.test(wishlistTargetSet.text), "Expected saved target price copy in wishlist row");
   assert(!wishlistTargetCleared.hasClear, "Expected clearing target price to remove Clear button");
   assert(wishlistFiltered.activeFilter === "verify", `Expected verify wishlist filter, got ${wishlistFiltered.activeFilter}`);
   assert(wishlistBefore.rows >= 3, `Expected wishlist triage rows, got ${wishlistBefore.rows}`);

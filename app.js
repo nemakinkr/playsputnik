@@ -4968,6 +4968,36 @@ function renderWishlistDashboard(ranked, records) {
   renderDashboardCards(els.wishlistDashboard, wishlistDashboardCards(ranked, records), "wishlist-dashboard-card", "wishlistDashboard");
 }
 
+function wishlistLaneLabel(lane) {
+  const keys = {
+    buy: "wishlist.laneBuy",
+    deal: "wishlist.laneDeal",
+    wishlist: "wishlist.laneWishlist",
+  };
+  return t(keys[lane] || "wishlist.laneWishlist");
+}
+
+function wishlistSourceStatus(region) {
+  const source = sourceForLayer("Prices") || {};
+  const freshnessKeys = {
+    fresh: "wishlist.freshnessFresh",
+    sample: "wishlist.freshnessSample",
+    stale: "wishlist.freshnessStale",
+    missing: "wishlist.freshnessMissing",
+  };
+  const confidenceKeys = {
+    high: "wishlist.confidenceHigh",
+    medium: "wishlist.confidenceMedium",
+    low: "wishlist.confidenceLow",
+    unknown: "wishlist.confidenceUnknown",
+  };
+  return t("wishlist.priceFreshness", {
+    region,
+    freshness: t(freshnessKeys[source.freshnessState] || "wishlist.freshnessMissing"),
+    confidence: t(confidenceKeys[source.confidence] || "wishlist.confidenceUnknown"),
+  });
+}
+
 function priceTargetInputValue(value) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric) || numeric <= 0) return "";
@@ -5066,7 +5096,7 @@ function renderPriceWatch(ranked) {
     btn.classList.toggle("is-active", btn.dataset.wishlistSort === wSort);
   });
 
-  els.priceWatchRegion.textContent = `${region} ${freshnessLabel("Prices")}`;
+  els.priceWatchRegion.textContent = wishlistSourceStatus(region);
   renderWishlistDashboard(ranked, records);
   els.wishlistFilterSummary.textContent = wishlistFilterSummary(activeFilter, visibleRecords.length, records.length);
   renderFilterButtons(els.wishlistFilterButtons, activeFilter, "wishlistFilter");
@@ -5078,19 +5108,26 @@ function renderPriceWatch(ranked) {
       const status = record.status;
       const currency = game.priceMeta?.[region]?.currency || "USD";
       row.className = `deal-row wishlist-row tone-${decision.tone}`;
+      const priceLine = record.hasPrice
+        ? `${region} ${formatPrice(game, region)} / ${game.discount[region] || 0}% ${t(status.canConfirm ? "wishlist.priceOff" : "wishlist.priceSignal")}`
+        : t("wishlist.priceMissing");
+      const watchLine = watch
+        ? ` / ${t("wishlist.targetLine", { price: formatMoney(watch.targetPrice, currency) })} / ${historicalLowCopy(watch, currency)}`
+        : "";
+      const lanes = record.lanes.map(wishlistLaneLabel).join(", ");
       row.innerHTML = `
         <span class="wishlist-decision">${decision.label}</span>
         <div>
           <strong>${game.title}</strong>
-          <span class="deal-price ${status.canConfirm ? "" : "needs-verify"}">${record.hasPrice ? `${region} ${formatPrice(game, region)} / ${game.discount[region] || 0}% ${status.canConfirm ? "off" : "signal"}` : "Price missing"}</span>
-          <span class="deal-reason">${decision.detail}${watch ? ` / target ${formatMoney(watch.targetPrice, currency)} / ${historicalLowCopy(watch, currency)}` : ""} / ${record.lanes.join(", ")}</span>
+          <span class="deal-price ${status.canConfirm ? "" : "needs-verify"}">${priceLine}</span>
+          <span class="deal-reason">${decision.detail}${watchLine} / ${t("wishlist.lanesLine", { lanes })}</span>
           ${watch ? priceWatchControlHtml(game, { context: "row" }) : ""}
         </div>
         <div class="wishlist-actions">
-          <button data-wishlist-detail type="button">Details</button>
-          <button class="${record.saved ? "is-selected" : ""}" data-wishlist-state="saved" type="button">Wishlist</button>
-          <button data-wishlist-state="owned_forever" type="button">Bought</button>
-          <button data-wishlist-state="hidden" type="button">Hide</button>
+          <button data-wishlist-detail type="button">${t("wishlist.details")}</button>
+          <button class="${record.saved ? "is-selected" : ""}" data-wishlist-state="saved" type="button">${t("wishlist.actionWishlist")}</button>
+          <button data-wishlist-state="owned_forever" type="button">${t("wishlist.actionBought")}</button>
+          <button data-wishlist-state="hidden" type="button">${t("wishlist.actionHide")}</button>
         </div>
       `;
       row.querySelector("[data-wishlist-detail]").addEventListener("click", () => openGameDetail(game.title));
@@ -5102,7 +5139,7 @@ function renderPriceWatch(ranked) {
       });
       bindPriceWatchControls(row, game);
       return row;
-    }) : [createQueueEmpty("No watched games in this lane", "Change the filter or add more games from search and the visual catalog.")]),
+    }) : [createQueueEmpty(t("wishlist.emptyTitle"), t("wishlist.emptyDetail"))]),
   );
 }
 
@@ -5118,10 +5155,15 @@ function renderBuyDecision(ranked) {
 
   if (first) {
     rows.push({
-      label: "Buy one",
+      label: t("wishlist.buyOne"),
       title: first.title,
-      detail: `${region} ${formatPrice(first, region)}. ${dealReason(first)}. Risk ${first.purchaseRisk}.`,
-      tag: `${first.purchaseScore} value`,
+      detail: t("wishlist.buyDetail", {
+        region,
+        price: formatPrice(first, region),
+        reason: dealReason(first),
+        risk: first.purchaseRisk,
+      }),
+      tag: t("wishlist.value", { count: first.purchaseScore }),
     });
   }
 
@@ -5130,37 +5172,42 @@ function renderBuyDecision(ranked) {
     const secondPrice = second.prices[region] || 0;
     const pairFitsBudget = firstPrice + secondPrice <= Number(state.budget);
     rows.push({
-      label: pairFitsBudget ? "Buy two" : "Second pick",
+      label: t(pairFitsBudget ? "wishlist.buyTwo" : "wishlist.secondPick"),
       title: pairFitsBudget ? `${first.title} + ${second.title}` : second.title,
       detail: pairFitsBudget
-        ? "Best bundle inside today's budget: one strong fit plus one backup instead of browsing sales."
-        : `${second.title} is the backup if the top pick does not feel urgent today.`,
-      tag: `${first.purchaseScore + second.purchaseScore} value`,
+        ? t("wishlist.bundleDetail")
+        : t("wishlist.backupDetail", { title: second.title }),
+      tag: t("wishlist.value", { count: first.purchaseScore + second.purchaseScore }),
     });
   }
 
   const quietWait = accessCount > 0
     ? {
-        title: `Play ${accessOptions[0].title} first`,
-        detail: `${accessCount} owned, subscription, or play-later options can cover tonight before spending.`,
-        tag: "no spend",
+        title: t("wishlist.playFirst", { title: accessOptions[0].title }),
+        detail: t("wishlist.accessCover", { count: accessCount }),
+        tag: t("wishlist.noSpend"),
       }
     : {
-        title: "Wait for a clearer signal",
-        detail: "No owned or subscription option is active here, so only buy if the top pick feels urgent.",
-        tag: "hold",
+        title: t("wishlist.waitClearer"),
+        detail: t("wishlist.waitClearerDetail"),
+        tag: t("wishlist.hold"),
       };
 
   rows.push({
-    label: "Maybe wait",
+    label: t("wishlist.maybeWait"),
     title: waitCandidate ? waitCandidate.title : quietWait.title,
     detail: waitCandidate
-      ? `${waitCandidate.title} has desire, but price/risk says wait for a better moment.`
+      ? t("wishlist.waitCandidateDetail", { title: waitCandidate.title })
       : quietWait.detail,
-    tag: waitCandidate ? "watch price" : quietWait.tag,
+    tag: waitCandidate ? t("wishlist.watchPrice") : quietWait.tag,
   });
 
-  els.buyDecisionStatus.textContent = `${candidates.length} buy candidates / ${accessCount ? `${accessCount} access options` : "no access options"}`;
+  els.buyDecisionStatus.textContent = t("wishlist.status", {
+    candidates: candidates.length,
+    access: accessCount
+      ? t("wishlist.accessOptions", { count: accessCount })
+      : t("wishlist.noAccessOptions"),
+  });
   els.buyDecisionList.replaceChildren(
     ...rows.map((item) => {
       const row = document.createElement("div");
@@ -5835,7 +5882,7 @@ if (els.wishlistShareBtn) {
     els.wishlistShareUrl.textContent = urlStr;
     els.wishlistShareUrl.style.display = "";
     els.wishlistShareCopy.style.display = "";
-    if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = "Link ready";
+    if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = t("wishlist.shareReady");
     setTimeout(() => { if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = ""; }, 3000);
   });
 }
@@ -5845,9 +5892,9 @@ if (els.wishlistShareCopy) {
     const url = els.wishlistShareUrl?.textContent || "";
     try {
       await navigator.clipboard.writeText(url);
-      if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = "Copied ✓";
+      if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = `${t("wishlist.shareCopied")} ✓`;
     } catch {
-      if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = "Select the link and copy manually";
+      if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = t("wishlist.shareManual");
     }
     setTimeout(() => { if (els.wishlistShareStatus) els.wishlistShareStatus.textContent = ""; }, 3000);
   });
@@ -5860,14 +5907,21 @@ if (els.wishlistShareCopy) {
   if (!encoded) return;
   const payload = decodeWishlistPayload(encoded);
   if (!payload?.titles?.length) return;
-  if (els.wishlistImportBannerTitle) {
-    els.wishlistImportBannerTitle.textContent = `Someone shared their wishlist with you`;
-  }
-  if (els.wishlistImportBannerSummary) {
+  const renderImportCopy = () => {
     const sample = payload.titles.slice(0, 3).join(", ");
-    const more = payload.titles.length > 3 ? ` and ${payload.titles.length - 3} more` : "";
-    els.wishlistImportBannerSummary.textContent = `${payload.titles.length} games: ${sample}${more}`;
-  }
+    const more = payload.titles.length > 3
+      ? t("wishlist.importMore", { count: payload.titles.length - 3 })
+      : "";
+    if (els.wishlistImportBannerSummary) {
+      els.wishlistImportBannerSummary.textContent = t("wishlist.importSummary", {
+        count: payload.titles.length,
+        titles: sample,
+        more,
+      });
+    }
+  };
+  renderImportCopy();
+  window.PlaySputnikI18n.onLocaleChange(renderImportCopy);
   if (els.wishlistImportBanner) els.wishlistImportBanner.style.display = "";
   if (els.wishlistImportConfirm) {
     els.wishlistImportConfirm.addEventListener("click", () => {

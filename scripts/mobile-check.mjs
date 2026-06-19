@@ -85,6 +85,15 @@ function scanInPage(MIN_TOUCH, locale) {
   const libraryPlanTitle = (document.querySelector("#library-plan-title")?.textContent || "").trim();
   const libraryGamesTitle = (document.querySelector("#my-games-title")?.textContent || "").trim();
   const libraryDashboardLabel = (document.querySelector(".library-dashboard-card > span")?.textContent || "").trim();
+  try {
+    openAppView("wishlist");
+    render();
+    renderPriceWatch(rankedGames());
+    renderBuyDecision(rankedGames());
+  } catch (e) {}
+  const wishlistTitle = (document.querySelector("#price-watch-title")?.textContent || "").trim();
+  const wishlistDecision = (document.querySelector(".wishlist-decision")?.textContent || "").trim();
+  const wishlistDashboardLabel = (document.querySelector(".wishlist-dashboard-card > span")?.textContent || "").trim();
   try { openAppView("today"); } catch (e) {}
   const answerTitle = (document.querySelector("#answer-copy .answer-main strong")?.textContent || "").trim();
   const evidenceLabel = (document.querySelector("#answer-copy .answer-evidence .evidence-row span")?.textContent || "").trim();
@@ -103,6 +112,9 @@ function scanInPage(MIN_TOUCH, locale) {
     libraryPlanTitle,
     libraryGamesTitle,
     libraryDashboardLabel,
+    wishlistTitle,
+    wishlistDecision,
+    wishlistDashboardLabel,
     overflow,
     cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
   });
@@ -134,6 +146,9 @@ export const gate = {
         libraryPlanTitle: pass.libraryPlanTitle || "",
         libraryGamesTitle: pass.libraryGamesTitle || "",
         libraryDashboardLabel: pass.libraryDashboardLabel || "",
+        wishlistTitle: pass.wishlistTitle || "",
+        wishlistDecision: pass.wishlistDecision || "",
+        wishlistDashboardLabel: pass.wishlistDashboardLabel || "",
       })),
     };
   },
@@ -162,6 +177,9 @@ export const gate = {
     const libraryPlanByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.libraryPlanTitle]));
     const libraryGamesByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.libraryGamesTitle]));
     const libraryDashboardByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.libraryDashboardLabel]));
+    const wishlistTitleByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.wishlistTitle]));
+    const wishlistDecisionByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.wishlistDecision]));
+    const wishlistDashboardByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.wishlistDashboardLabel]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
     const ruOk = /^(Сегодня я бы выбрал|Мне нужно)/.test(answerByLocale.ru || "");
     const evidenceEnOk = /[A-Za-z]/.test(evidenceByLocale.en || "") && !/[А-Яа-яЁё]/.test(evidenceByLocale.en || "");
@@ -176,6 +194,12 @@ export const gate = {
     const libraryRuOk = libraryPlanByLocale.ru === "План библиотеки"
       && libraryGamesByLocale.ru === "Мои игры"
       && /^(Продолжить|Начать)$/.test(libraryDashboardByLocale.ru || "");
+    const wishlistEnOk = wishlistTitleByLocale.en === "Buy-later watch"
+      && /^(Missing price|Verify|Below target|Wait|Buy zone)$/.test(wishlistDecisionByLocale.en || "")
+      && wishlistDashboardByLocale.en === "Best now";
+    const wishlistRuOk = wishlistTitleByLocale.ru === "Желаемое и цены"
+      && /^(Нет цены|Проверить|Ниже цели|Подождать|Можно покупать)$/.test(wishlistDecisionByLocale.ru || "")
+      && wishlistDashboardByLocale.ru === "Лучший вариант";
     const leakedKey = [
       ...Object.values(answerByLocale),
       ...Object.values(evidenceByLocale),
@@ -185,9 +209,12 @@ export const gate = {
       ...Object.values(libraryPlanByLocale),
       ...Object.values(libraryGamesByLocale),
       ...Object.values(libraryDashboardByLocale),
+      ...Object.values(wishlistTitleByLocale),
+      ...Object.values(wishlistDecisionByLocale),
+      ...Object.values(wishlistDashboardByLocale),
     ]
-      .some((value) => /^(narrative|library)\./.test(value));
-    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || leakedKey) {
+      .some((value) => /^(narrative|library|wishlist)\./.test(value));
+    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || !wishlistEnOk || !wishlistRuOk || leakedKey) {
       ok = false;
       lines.push("❌ Dynamic i18n answer narrative did not switch cleanly between EN and RU:");
       lines.push(`   - en title: "${answerByLocale.en || "missing"}"`);
@@ -195,11 +222,13 @@ export const gate = {
       lines.push(`   - en first run: "${firstRunByLocale.en || "missing"}"`);
       lines.push(`   - en detail: "${detailHeadingByLocale.en || "missing"}" / "${detailMoveByLocale.en || "missing"}"`);
       lines.push(`   - en library: "${libraryPlanByLocale.en || "missing"}" / "${libraryGamesByLocale.en || "missing"}" / "${libraryDashboardByLocale.en || "missing"}"`);
+      lines.push(`   - en wishlist: "${wishlistTitleByLocale.en || "missing"}" / "${wishlistDecisionByLocale.en || "missing"}" / "${wishlistDashboardByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
       lines.push(`   - ru first run: "${firstRunByLocale.ru || "missing"}"`);
       lines.push(`   - ru detail: "${detailHeadingByLocale.ru || "missing"}" / "${detailMoveByLocale.ru || "missing"}"`);
       lines.push(`   - ru library: "${libraryPlanByLocale.ru || "missing"}" / "${libraryGamesByLocale.ru || "missing"}" / "${libraryDashboardByLocale.ru || "missing"}"`);
+      lines.push(`   - ru wishlist: "${wishlistTitleByLocale.ru || "missing"}" / "${wishlistDecisionByLocale.ru || "missing"}" / "${wishlistDashboardByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };
