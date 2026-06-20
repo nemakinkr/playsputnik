@@ -22,6 +22,7 @@ echo "── 1/6 validate-data ────────────────�
 echo "── 2/6 i18n catalogs + usage ──────────────────"
 "$NODE" scripts/i18n-catalog-check.mjs
 "$NODE" scripts/i18n-usage-check.mjs
+"$NODE" scripts/i18n-startup-test.mjs
 "$NODE" scripts/ai-narrative-test.mjs
 
 echo "── 3/6 qa-harness ─────────────────────────────"

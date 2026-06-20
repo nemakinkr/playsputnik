@@ -26,7 +26,9 @@
   function detect() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved && messages[saved]) return saved;
+      // The engine loads before the catalogs, so catalog presence cannot be
+      // used to validate a saved locale during startup.
+      if (saved === "en" || saved === "ru") return saved;
     } catch (e) { /* ignore */ }
     const nav = (navigator.language || "en").toLowerCase();
     if (nav.startsWith("ru")) return "ru";

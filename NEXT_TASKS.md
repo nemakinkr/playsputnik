@@ -53,7 +53,9 @@ both audiences. This is a deliberate large project, done in phases with a commit
   backlog amnesty, undo controls, theme labels, and offline/error/update states.
   The seeded mobile gate asserts dynamic EN/RU copy across all eight views.
   Editorial game descriptions and raw diagnostic payloads remain Phase 6.
-  SW v42.
+  A production visual review fixed saved-locale startup before catalogs load
+  and made the mobile first-pick toast compact; the startup contract is now
+  gated locally and in CI. SW v43.
 - **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
   decide approach (parallel ru fields vs. separate file).
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).

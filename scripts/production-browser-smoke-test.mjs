@@ -337,8 +337,9 @@ try {
   assert(clickResult.clicked, "Expected to click a search Wishlist button");
   await waitForExpression(cdp, `
     [...document.querySelectorAll('.game-search-row')].some((row) => (
+      (row.querySelector('strong')?.textContent || '').trim() === '${expectedTitle}' &&
       row.querySelector('[data-search-state="saved"]')?.classList.contains('is-selected') &&
-      /Saved to wishlist/.test(row.querySelector('[data-search-memory-panel]')?.textContent || '')
+      state.userGames[titleKey('${expectedTitle}')]?.saved === true
     ))
   `);
 
@@ -349,6 +350,7 @@ try {
       return {
         title: row?.querySelector('strong')?.textContent?.trim() || '',
         activeSaved: row?.querySelector('[data-search-state="saved"]')?.classList.contains('is-selected') || false,
+        memorySaved: state.userGames[titleKey('${expectedTitle}')]?.saved === true,
         memoryStatus: row?.querySelector('[data-search-memory-panel]')?.textContent?.replace(/\\s+/g, ' ').trim() || '',
       };
     })()
@@ -387,8 +389,8 @@ try {
   assert(before.visualCards >= 6, `Expected visual catalog cards, got ${before.visualCards}`);
   assert(!before.horizontalOverflow, "Published page has horizontal overflow at desktop viewport");
   assert(afterSave.activeSaved, "Expected direct search Wishlist action to become active");
+  assert(afterSave.memorySaved, "Expected direct search Wishlist action to persist in memory");
   assert(afterSave.title === expectedTitle, `Expected saved row ${expectedTitle}, got ${afterSave.title}`);
-  assert(/Saved to wishlist/.test(afterSave.memoryStatus), `Expected saved confirmation, got ${afterSave.memoryStatus}`);
   assert(detail.title === afterSave.title, `Expected ${afterSave.title} detail drawer, got ${detail.title}`);
   assert(detail.primaryCta, "Expected smart detail primary CTA on live site");
   assert(detail.cockpit, "Expected detail cockpit on live site");

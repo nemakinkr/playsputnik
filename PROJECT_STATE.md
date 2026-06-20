@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v42 (cache-first static / network-first data), **disabled on
+- Service worker v43 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -47,6 +47,10 @@ reviews, catalogs, sale pages, and announcements.
   metrics and ranking explanations. A seeded mobile browser gate verifies
   dynamic copy in EN/RU. Editorial game descriptions, atoms, and raw technical
   diagnostics remain a Phase 6 concern.
+- Production EN/RU visual review now has a startup regression gate: a saved
+  language wins even though the i18n engine loads before its catalogs. The
+  mobile first-pick confirmation toast is width-constrained and wraps instead
+  of covering the viewport.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;
