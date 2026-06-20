@@ -31,6 +31,7 @@ const [
   appSource,
   html,
   css,
+  swSource,
   catalog,
   priceSnapshots,
   priceHistory,
@@ -97,6 +98,7 @@ const [
   readFile(new URL("app.js", ROOT), "utf8"),
   readFile(new URL("index.html", ROOT), "utf8"),
   readFile(new URL("styles.css", ROOT), "utf8"),
+  readFile(new URL("sw.js", ROOT), "utf8"),
   readJson("data/games.json"),
   readJson("data/price-snapshots.json"),
   readJson("data/price-history.json"),
@@ -1147,7 +1149,9 @@ function checkSelectors() {
   assert(/function searchMatch/.test(searchProviderSource), "Provider search should expose match kind scoring");
   assert(/function compareSearchResults/.test(searchProviderSource), "Provider search should use stable result comparison");
   assert(/function runProviderSearch/.test(appSource), "Provider-backed search runner is missing");
-  assert(/http:\/\/127\.0\.0\.1:4191\/api\/search/.test(appRuntimeSource), "Provider search endpoint is missing");
+  assert(/PROVIDER_SEARCH_ENDPOINT:\s*`\$\{apiOrigin\}\/api\/search`/.test(appConfigSource), "Provider search endpoint is missing");
+  assert(/PlaySputnikRuntime\?\.apiOrigin/.test(appConfigSource) && /runtime-config\.js/.test(html), "Production API runtime config is not wired");
+  assert(/runtime-config\.js/.test(swSource) && /networkFirstWithCache\(request, DATA_CACHE\)/.test(swSource), "Runtime API config should use a network-first service-worker path");
   assert(/resultShapeVersion/.test(searchProviderSource + appSource), "Provider search should expose a result shape version");
   assert(/function providerSearchEnvelope/.test(searchProviderSource), "Provider search envelope is missing");
   assert(/function providerFailureInfo/.test(searchProviderSource), "Provider failure classifier is missing");

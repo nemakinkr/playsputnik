@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v43 (cache-first static / network-first data), **disabled on
+- Service worker v44 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
@@ -51,12 +51,18 @@ reviews, catalogs, sale pages, and announcements.
   language wins even though the i18n engine loads before its catalogs. The
   mobile first-pick confirmation toast is width-constrained and wraps instead
   of covering the viewport.
+- Production API foundation: `backend/worker.mjs` is a deployable Cloudflare
+  Worker for `/api/health`, cached RAWG `/api/search`, and optional Anthropic
+  `/api/narrative`. Secrets stay in Cloudflare; Pages receives only the public
+  origin via `PLAYSPUTNIK_API_ORIGIN` and generated `runtime-config.js`.
+  The public backend intentionally rejects PSN import until account-token
+  security exists.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;
   deterministic narratives remain the instant fallback. The local proxy is
-  implemented and gated, but public Pages still needs an HTTPS/serverless
-  backend before live AI generation can be enabled safely.
+  implemented and gated. Enabling it publicly now requires deploying the Worker,
+  adding its secrets, and setting the GitHub repository variable.
 - Onboarding: 30-game swipe deck, visible 30-second contract, 3/6/10
   milestones, animated hero exit, first-pick payoff after 3 real taste
   signals, and "use now / improve later" guidance for swipes, library access,

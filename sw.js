@@ -1,7 +1,7 @@
 /* PlaySputnik Service Worker — offline-first static assets, network-first data */
 "use strict";
 
-const CACHE_VERSION = "v43";
+const CACHE_VERSION = "v44";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -109,6 +109,12 @@ self.addEventListener("fetch", (event) => {
 
   // API / local server calls — always network, never cache
   if (pathname.includes("/api/")) return;
+
+  // Deployment config can change independently of a code release.
+  if (pathname.endsWith("/runtime-config.js")) {
+    event.respondWith(networkFirstWithCache(request, DATA_CACHE));
+    return;
+  }
 
   // Data files — network-first, stale cache as offline fallback
   if (pathname.includes("/data/")) {

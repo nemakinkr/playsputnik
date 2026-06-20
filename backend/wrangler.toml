@@ -1,0 +1,8 @@
+name = "playsputnik-api"
+main = "worker.mjs"
+compatibility_date = "2026-06-20"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://nemakinkr.github.io,http://localhost:4190,http://localhost:7432,http://127.0.0.1:4190,http://127.0.0.1:7432"
+AI_MODEL = "claude-haiku-4-5"

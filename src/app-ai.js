@@ -3,9 +3,9 @@
 (function () {
   if (!window.PlaySputnikConfig) throw new Error("app-config must load before app-ai");
 
-  const providerOrigin = window.__playsputnikAiOrigin || `http://127.0.0.1:${
-    window.__playsputnikSearchPort || 4191
-  }`;
+  const providerOrigin = window.__playsputnikAiOrigin
+    || window.PlaySputnikConfig.API_ORIGIN
+    || `http://127.0.0.1:${window.__playsputnikSearchPort || 4191}`;
   const NARRATIVE_ENDPOINT = `${providerOrigin}/api/narrative`;
   const HEALTH_ENDPOINT = `${providerOrigin}/api/health`;
   const CACHE_SCHEMA = "ai-narrative-v2";

@@ -19,10 +19,11 @@ async function fetchJson(path) {
   return JSON.parse(await fetchText(path));
 }
 
-const [html, appSource, swSource, dataHealth, searchSources] = await Promise.all([
+const [html, appSource, swSource, runtimeConfig, dataHealth, searchSources] = await Promise.all([
   fetchText("./"),
   fetchText("./app.js"),
   fetchText("./sw.js"),
+  fetchText("./runtime-config.js"),
   fetchJson("./data/data-health.json"),
   fetchJson("./data/search-sources.json"),
 ]);
@@ -41,6 +42,8 @@ assert(/data-app-view="discover"/.test(html), "Published HTML should expose Disc
 assert(/id="game-search-input"/.test(html), "Published HTML should expose global game search");
 assert(/id="game-detail"/.test(html), "Published HTML should expose game detail drawer");
 assert(/serviceWorker\.register/.test(html), "Published HTML should register the service worker in production");
+assert(/runtime-config\.js/.test(html), "Published HTML should load runtime deployment config");
+assert(/apiOrigin/.test(runtimeConfig), "Published runtime config should expose apiOrigin");
 
 assert(/function renderGameSearch/.test(appSource), "Published app.js should contain game search renderer");
 assert(/data-search-memory-panel/.test(appSource), "Published app.js should contain search memory confirmation panel");
@@ -63,6 +66,7 @@ console.log(JSON.stringify({
     "html",
     "app.js",
     "sw.js",
+    "runtime-config.js",
     "data-health",
     "search-sources",
   ],

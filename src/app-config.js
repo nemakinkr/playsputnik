@@ -1,9 +1,14 @@
 (() => {
   const PLAYABLE_STATES = ["owned", "owned_forever", "subscription", "playing", "paused", "want_to_finish"];
+  const runtimeApiOrigin = String(window.PlaySputnikRuntime?.apiOrigin || "").replace(/\/+$/, "");
+  const localApiOrigin = `http://127.0.0.1:${window.__playsputnikSearchPort || 4191}`;
+  const apiOrigin = runtimeApiOrigin || localApiOrigin;
 
   window.PlaySputnikConfig = {
     STORAGE_KEY: "playsputnik.prototype.state.v2",
-    PROVIDER_SEARCH_ENDPOINT: "http://127.0.0.1:4191/api/search",
+    API_ORIGIN: apiOrigin,
+    API_MODE: runtimeApiOrigin ? "production" : "local",
+    PROVIDER_SEARCH_ENDPOINT: `${apiOrigin}/api/search`,
     APP_VIEWS: {
       today: {
         label: "Today",

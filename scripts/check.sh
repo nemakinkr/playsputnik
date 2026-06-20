@@ -24,6 +24,7 @@ echo "── 2/6 i18n catalogs + usage ─────────────�
 "$NODE" scripts/i18n-usage-check.mjs
 "$NODE" scripts/i18n-startup-test.mjs
 "$NODE" scripts/ai-narrative-test.mjs
+"$NODE" scripts/backend-worker-test.mjs
 
 echo "── 3/6 qa-harness ─────────────────────────────"
 "$NODE" scripts/qa-harness.mjs

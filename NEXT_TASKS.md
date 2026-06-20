@@ -55,7 +55,7 @@ both audiences. This is a deliberate large project, done in phases with a commit
   Editorial game descriptions and raw diagnostic payloads remain Phase 6.
   A production visual review fixed saved-locale startup before catalogs load
   and made the mobile first-pick toast compact; the startup contract is now
-  gated locally and in CI. SW v43.
+  gated locally and in CI. Production API runtime config followed in SW v44.
 - **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
   decide approach (parallel ru fields vs. separate file).
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).
@@ -71,10 +71,10 @@ platform, language, release, and ranking claims. Existing deterministic EN/RU
 copy is the instant fallback. `ai-narrative-test.mjs` prevents locale-cache
 leaks and stale-context reuse.
 
-Public activation remains: GitHub Pages cannot protect an API key. Deploy a
-small HTTPS/serverless proxy, store the model key there, and set
-`window.__playsputnikAiOrigin` to that origin. Do not put provider secrets in
-the static app.
+Production foundation is done: the Cloudflare Worker in `backend/` protects
+RAWG/Anthropic secrets, caches public search, validates CORS/input, and excludes
+PSN tokens. Public activation remains an account-side operation: deploy the
+Worker, add provider secrets, set `PLAYSPUTNIK_API_ORIGIN`, and redeploy Pages.
 
 ## Track: Polish
 

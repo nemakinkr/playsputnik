@@ -225,10 +225,13 @@ and caches by language + narrative kind + taste-context fingerprint. If the
 server or key is unavailable, the existing deterministic EN/RU recommendation
 stays visible without an error or loading delay.
 
-GitHub Pages is a static deployment, so production AI generation needs a small
-HTTPS backend or serverless proxy with the API key stored as a secret. Never put
-the key in browser code or GitHub Pages assets. Until that backend is deployed,
-the live site intentionally uses deterministic fallback narratives.
+The production HTTPS backend now lives in `backend/` as a Cloudflare Worker.
+It proxies RAWG search with a six-hour edge cache and can serve Anthropic
+narratives without exposing either key to the browser. GitHub Pages reads only
+the public Worker origin from `runtime-config.js`; the deploy workflow can
+inject it from the `PLAYSPUTNIK_API_ORIGIN` repository variable. Until that
+variable is set, the live site intentionally keeps local/offline search and
+deterministic narrative fallbacks. See `backend/README.md` for deployment.
 
 Check the provider endpoint once without starting a long-running server:
 
