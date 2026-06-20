@@ -47,12 +47,12 @@ both audiences. This is a deliberate large project, done in phases with a commit
   branching uses machine state instead of translated display text. Remaining
   top-level/detail labels belong to Phase 5. SW v34.
 - **Phase 5 — remaining views — IN PROGRESS.** Game-detail decision cockpit,
-  Library, Wishlist, Discover, and Taste are done. Taste now localizes the
-  30-second proof, recent learning events, feedback effects/actions, and
-  taste-profile share/import flow. The seeded mobile gate asserts dynamic
-  Library, Wishlist, Discover, and Taste copy in both locales. Remaining:
-  Deals, Data, and Stats dynamic copy. Editorial game descriptions remain
-  Phase 6. SW v40.
+  Library, Wishlist, Discover, Taste, Deals, and Stats are done. Deals covers
+  filters, freshness, empty states, cards, and source footer; Stats covers
+  library/taste/HLTB/catalog metrics plus dropped and amnestied backlog
+  recovery. The seeded mobile gate asserts both dynamic screens in EN/RU.
+  Remaining: Data dynamic copy. Editorial game descriptions remain Phase 6.
+  SW v41.
 - **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
   decide approach (parallel ru fields vs. separate file).
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).

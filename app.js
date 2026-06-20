@@ -2547,21 +2547,21 @@ function renderStats() {
 
   // Badge
   if (els.statsBadge) {
-    els.statsBadge.textContent = `${totalTracked} tracked`;
+    els.statsBadge.textContent = t("stats.tracked", { count: totalTracked });
   }
 
   // Render stat tiles
   const tiles = [
-    { label: "Tracked games", value: totalTracked, sub: `${loved} liked · ${avoided} skipped` },
-    { label: "Playing now", value: byStatus.playing, sub: "active sessions" },
-    { label: "Completed", value: byStatus.completed, sub: `~${Math.round(hltbDone)}h by HLTB` },
-    { label: "Wishlist", value: byStatus.saved, sub: "buy-later queue" },
-    { label: "Owned", value: byStatus.owned + byStatus.psPlus, sub: `${byStatus.psPlus} via PS Plus` },
-    { label: "HLTB backlog", value: `~${Math.round(hltbTotal)}h`, sub: `${hltbGames.length} games estimated` },
-    { label: "Amnestied", value: amnestiedGames.length, sub: "let-go backlog calls" },
-    { label: `Prices (${region})`, value: withPrice, sub: `of ${pool.length} catalog games` },
-    { label: "Cover images", value: withCover, sub: `of ${pool.length} in catalog` },
-    { label: `PS Plus (${region})`, value: inPsPlus, sub: "titles included" },
+    { label: t("stats.trackedGames"), value: totalTracked, sub: t("stats.reactions", { liked: loved, skipped: avoided }) },
+    { label: t("stats.playing"), value: byStatus.playing, sub: t("stats.activeSessions") },
+    { label: t("stats.completed"), value: byStatus.completed, sub: t("stats.hltbDone", { hours: Math.round(hltbDone) }) },
+    { label: t("stats.wishlist"), value: byStatus.saved, sub: t("stats.buyLater") },
+    { label: t("stats.owned"), value: byStatus.owned + byStatus.psPlus, sub: t("stats.viaPlus", { count: byStatus.psPlus }) },
+    { label: t("stats.backlog"), value: t("stats.hoursValue", { hours: Math.round(hltbTotal) }), sub: t("stats.backlogGames", { count: hltbGames.length }) },
+    { label: t("stats.amnestied"), value: amnestiedGames.length, sub: t("stats.amnestiedSub") },
+    { label: t("stats.prices", { region }), value: withPrice, sub: t("stats.catalogGames", { count: pool.length }) },
+    { label: t("stats.covers"), value: withCover, sub: t("stats.inCatalog", { count: pool.length }) },
+    { label: t("stats.plus", { region }), value: inPsPlus, sub: t("stats.titlesIncluded") },
   ];
 
   els.statsGrid.replaceChildren(...tiles.map(({ label, value, sub }) => {
@@ -2575,7 +2575,7 @@ function renderStats() {
   if (topAtoms.length) {
     const heading = document.createElement("h3");
     heading.className = "stats-section-heading";
-    heading.textContent = "Your taste atoms";
+    heading.textContent = t("stats.atoms");
     const pills = topAtoms.map(([atom, count]) => {
       const pill = document.createElement("span");
       pill.className = "atom-pill";
@@ -2593,7 +2593,7 @@ function renderStats() {
     if (byStatus.dropped > 0) {
       const heading = document.createElement("h3");
       heading.className = "stats-section-heading";
-      heading.textContent = "Dropped games";
+      heading.textContent = t("stats.dropped");
       nodes.push(heading);
       userGames
         .filter((g) => g.completionStatus === "dropped")
@@ -2609,18 +2609,19 @@ function renderStats() {
     if (amnestiedGames.length) {
       const heading = document.createElement("h3");
       heading.className = "stats-section-heading";
-      heading.textContent = "Amnestied backlog";
+      heading.textContent = t("stats.amnestiedBacklog");
       nodes.push(heading);
       amnestiedGames.forEach((g) => {
         const tag = document.createElement("span");
         tag.className = "atom-pill amnesty";
-        tag.textContent = `${g.title} (${normalizeBacklogAmnestyMeta(g.amnesty).skips} skips)`;
+        const skips = normalizeBacklogAmnestyMeta(g.amnesty).skips;
+        tag.textContent = `${g.title} (${t("stats.skips", { count: skips })})`;
         tag.style.cursor = "pointer";
         tag.addEventListener("click", () => openGameDetail(g.title));
         const restore = document.createElement("button");
         restore.className = "stats-mini-action amnesty-restore";
         restore.type = "button";
-        restore.textContent = "Restore";
+        restore.textContent = t("stats.restore");
         restore.addEventListener("click", () => {
           restoreBacklogAmnesty(g.title);
           render();
@@ -5358,10 +5359,10 @@ function priceSparkline(title, region, { width = 80, height = 28, color = "var(-
 // ── Deals view ────────────────────────────────────────────────────────────────
 
 const DEALS_FILTERS = {
-  all:     { label: "All deals",   test: () => true },
-  under10: { label: "Under $10",   test: (s, region) => (s.price ?? Infinity) < 10 },
-  big:     { label: "50%+ off",    test: (s) => (s.discount ?? 0) >= 50 },
-  top:     { label: "Top rated",   test: (s, region, game) => (game?.criticScore ?? 0) >= 80 },
+  all:     { test: () => true },
+  under10: { test: (s) => (s.price ?? Infinity) < 10 },
+  big:     { test: (s) => (s.discount ?? 0) >= 50 },
+  top:     { test: (s, region, game) => (game?.criticScore ?? 0) >= 80 },
 };
 
 let _dealsFilter = "all";
@@ -5370,8 +5371,10 @@ function renderDeals() {
   const region = state.activeRegion;
   const checkedAt = priceSnapshots.find((s) => s.region === region && s.checkedAt)?.checkedAt;
   const freshLabel = checkedAt
-    ? `Updated ${new Date(checkedAt).toLocaleDateString()}`
-    : "Prices may be outdated";
+    ? t("deals.updated", {
+      date: new Date(checkedAt).toLocaleDateString(window.PlaySputnikI18n.getLocale() === "ru" ? "ru-RU" : "en-US"),
+    })
+    : t("deals.outdated");
 
   // Build a map: title → game for quick lookup
   const gameMap = new Map(games.map((g) => [g.title, g]));
@@ -5392,7 +5395,7 @@ function renderDeals() {
 
   // Status line
   const totalOnSale = snapsForRegion.length;
-  els.dealsStatus.textContent = `${totalOnSale} on sale · ${freshLabel}`;
+  els.dealsStatus.textContent = t("deals.status", { count: totalOnSale, freshness: freshLabel });
 
   // Filter buttons
   els.dealsFilterBtns.forEach((btn) => {
@@ -5401,12 +5404,11 @@ function renderDeals() {
 
   // Render cards
   if (filtered.length === 0) {
-    els.dealsGrid.replaceChildren(createQueueEmpty("No deals match this filter", "Try a different filter or check back when new sales start."));
+    els.dealsGrid.replaceChildren(createQueueEmpty(t("deals.emptyTitle"), t("deals.emptyDetail")));
     els.dealsFooter.textContent = "";
     return;
   }
 
-  const currency = filtered[0]?.currency || "USD";
   els.dealsGrid.replaceChildren(
     ...filtered.map((snap) => {
       const game = gameMap.get(snap.title);
@@ -5439,7 +5441,7 @@ function renderDeals() {
     })
   );
 
-  els.dealsFooter.textContent = `${filtered.length} deal${filtered.length !== 1 ? "s" : ""} · ${region} prices via IsThereAnyDeal`;
+  els.dealsFooter.textContent = t("deals.footer", { count: filtered.length, region });
 }
 
 function renderDeferredPanels(ranked, primaryGame, ticket) {

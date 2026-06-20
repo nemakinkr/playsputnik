@@ -115,6 +115,22 @@ function scanInPage(MIN_TOUCH, locale) {
   const tasteLearningStatus = (document.querySelector("#learning-status")?.textContent || "").trim();
   const tasteShareTitle = (document.querySelector("#taste-share-title")?.textContent || "").trim();
   const tasteReceiptLabel = (document.querySelector(".receipt-card > span")?.textContent || "").trim();
+  try {
+    openAppView("deals");
+    render();
+    renderDeals();
+  } catch (e) {}
+  const dealsTitle = (document.querySelector("#deals-title")?.textContent || "").trim();
+  const dealsStatus = (document.querySelector("#deals-status")?.textContent || "").trim();
+  const dealsFilter = (document.querySelector('[data-deals-filter="all"]')?.textContent || "").trim();
+  try {
+    openAppView("stats");
+    render();
+    renderStats();
+  } catch (e) {}
+  const statsTitle = (document.querySelector("#stats-title")?.textContent || "").trim();
+  const statsBadge = (document.querySelector("#stats-badge")?.textContent || "").trim();
+  const statsFirstLabel = (document.querySelector(".stats-tile span")?.textContent || "").trim();
   try { openAppView("today"); } catch (e) {}
   const answerTitle = (document.querySelector("#answer-copy .answer-main strong")?.textContent || "").trim();
   const evidenceLabel = (document.querySelector("#answer-copy .answer-evidence .evidence-row span")?.textContent || "").trim();
@@ -144,6 +160,12 @@ function scanInPage(MIN_TOUCH, locale) {
     tasteLearningStatus,
     tasteShareTitle,
     tasteReceiptLabel,
+    dealsTitle,
+    dealsStatus,
+    dealsFilter,
+    statsTitle,
+    statsBadge,
+    statsFirstLabel,
     overflow,
     cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
   });
@@ -186,6 +208,12 @@ export const gate = {
         tasteLearningStatus: pass.tasteLearningStatus || "",
         tasteShareTitle: pass.tasteShareTitle || "",
         tasteReceiptLabel: pass.tasteReceiptLabel || "",
+        dealsTitle: pass.dealsTitle || "",
+        dealsStatus: pass.dealsStatus || "",
+        dealsFilter: pass.dealsFilter || "",
+        statsTitle: pass.statsTitle || "",
+        statsBadge: pass.statsBadge || "",
+        statsFirstLabel: pass.statsFirstLabel || "",
       })),
     };
   },
@@ -225,6 +253,12 @@ export const gate = {
     const tasteStatusByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.tasteLearningStatus]));
     const tasteShareByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.tasteShareTitle]));
     const tasteReceiptByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.tasteReceiptLabel]));
+    const dealsTitleByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dealsTitle]));
+    const dealsStatusByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dealsStatus]));
+    const dealsFilterByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dealsFilter]));
+    const statsTitleByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsTitle]));
+    const statsBadgeByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsBadge]));
+    const statsFirstByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsFirstLabel]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
     const ruOk = /^(Сегодня я бы выбрал|Мне нужно)/.test(answerByLocale.ru || "");
     const evidenceEnOk = /[A-Za-z]/.test(evidenceByLocale.en || "") && !/[А-Яа-яЁё]/.test(evidenceByLocale.en || "");
@@ -261,6 +295,18 @@ export const gate = {
       && /сигнал/i.test(tasteStatusByLocale.ru || "")
       && tasteShareByLocale.ru === "Поделиться вкусом"
       && /^(Играть из Библиотеки|Играть сегодня)$/.test(tasteReceiptByLocale.ru || "");
+    const dealsEnOk = dealsTitleByLocale.en === "On sale now"
+      && /on sale/i.test(dealsStatusByLocale.en || "")
+      && dealsFilterByLocale.en === "All deals";
+    const dealsRuOk = dealsTitleByLocale.ru === "Скидки сейчас"
+      && /со скидкой/i.test(dealsStatusByLocale.ru || "")
+      && dealsFilterByLocale.ru === "Все скидки";
+    const statsEnOk = statsTitleByLocale.en === "My Library stats"
+      && /tracked/i.test(statsBadgeByLocale.en || "")
+      && statsFirstByLocale.en === "Tracked games";
+    const statsRuOk = statsTitleByLocale.ru === "Статистика моей библиотеки"
+      && /отслеживается/i.test(statsBadgeByLocale.ru || "")
+      && statsFirstByLocale.ru === "Игры в памяти";
     const leakedKey = [
       ...Object.values(answerByLocale),
       ...Object.values(evidenceByLocale),
@@ -281,9 +327,15 @@ export const gate = {
       ...Object.values(tasteStatusByLocale),
       ...Object.values(tasteShareByLocale),
       ...Object.values(tasteReceiptByLocale),
+      ...Object.values(dealsTitleByLocale),
+      ...Object.values(dealsStatusByLocale),
+      ...Object.values(dealsFilterByLocale),
+      ...Object.values(statsTitleByLocale),
+      ...Object.values(statsBadgeByLocale),
+      ...Object.values(statsFirstByLocale),
     ]
-      .some((value) => /^(narrative|library|wishlist|discover|taste)\./.test(value));
-    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || !wishlistEnOk || !wishlistRuOk || !discoverEnOk || !discoverRuOk || !tasteEnOk || !tasteRuOk || leakedKey) {
+      .some((value) => /^(narrative|library|wishlist|discover|taste|deals|stats)\./.test(value));
+    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || !wishlistEnOk || !wishlistRuOk || !discoverEnOk || !discoverRuOk || !tasteEnOk || !tasteRuOk || !dealsEnOk || !dealsRuOk || !statsEnOk || !statsRuOk || leakedKey) {
       ok = false;
       lines.push("❌ Dynamic i18n answer narrative did not switch cleanly between EN and RU:");
       lines.push(`   - en title: "${answerByLocale.en || "missing"}"`);
@@ -294,6 +346,8 @@ export const gate = {
       lines.push(`   - en wishlist: "${wishlistTitleByLocale.en || "missing"}" / "${wishlistDecisionByLocale.en || "missing"}" / "${wishlistDashboardByLocale.en || "missing"}"`);
       lines.push(`   - en discover: "${discoverSearchByLocale.en || "missing"}" / "${discoverMemoryByLocale.en || "missing"}" / "${discoverCatalogByLocale.en || "missing"}" / "${discoverMetricByLocale.en || "missing"}"`);
       lines.push(`   - en taste: "${tasteLearningByLocale.en || "missing"}" / "${tasteStatusByLocale.en || "missing"}" / "${tasteShareByLocale.en || "missing"}" / "${tasteReceiptByLocale.en || "missing"}"`);
+      lines.push(`   - en deals: "${dealsTitleByLocale.en || "missing"}" / "${dealsStatusByLocale.en || "missing"}" / "${dealsFilterByLocale.en || "missing"}"`);
+      lines.push(`   - en stats: "${statsTitleByLocale.en || "missing"}" / "${statsBadgeByLocale.en || "missing"}" / "${statsFirstByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
       lines.push(`   - ru first run: "${firstRunByLocale.ru || "missing"}"`);
@@ -302,6 +356,8 @@ export const gate = {
       lines.push(`   - ru wishlist: "${wishlistTitleByLocale.ru || "missing"}" / "${wishlistDecisionByLocale.ru || "missing"}" / "${wishlistDashboardByLocale.ru || "missing"}"`);
       lines.push(`   - ru discover: "${discoverSearchByLocale.ru || "missing"}" / "${discoverMemoryByLocale.ru || "missing"}" / "${discoverCatalogByLocale.ru || "missing"}" / "${discoverMetricByLocale.ru || "missing"}"`);
       lines.push(`   - ru taste: "${tasteLearningByLocale.ru || "missing"}" / "${tasteStatusByLocale.ru || "missing"}" / "${tasteShareByLocale.ru || "missing"}" / "${tasteReceiptByLocale.ru || "missing"}"`);
+      lines.push(`   - ru deals: "${dealsTitleByLocale.ru || "missing"}" / "${dealsStatusByLocale.ru || "missing"}" / "${dealsFilterByLocale.ru || "missing"}"`);
+      lines.push(`   - ru stats: "${statsTitleByLocale.ru || "missing"}" / "${statsBadgeByLocale.ru || "missing"}" / "${statsFirstByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };
