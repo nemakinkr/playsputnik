@@ -1303,8 +1303,8 @@ function checkSelectors() {
   assert(/data-library-filter="active"/.test(html) && /data-library-filter="access"/.test(html), "Library queue filters are missing");
   assert(dataHealth.issueTriage?.mode === "price_gap_only", "Data health should classify current issues as price gaps only");
   assert(dataHealth.issueTriage?.criticalIssueCount === 0, "Data health should expose zero critical issues for current catalog");
-  assert(/Issue triage/.test(appDataPanelSource), "Data workbench should explain issue triage");
-  assert(/Price gaps/i.test(appDataPanelSource), "Data workbench should distinguish price gaps from critical issues");
+  assert(/Issue triage/.test(appDataPanelSource + i18nEnSource), "Data workbench should explain issue triage");
+  assert(/Price gaps/i.test(appDataPanelSource + i18nEnSource), "Data workbench should distinguish price gaps from critical issues");
   assert(/function libraryDashboardCards/.test(appLibrarySource), "Library dashboard cards are missing");
   assert(/function libraryLaneForGame/.test(appLibrarySource), "Library queue lanes are missing");
   assert(/function libraryNextStep/.test(appLibrarySource), "Library rows should explain the next step");

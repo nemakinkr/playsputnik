@@ -3,6 +3,7 @@
 (function () {
   if (!window.PlaySputnikImport) throw new Error("app-import must load before app-export");
   if (!window.PlaySputnikState) throw new Error("app-state must load before app-export");
+  const t = window.PlaySputnikI18n.t;
 
   const {
     detectFormat,
@@ -48,7 +49,7 @@
       a.download = `playsputnik-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      els.exportStatus.textContent = "JSON exported ✓";
+      els.exportStatus.textContent = `${t("data.jsonExported")} ✓`;
       setTimeout(() => { els.exportStatus.textContent = ""; }, 3000);
     }
 
@@ -76,7 +77,7 @@
       a.download = `playsputnik-library-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      els.exportStatus.textContent = "CSV exported ✓";
+      els.exportStatus.textContent = `${t("data.csvExported")} ✓`;
       setTimeout(() => { els.exportStatus.textContent = ""; }, 3000);
     }
 
@@ -106,10 +107,10 @@
           setState(imported);
           saveState();
           render();
-          els.exportStatus.textContent = `Imported ${Object.keys(imported.userGames).length} games ✓`;
+          els.exportStatus.textContent = `${t("data.gamesImported", { count: Object.keys(imported.userGames).length })} ✓`;
           setTimeout(() => { els.exportStatus.textContent = ""; }, 4000);
         } catch (err) {
-          els.exportStatus.textContent = `Import failed: ${err.message}`;
+          els.exportStatus.textContent = t("data.importFailed", { message: err.message });
         }
       };
       reader.readAsText(file);
@@ -149,9 +150,11 @@
       if (!els.libraryImportPreview || !els.libraryImportConfirmRow) return;
       const summary = importSummaryLabel(result);
       const sample = result.entries.slice(0, 8).map((e) =>
-        `<li><strong>${e.title}</strong> — <em>${e.status}</em>${e.hoursPlayed ? ` · ${e.hoursPlayed}h` : ""}</li>`
+        `<li><strong>${e.title}</strong> — <em>${e.status}</em>${e.hoursPlayed ? ` · ${t("data.hours", { count: e.hoursPlayed })}` : ""}</li>`
       ).join("");
-      const more = result.entries.length > 8 ? `<li>…and ${result.entries.length - 8} more</li>` : "";
+      const more = result.entries.length > 8
+        ? `<li>${t("data.importMore", { count: result.entries.length - 8 })}</li>`
+        : "";
       els.libraryImportPreview.innerHTML = `<p><strong>${summary}</strong></p><ul>${sample}${more}</ul>`;
       els.libraryImportPreview.style.display = "";
       els.libraryImportConfirmRow.style.display = "";
@@ -173,7 +176,7 @@
         } else if (detected.type === "plain-list") {
           result = parsePlainList(detected.data);
         } else {
-          els.exportStatus.textContent = "Unknown file format. Try Backloggd CSV, HLTB JSON, or a plain title list.";
+          els.exportStatus.textContent = t("data.unknownFormat");
           return;
         }
         showLibraryImportPreview(result);
@@ -222,7 +225,7 @@
             els.libraryImportPreview.innerHTML = "";
           }
           if (els.libraryImportConfirmRow) els.libraryImportConfirmRow.style.display = "none";
-          els.exportStatus.textContent = `Added ${added} games to library ✓`;
+          els.exportStatus.textContent = `${t("data.gamesAdded", { count: added })} ✓`;
           setTimeout(() => { els.exportStatus.textContent = ""; }, 4000);
         });
       }

@@ -1,6 +1,10 @@
 /* PlaySputnik Import Module — smart library import from Backloggd, HLTB, PS plain list, PSN */
 "use strict";
 (function () {
+  const t = window.PlaySputnikI18n?.t || ((key, params = {}) => {
+    if (key === "data.importSummaryLabel") return `${params.count} games from ${params.format}`;
+    return key;
+  });
   // ─── Backloggd status → PlaySputnik state ────────────────────────────────
   const BACKLOGGD_STATUS_MAP = {
     playing:  "playing",
@@ -196,7 +200,7 @@
       "playsputnik-json": "PlaySputnik backup",
     }[format] || format;
 
-    const parts = [`${entries.length} games from ${formatLabel}`];
+    const parts = [t("data.importSummaryLabel", { count: entries.length, format: formatLabel })];
     if (warnings.length) parts.push(`⚠ ${warnings[0]}`);
     return parts.join(" · ");
   }

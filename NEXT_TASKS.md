@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-17. Pick the next task here without rereading the
+Last updated: 2026-06-20. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 CLAUDE.md (dev workflow + perf rules). The user's decision: **polish before
 showing the product to people** — retention/analytics tracks are
@@ -46,13 +46,14 @@ both audiences. This is a deliberate large project, done in phases with a commit
   accessibility labels; browser gates assert the live EN/RU verdict. Risk
   branching uses machine state instead of translated display text. Remaining
   top-level/detail labels belong to Phase 5. SW v34.
-- **Phase 5 — remaining views — IN PROGRESS.** Game-detail decision cockpit,
-  Library, Wishlist, Discover, Taste, Deals, and Stats are done. Deals covers
-  filters, freshness, empty states, cards, and source footer; Stats covers
-  library/taste/HLTB/catalog metrics plus dropped and amnestied backlog
-  recovery. The seeded mobile gate asserts both dynamic screens in EN/RU.
-  Remaining: Data dynamic copy. Editorial game descriptions remain Phase 6.
-  SW v41.
+- **Phase 5 — remaining views — DONE.** Game-detail decision cockpit, Library,
+  Wishlist, Discover, Taste, Deals, Stats, and Data are localized. Data includes
+  live health/workbench metrics, import/export feedback, and ranking breakdowns.
+  The final interface audit also closed the recommendation hero, onboarding,
+  backlog amnesty, undo controls, theme labels, and offline/error/update states.
+  The seeded mobile gate asserts dynamic EN/RU copy across all eight views.
+  Editorial game descriptions and raw diagnostic payloads remain Phase 6.
+  SW v42.
 - **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
   decide approach (parallel ru fields vs. separate file).
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).

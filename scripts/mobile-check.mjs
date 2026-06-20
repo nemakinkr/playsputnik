@@ -131,6 +131,22 @@ function scanInPage(MIN_TOUCH, locale) {
   const statsTitle = (document.querySelector("#stats-title")?.textContent || "").trim();
   const statsBadge = (document.querySelector("#stats-badge")?.textContent || "").trim();
   const statsFirstLabel = (document.querySelector(".stats-tile span")?.textContent || "").trim();
+  try {
+    openAppView("data");
+    render();
+    renderRefreshPolicy(rankedGames());
+    renderSourceHealth();
+    renderDevHealth();
+    renderDataWorkbench();
+    renderCatalogBackbone();
+    renderCatalogWorkbench();
+    renderDebug(rankedGames()[0]);
+  } catch (e) {}
+  const dataRefreshTitle = (document.querySelector("#refresh-policy-title")?.textContent || "").trim();
+  const dataWorkbenchTitle = (document.querySelector("#workbench-title")?.textContent || "").trim();
+  const dataCatalogLabel = (document.querySelector(".workbench-card > span")?.textContent || "").trim();
+  const dataExportTitle = (document.querySelector("#export-title")?.textContent || "").trim();
+  const dataDebugTitle = (document.querySelector("#debug-title")?.textContent || "").trim();
   try { openAppView("today"); } catch (e) {}
   const answerTitle = (document.querySelector("#answer-copy .answer-main strong")?.textContent || "").trim();
   const evidenceLabel = (document.querySelector("#answer-copy .answer-evidence .evidence-row span")?.textContent || "").trim();
@@ -166,6 +182,11 @@ function scanInPage(MIN_TOUCH, locale) {
     statsTitle,
     statsBadge,
     statsFirstLabel,
+    dataRefreshTitle,
+    dataWorkbenchTitle,
+    dataCatalogLabel,
+    dataExportTitle,
+    dataDebugTitle,
     overflow,
     cramped: Object.entries(cramped).map(([key, val]) => ({ el: key.split("::").slice(1).join("::"), ...val })),
   });
@@ -179,6 +200,7 @@ export const gate = {
     await cdp.send("Emulation.setDeviceMetricsOverride", { width: 375, height: 812, deviceScaleFactor: 2, mobile: true });
     await cdp.send("Page.navigate", { url: pageUrl });
     await waitFor(cdp, APP_READY);
+    await waitFor(cdp, "typeof dataHealth !== 'undefined' && dataHealth && dataHealth.gameCount > 0");
     const passes = [];
     for (const locale of ["en", "ru"]) {
       const raw = await evaluate(cdp, `(${scanInPage.toString()})(${MIN_TOUCH}, ${JSON.stringify(locale)})`);
@@ -214,6 +236,11 @@ export const gate = {
         statsTitle: pass.statsTitle || "",
         statsBadge: pass.statsBadge || "",
         statsFirstLabel: pass.statsFirstLabel || "",
+        dataRefreshTitle: pass.dataRefreshTitle || "",
+        dataWorkbenchTitle: pass.dataWorkbenchTitle || "",
+        dataCatalogLabel: pass.dataCatalogLabel || "",
+        dataExportTitle: pass.dataExportTitle || "",
+        dataDebugTitle: pass.dataDebugTitle || "",
       })),
     };
   },
@@ -259,6 +286,11 @@ export const gate = {
     const statsTitleByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsTitle]));
     const statsBadgeByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsBadge]));
     const statsFirstByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsFirstLabel]));
+    const dataRefreshByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshTitle]));
+    const dataWorkbenchByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataWorkbenchTitle]));
+    const dataCatalogByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataCatalogLabel]));
+    const dataExportByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataExportTitle]));
+    const dataDebugByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataDebugTitle]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
     const ruOk = /^(Сегодня я бы выбрал|Мне нужно)/.test(answerByLocale.ru || "");
     const evidenceEnOk = /[A-Za-z]/.test(evidenceByLocale.en || "") && !/[А-Яа-яЁё]/.test(evidenceByLocale.en || "");
@@ -307,6 +339,16 @@ export const gate = {
     const statsRuOk = statsTitleByLocale.ru === "Статистика моей библиотеки"
       && /отслеживается/i.test(statsBadgeByLocale.ru || "")
       && statsFirstByLocale.ru === "Игры в памяти";
+    const dataEnOk = dataRefreshByLocale.en === "Refresh policy"
+      && dataWorkbenchByLocale.en === "Data workbench"
+      && dataCatalogByLocale.en === "Catalog"
+      && dataExportByLocale.en === "Export & Import"
+      && dataDebugByLocale.en === "Why this ranking";
+    const dataRuOk = dataRefreshByLocale.ru === "Правила обновления"
+      && dataWorkbenchByLocale.ru === "Рабочая область данных"
+      && dataCatalogByLocale.ru === "Каталог"
+      && dataExportByLocale.ru === "Экспорт и импорт"
+      && dataDebugByLocale.ru === "Почему такой рейтинг";
     const leakedKey = [
       ...Object.values(answerByLocale),
       ...Object.values(evidenceByLocale),
@@ -333,9 +375,14 @@ export const gate = {
       ...Object.values(statsTitleByLocale),
       ...Object.values(statsBadgeByLocale),
       ...Object.values(statsFirstByLocale),
+      ...Object.values(dataRefreshByLocale),
+      ...Object.values(dataWorkbenchByLocale),
+      ...Object.values(dataCatalogByLocale),
+      ...Object.values(dataExportByLocale),
+      ...Object.values(dataDebugByLocale),
     ]
-      .some((value) => /^(narrative|library|wishlist|discover|taste|deals|stats)\./.test(value));
-    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || !wishlistEnOk || !wishlistRuOk || !discoverEnOk || !discoverRuOk || !tasteEnOk || !tasteRuOk || !dealsEnOk || !dealsRuOk || !statsEnOk || !statsRuOk || leakedKey) {
+      .some((value) => /^(narrative|library|wishlist|discover|taste|deals|stats|data)\./.test(value));
+    if (!enOk || !ruOk || !evidenceEnOk || !evidenceRuOk || !firstRunEnOk || !firstRunRuOk || !detailEnOk || !detailRuOk || !libraryEnOk || !libraryRuOk || !wishlistEnOk || !wishlistRuOk || !discoverEnOk || !discoverRuOk || !tasteEnOk || !tasteRuOk || !dealsEnOk || !dealsRuOk || !statsEnOk || !statsRuOk || !dataEnOk || !dataRuOk || leakedKey) {
       ok = false;
       lines.push("❌ Dynamic i18n answer narrative did not switch cleanly between EN and RU:");
       lines.push(`   - en title: "${answerByLocale.en || "missing"}"`);
@@ -348,6 +395,7 @@ export const gate = {
       lines.push(`   - en taste: "${tasteLearningByLocale.en || "missing"}" / "${tasteStatusByLocale.en || "missing"}" / "${tasteShareByLocale.en || "missing"}" / "${tasteReceiptByLocale.en || "missing"}"`);
       lines.push(`   - en deals: "${dealsTitleByLocale.en || "missing"}" / "${dealsStatusByLocale.en || "missing"}" / "${dealsFilterByLocale.en || "missing"}"`);
       lines.push(`   - en stats: "${statsTitleByLocale.en || "missing"}" / "${statsBadgeByLocale.en || "missing"}" / "${statsFirstByLocale.en || "missing"}"`);
+      lines.push(`   - en data: "${dataRefreshByLocale.en || "missing"}" / "${dataWorkbenchByLocale.en || "missing"}" / "${dataCatalogByLocale.en || "missing"}" / "${dataExportByLocale.en || "missing"}" / "${dataDebugByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
       lines.push(`   - ru first run: "${firstRunByLocale.ru || "missing"}"`);
@@ -358,6 +406,7 @@ export const gate = {
       lines.push(`   - ru taste: "${tasteLearningByLocale.ru || "missing"}" / "${tasteStatusByLocale.ru || "missing"}" / "${tasteShareByLocale.ru || "missing"}" / "${tasteReceiptByLocale.ru || "missing"}"`);
       lines.push(`   - ru deals: "${dealsTitleByLocale.ru || "missing"}" / "${dealsStatusByLocale.ru || "missing"}" / "${dealsFilterByLocale.ru || "missing"}"`);
       lines.push(`   - ru stats: "${statsTitleByLocale.ru || "missing"}" / "${statsBadgeByLocale.ru || "missing"}" / "${statsFirstByLocale.ru || "missing"}"`);
+      lines.push(`   - ru data: "${dataRefreshByLocale.ru || "missing"}" / "${dataWorkbenchByLocale.ru || "missing"}" / "${dataCatalogByLocale.ru || "missing"}" / "${dataExportByLocale.ru || "missing"}" / "${dataDebugByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };

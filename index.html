@@ -26,7 +26,7 @@
     </script>
   </head>
   <body>
-    <a href="#decision-surface-main" class="skip-link">Skip to recommendations</a>
+    <a href="#decision-surface-main" class="skip-link" data-i18n="system.skip">Skip to recommendations</a>
     <main class="app-shell">
       <aside class="setup-panel" id="setup-panel" aria-label="Player setup" data-i18n-attr="aria-label:settings.setupAria">
         <div class="brand-row">
@@ -301,10 +301,10 @@
           <div class="demo-continuity-actions" id="demo-continuity-actions"></div>
         </section>
 
-        <section class="onboarding-hero is-hidden" id="onboarding-hero" aria-label="Welcome" data-view-section="today">
+        <section class="onboarding-hero is-hidden" id="onboarding-hero" aria-label="Welcome" data-i18n-attr="aria-label:today.onboarding.aria" data-view-section="today">
           <div class="onboarding-hero-text">
-            <h2>Rate 3 games. Get tonight's pick.</h2>
-            <p>PlaySputnik learns what you love and recommends the right game for right now — your mood, your time, your budget.</p>
+            <h2 data-i18n="today.onboarding.title">Rate 3 games. Get tonight's pick.</h2>
+            <p data-i18n="today.onboarding.detail">PlaySputnik learns what you love and recommends the right game for your mood, time, and budget.</p>
           </div>
           <div class="onboarding-progress" id="onboarding-progress">
             <div class="onboarding-progress-bar">
@@ -341,7 +341,7 @@
 
         <section class="answer-panel" aria-labelledby="answer-title" data-view-section="today">
           <div class="section-heading">
-            <h2 id="answer-title">Companion answer</h2>
+            <h2 id="answer-title" data-i18n="today.answerTitle">Companion answer</h2>
             <span id="answer-status">Loading</span>
           </div>
           <div id="answer-copy"></div>
@@ -349,8 +349,8 @@
 
         <section class="amnesty-panel is-empty" id="amnesty-panel" aria-labelledby="amnesty-title" data-view-section="today" hidden>
           <div class="section-heading">
-            <h2 id="amnesty-title">Backlog amnesty</h2>
-            <span id="amnesty-status">Quiet</span>
+            <h2 id="amnesty-title" data-i18n="today.amnesty.title">Backlog amnesty</h2>
+            <span id="amnesty-status" data-i18n="today.amnesty.quiet">Quiet</span>
           </div>
           <div id="amnesty-card"></div>
         </section>
@@ -365,7 +365,7 @@
 
         <section class="plan-panel" aria-labelledby="plan-title" data-view-section="today">
           <div class="section-heading">
-            <h2 id="plan-title">Companion plan</h2>
+            <h2 id="plan-title" data-i18n="today.planTitle">Companion plan</h2>
             <span id="plan-summary">Loading</span>
           </div>
           <div id="plan-list"></div>
@@ -605,8 +605,8 @@
 
         <section class="refresh-panel" aria-labelledby="refresh-policy-title" data-view-section="data">
           <div class="section-heading">
-            <h2 id="refresh-policy-title">Refresh policy</h2>
-            <span id="refresh-policy-status">Loading</span>
+            <h2 id="refresh-policy-title" data-i18n="data.refreshTitle">Refresh policy</h2>
+            <span id="refresh-policy-status" data-i18n="data.loading">Loading</span>
           </div>
           <p class="panel-note" id="refresh-policy-summary"></p>
           <div id="refresh-policy-list"></div>
@@ -614,16 +614,16 @@
 
         <section class="source-panel" aria-labelledby="source-title" data-view-section="data">
           <div class="section-heading">
-            <h2 id="source-title">Source health</h2>
-            <span id="source-mode">Loading</span>
+            <h2 id="source-title" data-i18n="data.sourceTitle">Source health</h2>
+            <span id="source-mode" data-i18n="data.loading">Loading</span>
           </div>
           <div id="source-list"></div>
         </section>
 
         <section class="dev-health-panel" aria-labelledby="dev-health-title" data-view-section="data">
           <div class="section-heading">
-            <h2 id="dev-health-title">Dev health</h2>
-            <span id="dev-health-status">Loading</span>
+            <h2 id="dev-health-title" data-i18n="data.devTitle">Dev health</h2>
+            <span id="dev-health-status" data-i18n="data.loading">Loading</span>
           </div>
           <p class="panel-note" id="dev-health-summary"></p>
           <div id="dev-health-list"></div>
@@ -631,8 +631,8 @@
 
         <section class="workbench-panel" aria-labelledby="workbench-title" data-view-section="data">
           <div class="section-heading">
-            <h2 id="workbench-title">Data workbench</h2>
-            <span id="workbench-status">Loading</span>
+            <h2 id="workbench-title" data-i18n="data.workbenchTitle">Data workbench</h2>
+            <span id="workbench-status" data-i18n="data.loading">Loading</span>
           </div>
           <div class="workbench-grid" id="workbench-grid"></div>
           <div class="atom-strip" id="top-atoms"></div>
@@ -640,28 +640,28 @@
 
         <section class="export-panel" aria-labelledby="export-title" data-view-section="data" id="export-panel">
           <div class="section-heading">
-            <h2 id="export-title">Export &amp; Import</h2>
+            <h2 id="export-title" data-i18n="data.exportTitle">Export &amp; Import</h2>
             <span id="export-status"></span>
           </div>
-          <p class="panel-note">Save your library and taste profile, or restore from a previous backup.</p>
+          <p class="panel-note" data-i18n="data.exportNote">Save your library and taste profile, or restore from a previous backup.</p>
           <div class="export-actions">
-            <button class="secondary-action" id="export-json" type="button">Export JSON</button>
-            <button class="secondary-action" id="export-csv" type="button">Export CSV</button>
-            <label class="secondary-action export-import-label" for="import-file">Import backup</label>
+            <button class="secondary-action" id="export-json" type="button" data-i18n="data.exportJson">Export JSON</button>
+            <button class="secondary-action" id="export-csv" type="button" data-i18n="data.exportCsv">Export CSV</button>
+            <label class="secondary-action export-import-label" for="import-file" data-i18n="data.importBackup">Import backup</label>
             <input type="file" id="import-file" accept=".json,.csv,.txt" style="display:none">
           </div>
           <details class="export-import-sources">
-            <summary>Import from another source</summary>
-            <p class="panel-note">Supports <strong>Backloggd CSV</strong>, <strong>HowLongToBeat JSON</strong> backup, or a plain list of game titles. Format is detected automatically.</p>
+            <summary data-i18n="data.importOther">Import from another source</summary>
+            <p class="panel-note" data-i18n="data.importFormats">Supports Backloggd CSV, HowLongToBeat JSON backup, or a plain list of game titles. Format is detected automatically.</p>
             <div class="action-row">
-              <label class="secondary-action export-import-label" for="library-import-file">Choose file…</label>
+              <label class="secondary-action export-import-label" for="library-import-file" data-i18n="data.chooseFile">Choose file…</label>
               <input type="file" id="library-import-file" accept=".json,.csv,.txt" style="display:none">
-              <button class="secondary-action" id="psn-connect-btn" type="button">Import from PSN</button>
+              <button class="secondary-action" id="psn-connect-btn" type="button" data-i18n="data.importPsn">Import from PSN</button>
             </div>
             <div id="library-import-preview" class="library-import-preview" style="display:none"></div>
             <div class="action-row" id="library-import-confirm-row" style="display:none">
-              <button class="primary-action" id="library-import-confirm" type="button">Add to library</button>
-              <button class="secondary-action" id="library-import-discard" type="button">Discard</button>
+              <button class="primary-action" id="library-import-confirm" type="button" data-i18n="data.addLibrary">Add to library</button>
+              <button class="secondary-action" id="library-import-discard" type="button" data-i18n="data.discard">Discard</button>
             </div>
           </details>
           <pre class="export-preview" id="export-preview" style="display:none"></pre>
@@ -669,8 +669,8 @@
 
         <section class="catalog-backbone-panel" aria-labelledby="catalog-backbone-title" data-view-section="data">
           <div class="section-heading">
-            <h2 id="catalog-backbone-title">Catalog backbone</h2>
-            <span id="catalog-backbone-status">Loading</span>
+            <h2 id="catalog-backbone-title" data-i18n="data.backboneTitle">Catalog backbone</h2>
+            <span id="catalog-backbone-status" data-i18n="data.loading">Loading</span>
           </div>
           <p class="panel-note" id="catalog-backbone-summary"></p>
           <div id="catalog-backbone-list"></div>
@@ -678,8 +678,8 @@
 
         <section class="catalog-workbench-panel" aria-labelledby="catalog-workbench-title" data-view-section="data">
           <div class="section-heading">
-            <h2 id="catalog-workbench-title">Catalog workbench</h2>
-            <span id="catalog-workbench-status">Loading</span>
+            <h2 id="catalog-workbench-title" data-i18n="data.catalogWorkbenchTitle">Catalog workbench</h2>
+            <span id="catalog-workbench-status" data-i18n="data.loading">Loading</span>
           </div>
           <p class="panel-note" id="catalog-workbench-summary"></p>
           <div id="catalog-workbench-list"></div>
@@ -687,7 +687,7 @@
 
         <section class="debug-panel" aria-labelledby="debug-title" data-view-section="data">
           <div class="section-heading">
-            <h2 id="debug-title">Why this ranking</h2>
+            <h2 id="debug-title" data-i18n="data.debugTitle">Why this ranking</h2>
             <span id="debug-summary"></span>
           </div>
           <div id="debug-list"></div>
@@ -1062,14 +1062,14 @@
     <div class="app-error-overlay is-hidden" id="app-error-overlay" role="alert" aria-live="assertive">
       <div class="app-error-body">
         <div class="app-error-icon">⚠</div>
-        <h2 class="app-error-title">Couldn't load catalog</h2>
-        <p class="app-error-message" id="app-error-message">Something went wrong while loading game data.</p>
+        <h2 class="app-error-title" data-i18n="system.errorTitle">Couldn't load catalog</h2>
+        <p class="app-error-message" id="app-error-message" data-i18n="system.errorMessage">Something went wrong while loading game data.</p>
         <div class="app-error-actions">
-          <button class="primary-action" id="app-error-retry" type="button">Try again</button>
-          <button class="secondary-action" id="app-error-offline" type="button">Work offline</button>
+          <button class="primary-action" id="app-error-retry" type="button" data-i18n="system.retry">Try again</button>
+          <button class="secondary-action" id="app-error-offline" type="button" data-i18n="system.offlineAction">Work offline</button>
         </div>
         <details class="app-error-details">
-          <summary>Technical details</summary>
+          <summary data-i18n="system.technical">Technical details</summary>
           <pre id="app-error-stack"></pre>
         </details>
       </div>
@@ -1078,20 +1078,20 @@
     <!-- Deferred data error toast -->
     <div class="data-error-toast is-hidden" id="data-error-toast" role="status">
       <span id="data-error-toast-msg"></span>
-      <button id="data-error-toast-close" type="button" aria-label="Dismiss">✕</button>
+      <button id="data-error-toast-close" type="button" aria-label="Dismiss" data-i18n-attr="aria-label:system.dismiss">✕</button>
     </div>
 
     <!-- Offline indicator -->
     <div class="offline-indicator is-hidden" id="offline-indicator" role="status" aria-live="polite">
       <span class="offline-dot" aria-hidden="true"></span>
-      <span>Offline — showing cached data</span>
+      <span data-i18n="system.offline">Offline — showing cached data</span>
     </div>
 
     <!-- New version available banner -->
     <div class="sw-update-banner is-hidden" id="sw-update-banner" role="status">
-      <span>A new version is available.</span>
-      <button id="sw-update-reload" type="button">Reload</button>
-      <button id="sw-update-dismiss" type="button" aria-label="Dismiss">✕</button>
+      <span data-i18n="system.update">A new version is available.</span>
+      <button id="sw-update-reload" type="button" data-i18n="system.reload">Reload</button>
+      <button id="sw-update-dismiss" type="button" aria-label="Dismiss" data-i18n-attr="aria-label:system.dismiss">✕</button>
     </div>
   </body>
 </html>

@@ -87,10 +87,18 @@
       const state = getState();
       const undo = state.lastUndo;
       if (!undo) return "";
+      const labels = {
+        play: t("narrative.common.undoPlay"),
+        save: t("narrative.common.undoSave"),
+        snooze: t("narrative.common.undoSnooze"),
+        amnesty: t("narrative.common.undoAmnesty"),
+        restore_amnesty: t("narrative.common.undoRestore"),
+        quick_taste: t("narrative.common.undoQuick"),
+      };
       return `
         <div class="undo-strip ${extraClass}">
-          <span>${undo.label} ${undo.title}</span>
-          <button data-undo-last type="button">Undo</button>
+          <span>${labels[undo.action] || t("narrative.common.undoUpdated")} ${undo.title}</span>
+          <button data-undo-last type="button">${t("narrative.common.undo")}</button>
         </div>
       `;
     }

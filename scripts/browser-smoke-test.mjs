@@ -40,7 +40,7 @@ async function readDevHealth(page) {
 async function waitForDevHealth(page) {
   let health = await readDevHealth(page);
   for (let attempt = 0; attempt < 12; attempt += 1) {
-    if (health.rowCount >= 4 && health.summary.includes("Last CLI snapshot")) return health;
+    if (health.rowCount >= 4 && /\d{4}-\d{2}-\d{2}T/.test(health.summary)) return health;
     await page.waitForTimeout(500);
     health = await readDevHealth(page);
   }
@@ -92,6 +92,7 @@ try {
   const after = await page.evaluate(() => ({
     likedCount: document.querySelector("#liked-count")?.textContent || "",
     undo: document.querySelector(".quick-swipe-undo")?.textContent || "",
+    undoPresent: Boolean(document.querySelector(".quick-swipe-undo [data-undo-last]")),
     nextTitle: document.querySelector(".quick-swipe-main strong")?.textContent || "",
   }));
 
@@ -114,12 +115,12 @@ try {
   if (before.buttons !== 3) throw new Error(`Expected 3 swipe buttons, got ${before.buttons}`);
   if (before.likedCount !== "0/30") throw new Error(`Expected clean onboarding 0/30, got ${before.likedCount}`);
   if (devHealth.rowCount < 4) throw new Error(`Expected 4 dev health rows, got ${devHealth.rowCount}`);
-  if (!devHealth.summary.includes("Last CLI snapshot")) throw new Error(`Dev health snapshot did not load: ${devHealth.summary}`);
+  if (!/\d{4}-\d{2}-\d{2}T/.test(devHealth.summary)) throw new Error(`Dev health snapshot did not load: ${devHealth.summary}`);
   for (const label of ["Preview server", "Data health", "Browser smoke", "Provider endpoint"]) {
     if (!devHealth.labels.includes(label)) throw new Error(`Dev health is missing ${label}`);
   }
   if (after.likedCount !== "1/30") throw new Error(`Expected swipe to move count to 1/30, got ${after.likedCount}`);
-  if (!after.undo.includes("Undo")) throw new Error("Expected quick swipe undo after DOM click");
+  if (!after.undoPresent) throw new Error("Expected quick swipe undo after DOM click");
   if (errors.length) throw new Error(`Page errors: ${errors.join("; ")}`);
 
   currentStep = "printing result";

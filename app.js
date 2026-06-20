@@ -2307,14 +2307,38 @@ function monthlyDropItem(title) {
 function renderDebug(game) {
   const breakdown = scoreBreakdown(game);
   const max = Math.max(...breakdown.map((item) => Math.abs(item.value)), 1);
-  els.debugSummary.textContent = `${Math.max(game.score, 0)} fit / ${state.activeRegion}`;
+  const scoreLabels = {
+    "Taste engine pull": t("data.scorePull"),
+    "Taste engine caution": t("data.scoreCaution"),
+    "Taste uncertainty": t("data.scoreUncertainty"),
+    "Notebook rank": t("data.scoreNotebook"),
+    "Wishlist intent": t("data.scoreWishlist"),
+    "Access now": t("data.scoreAccess"),
+    "Mood fit": t("data.scoreMood"),
+    "Session fit": t("data.scoreSession"),
+    "Tonight time fit": t("data.scoreTonight"),
+    "Difficulty fit": t("data.scoreDifficulty"),
+    "Adult time fit": t("data.scoreAdult"),
+    "Low review burden": t("data.scoreReview"),
+    "Commitment fit": t("data.scoreCommitment"),
+    "PS Plus context": t("data.scorePlus"),
+    "Budget fit": t("data.scoreBudget"),
+    "Discount signal": t("data.scoreDiscount"),
+    "Backlog memory": t("data.scoreBacklog"),
+    "Saved feedback": t("data.scoreSaved"),
+    "External discovery": t("data.scoreExternal"),
+  };
+  els.debugSummary.textContent = t("data.debugSummary", {
+    fit: Math.max(game.score, 0),
+    region: state.activeRegion,
+  });
   els.debugList.replaceChildren(
     ...breakdown.map((item) => {
       const row = document.createElement("div");
       const width = `${Math.round((Math.abs(item.value) / max) * 100)}%`;
       row.className = "debug-row";
       row.innerHTML = `
-        <span>${item.label}</span>
+        <span>${scoreLabels[item.label] || item.label}</span>
         <span class="debug-bar"><span class="debug-fill ${item.value < 0 ? "negative" : ""}" style="width:${width}"></span></span>
         <strong>${item.value}</strong>
       `;
@@ -2659,7 +2683,7 @@ function renderOnboardingHero() {
         // Show brief toast
         const toast = document.createElement("div");
         toast.className = "onboarding-toast";
-        toast.textContent = "Your first pick is ready. You can refine it later.";
+        toast.textContent = t("today.onboarding.ready");
         document.body.append(toast);
         setTimeout(() => toast.remove(), 2800);
       }, 500);
@@ -2676,8 +2700,12 @@ function renderOnboardingHero() {
   const label = document.querySelector("#onboarding-progress-label");
   if (fill) fill.style.width = `${pct}%`;
   if (label) label.textContent = signals === 0
-    ? `Like or dislike ${ONBOARDING_SIGNAL_TARGET} games to unlock your first pick`
-    : `${signals} of ${ONBOARDING_SIGNAL_TARGET} taste signals — ${Math.max(0, ONBOARDING_SIGNAL_TARGET - signals)} more`;
+    ? t("today.onboarding.progressEmpty", { count: ONBOARDING_SIGNAL_TARGET })
+    : t("today.onboarding.progress", {
+        current: signals,
+        target: ONBOARDING_SIGNAL_TARGET,
+        remaining: Math.max(0, ONBOARDING_SIGNAL_TARGET - signals),
+      });
 
   hero.dataset.answered = String(answered);
 
@@ -2699,8 +2727,8 @@ function renderOnboardingHero() {
         <span>${(game.atoms || []).slice(0, 2).join(" · ")}</span>
       </div>
       <div class="onboarding-tile-actions">
-        <button class="onboarding-like ${reaction === "loved" ? "is-active" : ""}" data-onboard-react="loved" data-onboard-title="${game.title}" type="button">Like</button>
-        <button class="onboarding-pass ${reaction === "not_for_me" ? "is-active" : ""}" data-onboard-react="not_for_me" data-onboard-title="${game.title}" type="button">No</button>
+        <button class="onboarding-like ${reaction === "loved" ? "is-active" : ""}" data-onboard-react="loved" data-onboard-title="${game.title}" type="button">${t("today.onboarding.like")}</button>
+        <button class="onboarding-pass ${reaction === "not_for_me" ? "is-active" : ""}" data-onboard-react="not_for_me" data-onboard-title="${game.title}" type="button">${t("today.onboarding.no")}</button>
       </div>
     `;
     return tile;
@@ -3125,7 +3153,7 @@ function renderCompanionAnswer(ranked) {
     </div>
     ${answer.evidence ? `<div class="personal-evidence answer-evidence">${renderEvidenceRows(answer.evidence, 4)}</div>` : ""}
     ${answer.agenda?.length ? `
-      <div class="answer-agenda" aria-label="Tonight decision agenda">
+      <div class="answer-agenda" aria-label="${t("narrative.common.agendaAria")}">
         ${answer.agenda.map((item) => `
           <div class="answer-agenda-row tone-${item.tone || "neutral"} ${item.actions?.length ? "is-actionable" : "is-static"}">
             <span>${item.label}</span>
@@ -3140,7 +3168,7 @@ function renderCompanionAnswer(ranked) {
               ` : ""}
             </div>
             ${item.actions?.length ? `
-              <div class="answer-agenda-actions" aria-label="${item.title} actions">
+              <div class="answer-agenda-actions" aria-label="${t("narrative.common.actionsAria", { title: item.title })}">
                 ${item.actions.map((action) => `<button data-agenda-action="${action.id}" data-agenda-title="${action.title}" type="button">${action.label}</button>`).join("")}
               </div>
             ` : ""}
@@ -3235,13 +3263,13 @@ function renderBacklogAmnesty(ranked) {
   els.amnestyPanel.hidden = !candidate;
   els.amnestyPanel.classList.toggle("is-empty", !candidate);
   if (!candidate) {
-    if (els.amnestyStatus) els.amnestyStatus.textContent = "Quiet";
+    if (els.amnestyStatus) els.amnestyStatus.textContent = t("today.amnesty.quiet");
     els.amnestyCard.replaceChildren();
     return;
   }
 
   const { game, meta } = candidate;
-  if (els.amnestyStatus) els.amnestyStatus.textContent = `${meta.skips} skips`;
+  if (els.amnestyStatus) els.amnestyStatus.textContent = t("today.amnesty.skips", { count: meta.skips });
 
   const card = document.createElement("div");
   card.className = "amnesty-card";
@@ -3249,20 +3277,20 @@ function renderBacklogAmnesty(ranked) {
   const copy = document.createElement("div");
   copy.className = "amnesty-copy";
   const tag = document.createElement("span");
-  tag.textContent = "Decision fatigue relief";
+  tag.textContent = t("today.amnesty.tag");
   const title = document.createElement("strong");
-  title.textContent = `Let go of ${game.title}?`;
+  title.textContent = t("today.amnesty.question", { title: game.title });
   const detail = document.createElement("p");
-  detail.textContent = `You've skipped it ${meta.skips} times. If you keep dodging it, archive it without guilt; it will still stay as taste memory and can be restored later.`;
+  detail.textContent = t("today.amnesty.detail", { count: meta.skips });
   copy.append(tag, title, detail);
 
   const facts = document.createElement("div");
   facts.className = "amnesty-facts";
   [
-    `${meta.skips} skips`,
-    effectiveGameState(game) === "saved" ? "wishlist" : "not active",
-    `keep hides for ${BACKLOG_AMNESTY_KEEP_COOLDOWN_SKIPS + 1} skips`,
-    "hidden, not deleted",
+    t("today.amnesty.skips", { count: meta.skips }),
+    effectiveGameState(game) === "saved" ? t("today.amnesty.wishlist") : t("today.amnesty.notActive"),
+    t("today.amnesty.keepHides", { count: BACKLOG_AMNESTY_KEEP_COOLDOWN_SKIPS + 1 }),
+    t("today.amnesty.hidden"),
   ].forEach((text) => {
     const pill = document.createElement("span");
     pill.textContent = text;
@@ -3272,9 +3300,9 @@ function renderBacklogAmnesty(ranked) {
   const actions = document.createElement("div");
   actions.className = "amnesty-actions";
   actions.append(
-    makeAmnestyButton("Details", "detail", game.title),
-    makeAmnestyButton("Keep it", "keep", game.title),
-    makeAmnestyButton("Let it go", "archive", game.title, "is-primary"),
+    makeAmnestyButton(t("today.amnesty.details"), "detail", game.title),
+    makeAmnestyButton(t("today.amnesty.keep"), "keep", game.title),
+    makeAmnestyButton(t("today.amnesty.letGo"), "archive", game.title, "is-primary"),
   );
 
   card.append(copy, facts, actions);
@@ -6143,7 +6171,7 @@ if (els.dataErrorToastClose) {
     const isDark = root.getAttribute("data-theme") === "dark";
     btn.textContent = isDark ? "☀" : "🌙";
     btn.setAttribute("aria-pressed", String(isDark));
-    btn.title = isDark ? "Switch to light mode" : "Switch to dark mode";
+    btn.title = isDark ? t("system.lightMode") : t("system.darkMode");
     // Keep meta theme-color in sync for mobile chrome
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", isDark ? "#0b1120" : "#003791");
@@ -6285,7 +6313,7 @@ async function hydrateDeferredData() {
         { message: error.message, source: "deferred-data" },
       ];
     }
-    showDataErrorToast(`Some data failed to load: ${error.message}`);
+    showDataErrorToast(t("system.dataFailed", { message: error.message }));
   }
 }
 
@@ -6324,8 +6352,8 @@ function showAppError(error) {
     if (els.appErrorMessage) {
       const isNetwork = error.message?.includes("Failed to fetch") || error.message?.includes("NetworkError");
       els.appErrorMessage.textContent = isNetwork
-        ? "Network error — make sure the local preview server is running, or open the file directly."
-        : error.message || "Something went wrong while loading game data.";
+        ? t("system.networkError")
+        : error.message || t("system.errorMessage");
     }
     if (els.appErrorStack) els.appErrorStack.textContent = error.stack || error.message || "";
   } else {
@@ -6333,8 +6361,8 @@ function showAppError(error) {
     els.topPick.innerHTML = `
       <article class="hero-card">
         <div class="hero-body">
-          <p class="eyebrow">Catalog unavailable</p>
-          <h3>Start the local preview server</h3>
+          <p class="eyebrow">${t("system.catalogUnavailable")}</p>
+          <h3>${t("system.startPreview")}</h3>
           <p class="reason">${error.message}</p>
         </div>
       </article>

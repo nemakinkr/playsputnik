@@ -3,6 +3,7 @@
 (function () {
   if (!window.PlaySputnikDev) throw new Error("app-dev must load before app-data-panel");
   if (!window.PlaySputnikEnrichment) throw new Error("app-enrichment must load before app-data-panel");
+  const t = window.PlaySputnikI18n.t;
 
   function createDataPanelTools({
     getState,
@@ -59,8 +60,11 @@
       const hot = queue.find((band) => band.id === "hot");
       const state = getState();
       els.refreshPolicyStatus.textContent = refreshPolicy.label;
-      els.refreshPolicySummary.textContent =
-        `${hot?.priceChecks || 0}/${refreshPolicy.dailySnapshotCap} daily snapshot budget used by hot intent in ${state.activeRegion}.`;
+      els.refreshPolicySummary.textContent = t("data.refreshSummary", {
+        used: hot?.priceChecks || 0,
+        cap: refreshPolicy.dailySnapshotCap,
+        region: state.activeRegion,
+      });
       els.refreshPolicyList.replaceChildren(
         ...queue.map((band) => {
           const row = document.createElement("div");
@@ -72,9 +76,9 @@
               <span>${band.description}</span>
             </div>
             <span class="policy-cadence">${band.cadence}</span>
-            <span>${band.games.length} games</span>
-            <span>${band.priceChecks} checks</span>
-            <span>${band.staleSignals} verify</span>
+            <span>${t("data.games", { count: band.games.length })}</span>
+            <span>${t("data.checks", { count: band.priceChecks })}</span>
+            <span>${t("data.verify", { count: band.staleSignals })}</span>
             <span class="policy-meter"><span style="width:${percentage}%"></span></span>
           `;
           return row;
@@ -86,6 +90,26 @@
     function renderSourceHealth() {
       const sourceStatus = getSourceStatus();
       if (!sourceStatus) return;
+      const sourceLabels = {
+        Catalog: t("data.sourceCatalog"),
+        Prices: t("data.sourcePrices"),
+        "PS Plus": t("data.sourcePlus"),
+        Covers: t("data.sourceCovers"),
+        "Taste radar": t("data.sourceRadar"),
+        "Monthly drop": t("data.sourceDrop"),
+      };
+      const freshnessLabels = {
+        fresh: t("data.sourceFresh"),
+        sample: t("data.sourceSample"),
+        stale: t("data.sourceStale"),
+        missing: t("data.sourceMissing"),
+      };
+      const confidenceLabels = {
+        high: t("data.confidenceHigh"),
+        medium: t("data.confidenceMedium"),
+        low: t("data.confidenceLow"),
+        unknown: t("data.confidenceUnknown"),
+      };
       els.sourceMode.textContent = sourceStatus.label;
       els.sourceList.replaceChildren(
         ...sourceStatus.sources.map((source) => {
@@ -93,11 +117,11 @@
           row.className = "source-row";
           row.innerHTML = `
             <div>
-              <strong>${source.layer}</strong>
+              <strong>${sourceLabels[source.layer] || source.layer}</strong>
               <span>${source.kind}</span>
             </div>
-            <span class="source-state ${source.freshnessState}">${source.freshnessState}</span>
-            <span>${source.confidence}</span>
+            <span class="source-state ${source.freshnessState}">${freshnessLabels[source.freshnessState] || source.freshnessState}</span>
+            <span>${confidenceLabels[source.confidence] || source.confidence}</span>
             <span>${source.note}</span>
           `;
           return row;
@@ -112,9 +136,9 @@
 
       const label = document.createElement("div");
       const title = document.createElement("strong");
-      title.textContent = check.label || check.id || "Check";
+      title.textContent = check.label || check.id || t("data.checkFallback");
       const detail = document.createElement("span");
-      detail.textContent = check.detail || "No detail recorded.";
+      detail.textContent = check.detail || t("data.noDetail");
       label.append(title, detail);
 
       const statusEl = document.createElement("span");
@@ -122,10 +146,12 @@
       statusEl.textContent = compactStatus(check.status || "unknown");
 
       const command = document.createElement("code");
-      command.textContent = check.command || "No command";
+      command.textContent = check.command || t("data.noCommand");
 
       const repair = document.createElement("small");
-      repair.textContent = check.repairCommand ? `Repair: ${check.repairCommand}` : "No repair command";
+      repair.textContent = check.repairCommand
+        ? t("data.repair", { command: check.repairCommand })
+        : t("data.noRepair");
 
       row.append(label, statusEl, command, repair);
       return row;
@@ -136,11 +162,13 @@
       const checks = devHealthChecks();
       const okCount = checks.filter((check) => devHealthStatusClass(check.status) === "pass").length;
       const attentionCount = checks.filter((check) => ["warning", "fail", "loading"].includes(devHealthStatusClass(check.status))).length;
-      const snapshot = devHealth?.updatedAt ? `Last CLI snapshot ${devHealth.updatedAt}` : "No CLI snapshot loaded";
+      const snapshot = devHealth?.updatedAt
+        ? t("data.cliSnapshot", { date: devHealth.updatedAt })
+        : t("data.noCliSnapshot");
       els.devHealthStatus.textContent = attentionCount
-        ? `${okCount}/${checks.length} ok / ${attentionCount} attention`
-        : `${okCount}/${checks.length} ok`;
-      els.devHealthSummary.textContent = `${snapshot}. ${devHealth?.summary || "Local health checks are loading."}`;
+        ? t("data.devStatusAttention", { ok: okCount, total: checks.length, attention: attentionCount })
+        : t("data.devStatus", { ok: okCount, total: checks.length });
+      els.devHealthSummary.textContent = `${snapshot}. ${devHealth?.summary || t("data.healthLoading")}`;
       els.devHealthList.replaceChildren(...checks.map(createDevHealthRow));
     }
 
@@ -149,33 +177,49 @@
       const dataHealth = getDataHealth();
       if (!dataHealth) return;
       const triage = dataHealth.issueTriage || {};
-      els.workbenchStatus.textContent = triage.criticalIssueCount
-        ? `${dataHealth.status} / ${triage.criticalIssueCount} critical / ${dataHealth.issueCount} issues`
-        : `${dataHealth.status} / ${dataHealth.issueCount} price issues / 0 critical`;
+      els.workbenchStatus.textContent = t("data.workbenchStatus", {
+        status: dataHealth.status,
+        issues: dataHealth.issueCount,
+        critical: triage.criticalIssueCount || 0,
+      });
       const regionCards = dataHealth.regions.map((region) => {
         const coverage = dataHealth.regionCoverage[region];
-        return { label: `${region} coverage`, value: `${coverage.priceCoverage}% price`, sub: `${coverage.psPlusCount} PS Plus picks` };
+        return {
+          label: t("data.regionCoverage", { region }),
+          value: t("data.priceCoverage", { count: coverage.priceCoverage }),
+          sub: t("data.plusPicks", { count: coverage.psPlusCount }),
+        };
       });
       const adultCards = Object.entries(dataHealth.adultSignals).map(([signal, value]) => ({
-        label: signal, value: `${value}%`, sub: "adult signal coverage",
+        label: signal, value: `${value}%`, sub: t("data.adultCoverage"),
       }));
       const cards = [
-        { label: "Catalog", value: `${dataHealth.gameCount} games`, sub: dataHealth.mode },
-        { label: "Title aliases", value: `${dataHealth.companionLayers?.titleAliasCount || 0} aliases`, sub: "import matching" },
+        { label: t("data.catalog"), value: t("data.gameCount", { count: dataHealth.gameCount }), sub: dataHealth.mode },
         {
-          label: "Covers",
-          value: `${dataHealth.coverCoverage?.coverage || 0}% ready`,
-          sub: `${dataHealth.coverCoverage?.fallbackCount || 0} fallback / ${dataHealth.coverCoverage?.realImageCount || 0} images`,
+          label: t("data.titleAliases"),
+          value: t("data.aliases", { count: dataHealth.companionLayers?.titleAliasCount || 0 }),
+          sub: t("data.importMatching"),
         },
         {
-          label: "Issue triage",
-          value: `${triage.criticalIssueCount || 0} critical`,
-          sub: triage.summary || "Waiting for health summary",
+          label: t("data.covers"),
+          value: t("data.coverReady", { count: dataHealth.coverCoverage?.coverage || 0 }),
+          sub: t("data.coverDetail", {
+            fallback: dataHealth.coverCoverage?.fallbackCount || 0,
+            images: dataHealth.coverCoverage?.realImageCount || 0,
+          }),
         },
         {
-          label: "Price gaps",
-          value: `${triage.priceGapIssueCount ?? dataHealth.issueCount} records`,
-          sub: `${triage.fullPriceGapGameCount || 0} full gaps / ${triage.partialPriceGapGameCount || 0} partial`,
+          label: t("data.issueTriage"),
+          value: t("data.critical", { count: triage.criticalIssueCount || 0 }),
+          sub: triage.summary || t("data.waitingHealth"),
+        },
+        {
+          label: t("data.priceGaps"),
+          value: t("data.records", { count: triage.priceGapIssueCount ?? dataHealth.issueCount }),
+          sub: t("data.gapDetail", {
+            full: triage.fullPriceGapGameCount || 0,
+            partial: triage.partialPriceGapGameCount || 0,
+          }),
         },
         ...regionCards,
         ...adultCards,
@@ -215,9 +259,18 @@
         ready_for_seed: 0, ready_for_atom_review: 1, candidate: 2, blocked_identity: 9, promoted_to_seed: 10,
       };
 
-      els.catalogBackboneStatus.textContent = `${currentSeed}/${seedTarget} seed / ${records.length} queued`;
-      els.catalogBackboneSummary.textContent =
-        `${promoted.length} promoted, ${ready.length} ready for seed, ${review.length} need atom review, ${coverMissing.length} cover gaps, ${hotPrice.length} hot price-watch candidates.`;
+      els.catalogBackboneStatus.textContent = t("data.backboneStatus", {
+        current: currentSeed,
+        target: seedTarget,
+        queued: records.length,
+      });
+      els.catalogBackboneSummary.textContent = t("data.backboneSummary", {
+        promoted: promoted.length,
+        ready: ready.length,
+        review: review.length,
+        covers: coverMissing.length,
+        hot: hotPrice.length,
+      });
 
       els.catalogBackboneList.replaceChildren(
         ...lanes.map((lane) => {
@@ -232,13 +285,13 @@
           row.innerHTML = `
             <div>
               <strong>${lane.label}</strong>
-              <span>${laneRecords.length}/${lane.target} records</span>
+              <span>${t("data.laneRecords", { count: laneRecords.length, target: lane.target })}</span>
             </div>
-            <span class="backbone-pill">${lanePromoted} seeded</span>
-            <span>${laneReady} ready</span>
-            <span>${laneRecords.filter((r) => r.coverStatus === "missing").length} covers</span>
-            <span>${laneRecords.filter((r) => r.priceNeed === "hot").length} hot</span>
-            <span>${next ? next.title : "No candidate"}</span>
+            <span class="backbone-pill">${t("data.seeded", { count: lanePromoted })}</span>
+            <span>${t("data.ready", { count: laneReady })}</span>
+            <span>${t("data.coverCount", { count: laneRecords.filter((r) => r.coverStatus === "missing").length })}</span>
+            <span>${t("data.hot", { count: laneRecords.filter((r) => r.priceNeed === "hot").length })}</span>
+            <span>${next ? next.title : t("data.noCandidate")}</span>
           `;
           return row;
         }),
@@ -256,15 +309,19 @@
       const manualReview = records.filter((r) => (r.manualReview || []).length > 0).length;
       const hotPrice = records.filter((r) => r.priceNeed === "hot").length;
 
-      els.catalogWorkbenchStatus.textContent = `${records.length} imports / ${manualReview} review`;
-      els.catalogWorkbenchSummary.textContent =
-        `${highConfidence} high-confidence matches, ${coverReady} cover candidates, ${atomReady} atom-ready, ${hotPrice} hot price checks.`;
+      els.catalogWorkbenchStatus.textContent = t("data.imports", { count: records.length, review: manualReview });
+      els.catalogWorkbenchSummary.textContent = t("data.importSummary", {
+        matches: highConfidence,
+        covers: coverReady,
+        atoms: atomReady,
+        hot: hotPrice,
+      });
 
       els.catalogWorkbenchList.replaceChildren(
         ...records.map((record) => {
           const row = document.createElement("div");
           row.className = "catalog-import-row";
-          const reviewText = (record.manualReview || []).length ? record.manualReview.join(", ") : "ready";
+          const reviewText = (record.manualReview || []).length ? record.manualReview.join(", ") : t("data.readyState");
           row.innerHTML = `
             <div>
               <strong>${record.title}</strong>

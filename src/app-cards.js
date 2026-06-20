@@ -85,12 +85,12 @@
       topPickEl.innerHTML = `
         <article class="hero-card">
           <div class="hero-visual">
-            <span>${confidence} confidence / ${Math.max(game.score, 0)} fit</span>
+            <span>${t("today.hero.meta", { confidence, fit: Math.max(game.score, 0) })}</span>
             <strong class="hero-visual-title">${game.title}</strong>
           </div>
           <div class="hero-body">
             <div>
-              <p class="eyebrow">Top recommendation</p>
+              <p class="eyebrow">${t("today.hero.top")}</p>
               <h3>${game.title}</h3>
               <p class="meta">${game.vibe}</p>
             </div>
@@ -103,11 +103,11 @@
             <div class="facts">${facts}</div>
             <p class="cover-source hero-cover-source"></p>
             <div class="hero-actions">
-              <button class="secondary-action" data-hero-detail type="button">Details</button>
-              <button class="secondary-action" data-hero-state="saved" type="button">Save</button>
-              <button class="secondary-action" data-hero-state="playing" type="button">Play now</button>
-              <button class="secondary-action" data-hero-state="owned" type="button">Owned</button>
-              <button class="secondary-action" data-hero-state="completed" type="button">Done</button>
+              <button class="secondary-action" data-hero-detail type="button">${t("today.hero.details")}</button>
+              <button class="secondary-action" data-hero-state="saved" type="button">${t("today.hero.save")}</button>
+              <button class="secondary-action" data-hero-state="playing" type="button">${t("today.hero.play")}</button>
+              <button class="secondary-action" data-hero-state="owned" type="button">${t("today.hero.owned")}</button>
+              <button class="secondary-action" data-hero-state="completed" type="button">${t("today.hero.done")}</button>
             </div>
           </div>
         </article>
