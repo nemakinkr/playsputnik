@@ -116,6 +116,12 @@ visible as a forming profile. Forecast correction only activates when the
 holdout error is also acceptable (<=25 points); otherwise Stats shows the
 diagnosis but explicitly keeps correction paused.
 
+Phase 3 improves the local estimator without paid AI: leave-one-out now
+compares the user's average rating, nearest-game similarity, regularized atom
+patterns, and a similarity/atom ensemble. The lowest-error model wins for that
+specific user, so the old nearest-game method remains a baseline that the new
+logic cannot silently underperform. Stats names the winning model in EN/RU.
+
 ## Track: Polish
 
 ### 1. Wishlist price alerts UI

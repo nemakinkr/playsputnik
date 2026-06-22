@@ -317,29 +317,77 @@
       return _ratingRecordsCache;
     }
 
-    function ratingSimilarity(a, b) {
-      const aSignals = new Set(gameSignals(a));
-      const bSignals = new Set(gameSignals(b));
-      const shared = [...aSignals].filter((signal) => bSignals.has(signal)).length;
-      const union = new Set([...aSignals, ...bSignals]).size;
-      return union ? shared / union : 0;
+    function ratingFeatures(game) {
+      return [
+        ...(game.atoms || []).map((signal) => ({ signal, weight: 1 })),
+        { signal: game.tone, weight: 0.35 },
+        { signal: game.content, weight: 0.3 },
+        { signal: game.adultTimeFit, weight: 0.4 },
+        { signal: game.commitment, weight: 0.45 },
+      ].filter((item) => item.signal);
     }
 
-    function predictRatingFromRecords(game, records) {
+    function ratingSimilarity(a, b) {
+      const aFeatures = new Map(ratingFeatures(a).map((item) => [item.signal, item.weight]));
+      const bFeatures = new Map(ratingFeatures(b).map((item) => [item.signal, item.weight]));
+      const union = new Set([...aFeatures.keys(), ...bFeatures.keys()]);
+      const sharedWeight = [...union].reduce(
+        (sum, signal) => sum + Math.min(aFeatures.get(signal) || 0, bFeatures.get(signal) || 0),
+        0,
+      );
+      const unionWeight = [...union].reduce(
+        (sum, signal) => sum + Math.max(aFeatures.get(signal) || 0, bFeatures.get(signal) || 0),
+        0,
+      );
+      return unionWeight ? sharedWeight / unionWeight : 0;
+    }
+
+    function clampRating(value) {
+      return Math.max(0, Math.min(100, value));
+    }
+
+    function ratingModelPredictions(game, records) {
       if (!records.length) return null;
       const neighbors = records
         .map((record) => ({ ...record, similarity: ratingSimilarity(game, record.game) }))
-        .filter((record) => record.similarity > 0)
+        .filter((record) => record.similarity >= 0.08)
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, 6);
       const baseline = records.reduce((sum, record) => sum + record.rating, 0) / records.length;
-      if (!neighbors.length) return { rating: baseline, neighbors: [] };
       const totalWeight = neighbors.reduce((sum, record) => sum + (record.similarity ** 2), 0);
-      const rating = neighbors.reduce(
-        (sum, record) => sum + record.rating * (record.similarity ** 2),
-        0,
-      ) / totalWeight;
-      return { rating, neighbors };
+      const rawNeighbor = totalWeight
+        ? neighbors.reduce((sum, record) => sum + record.rating * (record.similarity ** 2), 0) / totalWeight
+        : baseline;
+      const neighborTrust = Math.min(0.82, totalWeight / 1.4);
+      const neighbor = baseline + (rawNeighbor - baseline) * neighborTrust;
+
+      const featureBiases = ratingFeatures(game)
+        .map(({ signal, weight }) => {
+          const matching = records.filter((record) => gameSignals(record.game).includes(signal));
+          if (!matching.length) return null;
+          const mean = matching.reduce((sum, record) => sum + record.rating, 0) / matching.length;
+          const support = matching.length / (matching.length + 2.5);
+          return { bias: (mean - baseline) * support, weight, count: matching.length };
+        })
+        .filter(Boolean)
+        .sort((a, b) => Math.abs(b.bias * b.weight) - Math.abs(a.bias * a.weight))
+        .slice(0, 5);
+      const featureWeight = featureBiases.reduce((sum, item) => sum + item.weight, 0);
+      const signalAdjustment = featureWeight
+        ? featureBiases.reduce((sum, item) => sum + item.bias * item.weight, 0) / featureWeight
+        : 0;
+      const signal = baseline + Math.max(-28, Math.min(28, signalAdjustment * 1.35));
+      const ensemble = neighbor * 0.55 + signal * 0.45;
+
+      return {
+        predictions: {
+          baseline: clampRating(baseline),
+          neighbor: clampRating(neighbor),
+          signal: clampRating(signal),
+          ensemble: clampRating(ensemble),
+        },
+        neighbors,
+      };
     }
 
     function tasteCalibrationProfile() {
@@ -352,24 +400,45 @@
           trusted: false,
           meanError: 0,
           meanAbsoluteError: null,
+          model: "baseline",
+          modelErrors: {},
           signalBias: {},
           underestimated: [],
           overestimated: [],
         };
         return _calibrationCache;
       }
-      const signalResiduals = {};
-      const residuals = records.map((record) => {
+      const modelResiduals = {
+        baseline: [],
+        neighbor: [],
+        signal: [],
+        ensemble: [],
+      };
+      const holdouts = records.map((record) => {
         const training = records.filter((candidate) => candidate !== record);
-        const prediction = predictRatingFromRecords(record.game, training);
-        const residual = record.rating - prediction.rating;
+        const result = ratingModelPredictions(record.game, training);
+        Object.entries(result.predictions).forEach(([model, prediction]) => {
+          modelResiduals[model].push(record.rating - prediction);
+        });
+        return { record, result };
+      });
+      const modelErrors = Object.fromEntries(
+        Object.entries(modelResiduals).map(([model, residuals]) => [
+          model,
+          Math.round((residuals.reduce((sum, value) => sum + Math.abs(value), 0) / residuals.length) * 10) / 10,
+        ]),
+      );
+      const model = Object.entries(modelErrors).sort((a, b) => a[1] - b[1])[0][0];
+      const residuals = modelResiduals[model];
+      const signalResiduals = {};
+      holdouts.forEach(({ record }, index) => {
+        const residual = residuals[index];
         gameSignals(record.game).forEach((signal) => {
           const current = signalResiduals[signal] || { sum: 0, count: 0 };
           current.sum += residual;
           current.count += 1;
           signalResiduals[signal] = current;
         });
-        return residual;
       });
       const signalBias = Object.fromEntries(
         Object.entries(signalResiduals)
@@ -384,6 +453,8 @@
         trusted: records.length >= 5 && meanAbsoluteError <= 25,
         meanError: Math.round((residuals.reduce((sum, value) => sum + value, 0) / residuals.length) * 10) / 10,
         meanAbsoluteError,
+        model,
+        modelErrors,
         signalBias,
         underestimated: rankedBias.filter(([, value]) => value >= 4).slice(0, 3),
         overestimated: rankedBias.filter(([, value]) => value <= -4).slice(0, 3),
@@ -401,13 +472,14 @@
         _ratingForecastCache.set(cacheKey, result);
         return result;
       }
-      const prediction = predictRatingFromRecords(game, records);
-      if (!prediction) {
+      const predictionSet = ratingModelPredictions(game, records);
+      if (!predictionSet) {
         const result = { known: false, rating: null, count: 0, neighbors: [] };
         _ratingForecastCache.set(cacheKey, result);
         return result;
       }
       const calibration = tasteCalibrationProfile();
+      const baseRating = predictionSet.predictions[calibration.model] ?? predictionSet.predictions.baseline;
       const biases = gameSignals(game)
         .map((signal) => calibration.signalBias[signal])
         .filter(Number.isFinite);
@@ -419,11 +491,12 @@
         : 0;
       const result = {
         known: false,
-        rating: Math.round(Math.max(0, Math.min(100, prediction.rating + adjustment))),
+        rating: Math.round(clampRating(baseRating + adjustment)),
         count: records.length,
-        neighbors: prediction.neighbors.slice(0, 3).map((record) => record.game.title),
+        neighbors: predictionSet.neighbors.slice(0, 3).map((record) => record.game.title),
         adjustment: Math.round(adjustment * 10) / 10,
         calibrated: calibration.trusted,
+        model: calibration.model,
       };
       _ratingForecastCache.set(cacheKey, result);
       return result;

@@ -892,6 +892,7 @@ function checkSelectors() {
   assert(/function tasteCalibrationProfile/.test(appScoreSource), "Companion Intelligence should calibrate against personal ratings");
   assert(/function personalRatingForecast/.test(appScoreSource), "Companion Intelligence should forecast the user's rating scale");
   assert(/records\.filter\(\(candidate\) => candidate !== record\)/.test(appScoreSource), "Calibration should hold out the game being predicted");
+  assert(/modelErrors/.test(appScoreSource) && /ensemble/.test(appScoreSource), "Calibration should compare several local models");
   assert(/feedbackTasteWeights\(\{ includeQuick: false \}\)/.test(appScoreSource), "Taste Engine should avoid double-counting quick swipe feedback");
   assert(/Taste engine pull/.test(appScoreSource), "Score breakdown should expose Taste Engine pull");
   assert(/Taste engine caution/.test(appScoreSource), "Score breakdown should expose Taste Engine caution");

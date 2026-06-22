@@ -84,6 +84,13 @@ const calibration = tools.tasteCalibrationProfile();
 assert.equal(calibration.ready, true);
 assert.equal(calibration.count, 6);
 assert(Number.isFinite(calibration.meanAbsoluteError));
+assert(["baseline", "neighbor", "signal", "ensemble"].includes(calibration.model));
+assert.equal(
+  calibration.meanAbsoluteError,
+  Math.min(...Object.values(calibration.modelErrors)),
+  "calibration should choose the lowest-error local model",
+);
+assert(calibration.meanAbsoluteError <= calibration.modelErrors.neighbor, "model selection must not be worse than the previous neighbor model");
 const storyForecast = tools.personalRatingForecast(games.at(-1));
 assert.equal(storyForecast.known, false);
 assert(storyForecast.rating >= 80, `expected a high calibrated story forecast, got ${storyForecast.rating}`);

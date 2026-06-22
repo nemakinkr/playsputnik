@@ -2545,6 +2545,12 @@ function renderStats() {
   const userGames = Object.values(state.userGames || {});
   const region = state.activeRegion || "US";
   const calibration = tasteCalibrationProfile();
+  const calibrationModelLabels = {
+    baseline: t("stats.calibrationModelBaseline"),
+    neighbor: t("stats.calibrationModelNeighbor"),
+    signal: t("stats.calibrationModelSignal"),
+    ensemble: t("stats.calibrationModelEnsemble"),
+  };
 
   // Library by status
   const byStatus = {
@@ -2644,6 +2650,11 @@ function renderStats() {
             count: calibration.count,
             target: 5,
           });
+    if (calibration.ready) {
+      summary.textContent += ` ${t("stats.calibrationModel", {
+        model: calibrationModelLabels[calibration.model] || calibration.model,
+      })}`;
+    }
     const biases = [];
     calibration.underestimated.forEach(([signal, value]) => {
       const item = document.createElement("span");
