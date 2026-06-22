@@ -14,6 +14,16 @@ sensitive account token; PSN import stays local until PlaySputnik has accounts,
 explicit consent, encrypted token handling, revocation, and a dedicated
 security review.
 
+## Live deployment
+
+- Worker: `https://playsputnik-api.playsputnik.workers.dev`
+- GitHub Pages variable: `PLAYSPUTNIK_API_ORIGIN`
+- RAWG search: active through a Cloudflare encrypted secret
+- AI narratives: inactive until `ANTHROPIC_API_KEY` is added
+
+The live Pages app has been browser-verified in `production` API mode with
+cached RAWG search results and cover candidates.
+
 ## First deployment
 
 No custom domain is required. Cloudflare provides a `workers.dev` HTTPS URL.

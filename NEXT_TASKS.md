@@ -71,10 +71,12 @@ platform, language, release, and ranking claims. Existing deterministic EN/RU
 copy is the instant fallback. `ai-narrative-test.mjs` prevents locale-cache
 leaks and stale-context reuse.
 
-Production foundation is done: the Cloudflare Worker in `backend/` protects
-RAWG/Anthropic secrets, caches public search, validates CORS/input, and excludes
-PSN tokens. Public activation remains an account-side operation: deploy the
-Worker, add provider secrets, set `PLAYSPUTNIK_API_ORIGIN`, and redeploy Pages.
+Production foundation and RAWG activation are done. The live Cloudflare Worker
+protects provider secrets, caches public search, validates CORS/input, and
+excludes PSN tokens; Pages is connected through `PLAYSPUTNIK_API_ORIGIN`.
+Remaining backend activation: add `ANTHROPIC_API_KEY` when paid AI narratives
+are ready, and create a scoped Cloudflare API token if automatic backend deploys
+from GitHub Actions are desired.
 
 ## Track: Polish
 

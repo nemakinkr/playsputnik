@@ -57,6 +57,11 @@ reviews, catalogs, sale pages, and announcements.
   origin via `PLAYSPUTNIK_API_ORIGIN` and generated `runtime-config.js`.
   The public backend intentionally rejects PSN import until account-token
   security exists.
+- Production API is live at
+  `https://playsputnik-api.playsputnik.workers.dev`. Pages receives this origin
+  through the `PLAYSPUTNIK_API_ORIGIN` repository variable. RAWG search and
+  attributed cover candidates are live and edge-cached; Anthropic narratives
+  remain disabled because no `ANTHROPIC_API_KEY` has been configured.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;

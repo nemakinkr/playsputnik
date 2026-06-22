@@ -9,5 +9,6 @@ Thumbs.db
 
 # Local tooling state
 .claude/
+.wrangler/
 node_modules/
 *.log
