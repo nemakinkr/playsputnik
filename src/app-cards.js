@@ -8,6 +8,7 @@
     explain,
     personalEvidence,
     gameDescription,
+    gameTagline,
     watchOutCopy,
     factList,
     renderEvidenceRows,
@@ -92,7 +93,7 @@
             <div>
               <p class="eyebrow">${t("today.hero.top")}</p>
               <h3>${game.title}</h3>
-              <p class="meta">${game.vibe}</p>
+              <p class="meta">${gameTagline(game)}</p>
             </div>
             <p class="description">${gameDescription(game)}</p>
             <p class="reason">${reason}</p>
@@ -133,7 +134,7 @@
       card.querySelector(".poster-kind").textContent = (game.atoms || []).slice(0, 2).join(" / ");
       card.querySelector(".poster-title").textContent = game.title;
       card.querySelector("h3").textContent = game.title;
-      card.querySelector(".meta").textContent = game.vibe;
+      card.querySelector(".meta").textContent = gameTagline(game);
       card.querySelector(".score").textContent = `${Math.max(game.score, 0)}`;
       card.querySelector(".score").title = `${confidence} confidence`;
       card.querySelector(".description").textContent = gameDescription(game);

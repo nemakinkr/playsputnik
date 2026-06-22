@@ -45,8 +45,10 @@ reviews, catalogs, sale pages, and announcements.
   cockpit, onboarding, recommendation hero, backlog amnesty, import/export,
   theme and system states. Data includes localized live health/workbench
   metrics and ranking explanations. A seeded mobile browser gate verifies
-  dynamic copy in EN/RU. Editorial game descriptions, atoms, and raw technical
-  diagnostics remain a Phase 6 concern.
+  dynamic copy in EN/RU. Phase 6 editorial localization is underway: a
+  separate Russian overlay keeps authored taglines/summaries safe from
+  provider refreshes, with 25 key games covered and deterministic fallback for
+  the rest. Atoms and raw technical diagnostics remain later Phase 6 concerns.
 - Production EN/RU visual review now has a startup regression gate: a saved
   language wins even though the i18n engine loads before its catalogs. The
   mobile first-pick confirmation toast is width-constrained and wraps instead

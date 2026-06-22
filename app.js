@@ -75,6 +75,7 @@ let catalogBackbone = null;
 let searchSources = null;
 let globalSearchFixtures = [];
 let titleAliases = [];
+let editorialRu = {};
 let searchIndexStatus = "loading";
 let deferredRenderTicket = 0;
 
@@ -466,6 +467,7 @@ const {
   formatPrice,
   priceCanGuideBuy,
   gameDescription,
+  gameTagline,
   watchOuts,
   watchOutCopy,
   answerAccessLabel,
@@ -493,6 +495,9 @@ const {
   effectiveUserGame,
   titleMatches,
   titleKey,
+  getEditorialEntry: (game) => (
+    window.PlaySputnikI18n.getLocale() === "ru" ? editorialRu[game?.title] || null : null
+  ),
   USER_STATE_LABELS,
 });
 
@@ -787,6 +792,7 @@ const {
   explain,
   personalEvidence,
   gameDescription,
+  gameTagline,
   watchOutCopy,
   factList,
   renderEvidenceRows,
@@ -6265,6 +6271,7 @@ function assignDeferredData(payload) {
   if (payload.catalogBackbone) catalogBackbone = payload.catalogBackbone;
   if (payload.searchSources) searchSources = payload.searchSources;
   if (payload.globalSearchFixtures) globalSearchFixtures = payload.globalSearchFixtures;
+  if (payload.editorialRu?.records) editorialRu = payload.editorialRu.records;
   if (payload.searchSources || payload.globalSearchFixtures) {
     searchIndexStatus = searchSources?.sources?.length && Array.isArray(globalSearchFixtures?.records) ? "ready" : "loading";
   }
@@ -6291,6 +6298,7 @@ async function hydrateDeferredData() {
     {
       searchSources: ["data/search-sources.json", "Search sources"],
       globalSearchFixtures: ["data/global-search-fixtures.json", "Global search"],
+      editorialRu: ["data/editorial-ru.json", "Russian editorial copy"],
     },
   ];
 

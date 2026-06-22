@@ -18,6 +18,7 @@ fi
 
 echo "── 1/6 validate-data ──────────────────────────"
 "$NODE" scripts/validate-data.mjs
+"$NODE" scripts/editorial-data-check.mjs
 
 echo "── 2/6 i18n catalogs + usage ──────────────────"
 "$NODE" scripts/i18n-catalog-check.mjs

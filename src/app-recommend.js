@@ -24,6 +24,7 @@
     effectiveUserGame,
     titleMatches,
     titleKey,
+    getEditorialEntry,
     USER_STATE_LABELS,
   }) {
     function localizedState(value) {
@@ -204,6 +205,8 @@
     }
 
     function gameDescription(game) {
+      const editorial = getEditorialEntry?.(game);
+      if (editorial?.summary) return editorial.summary;
       const atoms = (game.atoms || []).slice(0, 2).join(" + ") || t("narrative.detail.needsTags");
       const timeFit = game.adultTimeFit
         ? t("narrative.recommend.descriptionBestFit", { fit: localizedAdultFit(game.adultTimeFit) })
@@ -215,6 +218,10 @@
         burden: localizedBurden(game.reviewBurden),
         timeFit,
       });
+    }
+
+    function gameTagline(game) {
+      return getEditorialEntry?.(game)?.tagline || game.vibe;
     }
 
     function watchOuts(game) {
@@ -630,6 +637,7 @@
       formatPrice,
       priceCanGuideBuy,
       gameDescription,
+      gameTagline,
       watchOuts,
       watchOutCopy,
       answerAccessLabel,

@@ -17,7 +17,9 @@ jobs:
         with:
           node-version: 24
       - name: Validate data
-        run: node scripts/validate-data.mjs
+        run: |
+          node scripts/validate-data.mjs
+          node scripts/editorial-data-check.mjs
       - name: Validate i18n catalogs and usage
         run: |
           node scripts/i18n-catalog-check.mjs

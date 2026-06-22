@@ -1016,6 +1016,9 @@ function checkSelectors() {
   assert(/function renderProfileGameRow/.test(appCardsSource), "renderProfileGameRow is missing from app-cards.js");
   assert(/function applyCoverVisual/.test(appCardsSource), "applyCoverVisual is missing from app-cards.js");
   assert(/function renderCoverSourceInto/.test(appCardsSource), "renderCoverSourceInto is missing from app-cards.js");
+  assert(/data\/editorial-ru\.json/.test(appSource), "App must load the Russian editorial overlay");
+  assert(/getEditorialEntry\?\.\(game\)/.test(appRecommendSource), "Recommendation copy must use locale editorial entries");
+  assert(/gameTagline\(game\)/.test(appCardsSource), "Cards must render localized editorial taglines");
   assert(/PlaySputnikCards/.test(appCardsSource), "Cards module must export PlaySputnikCards");
   assert(/PlaySputnikCards/.test(appSource), "app.js must reference PlaySputnikCards");
   assert(!/^function renderCard/.test(appSource), "renderCard must not remain as top-level function in app.js");
@@ -1443,6 +1446,7 @@ function checkSelectors() {
   assert(/production-smoke/.test(productionSmokeSource), "Production smoke test is missing");
   assert(/data-search-memory-panel/.test(productionSmokeSource), "Production smoke should verify search memory UI");
   assert(/data-health\.json/.test(productionSmokeSource), "Production smoke should verify published data health");
+  assert(/editorial-ru\.json/.test(productionSmokeSource), "Production smoke should verify published Russian editorial data");
   assert(/CACHE_VERSION = "v\\d\+"/.test(productionSmokeSource), "Production smoke should verify versioned service worker");
   assert(/production-browser-smoke/.test(productionBrowserSmokeSource), "Production browser smoke test is missing");
   assert(/remote-debugging-port/.test(productionBrowserSmokeSource), "Production browser smoke should use a real headless browser");

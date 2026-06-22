@@ -19,13 +19,14 @@ async function fetchJson(path) {
   return JSON.parse(await fetchText(path));
 }
 
-const [html, appSource, swSource, runtimeConfig, dataHealth, searchSources] = await Promise.all([
+const [html, appSource, swSource, runtimeConfig, dataHealth, searchSources, editorialRu] = await Promise.all([
   fetchText("./"),
   fetchText("./app.js"),
   fetchText("./sw.js"),
   fetchText("./runtime-config.js"),
   fetchJson("./data/data-health.json"),
   fetchJson("./data/search-sources.json"),
+  fetchJson("./data/editorial-ru.json"),
 ]);
 
 const sourceCount = Array.isArray(searchSources.sources) ? searchSources.sources.length : 0;
@@ -52,6 +53,9 @@ assert(/function runDetailPrimaryAction/.test(appSource), "Published app.js shou
 assert(/CACHE_VERSION = "v\d+"/.test(swSource), "Published sw.js should expose a versioned cache");
 assert(gameCount >= 400, `Expected published data-health to report at least 400 games, got ${gameCount || "unknown"}`);
 assert(sourceCount >= 3, `Expected at least 3 search sources, got ${sourceCount}`);
+assert(editorialRu.locale === "ru", "Published editorial overlay should declare the Russian locale");
+assert(Object.keys(editorialRu.records || {}).length >= 20, "Published editorial overlay should contain the key-game starter set");
+assert(editorialRu.records?.["Mafia: The Old Country"]?.summary, "Published editorial overlay should contain the Mafia anchor");
 assert(coverPercent >= 90 || /100/.test(JSON.stringify(dataHealth.coverage || dataHealth)), "Published data should report strong cover coverage");
 assert(pricePercent >= 90, `Published data should report strong price coverage, got ${pricePercent || "unknown"}`);
 
@@ -69,5 +73,6 @@ console.log(JSON.stringify({
     "runtime-config.js",
     "data-health",
     "search-sources",
+    "editorial-ru",
   ],
 }, null, 2));

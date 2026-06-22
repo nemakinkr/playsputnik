@@ -56,8 +56,14 @@ both audiences. This is a deliberate large project, done in phases with a commit
   A production visual review fixed saved-locale startup before catalogs load
   and made the mobile first-pick toast compact; the startup contract is now
   gated locally and in CI. Production API runtime config followed in SW v44.
-- **Phase 6 — data editorial fields** (game summaries/taglines in data/*.json):
-  decide approach (parallel ru fields vs. separate file).
+- **Phase 6 — data editorial fields — IN PROGRESS.** Chosen architecture:
+  a separate `data/editorial-ru.json` overlay, so daily catalog/provider
+  refreshes cannot overwrite authored Russian copy. The first 25 key catalog
+  games now have Russian taglines and summaries; missing records fall back to
+  the existing localized deterministic description. `editorial-data-check.mjs`
+  gates exact catalog-title links, Cyrillic content, and usable text lengths.
+  Continue coverage by product priority rather than translating all 456 titles
+  mechanically.
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).
 
 ## Track: AI Narrative Layer

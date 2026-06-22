@@ -1,7 +1,7 @@
 /* PlaySputnik Service Worker — offline-first static assets, network-first data */
 "use strict";
 
-const CACHE_VERSION = "v44";
+const CACHE_VERSION = "v45";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -64,6 +64,7 @@ const DATA_PATHS = [
   "./data/catalog-backbone.json",
   "./data/search-sources.json",
   "./data/global-search-fixtures.json",
+  "./data/editorial-ru.json",
 ];
 
 // ── Install: precache static shell ───────────────────────────────────────────
