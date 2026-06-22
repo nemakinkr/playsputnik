@@ -62,6 +62,12 @@ reviews, catalogs, sale pages, and announcements.
   through the `PLAYSPUTNIK_API_ORIGIN` repository variable. RAWG search and
   attributed cover candidates are live and edge-cached; Anthropic narratives
   remain disabled because no `ANTHROPIC_API_KEY` has been configured.
+- Backend operations: a six-hour GitHub Actions monitor covers health, CORS,
+  live RAWG normalization, cover presence, edge-cache hits, and untrusted-origin
+  rejection, with a single incident issue that closes on recovery. Backend
+  changes have an automatic contract-test/deploy/live-smoke workflow; its
+  non-secret Account ID variable is configured, while the scoped
+  `CLOUDFLARE_API_TOKEN` secret still needs to be added before deploy steps run.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;

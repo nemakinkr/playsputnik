@@ -72,13 +72,41 @@ fallback behavior.
 
 ## Optional backend workflow
 
-The manual **Deploy production backend** workflow expects:
+The **Deploy production backend** workflow runs automatically when
+`backend/**`, its contract/live tests, or the workflow itself changes. It can
+also be started manually. Every run:
+
+1. Executes the Worker contract test.
+2. Deploys only when Cloudflare credentials are configured.
+3. Probes the live Worker after deployment.
+
+It expects:
 
 - secret `CLOUDFLARE_API_TOKEN`
-- secret `CLOUDFLARE_ACCOUNT_ID`
+- variable `CLOUDFLARE_ACCOUNT_ID`
 
-Create a narrowly scoped Cloudflare API token that can edit Workers scripts.
-The workflow deploys code only; Worker secrets remain stored in Cloudflare.
+The account variable is already configured for the live project. To enable
+automatic deploys, create a Cloudflare token using the **Edit Cloudflare
+Workers** template, restrict its account resources to the PlaySputnik
+Cloudflare account, and save it as the GitHub Actions secret
+`CLOUDFLARE_API_TOKEN`. Do not reuse Wrangler's broad local OAuth token.
+The workflow deploys code only; RAWG/Anthropic secrets remain stored in
+Cloudflare.
+
+## Monitoring
+
+`.github/workflows/monitor-backend.yml` runs every six hours and can be
+triggered manually. It verifies:
+
+- health contract and configured RAWG secret;
+- allowed GitHub Pages CORS origin;
+- live RAWG search with a cover candidate and no invented price;
+- edge-cache `HIT` on a repeated query;
+- `403` for an untrusted origin.
+
+On failure it creates or updates one `Backend health: failing` issue. On
+recovery it comments on and closes that issue. The frontend remains usable via
+its local catalog and deterministic narratives during an outage.
 
 ## Local verification
 

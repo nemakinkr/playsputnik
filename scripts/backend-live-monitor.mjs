@@ -1,0 +1,79 @@
+const origin = String(
+  process.env.PLAYSPUTNIK_API_ORIGIN
+    || process.argv.find((arg) => arg.startsWith("https://"))
+    || "https://playsputnik-api.playsputnik.workers.dev",
+).replace(/\/+$/, "");
+const appOrigin = "https://nemakinkr.github.io";
+
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+async function request(path, options = {}) {
+  const response = await fetch(`${origin}${path}`, {
+    ...options,
+    headers: {
+      Origin: appOrigin,
+      ...(options.headers || {}),
+    },
+    signal: AbortSignal.timeout(10000),
+  });
+  const text = await response.text();
+  let data = {};
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(`${path} returned non-JSON (${response.status})`);
+  }
+  return { response, data };
+}
+
+const health = await request("/api/health");
+assert(health.response.ok, `health returned ${health.response.status}`);
+assert(health.data.status === "ok", `health status is ${health.data.status || "missing"}`);
+assert(health.data.service === "playsputnik-api", `unexpected service ${health.data.service || "missing"}`);
+assert(health.data.searchConfigured === true, "RAWG search secret is not configured");
+assert(
+  health.response.headers.get("access-control-allow-origin") === appOrigin,
+  "health CORS origin does not match GitHub Pages",
+);
+
+const query = `Stray`;
+const first = await request(`/api/search?q=${encodeURIComponent(query)}`);
+assert(first.response.ok, `search returned ${first.response.status}`);
+assert(first.data.mode === "provider_live", `search mode is ${first.data.mode || "missing"}`);
+assert(first.data.provider === "rawg", `search provider is ${first.data.provider || "missing"}`);
+assert(first.data.sourceHealth === "live_results", `search health is ${first.data.sourceHealth || "missing"}`);
+assert(Array.isArray(first.data.results) && first.data.results.length > 0, "search returned no results");
+const exactResult = first.data.results.find((result) => result.title === "Stray");
+assert(exactResult, "search results do not contain the exact Stray title");
+assert(exactResult.coverUrl, "exact Stray result has no cover candidate");
+assert(first.data.results.every((result) => result.priceStatus === "missing"), "provider search invented a price status");
+
+let cacheHeader = "";
+for (let attempt = 0; attempt < 5 && cacheHeader !== "HIT"; attempt += 1) {
+  if (attempt) await new Promise((resolve) => setTimeout(resolve, 250));
+  const cached = await request(`/api/search?q=${encodeURIComponent(query)}`);
+  assert(cached.response.ok, `cached search returned ${cached.response.status}`);
+  cacheHeader = cached.response.headers.get("x-playsputnik-cache") || "";
+}
+assert(cacheHeader === "HIT", `expected edge cache HIT, got ${cacheHeader || "missing"}`);
+
+const blocked = await fetch(`${origin}/api/search?q=${encodeURIComponent(query)}`, {
+  headers: { Origin: "https://untrusted.example" },
+  signal: AbortSignal.timeout(10000),
+});
+assert(blocked.status === 403, `untrusted origin returned ${blocked.status}, expected 403`);
+
+console.log(JSON.stringify({
+  mode: "backend-live-monitor",
+  origin,
+  health: health.data.status,
+  version: health.data.version,
+  searchProvider: first.data.provider,
+  resultCount: first.data.results.length,
+  exactTitle: exactResult.title,
+  cache: cacheHeader,
+  untrustedOrigin: blocked.status,
+  aiConfigured: Boolean(health.data.aiConfigured),
+}, null, 2));

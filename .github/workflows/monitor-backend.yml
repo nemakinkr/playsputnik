@@ -1,0 +1,66 @@
+name: Monitor production backend
+
+on:
+  schedule:
+    # Every six hours at an odd minute to avoid the busiest scheduler boundary.
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: backend-health-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Probe Worker health, CORS, RAWG search, and edge cache
+        id: probe
+        continue-on-error: true
+        env:
+          PLAYSPUTNIK_API_ORIGIN: ${{ vars.PLAYSPUTNIK_API_ORIGIN }}
+        run: node scripts/backend-live-monitor.mjs
+
+      - name: Report backend failure
+        if: steps.probe.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Backend health: failing"
+          BODY="The PlaySputnik production backend monitor failed on $(date -u +%F\ %T\ UTC).
+
+          Worker: ${{ vars.PLAYSPUTNIK_API_ORIGIN }}
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          The frontend keeps its local catalog and deterministic narrative fallbacks while the backend is unavailable."
+          gh label create backend-health --color D73A4A --description "Production backend health incident" --force
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY" --label backend-health
+          fi
+
+      - name: Close recovered backend issue
+        if: steps.probe.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXISTING=$(gh issue list --state open --search "Backend health: failing in:title" --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body "Recovered on $(date -u +%F\ %T\ UTC). Health, live RAWG search, CORS, and edge cache checks passed."
+            gh issue close "$EXISTING" --reason completed
+          fi
+
+      - name: Fail workflow when probe failed
+        if: steps.probe.outcome == 'failure'
+        run: exit 1

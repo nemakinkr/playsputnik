@@ -59,6 +59,7 @@ const [
   searchMemorySmokeSource,
   productionSmokeSource,
   productionBrowserSmokeSource,
+  backendLiveMonitorSource,
   coreJourneySmokeSource,
   demoProfileSmokeSource,
   searchQualityMatrixSource,
@@ -66,6 +67,8 @@ const [
   searchFixtureImporterSource,
   previewServerSource,
   deployPagesWorkflowSource,
+  deployBackendWorkflowSource,
+  monitorBackendWorkflowSource,
   catalogImportFixture,
   searchFixtureImportFixture,
   searchFixtureExpansionFixture,
@@ -126,6 +129,7 @@ const [
   readFile(new URL("scripts/search-memory-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/production-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/production-browser-smoke-test.mjs", ROOT), "utf8"),
+  readFile(new URL("scripts/backend-live-monitor.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/core-journey-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/demo-profile-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-quality-matrix.mjs", ROOT), "utf8"),
@@ -133,6 +137,8 @@ const [
   readFile(new URL("scripts/import-global-search-fixtures.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/preview-server.mjs", ROOT), "utf8"),
   readFile(new URL(".github/workflows/deploy-pages.yml", ROOT), "utf8"),
+  readFile(new URL(".github/workflows/deploy-backend.yml", ROOT), "utf8"),
+  readFile(new URL(".github/workflows/monitor-backend.yml", ROOT), "utf8"),
   readFile(new URL("test/fixtures/catalog-import-note.txt", ROOT), "utf8"),
   readFile(new URL("test/fixtures/search-fixture-import.txt", ROOT), "utf8"),
   readFile(new URL("test/fixtures/search-fixture-expansion-80.txt", ROOT), "utf8"),
@@ -1444,6 +1450,15 @@ function checkSelectors() {
   assert(/data-detail-cockpit/.test(productionBrowserSmokeSource), "Production browser smoke should verify the detail cockpit");
   assert(/production-smoke-test\.mjs/.test(deployPagesWorkflowSource), "Pages deploy should run production smoke after deployment");
   assert(/production-browser-smoke-test\.mjs/.test(deployPagesWorkflowSource), "Pages deploy should run production browser smoke after deployment");
+  assert(/push:/.test(deployBackendWorkflowSource) && /backend\/\*\*/.test(deployBackendWorkflowSource), "Backend deploy should run automatically for backend changes");
+  assert(/backend-worker-test\.mjs/.test(deployBackendWorkflowSource), "Backend deploy should run its contract test");
+  assert(/backend-live-monitor\.mjs/.test(deployBackendWorkflowSource), "Backend deploy should verify the live Worker");
+  assert(/CLOUDFLARE_API_TOKEN/.test(deployBackendWorkflowSource) && /CLOUDFLARE_ACCOUNT_ID/.test(deployBackendWorkflowSource), "Backend deploy credentials are not wired");
+  assert(/schedule:/.test(monitorBackendWorkflowSource) && /23 \*\/6 \* \* \*/.test(monitorBackendWorkflowSource), "Backend monitor schedule is missing");
+  assert(/issues: write/.test(monitorBackendWorkflowSource), "Backend monitor should manage incident issues");
+  assert(/Backend health: failing/.test(monitorBackendWorkflowSource), "Backend monitor issue lifecycle is missing");
+  assert(/sourceHealth/.test(backendLiveMonitorSource) && /x-playsputnik-cache/.test(backendLiveMonitorSource), "Backend monitor should verify provider health and edge cache");
+  assert(/untrusted\.example/.test(backendLiveMonitorSource) && /403/.test(backendLiveMonitorSource), "Backend monitor should verify CORS rejection");
   assert(/search-quality-matrix/.test(searchQualityMatrixSource), "Search quality matrix is missing");
   assert(/alias-gta-6/.test(searchQualityMatrixSource), "Search quality matrix should cover GTA aliases");
   assert(/ru-tsushima/.test(searchQualityMatrixSource) && /ru-last-of-us/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian aliases");
