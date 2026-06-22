@@ -82,6 +82,12 @@ reviews, catalogs, sale pages, and announcements.
   deterministic narratives remain the instant fallback. The local proxy is
   implemented and gated. Enabling it publicly now requires deploying the Worker,
   adding its secrets, and setting the GitHub repository variable.
+- Companion Intelligence 2.0 phase 1 is local and free: every candidate gets a
+  reliable/promising/polarizing/cautious/exploratory taste verdict. Strong pull
+  plus strong caution now creates an explicit contradiction penalty, caps
+  confidence, and widens rank forecasts instead of producing false precision.
+  Today, Library, and detail inherit the same EN/RU verdict through the shared
+  recommendation rationale; a deterministic gate covers all five classes.
 - Onboarding: 30-game swipe deck, visible 30-second contract, 3/6/10
   milestones, animated hero exit, first-pick payoff after 3 real taste
   signals, and "use now / improve later" guidance for swipes, library access,

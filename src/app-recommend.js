@@ -15,6 +15,8 @@
     getRefreshPolicy,
     tasteEngineProfile,
     tasteEngineGameSignals,
+    tasteEngineScore,
+    classifyTasteVerdict,
     scoreGame,
     personalFitBand,
     rankRangeForScore,
@@ -96,6 +98,49 @@
       if (score >= 65) return t("narrative.recommend.fitStrong");
       if (score >= 45) return t("narrative.recommend.fitPromising");
       return t("narrative.recommend.fitExperiment");
+    }
+
+    function capConfidence(value, cap) {
+      const levels = { Low: 0, Medium: 1, High: 2 };
+      if (!(value in levels) || !(cap in levels)) return value;
+      return levels[value] > levels[cap] ? cap : value;
+    }
+
+    function tasteVerdict(game) {
+      const profile = tasteEngineProfile();
+      const score = tasteEngineScore(game, profile);
+      const verdict = score.verdict || classifyTasteVerdict({ ...score, confidence: profile.confidence });
+      const keys = {
+        strong: {
+          label: "narrative.recommend.verdict.strong.label",
+          detail: "narrative.recommend.verdict.strong.detail",
+        },
+        promising: {
+          label: "narrative.recommend.verdict.promising.label",
+          detail: "narrative.recommend.verdict.promising.detail",
+        },
+        polarizing: {
+          label: "narrative.recommend.verdict.polarizing.label",
+          detail: "narrative.recommend.verdict.polarizing.detail",
+        },
+        caution: {
+          label: "narrative.recommend.verdict.caution.label",
+          detail: "narrative.recommend.verdict.caution.detail",
+        },
+        exploratory: {
+          label: "narrative.recommend.verdict.exploratory.label",
+          detail: "narrative.recommend.verdict.exploratory.detail",
+        },
+      };
+      const copy = keys[verdict.kind] || keys.exploratory;
+      return {
+        ...verdict,
+        label: t(copy.label),
+        detail: t(copy.detail),
+        pull: score.pull,
+        caution: Math.abs(score.caution),
+        uncertainty: Math.abs(score.uncertainty),
+      };
     }
 
     function localizedConfidence(value) {
@@ -228,9 +273,11 @@
       const state = getState();
       const warnings = [];
       const tasteSignals = tasteEngineGameSignals(game);
+      const verdict = tasteVerdict(game);
       const negativeSignals = tasteSignals.negative.slice(0, 2);
       const mixedSignals = tasteSignals.mixed.slice(0, 2);
-      if (negativeSignals.length) warnings.push(t("narrative.recommend.watchNegative", { signals: labelAtoms(negativeSignals, " + ") }));
+      if (verdict.kind === "polarizing") warnings.push(t("narrative.recommend.watchPolarizing"));
+      if (negativeSignals.length && verdict.kind !== "polarizing") warnings.push(t("narrative.recommend.watchNegative", { signals: labelAtoms(negativeSignals, " + ") }));
       if (mixedSignals.length && !negativeSignals.length) warnings.push(t("narrative.recommend.watchMixed", { signals: labelAtoms(mixedSignals, " + ") }));
       if (state.session === "short" && game.commitment === "high") warnings.push(t("narrative.recommend.watchHeavyShort"));
       if (game.session !== state.session && game.session === "long") warnings.push(t("narrative.recommend.watchLongSession"));
@@ -294,7 +341,14 @@
           : score > 55
             ? "Medium"
             : "Low";
-      return { reason, confidence: localizedConfidence(rawConfidence), confidenceKind: rawConfidence.toLowerCase() };
+      const verdict = tasteVerdict(game);
+      const honestConfidence = capConfidence(rawConfidence, verdict.confidenceCap);
+      return {
+        reason,
+        confidence: localizedConfidence(honestConfidence),
+        confidenceKind: honestConfidence.toLowerCase(),
+        verdict,
+      };
     }
 
     function personalReferenceGames(game) {
@@ -350,11 +404,12 @@
       const references = personalReferenceGames(game);
       const tasteProfile = tasteEngineProfile();
       const tasteSignals = tasteEngineGameSignals(game, tasteProfile);
+      const verdict = tasteVerdict(game);
       const positiveAtoms = tasteSignals.positive.slice(0, 2);
       const warning = watchOuts(game)[0];
       const score = scoreGame(game);
       const signalCount = tasteProfile.evidenceCount;
-      const confidenceKind = rankedEntry
+      const rawConfidenceKind = rankedEntry
         ? "Known"
         : hasRankingBaseline
           ? "Ranking estimate"
@@ -363,10 +418,16 @@
             : signalCount >= 5 || references.length
               ? "Medium"
               : "Low";
+      const confidenceKind = ["Known", "Ranking estimate"].includes(rawConfidenceKind)
+        ? rawConfidenceKind
+        : capConfidence(rawConfidenceKind, verdict.confidenceCap);
       const confidence = localizedConfidence(confidenceKind);
 
       const reasons = [];
       if (rankedEntry) reasons.push(t("narrative.recommend.forecastReasonRank", { rank: rankedEntry.rank }));
+      if (verdict.kind === "polarizing" || verdict.kind === "caution") {
+        reasons.push(t("narrative.recommend.forecastReasonVerdict", { verdict: verdict.label }));
+      }
       if (references.length) {
         reasons.push(t("narrative.recommend.forecastReasonNear", {
           titles: references.map((item) => item.title).slice(0, 2).join(" + "),
@@ -400,7 +461,14 @@
       }
 
       if (hasRankingBaseline) {
-        const [low, high] = rankRangeForScore(score);
+        const [baseLow, baseHigh] = rankRangeForScore(score);
+        const spread = verdict.kind === "polarizing"
+          ? { low: 6, high: 10 }
+          : verdict.kind === "caution" || verdict.kind === "exploratory"
+            ? { low: 3, high: 12 }
+            : { low: 0, high: 0 };
+        const low = Math.max(1, baseLow - spread.low);
+        const high = baseHigh + spread.high;
         return {
           label: t("narrative.recommend.forecastLabel", { low, high }),
           confidence,
@@ -438,7 +506,16 @@
       const wishlistHearts = notebookWishlistWeight(game.title);
       const rankedEntry = state.notebook.ranked.find((entry) => titleMatches(entry.title, game.title));
       const warning = watchOuts(game)[0];
+      const verdict = tasteVerdict(game);
       const lines = [];
+
+      lines.push({
+        label: t("narrative.recommend.evidenceVerdict"),
+        detail: t("narrative.recommend.evidenceVerdictDetail", {
+          verdict: verdict.label,
+          detail: verdict.detail,
+        }),
+      });
 
       if (references.length) {
         const names = references.map((item) => item.title).slice(0, 2).join(" + ");
@@ -497,12 +574,13 @@
         }),
       });
 
+      const visibleLines = lines.length <= 4 ? lines : [...lines.slice(0, 3), lines.at(-1)];
       return {
         summary: lines[0]?.detail || t("narrative.recommend.evidenceFallback", {
           fit: localizedFitBand(scoreGame(game)),
         }),
         references,
-        lines: lines.slice(0, 4),
+        lines: visibleLines,
       };
     }
 
@@ -513,6 +591,7 @@
       const forecast = personalRankForecast(game);
       const evidence = personalEvidence(game);
       const watchout = watchOutCopy(game);
+      const verdict = tasteVerdict(game);
       const accessState = effectiveGameState(game);
       const accessLabel = answerAccessLabel(game);
       const headline = accessState
@@ -555,6 +634,7 @@
         watchout,
         evidence,
         chips: [
+          verdict.label,
           confidence,
           forecast.label,
           accessState ? localizedState(accessState) : accessLabel || priceCopy,
@@ -645,6 +725,7 @@
       personalReferenceGames,
       personalRankForecast,
       personalEvidence,
+      tasteVerdict,
       decisionRationale,
       factList,
     };

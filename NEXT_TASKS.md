@@ -95,6 +95,17 @@ are ready. Monitoring and automatic backend deploys are active: the six-hour
 monitor manages incident issues, and backend changes run contract tests,
 Cloudflare deploy, and a live post-deploy probe.
 
+## Track: Companion Intelligence 2.0
+
+Status: phase 1 done, fully local. The taste engine now classifies every game
+as a reliable, promising, polarizing, cautious, or exploratory fit. A game with
+simultaneously strong pull and strong caution receives an explicit tension
+penalty instead of hiding the contradiction inside a high total score.
+Polarizing/cautious verdicts cap displayed confidence and widen personal rank
+forecasts; the shared Today/Library/detail evidence now names the verdict in
+EN/RU. `companion-intelligence-test.mjs` gates all five classes and the
+contradiction threshold in local checks and CI.
+
 ## Track: Polish
 
 ### 1. Wishlist price alerts UI

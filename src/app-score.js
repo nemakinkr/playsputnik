@@ -13,6 +13,24 @@
     drop_not_for_me: "taste.actionDropRejected", drop_claim_only: "taste.actionClaimOnly",
     not_for_me: "taste.actionHidden",
   };
+
+  function classifyTasteVerdict({ pull = 0, caution = 0, uncertainty = 0, confidence = "Early" } = {}) {
+    const cautionStrength = Math.abs(Math.min(0, caution));
+    if (pull >= 24 && cautionStrength >= 14) {
+      return { kind: "polarizing", confidenceCap: "Medium" };
+    }
+    if (cautionStrength >= 18 && cautionStrength >= pull * 0.75) {
+      return { kind: "caution", confidenceCap: "Low" };
+    }
+    if (pull >= 30 && cautionStrength < 10 && uncertainty === 0 && confidence !== "Early") {
+      return { kind: "strong", confidenceCap: "High" };
+    }
+    if (pull >= 16 && cautionStrength < 18) {
+      return { kind: "promising", confidenceCap: confidence === "Early" ? "Low" : "Medium" };
+    }
+    return { kind: "exploratory", confidenceCap: "Low" };
+  }
+
   function createScoreTools({
     getState,
     getProfileGames,
@@ -249,15 +267,16 @@
       const cautionRaw = signals.negative.reduce((sum, signal) => sum + profile.negativeWeights[signal], 0);
       const pull = Math.min(70, Math.round(pullRaw * 6));
       const caution = -Math.min(55, Math.round(cautionRaw * 7));
-      const uncertainty = signals.mixed.length
-        ? -Math.min(12, signals.mixed.length * 4)
-        : profile.confidence === "Early"
-          ? -4
-          : 0;
+      const mixedPenalty = signals.mixed.length ? Math.min(12, signals.mixed.length * 4) : 0;
+      const tensionPenalty = pull >= 24 && Math.abs(caution) >= 14 ? 8 : 0;
+      const earlyPenalty = profile.confidence === "Early" ? 4 : 0;
+      const uncertainty = -Math.min(18, mixedPenalty + tensionPenalty + earlyPenalty);
+      const verdict = classifyTasteVerdict({ pull, caution, uncertainty, confidence: profile.confidence });
       return {
         pull,
         caution,
         uncertainty,
+        verdict,
         signals,
         confidence: profile.confidence,
       };
@@ -455,6 +474,7 @@
       invalidateTasteProfile,
       tasteEngineGameSignals,
       tasteEngineScore,
+      classifyTasteVerdict,
       notebookTitles,
       notebookWishlistWeight,
       notebookAccessKind,
@@ -468,5 +488,5 @@
     };
   }
 
-  window.PlaySputnikScore = { createScoreTools };
+  window.PlaySputnikScore = { createScoreTools, classifyTasteVerdict };
 })();
