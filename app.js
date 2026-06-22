@@ -406,6 +406,9 @@ const {
   tasteEngineGameSignals,
   tasteEngineScore,
   classifyTasteVerdict,
+  personalRatingRecords,
+  tasteCalibrationProfile,
+  personalRatingForecast,
   notebookTitles,
   notebookWishlistWeight,
   notebookAccessKind,
@@ -423,6 +426,7 @@ const {
   getFeedbackSource: (title) => feedbackSource(title),
   getTasteConflict: () => quickTasteConflictReport(),
   getTasteSignalCount: () => quickTasteSignalCount(),
+  getRecommendationPool: () => recommendationPool(),
   titleMatches,
   titleKey,
   effectiveGameState,
@@ -490,6 +494,8 @@ const {
   tasteEngineGameSignals,
   tasteEngineScore,
   classifyTasteVerdict,
+  personalRatingForecast,
+  tasteCalibrationProfile,
   scoreGame,
   personalFitBand,
   rankRangeForScore,
@@ -943,6 +949,7 @@ const els = {
   wishlistImportConfirm: document.querySelector("#wishlist-import-confirm"),
   wishlistImportDismiss: document.querySelector("#wishlist-import-dismiss"),
   statsGrid: document.querySelector("#stats-grid"),
+  statsCalibration: document.querySelector("#stats-calibration"),
   statsAtoms: document.querySelector("#stats-atoms"),
   statsTimeline: document.querySelector("#stats-timeline"),
   statsBadge: document.querySelector("#stats-badge"),
@@ -2537,6 +2544,7 @@ function renderStats() {
   const pool = recommendationPool();
   const userGames = Object.values(state.userGames || {});
   const region = state.activeRegion || "US";
+  const calibration = tasteCalibrationProfile();
 
   // Library by status
   const byStatus = {
@@ -2596,6 +2604,17 @@ function renderStats() {
     { label: t("stats.prices", { region }), value: withPrice, sub: t("stats.catalogGames", { count: pool.length }) },
     { label: t("stats.covers"), value: withCover, sub: t("stats.inCatalog", { count: pool.length }) },
     { label: t("stats.plus", { region }), value: inPsPlus, sub: t("stats.titlesIncluded") },
+    {
+      label: t("stats.calibration"),
+      value: calibration.ready
+        ? t("stats.calibrationError", { error: calibration.meanAbsoluteError })
+        : t("stats.calibrationProgress", { count: calibration.count, target: 5 }),
+      sub: calibration.trusted
+        ? t("stats.calibrationRatings", { count: calibration.count })
+        : calibration.ready
+          ? t("stats.calibrationUnstable")
+          : t("stats.calibrationNeed", { count: Math.max(0, 5 - calibration.count) }),
+    },
   ];
 
   els.statsGrid.replaceChildren(...tiles.map(({ label, value, sub }) => {
@@ -2604,6 +2623,59 @@ function renderStats() {
     tile.innerHTML = `<strong>${value}</strong><span>${label}</span><small>${sub}</small>`;
     return tile;
   }));
+
+  if (els.statsCalibration) {
+    const heading = document.createElement("h3");
+    heading.className = "stats-section-heading";
+    heading.textContent = t("stats.calibrationTitle");
+    const summary = document.createElement("p");
+    summary.className = "stats-calibration-summary";
+    summary.textContent = calibration.trusted
+      ? t("stats.calibrationReady", {
+          count: calibration.count,
+          error: calibration.meanAbsoluteError,
+        })
+      : calibration.ready
+        ? t("stats.calibrationUnstableDetail", {
+            count: calibration.count,
+            error: calibration.meanAbsoluteError,
+          })
+        : t("stats.calibrationBuilding", {
+            count: calibration.count,
+            target: 5,
+          });
+    const biases = [];
+    calibration.underestimated.forEach(([signal, value]) => {
+      const item = document.createElement("span");
+      item.className = "calibration-signal is-under";
+      item.textContent = t("stats.calibrationUnder", {
+        signal: labelAtom(signal),
+        value: Math.round(Math.abs(value)),
+      });
+      biases.push(item);
+    });
+    calibration.overestimated.forEach(([signal, value]) => {
+      const item = document.createElement("span");
+      item.className = "calibration-signal is-over";
+      item.textContent = t("stats.calibrationOver", {
+        signal: labelAtom(signal),
+        value: Math.round(Math.abs(value)),
+      });
+      biases.push(item);
+    });
+    const signals = document.createElement("div");
+    signals.className = "stats-calibration-signals";
+    if (biases.length) signals.append(...biases);
+    else {
+      const balanced = document.createElement("span");
+      balanced.className = "calibration-signal";
+      balanced.textContent = calibration.ready
+        ? t("stats.calibrationBalanced")
+        : t("stats.calibrationMore");
+      signals.append(balanced);
+    }
+    els.statsCalibration.replaceChildren(heading, summary, signals);
+  }
 
   // Render top atoms
   if (topAtoms.length) {

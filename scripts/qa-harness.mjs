@@ -889,6 +889,9 @@ function checkSelectors() {
   assert(/function tasteEngineScore/.test(appScoreSource), "Taste Engine v2 score adapter is missing");
   assert(/function classifyTasteVerdict/.test(appScoreSource), "Companion Intelligence should classify reliable and polarizing taste fit");
   assert(/tensionPenalty/.test(appScoreSource), "Companion Intelligence should penalize simultaneous strong pull and caution");
+  assert(/function tasteCalibrationProfile/.test(appScoreSource), "Companion Intelligence should calibrate against personal ratings");
+  assert(/function personalRatingForecast/.test(appScoreSource), "Companion Intelligence should forecast the user's rating scale");
+  assert(/records\.filter\(\(candidate\) => candidate !== record\)/.test(appScoreSource), "Calibration should hold out the game being predicted");
   assert(/feedbackTasteWeights\(\{ includeQuick: false \}\)/.test(appScoreSource), "Taste Engine should avoid double-counting quick swipe feedback");
   assert(/Taste engine pull/.test(appScoreSource), "Score breakdown should expose Taste Engine pull");
   assert(/Taste engine caution/.test(appScoreSource), "Score breakdown should expose Taste Engine caution");
@@ -1256,6 +1259,8 @@ function checkSelectors() {
   assert(/function personalRankForecast/.test(appRecommendSource), "Personal ranking forecast is missing");
   assert(/function tasteVerdict/.test(appRecommendSource), "Shared recommendation rationale should expose a taste verdict");
   assert(/narrative\.recommend\.evidenceVerdict/.test(appRecommendSource), "Taste verdict should be visible in personal evidence");
+  assert(/narrative\.recommend\.evidenceRatingForecast/.test(appRecommendSource), "Calibrated personal rating should be visible in evidence");
+  assert(/id="stats-calibration"/.test(html), "Stats should expose forecast calibration");
   assert(/hasRankingBaseline/.test(appRecommendSource), "Ranking forecast should require a ranking baseline");
   assert(/narrative\.recommend\.forecastFitLabel/.test(appRecommendSource), "Ranking forecast should fall back to fit tier without a ranking");
   assert(/class="rank-forecast"/.test(appSource), "Ranking forecast renderer is missing");

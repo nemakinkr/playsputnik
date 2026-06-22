@@ -7033,6 +7033,48 @@ textarea {
   align-items: center;
 }
 
+.stats-calibration {
+  padding-top: 16px;
+  border-top: 1px solid var(--card-border);
+}
+
+.stats-calibration-summary {
+  max-width: 760px;
+  margin: 0;
+  color: var(--text-mid);
+  line-height: 1.55;
+}
+
+.stats-calibration-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.calibration-signal {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  padding: 5px 9px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  background: var(--chip-bg);
+  color: var(--text-mid);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.calibration-signal.is-under {
+  border-color: color-mix(in srgb, var(--teal) 45%, var(--card-border));
+  color: var(--teal);
+}
+
+.calibration-signal.is-over {
+  border-color: color-mix(in srgb, var(--rose) 40%, var(--card-border));
+  color: var(--rose);
+}
+
 .stats-timeline {
   display: flex;
   flex-wrap: wrap;

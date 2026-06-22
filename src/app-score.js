@@ -38,6 +38,7 @@
     getFeedbackSource,
     getTasteConflict,
     getTasteSignalCount,
+    getRecommendationPool = () => [],
     titleMatches,
     titleKey,
     effectiveGameState,
@@ -171,8 +172,14 @@
     // Computing it 456× per render cost ~850ms; cache collapses that to one call.
     // The cache is cleared at the start of every render() via invalidateTasteProfile().
     let _tasteProfileCache = null;
+    let _calibrationCache = null;
+    let _ratingRecordsCache = null;
+    const _ratingForecastCache = new Map();
     function invalidateTasteProfile() {
       _tasteProfileCache = null;
+      _calibrationCache = null;
+      _ratingRecordsCache = null;
+      _ratingForecastCache.clear();
       _feedbackWeightsCache.withQuick = null;
       _feedbackWeightsCache.withoutQuick = null;
     }
@@ -280,6 +287,146 @@
         signals,
         confidence: profile.confidence,
       };
+    }
+
+    function personalRatingRecords() {
+      if (_ratingRecordsCache) return _ratingRecordsCache;
+      const state = getState();
+      const pool = getRecommendationPool();
+      const byTitle = new Map();
+      (state.importedRatings || []).forEach((entry) => {
+        const game = pool.find((candidate) => titleMatches(candidate.title, entry.title));
+        if (!game || !Number.isFinite(Number(entry.rating))) return;
+        byTitle.set(titleKey(game.title), {
+          game,
+          rating: Math.max(0, Math.min(100, Number(entry.rating) * 10)),
+          source: "import",
+        });
+      });
+      Object.values(state.userGames || {}).forEach((entry) => {
+        if (!Number.isFinite(Number(entry.rating))) return;
+        const game = pool.find((candidate) => titleMatches(candidate.title, entry.title));
+        if (!game) return;
+        byTitle.set(titleKey(game.title), {
+          game,
+          rating: Math.max(0, Math.min(100, Number(entry.rating))),
+          source: "sputnik",
+        });
+      });
+      _ratingRecordsCache = [...byTitle.values()];
+      return _ratingRecordsCache;
+    }
+
+    function ratingSimilarity(a, b) {
+      const aSignals = new Set(gameSignals(a));
+      const bSignals = new Set(gameSignals(b));
+      const shared = [...aSignals].filter((signal) => bSignals.has(signal)).length;
+      const union = new Set([...aSignals, ...bSignals]).size;
+      return union ? shared / union : 0;
+    }
+
+    function predictRatingFromRecords(game, records) {
+      if (!records.length) return null;
+      const neighbors = records
+        .map((record) => ({ ...record, similarity: ratingSimilarity(game, record.game) }))
+        .filter((record) => record.similarity > 0)
+        .sort((a, b) => b.similarity - a.similarity)
+        .slice(0, 6);
+      const baseline = records.reduce((sum, record) => sum + record.rating, 0) / records.length;
+      if (!neighbors.length) return { rating: baseline, neighbors: [] };
+      const totalWeight = neighbors.reduce((sum, record) => sum + (record.similarity ** 2), 0);
+      const rating = neighbors.reduce(
+        (sum, record) => sum + record.rating * (record.similarity ** 2),
+        0,
+      ) / totalWeight;
+      return { rating, neighbors };
+    }
+
+    function tasteCalibrationProfile() {
+      if (_calibrationCache) return _calibrationCache;
+      const records = personalRatingRecords();
+      if (records.length < 3) {
+        _calibrationCache = {
+          count: records.length,
+          ready: false,
+          trusted: false,
+          meanError: 0,
+          meanAbsoluteError: null,
+          signalBias: {},
+          underestimated: [],
+          overestimated: [],
+        };
+        return _calibrationCache;
+      }
+      const signalResiduals = {};
+      const residuals = records.map((record) => {
+        const training = records.filter((candidate) => candidate !== record);
+        const prediction = predictRatingFromRecords(record.game, training);
+        const residual = record.rating - prediction.rating;
+        gameSignals(record.game).forEach((signal) => {
+          const current = signalResiduals[signal] || { sum: 0, count: 0 };
+          current.sum += residual;
+          current.count += 1;
+          signalResiduals[signal] = current;
+        });
+        return residual;
+      });
+      const signalBias = Object.fromEntries(
+        Object.entries(signalResiduals)
+          .filter(([, value]) => value.count >= 2)
+          .map(([signal, value]) => [signal, Math.round((value.sum / value.count) * 10) / 10]),
+      );
+      const rankedBias = Object.entries(signalBias).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
+      const meanAbsoluteError = Math.round((residuals.reduce((sum, value) => sum + Math.abs(value), 0) / residuals.length) * 10) / 10;
+      _calibrationCache = {
+        count: records.length,
+        ready: records.length >= 5,
+        trusted: records.length >= 5 && meanAbsoluteError <= 25,
+        meanError: Math.round((residuals.reduce((sum, value) => sum + value, 0) / residuals.length) * 10) / 10,
+        meanAbsoluteError,
+        signalBias,
+        underestimated: rankedBias.filter(([, value]) => value >= 4).slice(0, 3),
+        overestimated: rankedBias.filter(([, value]) => value <= -4).slice(0, 3),
+      };
+      return _calibrationCache;
+    }
+
+    function personalRatingForecast(game) {
+      const cacheKey = titleKey(game.title);
+      if (_ratingForecastCache.has(cacheKey)) return _ratingForecastCache.get(cacheKey);
+      const records = personalRatingRecords();
+      const known = records.find((record) => titleMatches(record.game.title, game.title));
+      if (known) {
+        const result = { known: true, rating: Math.round(known.rating), count: records.length, neighbors: [] };
+        _ratingForecastCache.set(cacheKey, result);
+        return result;
+      }
+      const prediction = predictRatingFromRecords(game, records);
+      if (!prediction) {
+        const result = { known: false, rating: null, count: 0, neighbors: [] };
+        _ratingForecastCache.set(cacheKey, result);
+        return result;
+      }
+      const calibration = tasteCalibrationProfile();
+      const biases = gameSignals(game)
+        .map((signal) => calibration.signalBias[signal])
+        .filter(Number.isFinite);
+      const signalAdjustment = biases.length
+        ? biases.reduce((sum, value) => sum + value, 0) / biases.length
+        : 0;
+      const adjustment = calibration.trusted
+        ? Math.max(-12, Math.min(12, calibration.meanError * 0.35 + signalAdjustment * 0.65))
+        : 0;
+      const result = {
+        known: false,
+        rating: Math.round(Math.max(0, Math.min(100, prediction.rating + adjustment))),
+        count: records.length,
+        neighbors: prediction.neighbors.slice(0, 3).map((record) => record.game.title),
+        adjustment: Math.round(adjustment * 10) / 10,
+        calibrated: calibration.trusted,
+      };
+      _ratingForecastCache.set(cacheKey, result);
+      return result;
     }
 
     function notebookTitles(items) {
@@ -475,6 +622,9 @@
       tasteEngineGameSignals,
       tasteEngineScore,
       classifyTasteVerdict,
+      personalRatingRecords,
+      tasteCalibrationProfile,
+      personalRatingForecast,
       notebookTitles,
       notebookWishlistWeight,
       notebookAccessKind,

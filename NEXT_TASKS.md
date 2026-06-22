@@ -106,6 +106,16 @@ forecasts; the shared Today/Library/detail evidence now names the verdict in
 EN/RU. `companion-intelligence-test.mjs` gates all five classes and the
 contradiction threshold in local checks and CI.
 
+Phase 2 is also done: personal 1–5 ratings and imported 1–10 ratings are
+deduplicated into one calibration set. The model predicts each rated game with
+that game held out, reports mean absolute error and repeatable atom-level bias,
+then uses the learned scale to adjust future personal rank ranges. Stats shows
+calibration progress, honest holdout error, and what the model tends to
+under/overestimate. Five ratings unlock active calibration; fewer remain
+visible as a forming profile. Forecast correction only activates when the
+holdout error is also acceptable (<=25 points); otherwise Stats shows the
+diagnosis but explicitly keeps correction paused.
+
 ## Track: Polish
 
 ### 1. Wishlist price alerts UI

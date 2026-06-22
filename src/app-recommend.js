@@ -17,6 +17,8 @@
     tasteEngineGameSignals,
     tasteEngineScore,
     classifyTasteVerdict,
+    personalRatingForecast,
+    tasteCalibrationProfile,
     scoreGame,
     personalFitBand,
     rankRangeForScore,
@@ -405,6 +407,7 @@
       const tasteProfile = tasteEngineProfile();
       const tasteSignals = tasteEngineGameSignals(game, tasteProfile);
       const verdict = tasteVerdict(game);
+      const ratingForecast = personalRatingForecast(game);
       const positiveAtoms = tasteSignals.positive.slice(0, 2);
       const warning = watchOuts(game)[0];
       const score = scoreGame(game);
@@ -427,6 +430,9 @@
       if (rankedEntry) reasons.push(t("narrative.recommend.forecastReasonRank", { rank: rankedEntry.rank }));
       if (verdict.kind === "polarizing" || verdict.kind === "caution") {
         reasons.push(t("narrative.recommend.forecastReasonVerdict", { verdict: verdict.label }));
+      }
+      if (!ratingForecast.known && ratingForecast.calibrated && Number.isFinite(ratingForecast.rating)) {
+        reasons.push(t("narrative.recommend.forecastReasonRating", { rating: ratingForecast.rating }));
       }
       if (references.length) {
         reasons.push(t("narrative.recommend.forecastReasonNear", {
@@ -467,13 +473,17 @@
           : verdict.kind === "caution" || verdict.kind === "exploratory"
             ? { low: 3, high: 12 }
             : { low: 0, high: 0 };
-        const low = Math.max(1, baseLow - spread.low);
-        const high = baseHigh + spread.high;
+        const ratingShift = !ratingForecast.known && ratingForecast.calibrated && Number.isFinite(ratingForecast.rating)
+          ? Math.round((ratingForecast.rating - 70) / 8)
+          : 0;
+        const low = Math.max(1, baseLow - spread.low - Math.max(0, ratingShift));
+        const high = Math.max(low + 4, baseHigh + spread.high - Math.min(0, ratingShift));
         return {
           label: t("narrative.recommend.forecastLabel", { low, high }),
           confidence,
           confidenceKind,
           detail,
+          ratingForecast,
         };
       }
 
@@ -482,6 +492,7 @@
         label: t("narrative.recommend.forecastFitLabel", { fit }),
         confidence,
         confidenceKind,
+        ratingForecast,
         detail: warning
           ? t("narrative.recommend.forecastFitDetailRisk", {
               confidence,
@@ -507,6 +518,7 @@
       const rankedEntry = state.notebook.ranked.find((entry) => titleMatches(entry.title, game.title));
       const warning = watchOuts(game)[0];
       const verdict = tasteVerdict(game);
+      const ratingForecast = personalRatingForecast(game);
       const lines = [];
 
       lines.push({
@@ -516,6 +528,20 @@
           detail: verdict.detail,
         }),
       });
+      if (ratingForecast.known) {
+        lines.push({
+          label: t("narrative.recommend.evidenceRatingKnown"),
+          detail: t("narrative.recommend.evidenceRatingKnownDetail", { rating: ratingForecast.rating }),
+        });
+      } else if (ratingForecast.calibrated && Number.isFinite(ratingForecast.rating)) {
+        lines.push({
+          label: t("narrative.recommend.evidenceRatingForecast"),
+          detail: t("narrative.recommend.evidenceRatingForecastDetail", {
+            rating: ratingForecast.rating,
+            count: ratingForecast.count,
+          }),
+        });
+      }
 
       if (references.length) {
         const names = references.map((item) => item.title).slice(0, 2).join(" + ");
@@ -592,6 +618,7 @@
       const evidence = personalEvidence(game);
       const watchout = watchOutCopy(game);
       const verdict = tasteVerdict(game);
+      const calibration = tasteCalibrationProfile();
       const accessState = effectiveGameState(game);
       const accessLabel = answerAccessLabel(game);
       const headline = accessState
@@ -637,6 +664,7 @@
           verdict.label,
           confidence,
           forecast.label,
+          calibration.trusted ? t("narrative.recommend.calibratedChip", { count: calibration.count }) : "",
           accessState ? localizedState(accessState) : accessLabel || priceCopy,
         ].filter(Boolean),
       };

@@ -88,6 +88,14 @@ reviews, catalogs, sale pages, and announcements.
   confidence, and widens rank forecasts instead of producing false precision.
   Today, Library, and detail inherit the same EN/RU verdict through the shared
   recommendation rationale; a deterministic gate covers all five classes.
+  Phase 2 calibrates forecasts against deduplicated personal ratings with
+  leave-one-out evaluation, so a game cannot teach the prediction used to
+  evaluate itself. The learned rating scale adjusts future rank ranges; Stats
+  exposes sample size, holdout error, and recurring under/overestimation by
+  atom. It activates after five ratings and stays fully local.
+  A second honesty gate requires holdout error <=25 before calibration may
+  alter forecasts; a larger error remains visible in Stats but pauses the
+  correction.
 - Onboarding: 30-game swipe deck, visible 30-second contract, 3/6/10
   milestones, animated hero exit, first-pick payoff after 3 real taste
   signals, and "use now / improve later" guidance for swipes, library access,

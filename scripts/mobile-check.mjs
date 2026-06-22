@@ -131,6 +131,8 @@ function scanInPage(MIN_TOUCH, locale) {
   const statsTitle = (document.querySelector("#stats-title")?.textContent || "").trim();
   const statsBadge = (document.querySelector("#stats-badge")?.textContent || "").trim();
   const statsFirstLabel = (document.querySelector(".stats-tile span")?.textContent || "").trim();
+  const statsCalibrationTitle = (document.querySelector("#stats-calibration .stats-section-heading")?.textContent || "").trim();
+  const statsCalibrationText = (document.querySelector("#stats-calibration .stats-calibration-summary")?.textContent || "").trim();
   try {
     openAppView("data");
     render();
@@ -199,6 +201,8 @@ function scanInPage(MIN_TOUCH, locale) {
     statsTitle,
     statsBadge,
     statsFirstLabel,
+    statsCalibrationTitle,
+    statsCalibrationText,
     dataRefreshTitle,
     dataRefreshMode,
     dataRefreshBand,
@@ -270,6 +274,8 @@ export const gate = {
         statsTitle: pass.statsTitle || "",
         statsBadge: pass.statsBadge || "",
         statsFirstLabel: pass.statsFirstLabel || "",
+        statsCalibrationTitle: pass.statsCalibrationTitle || "",
+        statsCalibrationText: pass.statsCalibrationText || "",
         dataRefreshTitle: pass.dataRefreshTitle || "",
         dataRefreshMode: pass.dataRefreshMode || "",
         dataRefreshBand: pass.dataRefreshBand || "",
@@ -336,6 +342,8 @@ export const gate = {
     const statsTitleByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsTitle]));
     const statsBadgeByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsBadge]));
     const statsFirstByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsFirstLabel]));
+    const statsCalibrationTitleByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsCalibrationTitle]));
+    const statsCalibrationTextByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsCalibrationText]));
     const dataRefreshByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshTitle]));
     const dataRefreshModeByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshMode]));
     const dataRefreshBandByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshBand]));
@@ -401,10 +409,14 @@ export const gate = {
       && dealsFilterByLocale.ru === "Все скидки";
     const statsEnOk = statsTitleByLocale.en === "My Library stats"
       && /tracked/i.test(statsBadgeByLocale.en || "")
-      && statsFirstByLocale.en === "Tracked games";
+      && statsFirstByLocale.en === "Tracked games"
+      && statsCalibrationTitleByLocale.en === "How well the companion knows my scale"
+      && /ratings|Calibration is forming/.test(statsCalibrationTextByLocale.en || "");
     const statsRuOk = statsTitleByLocale.ru === "Статистика моей библиотеки"
       && /отслеживается/i.test(statsBadgeByLocale.ru || "")
-      && statsFirstByLocale.ru === "Игры в памяти";
+      && statsFirstByLocale.ru === "Игры в памяти"
+      && statsCalibrationTitleByLocale.ru === "Насколько компаньон понимает мою шкалу"
+      && /оценок|Калибровка формируется/.test(statsCalibrationTextByLocale.ru || "");
     const dataEnOk = dataRefreshByLocale.en === "Refresh policy"
       && dataRefreshModeByLocale.en === "Intent-weighted refresh"
       && dataRefreshBandByLocale.en === "Hot intent"
@@ -473,6 +485,8 @@ export const gate = {
       ...Object.values(statsTitleByLocale),
       ...Object.values(statsBadgeByLocale),
       ...Object.values(statsFirstByLocale),
+      ...Object.values(statsCalibrationTitleByLocale),
+      ...Object.values(statsCalibrationTextByLocale),
       ...Object.values(dataRefreshByLocale),
       ...Object.values(dataRefreshModeByLocale),
       ...Object.values(dataRefreshBandByLocale),
@@ -508,7 +522,7 @@ export const gate = {
       lines.push(`   - en discover: "${discoverSearchByLocale.en || "missing"}" / "${discoverMemoryByLocale.en || "missing"}" / "${discoverCatalogByLocale.en || "missing"}" / "${discoverMetricByLocale.en || "missing"}"`);
       lines.push(`   - en taste: "${tasteLearningByLocale.en || "missing"}" / "${tasteStatusByLocale.en || "missing"}" / "${tasteShareByLocale.en || "missing"}" / "${tasteReceiptByLocale.en || "missing"}"`);
       lines.push(`   - en deals: "${dealsTitleByLocale.en || "missing"}" / "${dealsStatusByLocale.en || "missing"}" / "${dealsFilterByLocale.en || "missing"}"`);
-      lines.push(`   - en stats: "${statsTitleByLocale.en || "missing"}" / "${statsBadgeByLocale.en || "missing"}" / "${statsFirstByLocale.en || "missing"}"`);
+      lines.push(`   - en stats: "${statsTitleByLocale.en || "missing"}" / "${statsBadgeByLocale.en || "missing"}" / "${statsFirstByLocale.en || "missing"}" / "${statsCalibrationTitleByLocale.en || "missing"}"`);
       lines.push(`   - en data: "${dataRefreshByLocale.en || "missing"}" / "${dataRefreshModeByLocale.en || "missing"}" / "${dataSourceLayerByLocale.en || "missing"}" / "${dataDevLabelByLocale.en || "missing"}" / "${dataWorkbenchByLocale.en || "missing"}" / "${dataBackboneLaneByLocale.en || "missing"}" / "${dataImportPillsByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
@@ -519,7 +533,7 @@ export const gate = {
       lines.push(`   - ru discover: "${discoverSearchByLocale.ru || "missing"}" / "${discoverMemoryByLocale.ru || "missing"}" / "${discoverCatalogByLocale.ru || "missing"}" / "${discoverMetricByLocale.ru || "missing"}"`);
       lines.push(`   - ru taste: "${tasteLearningByLocale.ru || "missing"}" / "${tasteStatusByLocale.ru || "missing"}" / "${tasteShareByLocale.ru || "missing"}" / "${tasteReceiptByLocale.ru || "missing"}"`);
       lines.push(`   - ru deals: "${dealsTitleByLocale.ru || "missing"}" / "${dealsStatusByLocale.ru || "missing"}" / "${dealsFilterByLocale.ru || "missing"}"`);
-      lines.push(`   - ru stats: "${statsTitleByLocale.ru || "missing"}" / "${statsBadgeByLocale.ru || "missing"}" / "${statsFirstByLocale.ru || "missing"}"`);
+      lines.push(`   - ru stats: "${statsTitleByLocale.ru || "missing"}" / "${statsBadgeByLocale.ru || "missing"}" / "${statsFirstByLocale.ru || "missing"}" / "${statsCalibrationTitleByLocale.ru || "missing"}"`);
       lines.push(`   - ru data: "${dataRefreshByLocale.ru || "missing"}" / "${dataRefreshModeByLocale.ru || "missing"}" / "${dataSourceLayerByLocale.ru || "missing"}" / "${dataDevLabelByLocale.ru || "missing"}" / "${dataWorkbenchByLocale.ru || "missing"}" / "${dataBackboneLaneByLocale.ru || "missing"}" / "${dataImportPillsByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };

@@ -39,4 +39,56 @@ assertVerdict({ pull: 22, caution: -5, uncertainty: 0, confidence: "Medium" }, "
 assertVerdict({ pull: 8, caution: -2, uncertainty: -4, confidence: "Early" }, "exploratory", "Low");
 assert.match(source, /tensionPenalty = pull >= 24 && Math\.abs\(caution\) >= 14 \? 8 : 0/);
 
-console.log("✅ companion intelligence distinguishes reliable, polarizing, cautious, and exploratory fit");
+const games = [
+  { title: "Story A", atoms: ["story", "choice"], tone: "dark", content: "mature", adultTimeFit: "weeknight", commitment: "medium" },
+  { title: "Story B", atoms: ["story", "choice"], tone: "dark", content: "mature", adultTimeFit: "weekend", commitment: "high" },
+  { title: "Story C", atoms: ["story", "cinematic"], tone: "dark", content: "mature", adultTimeFit: "weeknight", commitment: "medium" },
+  { title: "Action A", atoms: ["action", "multiplayer"], tone: "epic", content: "violent", adultTimeFit: "evening", commitment: "medium" },
+  { title: "Action B", atoms: ["action", "multiplayer"], tone: "epic", content: "violent", adultTimeFit: "evening", commitment: "high" },
+  { title: "Action C", atoms: ["action", "service"], tone: "epic", content: "violent", adultTimeFit: "evening", commitment: "high" },
+  { title: "New Story", atoms: ["story", "choice"], tone: "dark", content: "mature", adultTimeFit: "weeknight", commitment: "medium" },
+];
+const state = {
+  importedRatings: [
+    { title: "Story A", rating: 9.5 },
+    { title: "Story B", rating: 9 },
+    { title: "Story C", rating: 8.5 },
+    { title: "Action A", rating: 4 },
+    { title: "Action B", rating: 3 },
+    { title: "Action C", rating: 2.5 },
+  ],
+  userGames: {},
+  quickReactions: {},
+  liked: new Set(),
+  atomWeights: {},
+  feedbackLog: [],
+  notebook: { ranked: [], completed: [] },
+};
+const key = (title) => String(title || "").toLowerCase();
+const tools = context.window.PlaySputnikScore.createScoreTools({
+  getState: () => state,
+  getProfileGames: () => [],
+  getQuickReaction: () => "",
+  getFeedbackSource: () => null,
+  getTasteConflict: () => ({ atoms: [] }),
+  getTasteSignalCount: () => 0,
+  getRecommendationPool: () => games,
+  titleMatches: (a, b) => key(a) === key(b),
+  titleKey: key,
+  effectiveGameState: () => "",
+  getSubscriptionStatus: () => ({ canConfirm: false }),
+  getPriceStatus: () => ({ canConfirm: false }),
+  QUICK_TASTE_FIRST_TARGET: 3,
+});
+const calibration = tools.tasteCalibrationProfile();
+assert.equal(calibration.ready, true);
+assert.equal(calibration.count, 6);
+assert(Number.isFinite(calibration.meanAbsoluteError));
+const storyForecast = tools.personalRatingForecast(games.at(-1));
+assert.equal(storyForecast.known, false);
+assert(storyForecast.rating >= 80, `expected a high calibrated story forecast, got ${storyForecast.rating}`);
+assert(storyForecast.neighbors.some((title) => title.startsWith("Story")));
+assert.equal(storyForecast.calibrated, calibration.trusted);
+assert.equal(tools.personalRatingForecast(games[0]).known, true);
+
+console.log("✅ companion intelligence classifies fit and calibrates forecasts with held-out personal ratings");
