@@ -143,8 +143,25 @@ function scanInPage(MIN_TOUCH, locale) {
     renderDebug(rankedGames()[0]);
   } catch (e) {}
   const dataRefreshTitle = (document.querySelector("#refresh-policy-title")?.textContent || "").trim();
+  const dataRefreshMode = (document.querySelector("#refresh-policy-status")?.textContent || "").trim();
+  const dataRefreshBand = (document.querySelector("#refresh-policy-list .policy-row strong")?.textContent || "").trim();
+  const dataRefreshCadence = (document.querySelector("#refresh-policy-list .policy-cadence")?.textContent || "").trim();
+  const dataSourceMode = (document.querySelector("#source-mode")?.textContent || "").trim();
+  const dataSourceLayer = (document.querySelector("#source-list .source-row strong")?.textContent || "").trim();
+  const dataSourceKind = (document.querySelector("#source-list .source-row div span")?.textContent || "").trim();
+  const dataSourceNote = (document.querySelector("#source-list .source-row > span:last-child")?.textContent || "").trim();
+  const dataDevLabel = (document.querySelector("#dev-health-list .dev-health-row strong")?.textContent || "").trim();
+  const dataDevDetail = (document.querySelector("#dev-health-list .dev-health-row div span")?.textContent || "").trim();
+  const dataDevStatus = (document.querySelector("#dev-health-list .dev-health-state")?.textContent || "").trim();
   const dataWorkbenchTitle = (document.querySelector("#workbench-title")?.textContent || "").trim();
+  const dataWorkbenchStatus = (document.querySelector("#workbench-status")?.textContent || "").trim();
+  const dataAdultSignal = (document.querySelector("#workbench-grid .workbench-card:nth-last-child(5) > span")?.textContent || "").trim();
   const dataCatalogLabel = (document.querySelector(".workbench-card > span")?.textContent || "").trim();
+  const dataBackboneLane = (document.querySelector("#catalog-backbone-list .backbone-row strong")?.textContent || "").trim();
+  const dataImportSource = (document.querySelector("#catalog-workbench-list .catalog-import-row div span")?.textContent || "").trim();
+  const dataImportPills = Array.from(document.querySelectorAll("#catalog-workbench-list .catalog-import-row:first-child .catalog-pill"))
+    .map((element) => (element.textContent || "").trim()).join("|");
+  const dataImportReview = (document.querySelector("#catalog-workbench-list .catalog-import-row > span:last-child")?.textContent || "").trim();
   const dataExportTitle = (document.querySelector("#export-title")?.textContent || "").trim();
   const dataDebugTitle = (document.querySelector("#debug-title")?.textContent || "").trim();
   try { openAppView("today"); } catch (e) {}
@@ -183,8 +200,24 @@ function scanInPage(MIN_TOUCH, locale) {
     statsBadge,
     statsFirstLabel,
     dataRefreshTitle,
+    dataRefreshMode,
+    dataRefreshBand,
+    dataRefreshCadence,
+    dataSourceMode,
+    dataSourceLayer,
+    dataSourceKind,
+    dataSourceNote,
+    dataDevLabel,
+    dataDevDetail,
+    dataDevStatus,
     dataWorkbenchTitle,
+    dataWorkbenchStatus,
+    dataAdultSignal,
     dataCatalogLabel,
+    dataBackboneLane,
+    dataImportSource,
+    dataImportPills,
+    dataImportReview,
     dataExportTitle,
     dataDebugTitle,
     overflow,
@@ -201,6 +234,7 @@ export const gate = {
     await cdp.send("Page.navigate", { url: pageUrl });
     await waitFor(cdp, APP_READY);
     await waitFor(cdp, "typeof dataHealth !== 'undefined' && dataHealth && dataHealth.gameCount > 0");
+    await waitFor(cdp, "typeof catalogBackbone !== 'undefined' && catalogBackbone && typeof catalogWorkbench !== 'undefined' && catalogWorkbench");
     const passes = [];
     for (const locale of ["en", "ru"]) {
       const raw = await evaluate(cdp, `(${scanInPage.toString()})(${MIN_TOUCH}, ${JSON.stringify(locale)})`);
@@ -237,8 +271,24 @@ export const gate = {
         statsBadge: pass.statsBadge || "",
         statsFirstLabel: pass.statsFirstLabel || "",
         dataRefreshTitle: pass.dataRefreshTitle || "",
+        dataRefreshMode: pass.dataRefreshMode || "",
+        dataRefreshBand: pass.dataRefreshBand || "",
+        dataRefreshCadence: pass.dataRefreshCadence || "",
+        dataSourceMode: pass.dataSourceMode || "",
+        dataSourceLayer: pass.dataSourceLayer || "",
+        dataSourceKind: pass.dataSourceKind || "",
+        dataSourceNote: pass.dataSourceNote || "",
+        dataDevLabel: pass.dataDevLabel || "",
+        dataDevDetail: pass.dataDevDetail || "",
+        dataDevStatus: pass.dataDevStatus || "",
         dataWorkbenchTitle: pass.dataWorkbenchTitle || "",
+        dataWorkbenchStatus: pass.dataWorkbenchStatus || "",
+        dataAdultSignal: pass.dataAdultSignal || "",
         dataCatalogLabel: pass.dataCatalogLabel || "",
+        dataBackboneLane: pass.dataBackboneLane || "",
+        dataImportSource: pass.dataImportSource || "",
+        dataImportPills: pass.dataImportPills || "",
+        dataImportReview: pass.dataImportReview || "",
         dataExportTitle: pass.dataExportTitle || "",
         dataDebugTitle: pass.dataDebugTitle || "",
       })),
@@ -287,8 +337,24 @@ export const gate = {
     const statsBadgeByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsBadge]));
     const statsFirstByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.statsFirstLabel]));
     const dataRefreshByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshTitle]));
+    const dataRefreshModeByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshMode]));
+    const dataRefreshBandByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshBand]));
+    const dataRefreshCadenceByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataRefreshCadence]));
+    const dataSourceModeByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataSourceMode]));
+    const dataSourceLayerByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataSourceLayer]));
+    const dataSourceKindByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataSourceKind]));
+    const dataSourceNoteByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataSourceNote]));
+    const dataDevLabelByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataDevLabel]));
+    const dataDevDetailByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataDevDetail]));
+    const dataDevStatusByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataDevStatus]));
     const dataWorkbenchByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataWorkbenchTitle]));
+    const dataWorkbenchStatusByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataWorkbenchStatus]));
+    const dataAdultSignalByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataAdultSignal]));
     const dataCatalogByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataCatalogLabel]));
+    const dataBackboneLaneByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataBackboneLane]));
+    const dataImportSourceByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataImportSource]));
+    const dataImportPillsByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataImportPills]));
+    const dataImportReviewByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataImportReview]));
     const dataExportByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataExportTitle]));
     const dataDebugByLocale = Object.fromEntries((localizedAnswers || []).map((item) => [item.locale, item.dataDebugTitle]));
     const enOk = /^(I would play|I need)/.test(answerByLocale.en || "");
@@ -340,13 +406,45 @@ export const gate = {
       && /отслеживается/i.test(statsBadgeByLocale.ru || "")
       && statsFirstByLocale.ru === "Игры в памяти";
     const dataEnOk = dataRefreshByLocale.en === "Refresh policy"
+      && dataRefreshModeByLocale.en === "Intent-weighted refresh"
+      && dataRefreshBandByLocale.en === "Hot intent"
+      && dataRefreshCadenceByLocale.en === "6-12h"
+      && dataSourceModeByLocale.en === "No paid API mode"
+      && dataSourceLayerByLocale.en === "Game catalog"
+      && dataSourceKindByLocale.en === "Curated seed JSON"
+      && /recommendation validation/.test(dataSourceNoteByLocale.en || "")
+      && dataDevLabelByLocale.en === "Preview server"
+      && /Current client rendered/.test(dataDevDetailByLocale.en || "")
+      && dataDevStatusByLocale.en === "pass"
       && dataWorkbenchByLocale.en === "Data workbench"
+      && /needs attention/.test(dataWorkbenchStatusByLocale.en || "")
+      && dataAdultSignalByLocale.en === "Commitment"
       && dataCatalogByLocale.en === "Catalog"
+      && dataBackboneLaneByLocale.en === "Cinematic story"
+      && dataImportSourceByLocale.en === "wishlist note"
+      && dataImportPillsByLocale.en === "high|candidate|needs review|hot"
+      && dataImportReviewByLocale.en === "cover rights, release metadata"
       && dataExportByLocale.en === "Export & Import"
       && dataDebugByLocale.en === "Why this ranking";
     const dataRuOk = dataRefreshByLocale.ru === "Правила обновления"
+      && dataRefreshModeByLocale.ru === "Обновление по намерению"
+      && dataRefreshBandByLocale.ru === "Горячее намерение"
+      && dataRefreshCadenceByLocale.ru === "каждые 6–12 ч"
+      && dataSourceModeByLocale.ru === "Режим без платных API"
+      && dataSourceLayerByLocale.ru === "Каталог игр"
+      && dataSourceKindByLocale.ru === "Отобранный вручную JSON"
+      && /проверки рекомендаций/.test(dataSourceNoteByLocale.ru || "")
+      && dataDevLabelByLocale.ru === "Сервер предпросмотра"
+      && /Клиент отрисован/.test(dataDevDetailByLocale.ru || "")
+      && dataDevStatusByLocale.ru === "успешно"
       && dataWorkbenchByLocale.ru === "Рабочая область данных"
+      && /требует внимания/.test(dataWorkbenchStatusByLocale.ru || "")
+      && dataAdultSignalByLocale.ru === "Обязательства"
       && dataCatalogByLocale.ru === "Каталог"
+      && dataBackboneLaneByLocale.ru === "Кинематографичный сюжет"
+      && dataImportSourceByLocale.ru === "заметка из Желаемого"
+      && dataImportPillsByLocale.ru === "высокая|кандидат|нужна проверка|горячая"
+      && dataImportReviewByLocale.ru === "права на обложку, метаданные релиза"
       && dataExportByLocale.ru === "Экспорт и импорт"
       && dataDebugByLocale.ru === "Почему такой рейтинг";
     const leakedKey = [
@@ -376,8 +474,24 @@ export const gate = {
       ...Object.values(statsBadgeByLocale),
       ...Object.values(statsFirstByLocale),
       ...Object.values(dataRefreshByLocale),
+      ...Object.values(dataRefreshModeByLocale),
+      ...Object.values(dataRefreshBandByLocale),
+      ...Object.values(dataRefreshCadenceByLocale),
+      ...Object.values(dataSourceModeByLocale),
+      ...Object.values(dataSourceLayerByLocale),
+      ...Object.values(dataSourceKindByLocale),
+      ...Object.values(dataSourceNoteByLocale),
+      ...Object.values(dataDevLabelByLocale),
+      ...Object.values(dataDevDetailByLocale),
+      ...Object.values(dataDevStatusByLocale),
       ...Object.values(dataWorkbenchByLocale),
+      ...Object.values(dataWorkbenchStatusByLocale),
+      ...Object.values(dataAdultSignalByLocale),
       ...Object.values(dataCatalogByLocale),
+      ...Object.values(dataBackboneLaneByLocale),
+      ...Object.values(dataImportSourceByLocale),
+      ...Object.values(dataImportPillsByLocale),
+      ...Object.values(dataImportReviewByLocale),
       ...Object.values(dataExportByLocale),
       ...Object.values(dataDebugByLocale),
     ]
@@ -395,7 +509,7 @@ export const gate = {
       lines.push(`   - en taste: "${tasteLearningByLocale.en || "missing"}" / "${tasteStatusByLocale.en || "missing"}" / "${tasteShareByLocale.en || "missing"}" / "${tasteReceiptByLocale.en || "missing"}"`);
       lines.push(`   - en deals: "${dealsTitleByLocale.en || "missing"}" / "${dealsStatusByLocale.en || "missing"}" / "${dealsFilterByLocale.en || "missing"}"`);
       lines.push(`   - en stats: "${statsTitleByLocale.en || "missing"}" / "${statsBadgeByLocale.en || "missing"}" / "${statsFirstByLocale.en || "missing"}"`);
-      lines.push(`   - en data: "${dataRefreshByLocale.en || "missing"}" / "${dataWorkbenchByLocale.en || "missing"}" / "${dataCatalogByLocale.en || "missing"}" / "${dataExportByLocale.en || "missing"}" / "${dataDebugByLocale.en || "missing"}"`);
+      lines.push(`   - en data: "${dataRefreshByLocale.en || "missing"}" / "${dataRefreshModeByLocale.en || "missing"}" / "${dataSourceLayerByLocale.en || "missing"}" / "${dataDevLabelByLocale.en || "missing"}" / "${dataWorkbenchByLocale.en || "missing"}" / "${dataBackboneLaneByLocale.en || "missing"}" / "${dataImportPillsByLocale.en || "missing"}"`);
       lines.push(`   - ru title: "${answerByLocale.ru || "missing"}"`);
       lines.push(`   - ru evidence: "${evidenceByLocale.ru || "missing"}"`);
       lines.push(`   - ru first run: "${firstRunByLocale.ru || "missing"}"`);
@@ -406,7 +520,7 @@ export const gate = {
       lines.push(`   - ru taste: "${tasteLearningByLocale.ru || "missing"}" / "${tasteStatusByLocale.ru || "missing"}" / "${tasteShareByLocale.ru || "missing"}" / "${tasteReceiptByLocale.ru || "missing"}"`);
       lines.push(`   - ru deals: "${dealsTitleByLocale.ru || "missing"}" / "${dealsStatusByLocale.ru || "missing"}" / "${dealsFilterByLocale.ru || "missing"}"`);
       lines.push(`   - ru stats: "${statsTitleByLocale.ru || "missing"}" / "${statsBadgeByLocale.ru || "missing"}" / "${statsFirstByLocale.ru || "missing"}"`);
-      lines.push(`   - ru data: "${dataRefreshByLocale.ru || "missing"}" / "${dataWorkbenchByLocale.ru || "missing"}" / "${dataCatalogByLocale.ru || "missing"}" / "${dataExportByLocale.ru || "missing"}" / "${dataDebugByLocale.ru || "missing"}"`);
+      lines.push(`   - ru data: "${dataRefreshByLocale.ru || "missing"}" / "${dataRefreshModeByLocale.ru || "missing"}" / "${dataSourceLayerByLocale.ru || "missing"}" / "${dataDevLabelByLocale.ru || "missing"}" / "${dataWorkbenchByLocale.ru || "missing"}" / "${dataBackboneLaneByLocale.ru || "missing"}" / "${dataImportPillsByLocale.ru || "missing"}"`);
     }
     if (!ok) return { ok, lines };
     return { ok: true, lines: [`✅ Mobile OK (EN + RU, 8 views + settings; no 375px overflow or controls under ${MIN_TOUCH}px)`] };

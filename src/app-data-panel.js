@@ -23,6 +23,31 @@
     notebookWishlistWeight,
     els,
   }) {
+    function dataLabel(group, value, fallback = "") {
+      const key = `data.${group}.${value}`;
+      const translated = t(key);
+      return translated === key ? fallback || String(value || "") : translated;
+    }
+
+    function localizedDiagnosticStatus(value) {
+      return dataLabel("status", value, compactStatus(value));
+    }
+
+    function localizedSourceField(source, field) {
+      return dataLabel(`source.${source.id}`, field, source[field]);
+    }
+
+    function localizedRefreshBand(band, field) {
+      return dataLabel(`refreshBand.${band.id}`, field, band[field]);
+    }
+
+    function localizedLane(lane) {
+      return dataLabel("lane", lane.id, lane.label);
+    }
+
+    function localizedManualReview(value) {
+      return dataLabel("manualReview", String(value || "").replaceAll(" ", "_"), value);
+    }
 
     // ── Refresh Policy ──────────────────────────────────────────────────────
     function refreshBandForGame(game, rankIndex) {
@@ -59,7 +84,7 @@
       const queue = refreshQueue(ranked);
       const hot = queue.find((band) => band.id === "hot");
       const state = getState();
-      els.refreshPolicyStatus.textContent = refreshPolicy.label;
+      els.refreshPolicyStatus.textContent = dataLabel("mode", refreshPolicy.mode, refreshPolicy.label);
       els.refreshPolicySummary.textContent = t("data.refreshSummary", {
         used: hot?.priceChecks || 0,
         cap: refreshPolicy.dailySnapshotCap,
@@ -72,10 +97,10 @@
           const percentage = Math.min(100, Math.round((band.priceChecks / refreshPolicy.dailySnapshotCap) * 100));
           row.innerHTML = `
             <div>
-              <strong>${band.label}</strong>
-              <span>${band.description}</span>
+              <strong>${localizedRefreshBand(band, "label")}</strong>
+              <span>${localizedRefreshBand(band, "description")}</span>
             </div>
-            <span class="policy-cadence">${band.cadence}</span>
+            <span class="policy-cadence">${localizedRefreshBand(band, "cadence")}</span>
             <span>${t("data.games", { count: band.games.length })}</span>
             <span>${t("data.checks", { count: band.priceChecks })}</span>
             <span>${t("data.verify", { count: band.staleSignals })}</span>
@@ -90,14 +115,6 @@
     function renderSourceHealth() {
       const sourceStatus = getSourceStatus();
       if (!sourceStatus) return;
-      const sourceLabels = {
-        Catalog: t("data.sourceCatalog"),
-        Prices: t("data.sourcePrices"),
-        "PS Plus": t("data.sourcePlus"),
-        Covers: t("data.sourceCovers"),
-        "Taste radar": t("data.sourceRadar"),
-        "Monthly drop": t("data.sourceDrop"),
-      };
       const freshnessLabels = {
         fresh: t("data.sourceFresh"),
         sample: t("data.sourceSample"),
@@ -110,19 +127,19 @@
         low: t("data.confidenceLow"),
         unknown: t("data.confidenceUnknown"),
       };
-      els.sourceMode.textContent = sourceStatus.label;
+      els.sourceMode.textContent = dataLabel("mode", sourceStatus.mode, sourceStatus.label);
       els.sourceList.replaceChildren(
         ...sourceStatus.sources.map((source) => {
           const row = document.createElement("div");
           row.className = "source-row";
           row.innerHTML = `
             <div>
-              <strong>${sourceLabels[source.layer] || source.layer}</strong>
-              <span>${source.kind}</span>
+              <strong>${localizedSourceField(source, "layer")}</strong>
+              <span>${localizedSourceField(source, "kind")}</span>
             </div>
             <span class="source-state ${source.freshnessState}">${freshnessLabels[source.freshnessState] || source.freshnessState}</span>
             <span>${confidenceLabels[source.confidence] || source.confidence}</span>
-            <span>${source.note}</span>
+            <span>${localizedSourceField(source, "note")}</span>
           `;
           return row;
         }),
@@ -133,6 +150,7 @@
     function createDevHealthRow(check) {
       const row = document.createElement("div");
       row.className = "dev-health-row";
+      row.dataset.checkId = check.id || "";
 
       const label = document.createElement("div");
       const title = document.createElement("strong");
@@ -143,7 +161,7 @@
 
       const statusEl = document.createElement("span");
       statusEl.className = `dev-health-state ${devHealthStatusClass(check.status)}`;
-      statusEl.textContent = compactStatus(check.status || "unknown");
+      statusEl.textContent = localizedDiagnosticStatus(check.status || "unknown");
 
       const command = document.createElement("code");
       command.textContent = check.command || t("data.noCommand");
@@ -168,7 +186,7 @@
       els.devHealthStatus.textContent = attentionCount
         ? t("data.devStatusAttention", { ok: okCount, total: checks.length, attention: attentionCount })
         : t("data.devStatus", { ok: okCount, total: checks.length });
-      els.devHealthSummary.textContent = `${snapshot}. ${devHealth?.summary || t("data.healthLoading")}`;
+      els.devHealthSummary.textContent = `${snapshot}. ${dataLabel("devSummary", devHealth?.mode, devHealth?.summary || t("data.healthLoading"))}`;
       els.devHealthList.replaceChildren(...checks.map(createDevHealthRow));
     }
 
@@ -178,7 +196,7 @@
       if (!dataHealth) return;
       const triage = dataHealth.issueTriage || {};
       els.workbenchStatus.textContent = t("data.workbenchStatus", {
-        status: dataHealth.status,
+        status: localizedDiagnosticStatus(dataHealth.status),
         issues: dataHealth.issueCount,
         critical: triage.criticalIssueCount || 0,
       });
@@ -191,10 +209,14 @@
         };
       });
       const adultCards = Object.entries(dataHealth.adultSignals).map(([signal, value]) => ({
-        label: signal, value: `${value}%`, sub: t("data.adultCoverage"),
+        label: dataLabel("adultSignal", signal, signal), value: `${value}%`, sub: t("data.adultCoverage"),
       }));
       const cards = [
-        { label: t("data.catalog"), value: t("data.gameCount", { count: dataHealth.gameCount }), sub: dataHealth.mode },
+        {
+          label: t("data.catalog"),
+          value: t("data.gameCount", { count: dataHealth.gameCount }),
+          sub: dataLabel("mode", dataHealth.mode, dataHealth.mode),
+        },
         {
           label: t("data.titleAliases"),
           value: t("data.aliases", { count: dataHealth.companionLayers?.titleAliasCount || 0 }),
@@ -211,7 +233,7 @@
         {
           label: t("data.issueTriage"),
           value: t("data.critical", { count: triage.criticalIssueCount || 0 }),
-          sub: triage.summary || t("data.waitingHealth"),
+          sub: dataLabel("triageSummary", triage.mode, triage.summary || t("data.waitingHealth")),
         },
         {
           label: t("data.priceGaps"),
@@ -284,7 +306,7 @@
           row.className = "backbone-row";
           row.innerHTML = `
             <div>
-              <strong>${lane.label}</strong>
+              <strong>${localizedLane(lane)}</strong>
               <span>${t("data.laneRecords", { count: laneRecords.length, target: lane.target })}</span>
             </div>
             <span class="backbone-pill">${t("data.seeded", { count: lanePromoted })}</span>
@@ -321,16 +343,18 @@
         ...records.map((record) => {
           const row = document.createElement("div");
           row.className = "catalog-import-row";
-          const reviewText = (record.manualReview || []).length ? record.manualReview.join(", ") : t("data.readyState");
+          const reviewText = (record.manualReview || []).length
+            ? record.manualReview.map(localizedManualReview).join(", ")
+            : t("data.readyState");
           row.innerHTML = `
             <div>
               <strong>${record.title}</strong>
-              <span>${record.source}</span>
+              <span>${dataLabel("workbenchSource", record.source, record.source)}</span>
             </div>
-            <span class="catalog-pill ${catalogStatusClass(record.matchConfidence)}">${compactStatus(record.matchConfidence)}</span>
-            <span class="catalog-pill ${catalogStatusClass(record.coverStatus)}">${compactStatus(record.coverStatus)}</span>
-            <span class="catalog-pill ${catalogStatusClass(record.atomStatus)}">${compactStatus(record.atomStatus)}</span>
-            <span class="catalog-pill ${catalogStatusClass(record.priceNeed)}">${compactStatus(record.priceNeed)}</span>
+            <span class="catalog-pill ${catalogStatusClass(record.matchConfidence)}">${localizedDiagnosticStatus(record.matchConfidence)}</span>
+            <span class="catalog-pill ${catalogStatusClass(record.coverStatus)}">${localizedDiagnosticStatus(record.coverStatus)}</span>
+            <span class="catalog-pill ${catalogStatusClass(record.atomStatus)}">${localizedDiagnosticStatus(record.atomStatus)}</span>
+            <span class="catalog-pill ${catalogStatusClass(record.priceNeed)}">${localizedDiagnosticStatus(record.priceNeed)}</span>
             <span>${reviewText}</span>
           `;
           return row;

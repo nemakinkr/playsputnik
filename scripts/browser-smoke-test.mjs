@@ -33,6 +33,7 @@ async function readDevHealth(page) {
     status: document.querySelector("#dev-health-status")?.textContent || "",
     summary: document.querySelector("#dev-health-summary")?.textContent || "",
     rowCount: document.querySelectorAll(".dev-health-row").length,
+    ids: [...document.querySelectorAll(".dev-health-row")].map((node) => node.dataset.checkId || ""),
     labels: [...document.querySelectorAll(".dev-health-row strong")].map((node) => node.textContent || ""),
   }));
 }
@@ -116,8 +117,8 @@ try {
   if (before.likedCount !== "0/30") throw new Error(`Expected clean onboarding 0/30, got ${before.likedCount}`);
   if (devHealth.rowCount < 4) throw new Error(`Expected 4 dev health rows, got ${devHealth.rowCount}`);
   if (!/\d{4}-\d{2}-\d{2}T/.test(devHealth.summary)) throw new Error(`Dev health snapshot did not load: ${devHealth.summary}`);
-  for (const label of ["Preview server", "Data health", "Browser smoke", "Provider endpoint"]) {
-    if (!devHealth.labels.includes(label)) throw new Error(`Dev health is missing ${label}`);
+  for (const id of ["preview_server", "data_health", "browser_smoke", "provider_endpoint"]) {
+    if (!devHealth.ids.includes(id)) throw new Error(`Dev health is missing ${id}`);
   }
   if (after.likedCount !== "1/30") throw new Error(`Expected swipe to move count to 1/30, got ${after.likedCount}`);
   if (!after.undoPresent) throw new Error("Expected quick swipe undo after DOM click");

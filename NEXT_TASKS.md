@@ -66,6 +66,12 @@ both audiences. This is a deliberate large project, done in phases with a commit
   stable English machine keys but render through synchronized EN/RU labels
   across onboarding, Taste, cards, search, Library, detail, Deals, and Stats.
   The catalog gate requires labels for every value in `data/taxonomy.json`.
+  Technical diagnostics are now complete too: source-health payloads, refresh
+  bands, dev checks, provider runtime states, data-workbench modes/statuses,
+  catalog lanes, import states, and manual-review reasons render in EN/RU while
+  commands and machine identifiers stay literal. The seeded mobile gate opens
+  Data in both locales and asserts representative dynamic diagnostics, so raw
+  English payloads cannot silently return.
   Continue coverage by product priority rather than translating all 456 titles
   mechanically.
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).
