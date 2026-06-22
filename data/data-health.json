@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T13:31:08.272Z",
+  "generatedAt": "2026-06-22T19:07:26.180Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 456,
   "regions": [
@@ -22,7 +22,7 @@
     "searchSourceCount": 5,
     "globalSearchFixtureCount": 117,
     "titleAliasCount": 76,
-    "priceHistoryCount": 6367,
+    "priceHistoryCount": 6787,
     "priceHistoryGameCount": 437,
     "libraryStates": [
       "later",
@@ -214,14 +214,14 @@
     "GB": {
       "priceCount": 434,
       "discountCount": 456,
-      "psPlusCount": 16,
+      "psPlusCount": 18,
       "priceCoverage": 95,
       "discountCoverage": 100
     },
     "DE": {
       "priceCount": 435,
       "discountCount": 456,
-      "psPlusCount": 12,
+      "psPlusCount": 13,
       "priceCoverage": 95,
       "discountCoverage": 100
     },
