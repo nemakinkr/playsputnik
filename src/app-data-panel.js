@@ -236,7 +236,7 @@
         ...dataHealth.topAtoms.slice(0, 10).map(({ atom, count }) => {
           const item = document.createElement("span");
           item.className = "atom-pill";
-          item.textContent = `${atom} ${count}`;
+          item.textContent = `${labelAtom(atom)} ${count}`;
           return item;
         }),
       );

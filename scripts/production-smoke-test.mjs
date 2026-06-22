@@ -19,9 +19,11 @@ async function fetchJson(path) {
   return JSON.parse(await fetchText(path));
 }
 
-const [html, appSource, swSource, runtimeConfig, dataHealth, searchSources, editorialRu] = await Promise.all([
+const [html, appSource, i18nSource, i18nRuSource, swSource, runtimeConfig, dataHealth, searchSources, editorialRu] = await Promise.all([
   fetchText("./"),
   fetchText("./app.js"),
+  fetchText("./src/app-i18n.js"),
+  fetchText("./src/i18n-ru.js"),
   fetchText("./sw.js"),
   fetchText("./runtime-config.js"),
   fetchJson("./data/data-health.json"),
@@ -50,6 +52,8 @@ assert(/function renderGameSearch/.test(appSource), "Published app.js should con
 assert(/data-search-memory-panel/.test(appSource), "Published app.js should contain search memory confirmation panel");
 assert(/data-detail-primary-action/.test(appSource), "Published app.js should contain smart detail CTA");
 assert(/function runDetailPrimaryAction/.test(appSource), "Published app.js should contain detail CTA action handler");
+assert(/function atomLabel/.test(i18nSource) && /window\.labelAtoms/.test(i18nSource), "Published i18n runtime should expose taxonomy label helpers");
+assert(/realistic-violence.*реалистичное насилие/.test(i18nRuSource), "Published Russian catalog should contain taxonomy labels");
 assert(/CACHE_VERSION = "v\d+"/.test(swSource), "Published sw.js should expose a versioned cache");
 assert(gameCount >= 400, `Expected published data-health to report at least 400 games, got ${gameCount || "unknown"}`);
 assert(sourceCount >= 3, `Expected at least 3 search sources, got ${sourceCount}`);
@@ -69,6 +73,8 @@ console.log(JSON.stringify({
   checks: [
     "html",
     "app.js",
+    "app-i18n.js",
+    "i18n-ru.js",
     "sw.js",
     "runtime-config.js",
     "data-health",

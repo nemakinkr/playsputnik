@@ -58,8 +58,8 @@
       row.innerHTML = `
         <div class="profile-game-copy">
           <strong>${game.title}</strong>
-          <span>${game.axis || t("settings.quickSwipe.tasteSignal")}</span>
-          <small>${game.atoms.join(" / ")}</small>
+          <span>${labelAtoms((game.atoms || []).slice(0, 2), " + ") || t("settings.quickSwipe.tasteSignal")}</span>
+          <small>${labelAtoms(game.atoms)}</small>
         </div>
         <div class="quick-reactions" role="group" aria-label="${t("settings.reactions.aria", { title: game.title })}">
           <button class="${reaction === "loved" ? "is-selected" : ""}" data-quick-reaction="loved" type="button" aria-pressed="${reaction === "loved"}">${t("settings.reactions.like")}</button>
@@ -131,7 +131,7 @@
       const { reason, confidence } = explain(game, game.score);
       const evidence = personalEvidence(game);
       applyCoverVisual(card.querySelector(".poster"), game);
-      card.querySelector(".poster-kind").textContent = (game.atoms || []).slice(0, 2).join(" / ");
+      card.querySelector(".poster-kind").textContent = labelAtoms((game.atoms || []).slice(0, 2));
       card.querySelector(".poster-title").textContent = game.title;
       card.querySelector("h3").textContent = game.title;
       card.querySelector(".meta").textContent = gameTagline(game);
@@ -147,7 +147,7 @@
       game.atoms.slice(0, 4).forEach((atom) => {
         const item = document.createElement("span");
         item.className = "atom-pill";
-        item.textContent = atom;
+        item.textContent = labelAtom(atom);
         atoms.appendChild(item);
       });
 

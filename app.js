@@ -1613,7 +1613,7 @@ function aiEnrichmentHtml(item, modifier = "") {
   const missing = enrichment.missing.length
     ? enrichment.missing.slice(0, 4).map((value) => t(missingKeys[value] || "discover.missingAtoms")).join(" / ")
     : t("discover.enrichmentNothing");
-  const atoms = enrichment.atoms.slice(0, 4).map((atom) => `<span class="fact tone">${atom}</span>`).join("");
+  const atoms = enrichment.atoms.slice(0, 4).map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`).join("");
   return `
     <div class="ai-enrichment ${modifier}">
       <div>
@@ -2152,7 +2152,7 @@ function renderQuickSwipeDeck() {
         <span class="quick-swipe-progress">${answered}/${profileGames.length}</span>
       </div>
       <div class="quick-swipe-main">
-        <span class="quick-swipe-axis">${nextGame.axis || t("settings.quickSwipe.tasteSignal")}</span>
+        <span class="quick-swipe-axis">${labelAtoms((nextGame.atoms || []).slice(0, 2), " + ") || t("settings.quickSwipe.tasteSignal")}</span>
         <strong>${nextGame.title}</strong>
         <div class="quick-swipe-atom-row">${quickSwipeAtomChips(nextGame, missingAtoms, conflict)}</div>
       </div>
@@ -2433,7 +2433,7 @@ function renderTasteProfile() {
     ...sorted.map(([signal, weight]) => {
       const item = document.createElement("span");
       item.className = `atom-pill ${weight < 0 ? "negative" : ""}`;
-      item.textContent = `${signal} ${weight > 0 ? "+" : ""}${Math.round(weight)}`;
+      item.textContent = `${labelAtom(signal)} ${weight > 0 ? "+" : ""}${Math.round(weight)}`;
       return item;
     }),
   );
@@ -2468,10 +2468,10 @@ function renderTasteProfile() {
   }
 
   if (allPositive.length) {
-    const listed = allPositive.slice(0, 4).join(", ");
+    const listed = labelAtoms(allPositive.slice(0, 4), ", ");
     const positiveCopy = t("settings.tasteProfileDynamic.gravitates", { atoms: listed });
     const negativeCopy = negativeAtoms.length
-      ? ` ${t("settings.tasteProfileDynamic.skips", { atoms: negativeAtoms.slice(0, 2).join(", ") })}`
+      ? ` ${t("settings.tasteProfileDynamic.skips", { atoms: labelAtoms(negativeAtoms.slice(0, 2), ", ") })}`
       : "";
     parts.push(`<p class="taste-line">${positiveCopy}${negativeCopy}</p>`);
   }
@@ -2609,7 +2609,7 @@ function renderStats() {
     const pills = topAtoms.map(([atom, count]) => {
       const pill = document.createElement("span");
       pill.className = "atom-pill";
-      pill.textContent = `${atom} ×${count}`;
+      pill.textContent = `${labelAtom(atom)} ×${count}`;
       return pill;
     });
     els.statsAtoms.replaceChildren(heading, ...pills);
@@ -2730,7 +2730,7 @@ function renderOnboardingHero() {
       <div class="onboarding-tile-poster" style="background:${game.color || "var(--panel)"}"></div>
       <div class="onboarding-tile-body">
         <strong>${game.title}</strong>
-        <span>${(game.atoms || []).slice(0, 2).join(" · ")}</span>
+        <span>${labelAtoms((game.atoms || []).slice(0, 2), " · ")}</span>
       </div>
       <div class="onboarding-tile-actions">
         <button class="onboarding-like ${reaction === "loved" ? "is-active" : ""}" data-onboard-react="loved" data-onboard-title="${game.title}" type="button">${t("today.onboarding.like")}</button>
@@ -2821,7 +2821,7 @@ function firstRunFlow(ranked) {
               target: QUICK_TASTE_FIRST_TARGET,
             }),
         detail: gate.conflict.hasConflict
-          ? t("narrative.firstRun.flowMixed", { signals: gate.conflict.atoms.join(" / ") })
+          ? t("narrative.firstRun.flowMixed", { signals: labelAtoms(gate.conflict.atoms) })
           : t("narrative.firstRun.flowReactions", {
               loved: reactions.loved,
               played: reactions.played,
@@ -3597,7 +3597,7 @@ function renderRecentLearning() {
     ...events.map((event) => {
       const row = document.createElement("div");
       row.className = `learning-row ${feedbackWeightForAction(event.action) < 0 ? "negative" : ""}`;
-      const atoms = event.atoms.map((atom) => `<span class="fact tone">${atom}</span>`).join("");
+      const atoms = event.atoms.map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`).join("");
       row.innerHTML = `
         <span class="learning-effect">${event.effect}</span>
         <div>
@@ -3605,7 +3605,7 @@ function renderRecentLearning() {
           <p>${t("taste.learningLine", {
             action: event.actionLabel,
             effect: event.effect,
-            signals: event.atoms.join(" + ") || t("taste.learningTaste"),
+            signals: labelAtoms(event.atoms, " + ") || t("taste.learningTaste"),
           })}</p>
           <div class="facts">${atoms}</div>
         </div>
@@ -3619,7 +3619,7 @@ function renderQueuedGame(item, lane = "queued") {
   row.className = "my-game-row is-queued";
   const atoms = item.atoms
     .slice(0, 3)
-    .map((atom) => `<span class="fact tone">${atom}</span>`)
+    .map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`)
     .join("");
   row.innerHTML = `
     <div>
@@ -3788,7 +3788,7 @@ function renderMyGameRow(game, index, lane = "suggested") {
       row.className = "my-game-row";
       const atoms = game.atoms
         .slice(0, 3)
-        .map((atom) => `<span class="fact tone">${atom}</span>`)
+        .map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`)
         .join("");
       const sourcePassport = game.externalMeta ? sourcePassportHtml(gameSourcePassport(game), "compact") : "";
       const enrichment = game.externalMeta ? aiEnrichmentHtml(game, "compact") : "";
@@ -3819,7 +3819,7 @@ function renderMyGameRow(game, index, lane = "suggested") {
             <span class="queue-lane tone-${lane}">${queueLaneLabel(lane)}</span>
             <button class="queue-detail-button" data-memory-detail type="button">${t("library.details")}</button>
           </div>
-          <span>${memoryHint(game, index)} / ${game.vibe}</span>
+          <span>${memoryHint(game, index)} / ${gameTagline(game)}</span>
           <div class="my-game-facets">${facets}</div>
           <div class="library-next-step tone-${nextStep.tone}">
             <span>${nextStep.label}</span>
@@ -4040,7 +4040,7 @@ function renderGameSearch() {
   const rows = results.map((result) => {
       const row = document.createElement("div");
       row.className = `game-search-row source-${stateClassName(result.sourceId)}`;
-      const atoms = (result.atoms || []).slice(0, 4).map((atom) => `<span class="fact tone">${atom}</span>`).join("");
+      const atoms = (result.atoms || []).slice(0, 4).map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`).join("");
       const platforms = (result.platforms || []).slice(0, 3).map((platform) => `<span class="fact access">${platform}</span>`).join("");
       const reconciliation = result.reconciliation?.status || result.duplicateSource || "";
       const reconciliationFact = reconciliation
@@ -4361,7 +4361,7 @@ function detailAtomSignalHtml(game) {
       mixed: t("narrative.detail.atomMixed"),
       neutral: t("narrative.detail.atomNeutral"),
     }[tone];
-    return `<span class="detail-atom-signal tone-${tone}"><strong>${atom}</strong><small>${label}</small></span>`;
+    return `<span class="detail-atom-signal tone-${tone}"><strong>${labelAtom(atom)}</strong><small>${label}</small></span>`;
   }).join("");
 }
 
@@ -4513,7 +4513,7 @@ function detailSourceTrustRows(game) {
     {
       label: t("narrative.detail.atoms"),
       value: atomSource,
-      detail: `${(game.atoms || []).slice(0, 4).join(" / ") || t("narrative.detail.needsEnrichment")}`,
+      detail: `${labelAtoms((game.atoms || []).slice(0, 4)) || t("narrative.detail.needsEnrichment")}`,
       tone: atomSource === t("narrative.detail.missing") ? "warn" : "good",
     },
   ];
@@ -4848,7 +4848,7 @@ function createVisualCatalogCard(item) {
         <span class="visual-value-pill ${inPsPlus ? "is-plus" : ""}">${inPsPlus ? `PS+ ${plusTier}` : priceCopy}</span>
       </div>
       <div class="visual-catalog-tags">
-        ${(game.atoms || []).slice(0, 3).map((atom) => `<span>${atom}</span>`).join("")}
+        ${(game.atoms || []).slice(0, 3).map((atom) => `<span>${labelAtom(atom)}</span>`).join("")}
       </div>
       <div class="visual-catalog-actions">
         <button data-visual-detail type="button">${t("discover.actionDetails")}</button>
@@ -5081,7 +5081,7 @@ function renderTasteRadar() {
     ...radar.map((item) => {
       const row = document.createElement("div");
       row.className = "radar-row";
-      const atoms = (item.atoms || []).slice(0, 3).map((atom) => `<span class="fact tone">${atom}</span>`).join("");
+      const atoms = (item.atoms || []).slice(0, 3).map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`).join("");
       row.innerHTML = `
         <div>
           <strong>${item.title}</strong>
@@ -5451,7 +5451,7 @@ function renderDeals() {
       const regularStr = snap.regular && snap.regular !== snap.price
         ? `<s class="deal-regular">${snap.currency} ${snap.regular.toFixed(2)}</s>`
         : "";
-      const atoms = game?.atoms?.slice(0, 3).map((a) => `<span class="atom-pill">${a}</span>`).join("") ?? "";
+      const atoms = game?.atoms?.slice(0, 3).map((a) => `<span class="atom-pill">${labelAtom(a)}</span>`).join("") ?? "";
       const score = game?.criticScore ? `<span class="deal-score">${game.criticScore}</span>` : "";
       const spark = priceSparkline(snap.title, region);
       card.innerHTML = `

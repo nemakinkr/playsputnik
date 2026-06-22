@@ -85,6 +85,27 @@
     return interpolate(val, params);
   }
 
+  function taxonomyLabel(axis, value) {
+    if (value == null || value === "") return "";
+    const key = `taxonomy.${axis}.${value}`;
+    const translated = t(key);
+    return translated === key ? String(value) : translated;
+  }
+
+  function atomLabel(value) {
+    const axes = ["atoms", "tone", "content", "adultTimeFit", "commitment", "difficulty", "session", "reviewBurden"];
+    for (const axis of axes) {
+      const key = `taxonomy.${axis}.${value}`;
+      const translated = t(key);
+      if (translated !== key) return translated;
+    }
+    return value == null ? "" : String(value);
+  }
+
+  function atomList(values, separator = " / ") {
+    return (Array.isArray(values) ? values : []).map(atomLabel).join(separator);
+  }
+
   // Localize static markup. [data-i18n] sets textContent; [data-i18n-attr] sets
   // attributes, format "aria-label:nav.today.aria;title:nav.today.title".
   function applyStatic(root) {
@@ -103,8 +124,21 @@
 
   document.documentElement.setAttribute("lang", current);
 
-  window.PlaySputnikI18n = { t, getLocale, setLocale, onLocaleChange, pluralCategory, applyStatic };
+  window.PlaySputnikI18n = {
+    t,
+    getLocale,
+    setLocale,
+    onLocaleChange,
+    pluralCategory,
+    taxonomyLabel,
+    atomLabel,
+    atomList,
+    applyStatic,
+  };
   // Heavily used in templates — keep it short. Modules with a local `t` (e.g.
   // forEach((t)=>…) over titles) shadow this in their scope; that's expected.
   window.t = t;
+  window.labelTaxonomy = taxonomyLabel;
+  window.labelAtom = atomLabel;
+  window.labelAtoms = atomList;
 })();

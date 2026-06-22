@@ -48,7 +48,9 @@ reviews, catalogs, sale pages, and announcements.
   dynamic copy in EN/RU. Phase 6 editorial localization is underway: a
   separate Russian overlay keeps authored taglines/summaries safe from
   provider refreshes, with 25 key games covered and deterministic fallback for
-  the rest. Atoms and raw technical diagnostics remain later Phase 6 concerns.
+  the rest. Atoms and related taste signals now render through complete EN/RU
+  taxonomy labels while retaining stable machine keys. Raw technical
+  diagnostics remain a later Phase 6 concern.
 - Production EN/RU visual review now has a startup regression gate: a saved
   language wins even though the i18n engine loads before its catalogs. The
   mobile first-pick confirmation toast is width-constrained and wraps instead

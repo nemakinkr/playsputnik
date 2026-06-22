@@ -207,14 +207,14 @@
     function gameDescription(game) {
       const editorial = getEditorialEntry?.(game);
       if (editorial?.summary) return editorial.summary;
-      const atoms = (game.atoms || []).slice(0, 2).join(" + ") || t("narrative.detail.needsTags");
+      const atoms = labelAtoms((game.atoms || []).slice(0, 2), " + ") || t("narrative.detail.needsTags");
       const timeFit = game.adultTimeFit
         ? t("narrative.recommend.descriptionBestFit", { fit: localizedAdultFit(game.adultTimeFit) })
         : t("narrative.recommend.descriptionFlexible");
       return t("narrative.recommend.description", {
         vibe: game.vibe,
         atoms,
-        length: game.length,
+        length: localizedLength(game.length),
         burden: localizedBurden(game.reviewBurden),
         timeFit,
       });
@@ -230,8 +230,8 @@
       const tasteSignals = tasteEngineGameSignals(game);
       const negativeSignals = tasteSignals.negative.slice(0, 2);
       const mixedSignals = tasteSignals.mixed.slice(0, 2);
-      if (negativeSignals.length) warnings.push(t("narrative.recommend.watchNegative", { signals: negativeSignals.join(" + ") }));
-      if (mixedSignals.length && !negativeSignals.length) warnings.push(t("narrative.recommend.watchMixed", { signals: mixedSignals.join(" + ") }));
+      if (negativeSignals.length) warnings.push(t("narrative.recommend.watchNegative", { signals: labelAtoms(negativeSignals, " + ") }));
+      if (mixedSignals.length && !negativeSignals.length) warnings.push(t("narrative.recommend.watchMixed", { signals: labelAtoms(mixedSignals, " + ") }));
       if (state.session === "short" && game.commitment === "high") warnings.push(t("narrative.recommend.watchHeavyShort"));
       if (game.session !== state.session && game.session === "long") warnings.push(t("narrative.recommend.watchLongSession"));
       if (game.reviewBurden === "high") warnings.push(t("narrative.recommend.watchReview"));
@@ -262,8 +262,8 @@
       const facts = [];
       const tasteProfile = tasteEngineProfile();
       const tasteSignals = tasteEngineGameSignals(game, tasteProfile);
-      if (tasteSignals.positive.length) facts.push(t("narrative.recommend.factTaste", { signals: tasteSignals.positive.slice(0, 2).join(" + ") }));
-      if (tasteSignals.mixed.length) facts.push(t("narrative.recommend.factMixed", { signals: tasteSignals.mixed.slice(0, 2).join(" + ") }));
+      if (tasteSignals.positive.length) facts.push(t("narrative.recommend.factTaste", { signals: labelAtoms(tasteSignals.positive.slice(0, 2), " + ") }));
+      if (tasteSignals.mixed.length) facts.push(t("narrative.recommend.factMixed", { signals: labelAtoms(tasteSignals.mixed.slice(0, 2), " + ") }));
       if (notebookWishlistWeight(game.title)) facts.push(t("narrative.recommend.factWishlist", { count: notebookWishlistWeight(game.title) }));
       if (notebookAccessKind(game.title)) facts.push(t("narrative.recommend.factAccess", { access: notebookAccessKind(game.title) }));
       if (game.session === state.session) facts.push(t("narrative.recommend.factSession", { session: localizedSession(state.session) }));
@@ -442,7 +442,7 @@
 
       if (references.length) {
         const names = references.map((item) => item.title).slice(0, 2).join(" + ");
-        const atoms = [...new Set(references.flatMap((item) => item.shared))].slice(0, 3).join(" / ");
+        const atoms = labelAtoms([...new Set(references.flatMap((item) => item.shared))].slice(0, 3));
         lines.push({
           label: t("narrative.recommend.evidenceTaste"),
           detail: t("narrative.recommend.evidenceTasteReferences", { titles: names, signals: atoms }),
@@ -450,7 +450,7 @@
       } else if (sharedAtoms.length) {
         lines.push({
           label: t("narrative.recommend.evidenceTaste"),
-          detail: t("narrative.recommend.evidenceTasteSignals", { signals: sharedAtoms.join(" / ") }),
+          detail: t("narrative.recommend.evidenceTasteSignals", { signals: labelAtoms(sharedAtoms) }),
         });
       }
 

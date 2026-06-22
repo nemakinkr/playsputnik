@@ -289,7 +289,7 @@
         ],
         evidence,
         agenda: companionAnswerAgenda(ranked, topGame),
-        chips: [topGame.session, confidence, watchout.label, state.activeRegion],
+        chips: [labelTaxonomy("session", topGame.session), confidence, watchout.label, state.activeRegion],
         actions: [
           { id: "play", label: t("narrative.answer.actionPlay"), title: topGame.title },
           { id: "save", label: t("narrative.answer.actionSave"), title: topGame.title },
@@ -303,16 +303,16 @@
       const gate = getTasteGateState();
       const tasteSummary = getKnownGamesTasteSummary();
       const pull = tasteSummary.pull.length
-        ? tasteSummary.pull.slice(0, 3).join(" / ")
+        ? labelAtoms(tasteSummary.pull.slice(0, 3))
         : t("narrative.firstRun.proofEarlyTaste");
       const caution = gate.conflict.hasConflict
-        ? t("narrative.firstRun.proofMixed", { signals: gate.conflict.atoms.join(" / ") })
+        ? t("narrative.firstRun.proofMixed", { signals: labelAtoms(gate.conflict.atoms) })
         : tasteSummary.caution.length
-          ? tasteSummary.caution.slice(0, 2).join(" / ")
+          ? labelAtoms(tasteSummary.caution.slice(0, 2))
           : t("narrative.firstRun.proofNoDislikes");
       const matchingAtoms = (topGame?.atoms || []).filter((atom) => tasteSummary.pull.includes(atom)).slice(0, 3);
       const why = matchingAtoms.length
-        ? t("narrative.firstRun.proofMatch", { title: topGame.title, signals: matchingAtoms.join(" + ") })
+        ? t("narrative.firstRun.proofMatch", { title: topGame.title, signals: labelAtoms(matchingAtoms, " + ") })
         : topGame
           ? t("narrative.firstRun.proofBestFit", { title: topGame.title })
           : t("narrative.firstRun.proofWaiting");
@@ -465,7 +465,7 @@
         },
         {
           label: t("narrative.firstRun.verdictUncertain"),
-          value: gate.conflict.hasConflict ? gate.conflict.atoms.join(" / ") : proof.caution,
+          value: gate.conflict.hasConflict ? labelAtoms(gate.conflict.atoms) : proof.caution,
           detail: isSharp
             ? t("narrative.firstRun.verdictSharp")
             : isUsable

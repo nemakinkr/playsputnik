@@ -108,7 +108,7 @@
           missingAtoms.includes(atom) ? "is-needed" : "",
           conflict.atoms?.includes(atom) ? "is-conflict" : "",
         ].filter(Boolean).join(" ");
-        return `\n    <span class="${classNames}">${atom}</span>\n  `;
+        return `\n    <span class="${classNames}">${labelAtom(atom)}</span>\n  `;
       }).join("");
     }
 
@@ -186,7 +186,7 @@
         hasConflict: atoms.length > 0,
         atoms,
         detail: atoms.length
-          ? t("settings.onboarding.conflictMixed", { atoms: atoms.join(" / ") })
+          ? t("settings.onboarding.conflictMixed", { atoms: labelAtoms(atoms) })
           : t("settings.onboarding.conflictNone"),
       };
     }
@@ -326,8 +326,8 @@
           : maturity.next,
         insights: count >= minimum ? [
           { label: t("settings.onboarding.confidence"), value: maturity.label },
-          { label: t("settings.onboarding.pull"), value: tasteSummary.pull.length ? tasteSummary.pull.join(" / ") : t("settings.onboarding.earlyTaste") },
-          { label: conflict.hasConflict ? t("settings.onboarding.mixed") : t("settings.onboarding.caution"), value: conflict.hasConflict ? conflict.atoms.join(" / ") : tasteSummary.caution.length ? tasteSummary.caution.join(" / ") : t("settings.onboarding.noDislikes") },
+          { label: t("settings.onboarding.pull"), value: tasteSummary.pull.length ? labelAtoms(tasteSummary.pull) : t("settings.onboarding.earlyTaste") },
+          { label: conflict.hasConflict ? t("settings.onboarding.mixed") : t("settings.onboarding.caution"), value: conflict.hasConflict ? labelAtoms(conflict.atoms) : tasteSummary.caution.length ? labelAtoms(tasteSummary.caution) : t("settings.onboarding.noDislikes") },
           { label: t("settings.onboarding.next"), value: nextGame ? `${nextFocus}: ${nextGame.title}` : t("settings.onboarding.strongProfile") },
         ] : [],
       };

@@ -62,6 +62,10 @@ both audiences. This is a deliberate large project, done in phases with a commit
   games now have Russian taglines and summaries; missing records fall back to
   the existing localized deterministic description. `editorial-data-check.mjs`
   gates exact catalog-title links, Cyrillic content, and usable text lengths.
+  Taxonomy localization is also complete: atoms and related taste signals keep
+  stable English machine keys but render through synchronized EN/RU labels
+  across onboarding, Taste, cards, search, Library, detail, Deals, and Stats.
+  The catalog gate requires labels for every value in `data/taxonomy.json`.
   Continue coverage by product priority rather than translating all 456 titles
   mechanically.
 - After each phase: re-run mobile-check (Russian is longer → 375px overflow risk).

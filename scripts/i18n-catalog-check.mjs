@@ -19,6 +19,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = new URL("../", import.meta.url);
 const DEFAULT_EN = new URL("src/i18n-en.js", ROOT);
 const DEFAULT_RU = new URL("src/i18n-ru.js", ROOT);
+const TAXONOMY_URL = new URL("data/taxonomy.json", ROOT);
 const PLURAL_KEYS = new Set(["one", "few", "many", "other"]);
 const REQUIRED_PLURALS = {
   en: ["one", "other"],
@@ -136,14 +137,32 @@ export function validateCatalogPair(enCatalog, ruCatalog) {
   };
 }
 
+function validateTaxonomyCoverage(catalog, taxonomy, locale) {
+  const issues = [];
+  Object.entries(taxonomy.axes || {}).forEach(([axis, values]) => {
+    values.forEach((value) => {
+      const label = catalog.taxonomy?.[axis]?.[value];
+      if (typeof label !== "string" || !label.trim()) {
+        issues.push(`${locale}:taxonomy.${axis}.${value} is missing`);
+      }
+    });
+  });
+  return issues;
+}
+
 async function main() {
   const enUrl = sourceUrl(process.argv[2], DEFAULT_EN);
   const ruUrl = sourceUrl(process.argv[3], DEFAULT_RU);
-  const [enCatalog, ruCatalog] = await Promise.all([
+  const [enCatalog, ruCatalog, taxonomy] = await Promise.all([
     loadCatalog(enUrl, "en"),
     loadCatalog(ruUrl, "ru"),
+    readFile(TAXONOMY_URL, "utf8").then(JSON.parse),
   ]);
   const result = validateCatalogPair(enCatalog, ruCatalog);
+  result.issues.push(
+    ...validateTaxonomyCoverage(enCatalog, taxonomy, "en"),
+    ...validateTaxonomyCoverage(ruCatalog, taxonomy, "ru"),
+  );
 
   if (result.issues.length) {
     console.error(`❌ i18n catalogs: ${result.issues.length} issue(s)`);

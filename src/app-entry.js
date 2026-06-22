@@ -63,7 +63,7 @@
             ? t("settings.entry.proofUsableMixedLabel")
             : t("settings.entry.proofUsableLabel"),
           value: conflict.hasConflict
-            ? t("settings.entry.proofUsableMixedValue", { atoms: conflict.atoms.join(" / ") })
+            ? t("settings.entry.proofUsableMixedValue", { atoms: labelAtoms(conflict.atoms) })
             : t("settings.entry.proofUsableValue", { count: signalCount }),
         };
       }

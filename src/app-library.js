@@ -161,7 +161,7 @@
           id: `play-${topGame.title}`,
           label: "Tonight",
           title: topGame.title,
-          tag: topState || `${topGame.session} session`,
+          tag: topState || t("library.factSession", { session: localizedSession(topGame.session) }),
           detail: rationale.headline,
         });
       }
@@ -388,7 +388,7 @@
         stateLabel ? { label: stateLabel, type: "access" } : null,
         { label: t("library.factSession", { session: localizedSession(item.game.session) }), type: "time" },
         item.game.adultTimeFit ? { label: localizedAdultFit(item.game.adultTimeFit), type: "time" } : null,
-        ...item.game.atoms.slice(0, 2).map((atom) => ({ label: atom, type: "tone" })),
+        ...item.game.atoms.slice(0, 2).map((atom) => ({ label: labelAtom(atom), type: "tone" })),
       ].filter(Boolean);
     }
 
