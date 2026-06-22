@@ -20,6 +20,9 @@ security review.
 - GitHub Pages variable: `PLAYSPUTNIK_API_ORIGIN`
 - RAWG search: active through a Cloudflare encrypted secret
 - AI narratives: inactive until `ANTHROPIC_API_KEY` is added
+- Automatic Worker deployment: active through the scoped
+  `CLOUDFLARE_API_TOKEN` GitHub Actions secret
+- Backend monitor: active every six hours with incident issue lifecycle
 
 The live Pages app has been browser-verified in `production` API mode with
 cached RAWG search results and cover candidates.
@@ -85,12 +88,9 @@ It expects:
 - secret `CLOUDFLARE_API_TOKEN`
 - variable `CLOUDFLARE_ACCOUNT_ID`
 
-The account variable is already configured for the live project. To enable
-automatic deploys, create a Cloudflare token using the **Edit Cloudflare
-Workers** template, restrict its account resources to the PlaySputnik
-Cloudflare account, and save it as the GitHub Actions secret
-`CLOUDFLARE_API_TOKEN`. Do not reuse Wrangler's broad local OAuth token.
-The workflow deploys code only; RAWG/Anthropic secrets remain stored in
+The account variable and scoped **Edit Cloudflare Workers** token are configured
+for the live project. Do not replace this with Wrangler's broad local OAuth
+token. The workflow deploys code only; RAWG/Anthropic secrets remain stored in
 Cloudflare.
 
 ## Monitoring

@@ -75,10 +75,9 @@ Production foundation and RAWG activation are done. The live Cloudflare Worker
 protects provider secrets, caches public search, validates CORS/input, and
 excludes PSN tokens; Pages is connected through `PLAYSPUTNIK_API_ORIGIN`.
 Remaining backend activation: add `ANTHROPIC_API_KEY` when paid AI narratives
-are ready. Monitoring and the automatic backend deploy pipeline are implemented;
-the six-hour monitor needs no Cloudflare credential. Automatic deploys will
-activate as soon as the scoped `CLOUDFLARE_API_TOKEN` GitHub secret is added
-(the Account ID variable is already configured).
+are ready. Monitoring and automatic backend deploys are active: the six-hour
+monitor manages incident issues, and backend changes run contract tests,
+Cloudflare deploy, and a live post-deploy probe.
 
 ## Track: Polish
 

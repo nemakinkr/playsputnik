@@ -65,9 +65,9 @@ reviews, catalogs, sale pages, and announcements.
 - Backend operations: a six-hour GitHub Actions monitor covers health, CORS,
   live RAWG normalization, cover presence, edge-cache hits, and untrusted-origin
   rejection, with a single incident issue that closes on recovery. Backend
-  changes have an automatic contract-test/deploy/live-smoke workflow; its
-  non-secret Account ID variable is configured, while the scoped
-  `CLOUDFLARE_API_TOKEN` secret still needs to be added before deploy steps run.
+  changes have an active automatic contract-test/deploy/live-smoke workflow.
+  The non-secret Account ID variable and scoped `CLOUDFLARE_API_TOKEN` secret
+  are configured; a manual production deploy has passed end to end.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;
