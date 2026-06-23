@@ -1268,6 +1268,11 @@ function checkSelectors() {
   assert(/data-calibration-skip/.test(appSource), "Calibration questions should support a neutral Not played replacement");
   assert(/function companionComparison/.test(appAnswerSource), "Companion answer should compare the primary pick with its alternative");
   assert(/class="answer-comparison"/.test(appSource), "Companion comparison renderer is missing");
+  assert(/id="game-comparison-result"/.test(html) && /function renderGameComparison/.test(appSource), "Discover should compare any two selected games");
+  assert(/data-search-compare/.test(appSource), "Search results should feed the manual comparison");
+  assert(/id="rating-queue-list"/.test(html) && /function renderRatingQueue/.test(appSource), "Taste should expose a separate rate-later queue");
+  assert(/data-search-rate-later/.test(appSource), "Search results should feed the rate-later queue");
+  assert(/ratingQueue/.test(appStateSource), "Rate-later queue should persist in profile state");
   assert(/function personalRatingBadge/.test(appRecommendSource), "Cards and search should share an honest personal rating badge");
   assert(/if \(!forecast\.calibrated\) return null/.test(appRecommendSource), "Rating badges must stay hidden until the forecast is calibrated");
   assert(/personal-rating-badge/.test(appCardsSource + appSource + css), "Personal rating badges should render in cards and search");

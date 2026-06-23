@@ -913,6 +913,8 @@ const els = {
   memoryGrid: document.querySelector("#memory-grid"),
   learningStatus: document.querySelector("#learning-status"),
   learningList: document.querySelector("#learning-list"),
+  ratingQueueStatus: document.querySelector("#rating-queue-status"),
+  ratingQueueList: document.querySelector("#rating-queue-list"),
   myGamesSummary: document.querySelector("#my-games-summary"),
   myGamesDashboard: document.querySelector("#my-games-dashboard"),
   myGamesFilterSummary: document.querySelector("#my-games-filter-summary"),
@@ -923,6 +925,13 @@ const els = {
   gameSearchSubmit: document.querySelector("#game-search-submit"),
   gameSearchSource: document.querySelector("#game-search-source"),
   gameSearchList: document.querySelector("#game-search-list"),
+  comparisonFirst: document.querySelector("#comparison-first"),
+  comparisonSecond: document.querySelector("#comparison-second"),
+  comparisonSwap: document.querySelector("#comparison-swap"),
+  comparisonRun: document.querySelector("#comparison-run"),
+  comparisonGames: document.querySelector("#comparison-games"),
+  comparisonStatus: document.querySelector("#game-comparison-status"),
+  comparisonResult: document.querySelector("#game-comparison-result"),
   catalogSearchInput: document.querySelector("#catalog-search-input"),
   catalogSearchCount: document.querySelector("#catalog-search-count"),
   visualCatalogStatus: document.querySelector("#visual-catalog-status"),
@@ -1134,6 +1143,7 @@ function setGameRating(title, rating) {
   current.updatedAt = new Date().toISOString();
   current.source = "manual";
   delete state.calibrationSkips?.[key];
+  delete state.ratingQueue?.[key];
   state.userGames[key] = current;
   state.userStates[key] = { title, state: legacyStateFromUserGame(current), updatedAt: current.updatedAt };
   recordUserEvent("user_game_rating_changed", title, { from: previousRating, to: current.rating });
@@ -1156,6 +1166,7 @@ function skipCalibrationGame(title) {
   const key = titleKey(title);
   state.calibrationSkips = state.calibrationSkips || {};
   state.calibrationSkips[key] = { title, skippedAt: new Date().toISOString() };
+  delete state.ratingQueue?.[key];
   recordUserEvent("calibration_game_skipped", title);
 }
 
@@ -1652,10 +1663,21 @@ function aiEnrichmentHtml(item, modifier = "") {
 
 
 function externalUserGameRecords() {
+  const rememberedTitles = new Set([
+    ...Object.keys(state.ratingQueue || {}),
+    titleKey(state.comparisonGames?.first),
+    titleKey(state.comparisonGames?.second),
+  ].filter(Boolean));
   return Object.values(state.userGames || {})
     .map((record) => normalizeUserGameRecord(record))
     .filter((record) => record?.title && !knownSeedGame(record.title))
-    .filter((record) => record.saved || record.access || record.completionStatus || typeof record.rating === "number");
+    .filter((record) => (
+      record.saved
+      || record.access
+      || record.completionStatus
+      || typeof record.rating === "number"
+      || rememberedTitles.has(titleKey(record.title))
+    ));
 }
 
 function externalGameFromUserGame(record) {
@@ -1849,6 +1871,44 @@ function addSearchResultToMemory(result, userState = "saved") {
 
 function addSearchResultToWishlist(result) {
   return applySearchResultState(result, "saved");
+}
+
+function rememberSearchResultWithoutState(result) {
+  const seed = canonicalSearchResultSeed(result);
+  if (seed) return seed.title;
+  const record = searchResultMemoryRecord(result);
+  state.userGames[titleKey(record.title)] = record;
+  return record.title;
+}
+
+function selectSearchResultForComparison(result) {
+  const title = rememberSearchResultWithoutState(result);
+  selectTitleForComparison(title);
+  recordUserEvent("comparison_game_selected", title, { source: result.sourceId });
+}
+
+function selectTitleForComparison(title) {
+  const comparison = state.comparisonGames || { first: "", second: "" };
+  if (!comparison.first || comparison.first === title) comparison.first = title;
+  else comparison.second = title;
+  state.comparisonGames = comparison;
+}
+
+function toggleSearchResultRatingQueue(result) {
+  const title = rememberSearchResultWithoutState(result);
+  toggleRatingQueueTitle(title, { source: result.sourceId });
+}
+
+function toggleRatingQueueTitle(title, detail = {}) {
+  const key = titleKey(title);
+  state.ratingQueue = state.ratingQueue || {};
+  if (state.ratingQueue[key]) {
+    delete state.ratingQueue[key];
+    recordUserEvent("rating_queue_removed", title);
+  } else {
+    state.ratingQueue[key] = { title, addedAt: new Date().toISOString() };
+    recordUserEvent("rating_queue_added", title, detail);
+  }
 }
 
 async function runProviderSearch() {
@@ -3280,6 +3340,28 @@ function runAnswerAction(action, title) {
   if (action === "snooze") snoozeGame(title);
   if (action === "clear-snoozes") clearSnoozedGames();
 }
+
+function comparisonCardHtml(comparison) {
+  if (!comparison) return "";
+  return `
+    <section class="answer-comparison" aria-label="${comparison.title}">
+      <div class="answer-comparison-head">
+        <strong>${comparison.title}</strong>
+        <p>${comparison.summary}</p>
+      </div>
+      <div class="answer-comparison-grid">
+        ${comparison.rows.map((row) => `
+          <div class="answer-comparison-row">
+            <span>${row.label}</span>
+            <p><strong>${comparison.primary}</strong>${row.primary}</p>
+            <p><strong>${comparison.alternative}</strong>${row.alternative}</p>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function renderCompanionAnswer(ranked) {
   const answer = companionAnswer(ranked);
   const narrativeGame = answer.gameTitle
@@ -3307,23 +3389,7 @@ function renderCompanionAnswer(ranked) {
       ${answer.paragraphs.slice(2).map((item) => `<p>${item}</p>`).join("")}
     </div>
     ${answer.evidence ? `<div class="personal-evidence answer-evidence">${renderEvidenceRows(answer.evidence, 4)}</div>` : ""}
-    ${answer.comparison ? `
-      <section class="answer-comparison" aria-label="${answer.comparison.title}">
-        <div class="answer-comparison-head">
-          <strong>${answer.comparison.title}</strong>
-          <p>${answer.comparison.summary}</p>
-        </div>
-        <div class="answer-comparison-grid">
-          ${answer.comparison.rows.map((row) => `
-            <div class="answer-comparison-row">
-              <span>${row.label}</span>
-              <p><strong>${answer.comparison.primary}</strong>${row.primary}</p>
-              <p><strong>${answer.comparison.alternative}</strong>${row.alternative}</p>
-            </div>
-          `).join("")}
-        </div>
-      </section>
-    ` : ""}
+    ${comparisonCardHtml(answer.comparison)}
     ${answer.agenda?.length ? `
       <div class="answer-agenda" aria-label="${t("narrative.common.agendaAria")}">
         ${answer.agenda.map((item) => `
@@ -3780,6 +3846,67 @@ function renderRecentLearning() {
     }),
   );
 }
+
+function removeRatingQueueGame(title) {
+  delete state.ratingQueue?.[titleKey(title)];
+  recordUserEvent("rating_queue_removed", title);
+}
+
+function renderRatingQueue(ranked) {
+  if (!els.ratingQueueList) return;
+  const records = Object.values(state.ratingQueue || {});
+  const rankedByTitle = new Map(ranked.map((game) => [titleKey(game.title), game]));
+  const items = records
+    .map((record) => ({ record, game: rankedByTitle.get(titleKey(record.title)) }))
+    .filter((item) => item.game)
+    .sort((a, b) => {
+      const aForecast = personalRatingForecast(a.game);
+      const bForecast = personalRatingForecast(b.game);
+      return (bForecast.rating || 0) - (aForecast.rating || 0)
+        || new Date(a.record.addedAt || 0) - new Date(b.record.addedAt || 0);
+    });
+  els.ratingQueueStatus.textContent = t("taste.ratingQueueCount", { count: items.length });
+  if (!items.length) {
+    const empty = document.createElement("div");
+    empty.className = "rating-queue-empty";
+    empty.innerHTML = `<strong>${t("taste.ratingQueueEmpty")}</strong><span>${t("taste.ratingQueueEmptyDetail")}</span>`;
+    els.ratingQueueList.replaceChildren(empty);
+    return;
+  }
+  els.ratingQueueList.replaceChildren(...items.map(({ game }) => {
+    const row = document.createElement("div");
+    const badge = personalRatingBadge(game);
+    row.className = "rating-queue-row";
+    row.innerHTML = `
+      <div>
+        <strong>${game.title}</strong>
+        <span>${badge?.label || t("taste.ratingQueueNoForecast")}</span>
+      </div>
+      <div class="rating-queue-actions" aria-label="${t("taste.ratingQueueRateAria", { title: game.title })}">
+        ${[1, 2, 3, 4, 5].map((rating) => `<button data-queue-rating="${rating}" type="button">${rating}</button>`).join("")}
+        <button data-queue-unplayed type="button">${t("stats.calibrationNotPlayed")}</button>
+        <button data-queue-remove type="button">${t("taste.ratingQueueRemove")}</button>
+      </div>
+    `;
+    row.querySelectorAll("[data-queue-rating]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setGameRating(game.title, Number(button.dataset.queueRating) * 20);
+        removeRatingQueueGame(game.title);
+        render();
+      });
+    });
+    row.querySelector("[data-queue-unplayed]").addEventListener("click", () => {
+      skipCalibrationGame(game.title);
+      removeRatingQueueGame(game.title);
+      render();
+    });
+    row.querySelector("[data-queue-remove]").addEventListener("click", () => {
+      removeRatingQueueGame(game.title);
+      render();
+    });
+    return row;
+  }));
+}
 function renderQueuedGame(item, lane = "queued") {
   const row = document.createElement("div");
   row.className = "my-game-row is-queued";
@@ -4219,6 +4346,10 @@ function renderGameSearch() {
       const subscription = resultStateSelected(result, "subscription");
       const memory = searchResultMemoryStatus(result);
       const ratingBadge = personalRatingBadge(canonicalSearchResultSeed(result) || result);
+      const canonicalTitle = canonicalSearchResultTitle(result);
+      const queuedForRating = Boolean(state.ratingQueue?.[titleKey(canonicalTitle)]);
+      const compared = [state.comparisonGames?.first, state.comparisonGames?.second]
+        .some((title) => titleMatches(title, canonicalTitle));
       row.innerHTML = `
         <div>
           <strong>${result.title}</strong>
@@ -4247,6 +4378,8 @@ function renderGameSearch() {
           <button class="memory-action ${owned ? "is-selected" : ""}" data-search-state="owned" aria-pressed="${owned}" type="button">${t("discover.actionLibrary")}</button>
           <button class="memory-action ${subscription ? "is-selected" : ""}" data-search-state="subscription" aria-pressed="${subscription}" type="button">${t("discover.actionPlus")}</button>
           <button class="memory-action" data-search-detail="${detailAttr(result.title)}" type="button">${t("discover.actionDetails")}</button>
+          <button class="memory-action ${compared ? "is-selected" : ""}" data-search-compare type="button">${t("discover.actionCompare")}</button>
+          <button class="memory-action ${queuedForRating ? "is-selected" : ""}" data-search-rate-later type="button">${queuedForRating ? t("discover.actionRateQueued") : t("discover.actionRateLater")}</button>
         </div>
       `;
       row.querySelector("[data-search-detail]").addEventListener("click", () => openGameDetail(result.title));
@@ -4256,10 +4389,55 @@ function renderGameSearch() {
           render();
         });
       });
+      row.querySelector("[data-search-compare]").addEventListener("click", () => {
+        selectSearchResultForComparison(result);
+        render();
+      });
+      row.querySelector("[data-search-rate-later]").addEventListener("click", () => {
+        toggleSearchResultRatingQueue(result);
+        render();
+      });
       return row;
     });
 
   els.gameSearchList.replaceChildren(...notices, ...rows);
+}
+
+function comparisonGameByTitle(title, ranked) {
+  const query = String(title || "").trim();
+  if (!query) return null;
+  return ranked.find((game) => titleMatches(game.title, query))
+    || ranked.find((game) => game.title.toLowerCase().includes(query.toLowerCase()))
+    || null;
+}
+
+function renderGameComparison(ranked) {
+  if (!els.comparisonResult) return;
+  const comparisonState = state.comparisonGames || { first: "", second: "" };
+  els.comparisonFirst.value = comparisonState.first || "";
+  els.comparisonSecond.value = comparisonState.second || "";
+  els.comparisonGames.replaceChildren(...ranked
+    .slice()
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map((game) => {
+      const option = document.createElement("option");
+      option.value = game.title;
+      return option;
+    }));
+  const first = comparisonGameByTitle(comparisonState.first, ranked);
+  const second = comparisonGameByTitle(comparisonState.second, ranked);
+  if (!first || !second || titleMatches(first.title, second.title)) {
+    els.comparisonStatus.textContent = first || second
+      ? t("discover.compareNeedOther")
+      : t("discover.compareWaiting");
+    els.comparisonResult.replaceChildren();
+    return;
+  }
+  const primary = (first.score || 0) >= (second.score || 0) ? first : second;
+  const alternative = primary === first ? second : first;
+  const comparison = companionComparison(primary, alternative);
+  els.comparisonStatus.textContent = t("discover.compareReady");
+  els.comparisonResult.innerHTML = comparisonCardHtml(comparison);
 }
 
 const VISUAL_CATALOG_SHELVES = {
@@ -4874,6 +5052,8 @@ function renderGameDetail(shouldFocus = false) {
         <button class="${detailActionClass(game, "owned_forever")}" data-detail-state="owned_forever" type="button">${t("narrative.detail.actionBought")}</button>
         <button class="${detailActionClass(game, "completed")}" data-detail-state="completed" type="button">${t("narrative.detail.actionDone")}</button>
         <button class="${detailActionClass(game, "hidden")}" data-detail-state="hidden" type="button">${t("narrative.detail.actionHide")}</button>
+        <button class="${state.ratingQueue?.[titleKey(game.title)] ? "is-selected" : ""}" data-detail-rate-later type="button">${state.ratingQueue?.[titleKey(game.title)] ? t("discover.actionRateQueued") : t("discover.actionRateLater")}</button>
+        <button data-detail-compare type="button">${t("discover.actionCompare")}</button>
       </div>
     </section>
     ${(() => {
@@ -4967,6 +5147,15 @@ function renderGameDetail(shouldFocus = false) {
       applyDetailState(game, button.dataset.detailState);
       render();
     });
+  });
+  els.gameDetail.querySelector("[data-detail-rate-later]")?.addEventListener("click", () => {
+    toggleRatingQueueTitle(game.title, { source: "detail" });
+    render();
+  });
+  els.gameDetail.querySelector("[data-detail-compare]")?.addEventListener("click", () => {
+    selectTitleForComparison(game.title);
+    state.activeView = "discover";
+    render();
   });
   els.gameDetail.querySelectorAll("[data-rate-sputniks]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -5652,8 +5841,10 @@ function renderDeferredPanels(ranked, primaryGame, ticket) {
   if (ticket !== deferredRenderTicket) return;
   renderTasteMemory();
   renderRecentLearning();
+  renderRatingQueue(ranked);
   renderMyGames(ranked);
   renderGameSearch();
+  renderGameComparison(ranked);
   renderVisualCatalog(ranked);
   renderDebug(primaryGame);
   renderPriceWatch(ranked);
@@ -6019,6 +6210,31 @@ els.gameSearchInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter") return;
   event.preventDefault();
   runProviderSearch();
+});
+els.comparisonRun?.addEventListener("click", () => {
+  state.comparisonGames = {
+    first: els.comparisonFirst.value.trim(),
+    second: els.comparisonSecond.value.trim(),
+  };
+  render();
+});
+els.comparisonSwap?.addEventListener("click", () => {
+  state.comparisonGames = {
+    first: els.comparisonSecond.value.trim(),
+    second: els.comparisonFirst.value.trim(),
+  };
+  render();
+});
+[els.comparisonFirst, els.comparisonSecond].forEach((input) => {
+  input?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    state.comparisonGames = {
+      first: els.comparisonFirst.value.trim(),
+      second: els.comparisonSecond.value.trim(),
+    };
+    render();
+  });
 });
 els.parseNotebook.addEventListener("click", () => {
   state.notebookImport = els.notebookImport.value;

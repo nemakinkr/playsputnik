@@ -2270,6 +2270,85 @@ textarea {
   font-size: 0.72rem;
 }
 
+.game-comparison-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.game-comparison-controls input {
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  border: 1px solid var(--card-border);
+  border-radius: 7px;
+  background: var(--card-bg);
+  color: var(--text-strong);
+  padding: 0 10px;
+}
+
+.game-comparison-controls .icon-button {
+  width: 36px;
+  min-height: 36px;
+}
+
+#game-comparison-result {
+  margin-top: 10px;
+}
+
+.rating-queue-row,
+.rating-queue-empty {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border-top: 1px solid var(--card-border);
+  padding: 10px 0;
+}
+
+.rating-queue-row:first-child,
+.rating-queue-empty:first-child {
+  border-top: 0;
+}
+
+.rating-queue-row strong,
+.rating-queue-empty strong {
+  display: block;
+  color: var(--text-strong);
+  font-size: 0.84rem;
+}
+
+.rating-queue-row span,
+.rating-queue-empty span {
+  display: block;
+  color: var(--text-mid);
+  font-size: 0.76rem;
+}
+
+.rating-queue-actions {
+  display: grid;
+  grid-template-columns: repeat(5, 30px) repeat(2, auto);
+  gap: 4px;
+}
+
+.rating-queue-actions button {
+  min-width: 30px;
+  min-height: 30px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: var(--chip-bg);
+  color: var(--text-strong);
+  padding: 0 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.rating-queue-actions button:hover {
+  border-color: var(--blue);
+  background: var(--accent-bg);
+}
+
 .watchout {
   margin-bottom: 0;
   border-left: 3px solid #f0b35a;
@@ -2525,8 +2604,10 @@ textarea {
 .receipt-panel,
 .memory-panel,
 .learning-panel,
+.rating-queue-panel,
 .my-games-panel,
 .game-search-panel,
+.game-comparison-panel,
 .visual-catalog-panel,
 .radar-panel,
 .refresh-panel,
@@ -6133,8 +6214,10 @@ textarea {
 .receipt-panel,
 .memory-panel,
 .learning-panel,
+.rating-queue-panel,
 .my-games-panel,
 .game-search-panel,
+.game-comparison-panel,
 .visual-catalog-panel,
 .radar-panel,
 .refresh-panel,
@@ -6698,6 +6781,27 @@ textarea {
   .answer-comparison-row,
   .calibration-question {
     grid-template-columns: 1fr;
+  }
+
+  .game-comparison-controls {
+    grid-template-columns: minmax(0, 1fr) 36px;
+  }
+
+  .game-comparison-controls .secondary-action {
+    grid-column: 1 / -1;
+  }
+
+  .rating-queue-row,
+  .rating-queue-empty {
+    grid-template-columns: 1fr;
+  }
+
+  .rating-queue-actions {
+    grid-template-columns: repeat(5, minmax(30px, 1fr));
+  }
+
+  .rating-queue-actions button:nth-last-child(-n + 2) {
+    grid-column: span 2;
   }
 
   .amnesty-card {

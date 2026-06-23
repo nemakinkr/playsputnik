@@ -396,6 +396,15 @@
           <div id="learning-list"></div>
         </section>
 
+        <section class="rating-queue-panel" aria-labelledby="rating-queue-title" data-view-section="taste">
+          <div class="section-heading">
+            <h2 id="rating-queue-title" data-i18n="taste.ratingQueueTitle">Rate later</h2>
+            <span id="rating-queue-status"></span>
+          </div>
+          <p class="panel-note" data-i18n="taste.ratingQueueNote">A separate queue for games you know but do not want to rate right now.</p>
+          <div id="rating-queue-list"></div>
+        </section>
+
         <section class="taste-share-panel" aria-labelledby="taste-share-title" data-view-section="taste" id="taste-share-panel">
           <div class="section-heading">
             <h2 id="taste-share-title" data-i18n="taste.shareTitle">Share taste</h2>
@@ -450,6 +459,22 @@
           </div>
           <p class="panel-note" id="game-search-source" data-i18n="discover.searchSourceInitial">Seed, backbone, external index</p>
           <div id="game-search-list"></div>
+        </section>
+
+        <section class="game-comparison-panel" aria-labelledby="game-comparison-title" data-view-section="discover">
+          <div class="section-heading">
+            <h2 id="game-comparison-title" data-i18n="discover.compareTitle">Compare two games</h2>
+            <span id="game-comparison-status"></span>
+          </div>
+          <p class="panel-note" data-i18n="discover.compareNote">Choose any two catalog games. The companion will compare taste, tonight fit, access, and risk.</p>
+          <div class="game-comparison-controls">
+            <input id="comparison-first" type="search" list="comparison-games" autocomplete="off" data-i18n-attr="placeholder:discover.compareFirst;aria-label:discover.compareFirst" placeholder="First game" aria-label="First game" />
+            <button id="comparison-swap" class="icon-button" type="button" data-i18n-attr="title:discover.compareSwap;aria-label:discover.compareSwap" title="Swap games" aria-label="Swap games">⇄</button>
+            <input id="comparison-second" type="search" list="comparison-games" autocomplete="off" data-i18n-attr="placeholder:discover.compareSecond;aria-label:discover.compareSecond" placeholder="Second game" aria-label="Second game" />
+            <button id="comparison-run" class="secondary-action" type="button" data-i18n="discover.compareAction">Compare</button>
+          </div>
+          <datalist id="comparison-games"></datalist>
+          <div id="game-comparison-result"></div>
         </section>
 
         <section class="visual-catalog-panel" aria-labelledby="visual-catalog-title" data-view-section="today library discover wishlist">
