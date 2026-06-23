@@ -2214,6 +2214,62 @@ textarea {
   padding: 10px;
 }
 
+.answer-comparison {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--card-bg-soft);
+  padding: 12px;
+}
+
+.answer-comparison-head strong,
+.calibration-questions-heading {
+  color: var(--text-strong);
+  font-size: 0.86rem;
+}
+
+.answer-comparison-head p,
+.calibration-questions > p {
+  margin: 4px 0 0;
+  color: var(--text-mid);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.answer-comparison-grid {
+  display: grid;
+  gap: 7px;
+}
+
+.answer-comparison-row {
+  display: grid;
+  grid-template-columns: minmax(78px, 0.45fr) repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 7px;
+}
+
+.answer-comparison-row > span {
+  color: var(--text-mid);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.answer-comparison-row p {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+.answer-comparison-row p strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text-strong);
+  font-size: 0.72rem;
+}
+
 .watchout {
   margin-bottom: 0;
   border-left: 3px solid #f0b35a;
@@ -6602,6 +6658,11 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .answer-comparison-row,
+  .calibration-question {
+    grid-template-columns: 1fr;
+  }
+
   .amnesty-card {
     grid-template-columns: 1fr;
   }
@@ -7050,6 +7111,57 @@ textarea {
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+}
+
+.calibration-questions {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.calibration-question {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border-top: 1px solid var(--card-border);
+  padding-top: 9px;
+}
+
+.calibration-question > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.calibration-question strong {
+  color: var(--text-strong);
+  font-size: 0.82rem;
+}
+
+.calibration-question span {
+  color: var(--text-mid);
+  font-size: 0.74rem;
+}
+
+.calibration-rating {
+  display: grid;
+  grid-template-columns: repeat(5, 30px);
+  gap: 4px;
+}
+
+.calibration-rating button {
+  min-width: 30px;
+  min-height: 30px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: var(--chip-bg);
+  color: var(--text-strong);
+  font-weight: 800;
+}
+
+.calibration-rating button:hover {
+  border-color: var(--blue);
+  background: var(--accent-bg);
 }
 
 .calibration-signal {

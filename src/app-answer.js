@@ -258,6 +258,7 @@
       const libraryMode = getIsLibraryFirstMode(topGame);
       const queued = getPlayLaterQueue()[0];
       const fallback = ranked.find((game) => !titleMatches(game.title, topGame.title));
+      const comparison = fallback ? companionComparison(topGame, fallback) : null;
       const queueCopy = queued
         ? t("narrative.answer.queueSaved", { title: queued.title })
         : t("narrative.answer.queueEmpty");
@@ -288,6 +289,7 @@
           queueCopy,
         ],
         evidence,
+        comparison,
         agenda: companionAnswerAgenda(ranked, topGame),
         chips: [labelTaxonomy("session", topGame.session), confidence, watchout.label, state.activeRegion],
         actions: [
@@ -296,6 +298,56 @@
           { id: "snooze", label: t("narrative.answer.actionSnooze"), title: topGame.title },
           ...(state.snoozed.size ? [{ id: "clear-snoozes", label: t("narrative.answer.actionReset") }] : []),
         ],
+      };
+    }
+
+    function companionComparison(primary, alternative) {
+      const state = getState();
+      const primaryAccessible = isAnswerAccessible(primary);
+      const alternativeAccessible = isAnswerAccessible(alternative);
+      const primarySession = primary.session === state.session || primary.adultTimeFit === "weeknight";
+      const alternativeSession = alternative.session === state.session || alternative.adultTimeFit === "weeknight";
+      const primaryRisk = watchOutCopy(primary);
+      const alternativeRisk = watchOutCopy(alternative);
+      const scoreLead = Math.max(0, Math.round((primary.score || 0) - (alternative.score || 0)));
+      const reason = primaryAccessible && !alternativeAccessible
+        ? "Access"
+        : primarySession && !alternativeSession
+          ? "Session"
+          : scoreLead >= 12
+            ? "Taste"
+            : "Balance";
+      const summaryKeys = {
+        Access: "narrative.answer.compareSummaryAccess",
+        Session: "narrative.answer.compareSummarySession",
+        Taste: "narrative.answer.compareSummaryTaste",
+        Balance: "narrative.answer.compareSummaryBalance",
+      };
+      return {
+        title: t("narrative.answer.compareTitle", { primary: primary.title, alternative: alternative.title }),
+        summary: t(summaryKeys[reason], {
+          primary: primary.title,
+          alternative: alternative.title,
+        }),
+        rows: [
+          {
+            label: t("narrative.answer.compareTaste"),
+            primary: personalEvidence(primary).summary,
+            alternative: personalEvidence(alternative).summary,
+          },
+          {
+            label: t("narrative.answer.compareTonight"),
+            primary: primarySession ? t("narrative.answer.compareSessionFit") : t("narrative.answer.compareSessionTradeoff"),
+            alternative: alternativeSession ? t("narrative.answer.compareSessionFit") : t("narrative.answer.compareSessionTradeoff"),
+          },
+          {
+            label: t("narrative.answer.compareAccessRisk"),
+            primary: primaryAccessible ? t("narrative.answer.compareAvailable") : primaryRisk.detail,
+            alternative: alternativeAccessible ? t("narrative.answer.compareAvailable") : alternativeRisk.detail,
+          },
+        ],
+        primary: primary.title,
+        alternative: alternative.title,
       };
     }
 
@@ -638,6 +690,7 @@
       companionAnswerAgenda,
       invalidateCompanionAgenda,
       companionAnswer,
+      companionComparison,
       firstRunTasteProof,
       firstRunNextSteps,
       firstRunBridge,

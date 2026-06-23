@@ -409,6 +409,7 @@ const {
   personalRatingRecords,
   tasteCalibrationProfile,
   personalRatingForecast,
+  calibrationQuestionGames,
   notebookTitles,
   notebookWishlistWeight,
   notebookAccessKind,
@@ -551,6 +552,7 @@ const {
   companionAnswerAgenda,
   invalidateCompanionAgenda,
   companionAnswer,
+  companionComparison,
   firstRunTasteProof,
   firstRunNextSteps,
   firstRunBridge,
@@ -2685,7 +2687,48 @@ function renderStats() {
         : t("stats.calibrationMore");
       signals.append(balanced);
     }
-    els.statsCalibration.replaceChildren(heading, summary, signals);
+    const questions = calibrationQuestionGames(3);
+    const questionPanel = document.createElement("div");
+    questionPanel.className = "calibration-questions";
+    if (questions.length) {
+      const questionHeading = document.createElement("strong");
+      questionHeading.className = "calibration-questions-heading";
+      questionHeading.textContent = t("stats.calibrationQuestionsTitle");
+      const questionNote = document.createElement("p");
+      questionNote.textContent = t("stats.calibrationQuestionsDetail");
+      questionPanel.append(questionHeading, questionNote);
+      questions.forEach(({ game, reason, signals: questionSignals, disagreement }) => {
+        const row = document.createElement("div");
+        row.className = "calibration-question";
+        const reasonKey = {
+          disagreement: "stats.calibrationQuestionDisagreement",
+          bias: "stats.calibrationQuestionBias",
+          coverage: "stats.calibrationQuestionCoverage",
+        }[reason];
+        row.innerHTML = `
+          <div>
+            <strong>${game.title}</strong>
+            <span>${t(reasonKey, {
+              signals: labelAtoms(questionSignals, " + ") || t("stats.calibrationQuestionNewSignals"),
+              points: disagreement,
+            })}</span>
+          </div>
+          <div class="calibration-rating" aria-label="${t("stats.calibrationRateAria", { title: game.title })}">
+            ${[1, 2, 3, 4, 5].map((rating) => `
+              <button data-calibration-rating="${rating}" data-calibration-title="${detailAttr(game.title)}" type="button" aria-label="${t("stats.calibrationRateValue", { title: game.title, rating })}">${rating}</button>
+            `).join("")}
+          </div>
+        `;
+        questionPanel.append(row);
+      });
+    }
+    els.statsCalibration.replaceChildren(heading, summary, signals, questionPanel);
+    els.statsCalibration.querySelectorAll("[data-calibration-rating]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setGameRating(button.dataset.calibrationTitle, Number(button.dataset.calibrationRating) * 20);
+        render();
+      });
+    });
   }
 
   // Render top atoms
@@ -3245,6 +3288,23 @@ function renderCompanionAnswer(ranked) {
       ${answer.paragraphs.slice(2).map((item) => `<p>${item}</p>`).join("")}
     </div>
     ${answer.evidence ? `<div class="personal-evidence answer-evidence">${renderEvidenceRows(answer.evidence, 4)}</div>` : ""}
+    ${answer.comparison ? `
+      <section class="answer-comparison" aria-label="${answer.comparison.title}">
+        <div class="answer-comparison-head">
+          <strong>${answer.comparison.title}</strong>
+          <p>${answer.comparison.summary}</p>
+        </div>
+        <div class="answer-comparison-grid">
+          ${answer.comparison.rows.map((row) => `
+            <div class="answer-comparison-row">
+              <span>${row.label}</span>
+              <p><strong>${answer.comparison.primary}</strong>${row.primary}</p>
+              <p><strong>${answer.comparison.alternative}</strong>${row.alternative}</p>
+            </div>
+          `).join("")}
+        </div>
+      </section>
+    ` : ""}
     ${answer.agenda?.length ? `
       <div class="answer-agenda" aria-label="${t("narrative.common.agendaAria")}">
         ${answer.agenda.map((item) => `

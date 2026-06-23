@@ -7,6 +7,7 @@ const context = {
   window: {
     PlaySputnikI18n: { t: (key) => key },
   },
+  t: (key, values = {}) => `${key}:${JSON.stringify(values)}`,
   Math,
   Set,
 };
@@ -97,5 +98,35 @@ assert(storyForecast.rating >= 80, `expected a high calibrated story forecast, g
 assert(storyForecast.neighbors.some((title) => title.startsWith("Story")));
 assert.equal(storyForecast.calibrated, calibration.trusted);
 assert.equal(tools.personalRatingForecast(games[0]).known, true);
+const questions = tools.calibrationQuestionGames(3);
+assert.equal(questions.length, 1, "only one unrated game remains in the synthetic catalog");
+assert.equal(questions[0].game.title, "New Story");
+state.userGames[key("New Story")] = { title: "New Story", rating: 80 };
+tools.invalidateTasteProfile();
+assert.equal(tools.calibrationQuestionGames(3).length, 0, "rated games must disappear from calibration questions");
+
+context.window.PlaySputnikConfig = {
+  QUICK_TASTE_FIRST_TARGET: 3,
+  QUICK_TASTE_USABLE_TARGET: 6,
+  QUICK_TASTE_SHARP_TARGET: 20,
+};
+context.window.PlaySputnikRecommend = {};
+const answerSource = await readFile(new URL("../src/app-answer.js", import.meta.url), "utf8");
+vm.runInNewContext(answerSource, context, { filename: "src/app-answer.js" });
+const answerTools = context.window.PlaySputnikAnswer.createAnswerTools({
+  getState: () => ({ activeRegion: "US", session: "short" }),
+  getIsAlreadyAvailable: (game) => game.title === "Primary",
+  personalEvidence: (game) => ({ summary: `${game.title} taste evidence` }),
+  watchOutCopy: (game) => ({ detail: `${game.title} risk` }),
+  titleMatches: (a, b) => key(a) === key(b),
+});
+const comparison = answerTools.companionComparison(
+  { title: "Primary", score: 90, session: "short", adultTimeFit: "weeknight", psPlus: [] },
+  { title: "Alternative", score: 75, session: "long", adultTimeFit: "weekend", psPlus: [] },
+);
+assert.equal(comparison.primary, "Primary");
+assert.equal(comparison.alternative, "Alternative");
+assert.equal(comparison.rows.length, 3);
+assert.match(comparison.summary, /compareSummaryAccess/, "available primary should win on access");
 
 console.log("✅ companion intelligence classifies fit and calibrates forecasts with held-out personal ratings");

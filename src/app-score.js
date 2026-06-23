@@ -174,11 +174,13 @@
     let _tasteProfileCache = null;
     let _calibrationCache = null;
     let _ratingRecordsCache = null;
+    let _calibrationQuestionsCache = null;
     const _ratingForecastCache = new Map();
     function invalidateTasteProfile() {
       _tasteProfileCache = null;
       _calibrationCache = null;
       _ratingRecordsCache = null;
+      _calibrationQuestionsCache = null;
       _ratingForecastCache.clear();
       _feedbackWeightsCache.withQuick = null;
       _feedbackWeightsCache.withoutQuick = null;
@@ -502,6 +504,62 @@
       return result;
     }
 
+    function calibrationQuestionGames(limit = 3) {
+      if (_calibrationQuestionsCache) return _calibrationQuestionsCache.slice(0, limit);
+      const records = personalRatingRecords();
+      const ratedTitles = new Set(records.map((record) => titleKey(record.game.title)));
+      const signalSupport = {};
+      records.forEach((record) => {
+        new Set(gameSignals(record.game)).forEach((signal) => {
+          signalSupport[signal] = (signalSupport[signal] || 0) + 1;
+        });
+      });
+      const calibration = tasteCalibrationProfile();
+      const knownTitles = new Set(getProfileGames().map((game) => titleKey(game.title)));
+      const candidates = getRecommendationPool()
+        .filter((game) => game?.title && !ratedTitles.has(titleKey(game.title)))
+        .map((game) => {
+          const predictionSet = ratingModelPredictions(game, records);
+          const predictions = predictionSet ? Object.values(predictionSet.predictions) : [];
+          const disagreement = predictions.length ? Math.max(...predictions) - Math.min(...predictions) : 0;
+          const signals = [...new Set(gameSignals(game))];
+          const sparseSignals = signals.filter((signal) => (signalSupport[signal] || 0) < 2);
+          const biasSignals = signals
+            .filter((signal) => Number.isFinite(calibration.signalBias[signal]))
+            .sort((a, b) => Math.abs(calibration.signalBias[b]) - Math.abs(calibration.signalBias[a]));
+          const recognition = Math.max(0, Math.min(10, ((game.criticScore || 65) - 65) / 3));
+          const informationScore = disagreement * 2.4
+            + sparseSignals.length * 7
+            + (biasSignals.length ? Math.abs(calibration.signalBias[biasSignals[0]]) * 1.4 : 0)
+            + recognition
+            + (knownTitles.has(titleKey(game.title)) ? 28 : 0);
+          const reason = disagreement >= 12 ? "disagreement" : biasSignals.length ? "bias" : "coverage";
+          return {
+            game,
+            reason,
+            signals: reason === "bias" ? biasSignals.slice(0, 2) : sparseSignals.slice(0, 2),
+            disagreement: Math.round(disagreement),
+            informationScore,
+          };
+        })
+        .sort((a, b) => b.informationScore - a.informationScore);
+
+      const selected = [];
+      const selectedSignals = new Set();
+      while (selected.length < 3 && candidates.length) {
+        candidates.sort((a, b) => {
+          const penalty = (item) => gameSignals(item.game)
+            .filter((signal) => selectedSignals.has(signal)).length * 8;
+          return (b.informationScore - penalty(b)) - (a.informationScore - penalty(a));
+        });
+        const next = candidates.shift();
+        selected.push(next);
+        gameSignals(next.game).forEach((signal) => selectedSignals.add(signal));
+      }
+      _calibrationQuestionsCache = selected;
+      return selected.slice(0, limit);
+    }
+
     function notebookTitles(items) {
       return new Set((items || []).map((item) => titleKey(item.title)));
     }
@@ -698,6 +756,7 @@
       personalRatingRecords,
       tasteCalibrationProfile,
       personalRatingForecast,
+      calibrationQuestionGames,
       notebookTitles,
       notebookWishlistWeight,
       notebookAccessKind,
