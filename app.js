@@ -87,10 +87,6 @@ if (!window.PlaySputnikConfig) {
   throw new Error("PlaySputnikConfig must load before app.js");
 }
 
-if (!window.PlaySputnikStateMigrations) {
-  throw new Error("PlaySputnikStateMigrations must load before app.js");
-}
-
 if (!window.PlaySputnikState) {
   throw new Error("PlaySputnikState must load before app.js");
 }
@@ -352,7 +348,7 @@ const {
   normalizeTitle,
   emptyNotebook,
   storage: window.PlaySputnikStorage.createStorageAdapter(),
-  stateMigrations: window.PlaySputnikStateMigrations,
+  stateMigrations: window.PlaySputnikStateMigrations || null,
 });
 
 let state = loadState();
@@ -6778,5 +6774,9 @@ if (
     appLoadedAt: new Date().toISOString(),
   };
 } else {
+  window.__playsputnikBoot = {
+    ...(window.__playsputnikBoot || {}),
+    appReadyAt: new Date().toISOString(),
+  };
   init();
 }

@@ -835,6 +835,15 @@
           line: event.lineno,
           column: event.colno,
         });
+        if (
+          event.filename
+          && event.filename.includes("/app.js")
+          && !window.__playsputnikBoot?.appReadyAt
+        ) {
+          window.setTimeout(() => {
+            window.handleScriptError?.(`app.js: ${event.message || "runtime error"}`);
+          }, 0);
+        }
       });
       window.addEventListener("unhandledrejection", (event) => {
         window.__playsputnikErrors.push({
@@ -852,6 +861,7 @@
         </div>`;
         console.error(`[PlaySputnik] Script load failed: ${name}`);
       }
+      window.handleScriptError = handleScriptError;
 
       const cacheBust = Date.now();
 
@@ -867,10 +877,13 @@
 
       async function bootPlaySputnik() {
         try {
+          window.__playsputnikBoot = { phase: "loading-modules" };
           const modulePaths = window.PlaySputnikModules.map(({ path }) => path);
           for (const path of modulePaths) await loadScript(path);
+          window.__playsputnikBoot.phase = "loading-profile";
           window.PlaySputnikI18n.applyStatic();
           await window.PlaySputnikStorage.preload(window.PlaySputnikConfig.STORAGE_KEY);
+          window.__playsputnikBoot.phase = "loading-app";
           await loadScript("app.js");
         } catch (error) {
           handleScriptError(error.message || "unknown script");

@@ -9,6 +9,13 @@
     storage,
     stateMigrations,
   }) {
+    // Returning users can briefly run a cached HTML shell whose module list
+    // predates app-state-migrations.js. Keep that mixed release interactive;
+    // the next fresh boot will apply the full migration chain.
+    const migrations = stateMigrations || {
+      CURRENT_STATE_VERSION: 0,
+      migrateState: (savedState) => savedState,
+    };
     const {
       STORAGE_KEY,
       QUICK_TASTE_FIRST_TARGET,
@@ -34,7 +41,7 @@
 
     function defaultState() {
       return {
-        stateVersion: stateMigrations.CURRENT_STATE_VERSION,
+        stateVersion: migrations.CURRENT_STATE_VERSION,
         liked: new Set(),
         hidden: new Set(),
         saved: new Set(),
@@ -229,7 +236,7 @@
       try {
         const rawSaved = JSON.parse(storage.getItem(STORAGE_KEY));
         if (!rawSaved) return defaultState();
-        const saved = stateMigrations.migrateState(rawSaved);
+        const saved = migrations.migrateState(rawSaved);
         return {
           ...defaultState(),
           ...saved,
@@ -263,7 +270,7 @@
         STORAGE_KEY,
         JSON.stringify({
           ...state,
-          stateVersion: stateMigrations.CURRENT_STATE_VERSION,
+          stateVersion: migrations.CURRENT_STATE_VERSION,
           liked: [...state.liked],
           hidden: [...state.hidden],
           saved: [...state.saved],

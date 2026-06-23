@@ -1352,8 +1352,9 @@ function checkSelectors() {
   assert(/src\/app-state\.js/.test(appLoadSource) && /PlaySputnikState/.test(appSource), "State module is not wired into app.js");
   assert(/CURRENT_STATE_VERSION = 3/.test(appStateMigrationsSource), "Persisted state schema version is missing");
   assert(/function migrateState/.test(appStateMigrationsSource), "Persisted state migration pipeline is missing");
-  assert(/stateMigrations\.migrateState/.test(appStateSource), "State hydration must pass through schema migrations");
-  assert(/stateVersion: stateMigrations\.CURRENT_STATE_VERSION/.test(appStateSource), "State saves must record the current schema version");
+  assert(/const migrations = stateMigrations \|\|/.test(appStateSource), "State hydration should tolerate a cached pre-migration HTML shell");
+  assert(/migrations\.migrateState/.test(appStateSource), "State hydration must pass through schema migrations");
+  assert(/stateVersion: migrations\.CURRENT_STATE_VERSION/.test(appStateSource), "State saves must record the active schema version");
   assert(/function userStateToUserGame/.test(appStateSource), "Legacy state to user-game mapper is missing");
   assert(/function recordUserEvent/.test(appStateSource), "User event log is missing");
   assert(/completionStatus/.test(appStateSource), "User-game memory should separate completion status");
