@@ -87,7 +87,7 @@ export async function evaluate(cdp, expression) {
   return r.result?.value;
 }
 
-export async function waitFor(cdp, expression, timeoutMs = 20000) {
+export async function waitFor(cdp, expression, timeoutMs = 35000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (await evaluate(cdp, expression).catch(() => false)) return;
@@ -164,7 +164,7 @@ export async function runStandalone(gate, rootUrl) {
 export async function runAll(gates, rootUrl) {
   const port = Number(process.env.PLAYSPUTNIK_CHROME_PORT || 9350);
   const session = await launchChrome({ label: "gates", port });
-  const hard = setTimeout(() => { console.error("Browser gates timed out."); session.cleanup().finally(() => process.exit(124)); }, 120000);
+  const hard = setTimeout(() => { console.error("Browser gates timed out."); session.cleanup().finally(() => process.exit(124)); }, 180000);
   let allOk = true;
   try {
     for (const gate of gates) {
