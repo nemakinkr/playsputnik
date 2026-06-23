@@ -1,7 +1,9 @@
 /* PlaySputnik Service Worker — offline-first static assets, network-first data */
 "use strict";
 
-const CACHE_VERSION = "v55";
+importScripts("./src/module-manifest.js");
+
+const CACHE_VERSION = "v56";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -15,35 +17,8 @@ const STATIC_ASSETS = [
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
-  "./src/app-i18n.js",
-  "./src/i18n-en.js",
-  "./src/i18n-ru.js",
-  "./src/app-storage.js",
-  "./src/app-config.js",
-  "./src/app-state.js",
-  "./src/app-search.js",
-  "./src/app-enrichment.js",
-  "./src/app-onboarding.js",
-  "./src/app-entry.js",
-  "./src/app-score.js",
-  "./src/app-radar.js",
-  "./src/app-recommend.js",
-  "./src/app-ranking.js",
-  "./src/app-answer.js",
-  "./src/app-decisions.js",
-  "./src/app-library.js",
-  "./src/app-visual.js",
-  "./src/app-wishlist.js",
-  "./src/app-detail.js",
-  "./src/app-cover.js",
-  "./src/app-dev.js",
-  "./src/app-session.js",
-  "./src/app-hltb.js",
-  "./src/app-ai.js",
-  "./src/app-cards.js",
-  "./src/app-data-panel.js",
-  "./src/app-import.js",
-  "./src/app-export.js",
+  "./src/module-manifest.js",
+  ...self.PlaySputnikModules.map(({ path }) => `./${path}`),
 ];
 
 // Data files: network-first, cache as fallback — fetched fresh each session

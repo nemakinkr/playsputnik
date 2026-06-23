@@ -1,5 +1,14 @@
 (() => {
-  function createStateTools({ config, profileGames, titleMatches, titleKey, normalizeTitle, emptyNotebook, storage }) {
+  function createStateTools({
+    config,
+    profileGames,
+    titleMatches,
+    titleKey,
+    normalizeTitle,
+    emptyNotebook,
+    storage,
+    stateMigrations,
+  }) {
     const {
       STORAGE_KEY,
       QUICK_TASTE_FIRST_TARGET,
@@ -25,6 +34,7 @@
 
     function defaultState() {
       return {
+        stateVersion: stateMigrations.CURRENT_STATE_VERSION,
         liked: new Set(),
         hidden: new Set(),
         saved: new Set(),
@@ -217,8 +227,9 @@
 
     function loadState() {
       try {
-        const saved = JSON.parse(storage.getItem(STORAGE_KEY));
-        if (!saved) return defaultState();
+        const rawSaved = JSON.parse(storage.getItem(STORAGE_KEY));
+        if (!rawSaved) return defaultState();
+        const saved = stateMigrations.migrateState(rawSaved);
         return {
           ...defaultState(),
           ...saved,
@@ -252,6 +263,7 @@
         STORAGE_KEY,
         JSON.stringify({
           ...state,
+          stateVersion: stateMigrations.CURRENT_STATE_VERSION,
           liked: [...state.liked],
           hidden: [...state.hidden],
           saved: [...state.saved],

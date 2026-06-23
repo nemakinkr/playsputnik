@@ -87,6 +87,10 @@ if (!window.PlaySputnikConfig) {
   throw new Error("PlaySputnikConfig must load before app.js");
 }
 
+if (!window.PlaySputnikStateMigrations) {
+  throw new Error("PlaySputnikStateMigrations must load before app.js");
+}
+
 if (!window.PlaySputnikState) {
   throw new Error("PlaySputnikState must load before app.js");
 }
@@ -348,6 +352,7 @@ const {
   normalizeTitle,
   emptyNotebook,
   storage: window.PlaySputnikStorage.createStorageAdapter(),
+  stateMigrations: window.PlaySputnikStateMigrations,
 });
 
 let state = loadState();

@@ -5,6 +5,7 @@ const ROOT = new URL("../", import.meta.url);
 const [
   appStorageSource,
   appConfigSource,
+  appStateMigrationsSource,
   appStateSource,
   appSearchSource,
   appEnrichmentSource,
@@ -29,6 +30,7 @@ const [
   appDataPanelSource,
   appImportSource,
   appExportSource,
+  moduleManifestSource,
   appSource,
   html,
   css,
@@ -76,6 +78,7 @@ const [
 ] = await Promise.all([
   readFile(new URL("src/app-storage.js", ROOT), "utf8"),
   readFile(new URL("src/app-config.js", ROOT), "utf8"),
+  readFile(new URL("src/app-state-migrations.js", ROOT), "utf8"),
   readFile(new URL("src/app-state.js", ROOT), "utf8"),
   readFile(new URL("src/app-search.js", ROOT), "utf8"),
   readFile(new URL("src/app-enrichment.js", ROOT), "utf8"),
@@ -100,6 +103,7 @@ const [
   readFile(new URL("src/app-data-panel.js", ROOT), "utf8"),
   readFile(new URL("src/app-import.js", ROOT), "utf8"),
   readFile(new URL("src/app-export.js", ROOT), "utf8"),
+  readFile(new URL("src/module-manifest.js", ROOT), "utf8"),
   readFile(new URL("app.js", ROOT), "utf8"),
   readFile(new URL("index.html", ROOT), "utf8"),
   readFile(new URL("styles.css", ROOT), "utf8"),
@@ -149,7 +153,8 @@ const [
 // User-facing copy moved into the i18n catalogs; checks below look here too.
 const i18nEnSource = await readFile(new URL("src/i18n-en.js", ROOT), "utf8");
 
-const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
+const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateMigrationsSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
+const appLoadSource = `${html}\n${moduleManifestSource}`;
 
 const USER_STATE_LABELS = {
   later: "Play later",
@@ -981,7 +986,7 @@ function checkSelectors() {
   assert(/gameValueCard/.test(appSource), "app.js must call gameValueCard in detail drawer");
   assert(/hltbHours/.test(catalog[0] !== undefined ? JSON.stringify(catalog) : "hltbHours"), "games.json must have hltbHours");
   assert(/criticScore/.test(JSON.stringify(catalog)), "games.json must have criticScore");
-  assert(/app-hltb\.js/.test(html), "app-hltb.js must be in the load chain");
+  assert(/app-hltb\.js/.test(appLoadSource), "app-hltb.js must be in the load chain");
 
   // Session module (features 11 + 12)
   assert(/function createSessionTools/.test(appSessionSource), "Session tools factory is missing");
@@ -995,7 +1000,7 @@ function checkSelectors() {
   assert(/PlaySputnikSession/.test(appSource), "app.js must reference PlaySputnikSession");
   assert(/renderSessionStats/.test(appSource), "Session stats renderer must be in app.js");
   assert(/sessionLog/.test(appStateSource), "sessionLog must be in defaultState");
-  assert(/app-session\.js/.test(html), "app-session.js must be in the load chain");
+  assert(/app-session\.js/.test(appLoadSource), "app-session.js must be in the load chain");
 
   // AI explanation module (feature 6)
   assert(/function createAiTools/.test(appAiSource), "AI tools factory is missing from app-ai.js");
@@ -1010,7 +1015,7 @@ function checkSelectors() {
   assert(/fetchExplanation/.test(appSource), "app.js must wire fetchExplanation into detail drawer");
   assert(/fetchNarrative\("companion"/.test(appSource), "app.js must hydrate the main companion answer with AI narrative");
   assert(/textContent = explanation/.test(appSource), "AI detail output must be inserted as text, not trusted HTML");
-  assert(/app-ai\.js/.test(html), "app-ai.js must be in the load chain");
+  assert(/app-ai\.js/.test(appLoadSource), "app-ai.js must be in the load chain");
   assert(/ANTHROPIC_API_KEY/.test(searchProviderSource), "Search provider server must read ANTHROPIC_API_KEY");
   assert(/\/api\/explain/.test(searchProviderSource), "Search provider server must expose /api/explain endpoint");
   assert(/\/api\/narrative/.test(searchProviderSource), "Search provider server must expose /api/narrative endpoint");
@@ -1034,7 +1039,7 @@ function checkSelectors() {
   assert(!/^function renderCard/.test(appSource), "renderCard must not remain as top-level function in app.js");
   assert(!/^function renderHero/.test(appSource), "renderHero must not remain as top-level function in app.js");
   assert(!/^function applyCoverVisual/.test(appSource), "applyCoverVisual must not remain as top-level function in app.js");
-  assert(/app-cards\.js/.test(html), "app-cards.js must be in the load chain");
+  assert(/app-cards\.js/.test(appLoadSource), "app-cards.js must be in the load chain");
 
   // Data panel module (pass 19)
   assert(/function createDataPanelTools/.test(appDataPanelSource), "createDataPanelTools factory is missing");
@@ -1045,7 +1050,7 @@ function checkSelectors() {
   assert(/function renderRefreshPolicy/.test(appDataPanelSource), "renderRefreshPolicy missing from app-data-panel.js");
   assert(/PlaySputnikDataPanel/.test(appDataPanelSource), "Data panel module must export PlaySputnikDataPanel");
   assert(/PlaySputnikDataPanel/.test(appSource), "app.js must reference PlaySputnikDataPanel");
-  assert(/app-data-panel\.js/.test(html), "app-data-panel.js must be in the load chain");
+  assert(/app-data-panel\.js/.test(appLoadSource), "app-data-panel.js must be in the load chain");
 
   // Smart library import module (Feature A + B)
   assert(/function detectFormat/.test(appImportSource), "detectFormat is missing from app-import.js");
@@ -1055,7 +1060,7 @@ function checkSelectors() {
   assert(/function parsePsnTrophyTitles/.test(appImportSource), "PSN trophy titles parser is missing");
   assert(/PlaySputnikImport/.test(appImportSource), "Import module must export PlaySputnikImport");
   assert(/PlaySputnikImport/.test(appSource), "app.js must reference PlaySputnikImport");
-  assert(/app-import\.js/.test(html), "app-import.js must be in the load chain");
+  assert(/app-import\.js/.test(appLoadSource), "app-import.js must be in the load chain");
   assert(/psn-npsso-input/.test(html), "PSN NPSSO input must be in index.html");
   assert(/library-import-file/.test(html), "Library import file input must be in index.html");
   assert(/\/api\/psn/.test(searchProviderSource), "Search provider server must expose /api/psn endpoint");
@@ -1075,7 +1080,7 @@ function checkSelectors() {
   assert(/PlaySputnikExport/.test(appExportSource), "Export module must expose PlaySputnikExport");
   assert(/PlaySputnikExport/.test(appSource), "app.js must reference PlaySputnikExport");
   assert(/bindExportListeners/.test(appSource), "app.js must call bindExportListeners");
-  assert(/app-export\.js/.test(html), "app-export.js must be in the load chain");
+  assert(/app-export\.js/.test(appLoadSource), "app-export.js must be in the load chain");
   assert(!/function exportStateJson/.test(appSource), "exportStateJson must NOT be in app.js (moved to app-export.js)");
   assert(!/function exportLibraryCsv/.test(appSource), "exportLibraryCsv must NOT be in app.js (moved to app-export.js)");
   assert(!/function importFromPsn/.test(appSource), "importFromPsn must NOT be in app.js (moved to app-export.js)");
@@ -1090,12 +1095,12 @@ function checkSelectors() {
   assert(/createStorageAdapter/.test(appSource), "app.js must use createStorageAdapter instead of localStorage directly");
   assert(!/storage: localStorage/.test(appSource), "app.js must not pass raw localStorage to createStateTools");
   assert(/preload.*STORAGE_KEY/.test(html) || /PlaySputnikStorage\.preload/.test(html), "index.html must call preload before loading app.js");
-  assert(/app-storage\.js/.test(html), "app-storage.js must be in the load chain");
+  assert(/app-storage\.js/.test(appLoadSource), "app-storage.js must be in the load chain");
 
   assert(/function handleScriptError/.test(html), "Script load error handler is missing from index.html");
   assert(/script\.onerror\s*=\s*\(\)\s*=>\s*reject\(new Error\(path\)\)/.test(html), "Dynamic script loader must reject failed module loads");
   assert(/catch \(error\)\s*{\s*handleScriptError/.test(html), "App boot must surface rejected module loads");
-  assert(/src\/app-config\.js/.test(html) && /PlaySputnikConfig/.test(appSource), "App config module is not wired into app.js");
+  assert(/src\/app-config\.js/.test(appLoadSource) && /PlaySputnikConfig/.test(appSource), "App config module is not wired into app.js");
   assert(/APP_VIEWS/.test(appConfigSource), "App view metadata is missing from app config");
   assert(/activeView: "today"/.test(appStateSource), "App view state should default to Today");
   assert(/function renderAppViewShell/.test(appSource), "App view renderer is missing");
@@ -1158,7 +1163,7 @@ function checkSelectors() {
   assert(/id="game-search-list"/.test(html), "Global game search result list is missing");
   assert(/data\/search-sources\.json/.test(appSource), "Search sources data source is not loaded");
   assert(/data\/global-search-fixtures\.json/.test(appSource), "Global search fixtures data source is not loaded");
-  assert(/src\/app-search\.js/.test(html) && /PlaySputnikSearch/.test(appSource), "Search module is not wired into app.js");
+  assert(/src\/app-search\.js/.test(appLoadSource) && /PlaySputnikSearch/.test(appSource), "Search module is not wired into app.js");
   assert(/function globalSearchResults/.test(appSearchSource), "Global search result builder is missing");
   assert(/function searchMatch/.test(appSearchSource), "Frontend search should expose match kind scoring");
   assert(/function compareSearchResults/.test(appSearchSource), "Frontend search should use stable result comparison");
@@ -1280,8 +1285,11 @@ function checkSelectors() {
   assert(/id="rating-queue-list"/.test(html) && /function renderRatingQueue/.test(appSource), "Taste should expose a separate rate-later queue");
   assert(/data-search-rate-later/.test(appSource), "Search results should feed the rate-later queue");
   assert(/ratingQueue/.test(appStateSource), "Rate-later queue should persist in profile state");
-  assert(/const modulePaths = \[/.test(html) && /for \(const path of modulePaths\) await loadScript\(path\)/.test(html), "App modules should boot through the linear loader");
-  assert(/src\/app-decisions\.js/.test(html), "Decision workflow module should load before app.js");
+  assert(/const modulePaths = window\.PlaySputnikModules\.map/.test(html) && /for \(const path of modulePaths\) await loadScript\(path\)/.test(html), "App modules should boot through the manifest-backed linear loader");
+  assert(/src\/app-decisions\.js/.test(appLoadSource), "Decision workflow module should load before app.js");
+  assert(/src\/module-manifest\.js/.test(html), "HTML should load the shared module manifest");
+  assert(/importScripts\("\.\/src\/module-manifest\.js"\)/.test(swSource), "Service Worker should consume the shared module manifest");
+  assert(/PlaySputnikModules\.map/.test(swSource), "Service Worker should derive module cache entries from the manifest");
   assert(/function personalRatingBadge/.test(appRecommendSource), "Cards and search should share an honest personal rating badge");
   assert(/if \(!forecast\.calibrated\) return null/.test(appRecommendSource), "Rating badges must stay hidden until the forecast is calibrated");
   assert(/personal-rating-badge/.test(appCardsSource + appSource + css), "Personal rating badges should render in cards and search");
@@ -1339,7 +1347,11 @@ function checkSelectors() {
   assert(/library-first/.test(appLibrarySource + appAnswerSource + appSource + i18nEnSource), "Companion answer should expose library-first mode");
   assert(/userGames/.test(appSource), "Normalized user-game memory store is missing");
   assert(/function effectiveUserGame/.test(appSource), "Effective user-game resolver is missing");
-  assert(/src\/app-state\.js/.test(html) && /PlaySputnikState/.test(appSource), "State module is not wired into app.js");
+  assert(/src\/app-state\.js/.test(appLoadSource) && /PlaySputnikState/.test(appSource), "State module is not wired into app.js");
+  assert(/CURRENT_STATE_VERSION = 3/.test(appStateMigrationsSource), "Persisted state schema version is missing");
+  assert(/function migrateState/.test(appStateMigrationsSource), "Persisted state migration pipeline is missing");
+  assert(/stateMigrations\.migrateState/.test(appStateSource), "State hydration must pass through schema migrations");
+  assert(/stateVersion: stateMigrations\.CURRENT_STATE_VERSION/.test(appStateSource), "State saves must record the current schema version");
   assert(/function userStateToUserGame/.test(appStateSource), "Legacy state to user-game mapper is missing");
   assert(/function recordUserEvent/.test(appStateSource), "User event log is missing");
   assert(/completionStatus/.test(appStateSource), "User-game memory should separate completion status");

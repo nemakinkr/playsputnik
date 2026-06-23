@@ -28,16 +28,20 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v55 (cache-first static / network-first data), **disabled on
+- Service worker v56 (cache-first static / network-first data), **disabled on
   localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
 
 ## Current Prototype
 
 - Static app, no build step: `index.html` + `styles.css` + `app.js` (~6.8k
-  lines) + 26 IIFE modules in `src/` (`window.PlaySputnikXxx = { createXxxTools }`).
+  lines) + 30 ordered runtime entries in `src/module-manifest.js`.
   A linear Promise-based boot loader replaces the old nested script callback
   chain. Comparison selection and the rate-later queue live in the pure
   `app-decisions.js` domain module instead of the UI composition root.
+  The same manifest now drives browser boot and Service Worker precaching.
+  Persisted profiles carry a schema version and pass through deterministic
+  migrations before hydration. `ARCHITECTURE.md` is generated from the
+  manifest and gives agents a compact change-routing map.
 - Product areas: Today, Library, Discover, Wishlist, Taste, Deals, Data, Stats.
 - Localization: EN/RU engine, complete settings sidebar, Today metrics/sample/
   time controls, and the main "what to play tonight" answer shell with

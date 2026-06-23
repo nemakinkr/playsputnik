@@ -1,10 +1,10 @@
 # PlaySputnik — working notes for Claude
 
 PS-first gaming companion ("what should I play tonight?"). Static frontend,
-no build step: `index.html` + `app.js` (~5k lines) + `src/app-*.js` (25 IIFE
-modules, each sets `window.PlaySputnikXxx = { createXxxTools }`). State lives
-in localStorage. Live at https://nemakinkr.github.io/playsputnik/ (repo
-nemakinkr/playsputnik).
+no build step. Read `ARCHITECTURE.md` for the generated module ownership map
+before opening broad files. Runtime order lives in `src/module-manifest.js`;
+persisted state upgrades live in `src/app-state-migrations.js`. Live at
+https://nemakinkr.github.io/playsputnik/ (repo nemakinkr/playsputnik).
 
 ## Run & verify
 

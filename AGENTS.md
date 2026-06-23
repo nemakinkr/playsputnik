@@ -4,8 +4,9 @@ Start here, in this order:
 
 1. **HANDOFF.md** — what was built and why (narrative through 2026-06-10).
 2. **PROJECT_STATE.md** — compact current state.
-3. **NEXT_TASKS.md** — prioritized backlog; pick work from here.
-4. **CLAUDE.md** — dev workflow + performance rules (applies to ANY agent;
+3. **ARCHITECTURE.md** — generated ownership map; use it to avoid broad reads.
+4. **NEXT_TASKS.md** — prioritized backlog; pick work from here.
+5. **CLAUDE.md** — dev workflow + performance rules (applies to ANY agent;
    named for the previous agent, content is agent-neutral).
 
 ## Core engineering principle (learned the hard way — read this)

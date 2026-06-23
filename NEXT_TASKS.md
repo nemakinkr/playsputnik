@@ -1,20 +1,21 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-20. Pick the next task here without rereading the
+Last updated: 2026-06-23. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
-CLAUDE.md (dev workflow + perf rules). The user's decision: **polish before
-showing the product to people** — retention/analytics tracks are
-deliberately deferred until there are users.
+ARCHITECTURE.md (generated ownership map), CLAUDE.md (dev workflow + perf
+rules). The user's decision remains **polish before showing the product to
+people**; architectural cleanup is now an active supporting track.
 
 Run `./scripts/check.sh` before claiming any task done.
 
-## Current Operating Mode
+## Track: Architecture
 
-Token budget is tight. Prefer small, contained polish tasks that touch one
-surface, keep verification to fast gate + one relevant targeted check when
-needed, then still run the required final `./scripts/check.sh`. Avoid catalog
-expansion, broad redesigns, provider research, and multi-screen refactors until
-the user explicitly switches back to deeper work.
+- Shared runtime manifest for browser boot and Service Worker cache: done.
+- Versioned persisted-state migration pipeline: done.
+- Generated compact architecture map with a CI freshness gate: done.
+- Continue extracting domain workflows from `app.js` only when a concrete
+  product task touches that area; keep DOM orchestration in the composition
+  root and reusable decisions in `src/app-*.js`.
 
 ## Track: Localization (EN + RU) — ACTIVE, large multi-phase project
 

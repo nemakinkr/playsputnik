@@ -14,6 +14,7 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <link rel="stylesheet" href="styles.css" />
     <script src="runtime-config.js"></script>
+    <script src="src/module-manifest.js"></script>
     <script>
       // Apply theme before first paint to avoid flash-of-light
       (function () {
@@ -853,37 +854,6 @@
       }
 
       const cacheBust = Date.now();
-      const modulePaths = [
-        "src/app-i18n.js",
-        "src/i18n-en.js",
-        "src/i18n-ru.js",
-        "src/app-storage.js",
-        "src/app-config.js",
-        "src/app-state.js",
-        "src/app-search.js",
-        "src/app-enrichment.js",
-        "src/app-onboarding.js",
-        "src/app-entry.js",
-        "src/app-score.js",
-        "src/app-radar.js",
-        "src/app-recommend.js",
-        "src/app-ranking.js",
-        "src/app-answer.js",
-        "src/app-decisions.js",
-        "src/app-library.js",
-        "src/app-visual.js",
-        "src/app-wishlist.js",
-        "src/app-detail.js",
-        "src/app-cover.js",
-        "src/app-dev.js",
-        "src/app-session.js",
-        "src/app-hltb.js",
-        "src/app-ai.js",
-        "src/app-cards.js",
-        "src/app-data-panel.js",
-        "src/app-import.js",
-        "src/app-export.js",
-      ];
 
       function loadScript(path) {
         return new Promise((resolve, reject) => {
@@ -897,6 +867,7 @@
 
       async function bootPlaySputnik() {
         try {
+          const modulePaths = window.PlaySputnikModules.map(({ path }) => path);
           for (const path of modulePaths) await loadScript(path);
           window.PlaySputnikI18n.applyStatic();
           await window.PlaySputnikStorage.preload(window.PlaySputnikConfig.STORAGE_KEY);
