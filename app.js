@@ -481,6 +481,7 @@ const {
   personalReferenceGames,
   personalRankForecast,
   personalEvidence,
+  personalRatingBadge,
   tasteVerdict,
   decisionRationale,
   factList,
@@ -803,6 +804,7 @@ const {
   getState: () => state,
   explain,
   personalEvidence,
+  personalRatingBadge,
   gameDescription,
   gameTagline,
   watchOutCopy,
@@ -1131,6 +1133,7 @@ function setGameRating(title, rating) {
   current.rating = typeof rating === "number" ? Math.max(0, Math.min(100, rating)) : null;
   current.updatedAt = new Date().toISOString();
   current.source = "manual";
+  delete state.calibrationSkips?.[key];
   state.userGames[key] = current;
   state.userStates[key] = { title, state: legacyStateFromUserGame(current), updatedAt: current.updatedAt };
   recordUserEvent("user_game_rating_changed", title, { from: previousRating, to: current.rating });
@@ -1147,6 +1150,13 @@ function setGameRating(title, rating) {
     const sputniks = Math.max(1, Math.min(5, Math.round(current.rating / 20)));
     recordFeedback(`rated_${sputniks}`, title);
   }
+}
+
+function skipCalibrationGame(title) {
+  const key = titleKey(title);
+  state.calibrationSkips = state.calibrationSkips || {};
+  state.calibrationSkips[key] = { title, skippedAt: new Date().toISOString() };
+  recordUserEvent("calibration_game_skipped", title);
 }
 
 function normalizePriceWatchTargetValue(value) {
@@ -2713,10 +2723,13 @@ function renderStats() {
               points: disagreement,
             })}</span>
           </div>
-          <div class="calibration-rating" aria-label="${t("stats.calibrationRateAria", { title: game.title })}">
-            ${[1, 2, 3, 4, 5].map((rating) => `
-              <button data-calibration-rating="${rating}" data-calibration-title="${detailAttr(game.title)}" type="button" aria-label="${t("stats.calibrationRateValue", { title: game.title, rating })}">${rating}</button>
-            `).join("")}
+          <div class="calibration-answer" aria-label="${t("stats.calibrationRateAria", { title: game.title })}">
+            <div class="calibration-rating">
+              ${[1, 2, 3, 4, 5].map((rating) => `
+                <button data-calibration-rating="${rating}" data-calibration-title="${detailAttr(game.title)}" type="button" aria-label="${t("stats.calibrationRateValue", { title: game.title, rating })}">${rating}</button>
+              `).join("")}
+            </div>
+            <button class="calibration-skip" data-calibration-skip="${detailAttr(game.title)}" type="button">${t("stats.calibrationNotPlayed")}</button>
           </div>
         `;
         questionPanel.append(row);
@@ -2726,6 +2739,12 @@ function renderStats() {
     els.statsCalibration.querySelectorAll("[data-calibration-rating]").forEach((button) => {
       button.addEventListener("click", () => {
         setGameRating(button.dataset.calibrationTitle, Number(button.dataset.calibrationRating) * 20);
+        render();
+      });
+    });
+    els.statsCalibration.querySelectorAll("[data-calibration-skip]").forEach((button) => {
+      button.addEventListener("click", () => {
+        skipCalibrationGame(button.dataset.calibrationSkip);
         render();
       });
     });
@@ -4199,11 +4218,13 @@ function renderGameSearch() {
       const owned = resultStateSelected(result, "owned");
       const subscription = resultStateSelected(result, "subscription");
       const memory = searchResultMemoryStatus(result);
+      const ratingBadge = personalRatingBadge(canonicalSearchResultSeed(result) || result);
       row.innerHTML = `
         <div>
           <strong>${result.title}</strong>
           <span>${result.sourceLabel} / ${t("discover.confidence", { value: discoverConfidenceLabel(result.matchConfidence) })}</span>
           <p>${result.reason}</p>
+          ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${detailAttr(ratingBadge.detail)}">${ratingBadge.label}</span>` : ""}
           <div class="facts">
             ${atoms}
             ${platforms}
@@ -4974,6 +4995,7 @@ function createVisualCatalogCard(item) {
   const plusTier = inPsPlus ? (game.subscriptionMeta?.[state.activeRegion]?.tier || "Extra") : null;
   const stateCopy = gameState ? libraryStateLabel(gameState) : t("discover.unsorted");
   const laneCopy = discoverLaneLabel(lane);
+  const ratingBadge = personalRatingBadge(game);
   const article = document.createElement("article");
   article.className = `visual-catalog-card ${gameState ? "has-state" : ""}`;
   article.dataset.visualTitle = game.title;
@@ -4993,6 +5015,7 @@ function createVisualCatalogCard(item) {
       <div class="visual-catalog-meta">
         <span class="visual-state-pill">${stateCopy}</span>
         <span class="visual-value-pill ${inPsPlus ? "is-plus" : ""}">${inPsPlus ? `PS+ ${plusTier}` : priceCopy}</span>
+        ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${detailAttr(ratingBadge.detail)}">${ratingBadge.label}</span>` : ""}
       </div>
       <div class="visual-catalog-tags">
         ${(game.atoms || []).slice(0, 3).map((atom) => `<span>${labelAtom(atom)}</span>`).join("")}

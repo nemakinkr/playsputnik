@@ -892,6 +892,7 @@ function checkSelectors() {
   assert(/function tasteCalibrationProfile/.test(appScoreSource), "Companion Intelligence should calibrate against personal ratings");
   assert(/function personalRatingForecast/.test(appScoreSource), "Companion Intelligence should forecast the user's rating scale");
   assert(/function calibrationQuestionGames/.test(appScoreSource), "Calibration should select high-information games to rate next");
+  assert(/calibrationSkips/.test(appStateSource + appScoreSource), "Not-played calibration games should persist without becoming taste feedback");
   assert(/records\.filter\(\(candidate\) => candidate !== record\)/.test(appScoreSource), "Calibration should hold out the game being predicted");
   assert(/modelErrors/.test(appScoreSource) && /ensemble/.test(appScoreSource), "Calibration should compare several local models");
   assert(/feedbackTasteWeights\(\{ includeQuick: false \}\)/.test(appScoreSource), "Taste Engine should avoid double-counting quick swipe feedback");
@@ -1264,8 +1265,12 @@ function checkSelectors() {
   assert(/narrative\.recommend\.evidenceRatingForecast/.test(appRecommendSource), "Calibrated personal rating should be visible in evidence");
   assert(/id="stats-calibration"/.test(html), "Stats should expose forecast calibration");
   assert(/data-calibration-rating/.test(appSource), "Stats should let users answer calibration questions immediately");
+  assert(/data-calibration-skip/.test(appSource), "Calibration questions should support a neutral Not played replacement");
   assert(/function companionComparison/.test(appAnswerSource), "Companion answer should compare the primary pick with its alternative");
   assert(/class="answer-comparison"/.test(appSource), "Companion comparison renderer is missing");
+  assert(/function personalRatingBadge/.test(appRecommendSource), "Cards and search should share an honest personal rating badge");
+  assert(/if \(!forecast\.calibrated\) return null/.test(appRecommendSource), "Rating badges must stay hidden until the forecast is calibrated");
+  assert(/personal-rating-badge/.test(appCardsSource + appSource + css), "Personal rating badges should render in cards and search");
   assert(/hasRankingBaseline/.test(appRecommendSource), "Ranking forecast should require a ranking baseline");
   assert(/narrative\.recommend\.forecastFitLabel/.test(appRecommendSource), "Ranking forecast should fall back to fit tier without a ranking");
   assert(/class="rank-forecast"/.test(appSource), "Ranking forecast renderer is missing");

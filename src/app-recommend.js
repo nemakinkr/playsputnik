@@ -610,6 +610,24 @@
       };
     }
 
+    function personalRatingBadge(game) {
+      const forecast = personalRatingForecast(game);
+      if (!Number.isFinite(forecast.rating)) return null;
+      if (forecast.known) {
+        return {
+          known: true,
+          label: t("narrative.recommend.ratingBadgeKnown", { rating: forecast.rating }),
+          detail: t("narrative.recommend.ratingBadgeKnownDetail"),
+        };
+      }
+      if (!forecast.calibrated) return null;
+      return {
+        known: false,
+        label: t("narrative.recommend.ratingBadgeForecast", { rating: forecast.rating }),
+        detail: t("narrative.recommend.ratingBadgeForecastDetail", { count: forecast.count }),
+      };
+    }
+
     function decisionRationale(game) {
       const state = getState();
       const region = state.activeRegion;
@@ -753,6 +771,7 @@
       personalReferenceGames,
       personalRankForecast,
       personalEvidence,
+      personalRatingBadge,
       tasteVerdict,
       decisionRationale,
       factList,

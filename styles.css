@@ -2433,6 +2433,28 @@ textarea {
   font-weight: 900;
 }
 
+.personal-rating-badge {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 24px;
+  align-items: center;
+  margin-top: 6px;
+  border: 1px solid color-mix(in srgb, var(--blue) 35%, var(--card-border));
+  border-radius: 6px;
+  background: var(--accent-bg);
+  color: var(--blue);
+  padding: 4px 7px;
+  font-size: 0.7rem;
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.personal-rating-badge.is-known {
+  border-color: color-mix(in srgb, var(--green) 45%, var(--card-border));
+  background: var(--card-bg-soft);
+  color: var(--green);
+}
+
 .card-actions {
   display: flex;
   flex-wrap: wrap;
@@ -5274,6 +5296,12 @@ textarea {
   color: #166534;
 }
 
+.visual-catalog-meta .personal-rating-badge {
+  grid-column: 1 / -1;
+  width: auto;
+  margin-top: 0;
+}
+
 .cover-source,
 .card-cover-source {
   display: block;
@@ -5371,6 +5399,15 @@ textarea {
 
 .game-search-row p {
   margin: 4px 0 6px;
+}
+
+.game-search-row .personal-rating-badge {
+  color: var(--blue);
+  font-size: 0.7rem;
+}
+
+.game-search-row .personal-rating-badge.is-known {
+  color: var(--green);
 }
 
 .search-empty.source-warning {
@@ -7149,6 +7186,13 @@ textarea {
   gap: 4px;
 }
 
+.calibration-answer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
 .calibration-rating button {
   min-width: 30px;
   min-height: 30px;
@@ -7162,6 +7206,22 @@ textarea {
 .calibration-rating button:hover {
   border-color: var(--blue);
   background: var(--accent-bg);
+}
+
+.calibration-skip {
+  min-height: 30px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-mid);
+  padding: 0 9px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.calibration-skip:hover {
+  border-color: var(--blue);
+  color: var(--blue);
 }
 
 .calibration-signal {

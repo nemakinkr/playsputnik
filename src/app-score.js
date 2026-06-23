@@ -508,6 +508,7 @@
       if (_calibrationQuestionsCache) return _calibrationQuestionsCache.slice(0, limit);
       const records = personalRatingRecords();
       const ratedTitles = new Set(records.map((record) => titleKey(record.game.title)));
+      const skippedTitles = new Set(Object.keys(getState().calibrationSkips || {}));
       const signalSupport = {};
       records.forEach((record) => {
         new Set(gameSignals(record.game)).forEach((signal) => {
@@ -517,7 +518,11 @@
       const calibration = tasteCalibrationProfile();
       const knownTitles = new Set(getProfileGames().map((game) => titleKey(game.title)));
       const candidates = getRecommendationPool()
-        .filter((game) => game?.title && !ratedTitles.has(titleKey(game.title)))
+        .filter((game) => (
+          game?.title
+          && !ratedTitles.has(titleKey(game.title))
+          && !skippedTitles.has(titleKey(game.title))
+        ))
         .map((game) => {
           const predictionSet = ratingModelPredictions(game, records);
           const predictions = predictionSet ? Object.values(predictionSet.predictions) : [];

@@ -60,6 +60,7 @@ const state = {
   ],
   userGames: {},
   quickReactions: {},
+  calibrationSkips: {},
   liked: new Set(),
   atomWeights: {},
   feedbackLog: [],
@@ -101,6 +102,10 @@ assert.equal(tools.personalRatingForecast(games[0]).known, true);
 const questions = tools.calibrationQuestionGames(3);
 assert.equal(questions.length, 1, "only one unrated game remains in the synthetic catalog");
 assert.equal(questions[0].game.title, "New Story");
+state.calibrationSkips[key("New Story")] = { title: "New Story" };
+tools.invalidateTasteProfile();
+assert.equal(tools.calibrationQuestionGames(3).length, 0, "not-played games must be replaced in calibration questions");
+delete state.calibrationSkips[key("New Story")];
 state.userGames[key("New Story")] = { title: "New Story", rating: 80 };
 tools.invalidateTasteProfile();
 assert.equal(tools.calibrationQuestionGames(3).length, 0, "rated games must disappear from calibration questions");

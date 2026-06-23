@@ -7,6 +7,7 @@
     getState,
     explain,
     personalEvidence,
+    personalRatingBadge,
     gameDescription,
     gameTagline,
     watchOutCopy,
@@ -78,6 +79,7 @@
       const { reason, confidence } = explain(game, game.score);
       const watchout = watchOutCopy(game);
       const evidence = personalEvidence(game);
+      const ratingBadge = personalRatingBadge(game);
       const facts = factList(game)
         .slice(0, 5)
         .map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`)
@@ -94,6 +96,7 @@
               <p class="eyebrow">${t("today.hero.top")}</p>
               <h3>${game.title}</h3>
               <p class="meta">${gameTagline(game)}</p>
+              ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${ratingBadge.detail}">${ratingBadge.label}</span>` : ""}
             </div>
             <p class="description">${gameDescription(game)}</p>
             <p class="reason">${reason}</p>
@@ -130,6 +133,7 @@
       const card = template.content.firstElementChild.cloneNode(true);
       const { reason, confidence } = explain(game, game.score);
       const evidence = personalEvidence(game);
+      const ratingBadge = personalRatingBadge(game);
       applyCoverVisual(card.querySelector(".poster"), game);
       card.querySelector(".poster-kind").textContent = labelAtoms((game.atoms || []).slice(0, 2));
       card.querySelector(".poster-title").textContent = game.title;
@@ -137,6 +141,13 @@
       card.querySelector(".meta").textContent = gameTagline(game);
       card.querySelector(".score").textContent = `${Math.max(game.score, 0)}`;
       card.querySelector(".score").title = `${confidence} confidence`;
+      if (ratingBadge) {
+        const badge = document.createElement("span");
+        badge.className = `personal-rating-badge ${ratingBadge.known ? "is-known" : ""}`;
+        badge.textContent = ratingBadge.label;
+        badge.title = ratingBadge.detail;
+        card.querySelector(".card-head > div").append(badge);
+      }
       card.querySelector(".description").textContent = gameDescription(game);
       card.querySelector(".reason").textContent = reason;
       card.querySelector(".card-evidence").innerHTML = renderEvidenceRows(evidence, 2);
