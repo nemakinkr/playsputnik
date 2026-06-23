@@ -238,7 +238,11 @@ export const gate = {
     await cdp.send("Page.navigate", { url: pageUrl });
     await waitFor(cdp, APP_READY);
     await waitFor(cdp, "typeof dataHealth !== 'undefined' && dataHealth && dataHealth.gameCount > 0");
-    await waitFor(cdp, "typeof catalogBackbone !== 'undefined' && catalogBackbone && typeof catalogWorkbench !== 'undefined' && catalogWorkbench");
+    await waitFor(
+      cdp,
+      "typeof catalogBackbone !== 'undefined' && catalogBackbone && typeof catalogWorkbench !== 'undefined' && catalogWorkbench",
+      35000,
+    );
     const passes = [];
     for (const locale of ["en", "ru"]) {
       const raw = await evaluate(cdp, `(${scanInPage.toString()})(${MIN_TOUCH}, ${JSON.stringify(locale)})`);

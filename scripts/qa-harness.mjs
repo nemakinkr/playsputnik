@@ -56,6 +56,7 @@ const [
   coverResolverSource,
   visualCatalogSmokeSource,
   designSmokeSource,
+  cdpHarnessSource,
   appViewSmokeSource,
   libraryWishlistSmokeSource,
   gameDetailSmokeSource,
@@ -129,6 +130,7 @@ const [
   readFile(new URL("scripts/resolve-cover-candidates.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/visual-catalog-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/design-smoke-test.mjs", ROOT), "utf8"),
+  readFile(new URL("scripts/lib/cdp.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/app-view-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/library-wishlist-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/game-detail-smoke-test.mjs", ROOT), "utf8"),
@@ -1478,6 +1480,7 @@ function checkSelectors() {
   assert(/data-visual-state="playing"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify quick Play actions");
   assert(/onboardingSurface/.test(appViewSmokeSource + visualCatalogSmokeSource + css + designSmokeSource) || /firstRun/.test(designSmokeSource), "Design smoke should tolerate the visible first-run onboarding surface");
   assert(/appNavOverflow/.test(designSmokeSource), "Design smoke should guard against mobile app nav overflow");
+  assert(/json\/close/.test(cdpHarnessSource) && /await cdp\.close\(\)/.test(cdpHarnessSource), "Shared browser gates must close each Chrome target before opening the next");
   assert(/game-detail-smoke/.test(gameDetailSmokeSource), "Game detail smoke test is missing");
   assert(/data-detail-state="playing"/.test(gameDetailSmokeSource), "Game detail smoke should verify Play action persistence");
   assert(/data-detail-cockpit/.test(gameDetailSmokeSource), "Game detail smoke should verify decision cockpit");

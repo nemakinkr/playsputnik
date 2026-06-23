@@ -45,7 +45,12 @@ async function findChrome() {
 }
 
 class Cdp {
-  constructor(wsUrl) { this.wsUrl = wsUrl; this.id = 0; this.pending = new Map(); }
+  constructor(wsUrl, closeTarget) {
+    this.wsUrl = wsUrl;
+    this.closeTarget = closeTarget;
+    this.id = 0;
+    this.pending = new Map();
+  }
   async open() {
     this.ws = new WebSocket(this.wsUrl);
     await new Promise((resolve, reject) => {
@@ -70,7 +75,10 @@ class Cdp {
       this.ws.send(JSON.stringify({ id, method, params }));
     });
   }
-  close() { try { this.ws?.close(); } catch { /* ignore */ } }
+  async close() {
+    try { this.ws?.close(); } catch { /* ignore */ }
+    await this.closeTarget?.().catch(() => {});
+  }
 }
 
 export async function evaluate(cdp, expression) {
@@ -115,7 +123,10 @@ export async function launchChrome({ label = "playsputnik", port }) {
     port,
     async newTab() {
       const tab = await fetch(`http://127.0.0.1:${port}/json/new?about:blank`, { method: "PUT" }).then((r) => r.json());
-      const cdp = new Cdp(tab.webSocketDebuggerUrl);
+      const cdp = new Cdp(
+        tab.webSocketDebuggerUrl,
+        () => fetch(`http://127.0.0.1:${port}/json/close/${tab.id}`),
+      );
       await cdp.open();
       await cdp.send("Page.enable");
       await cdp.send("Runtime.enable");
@@ -135,7 +146,7 @@ export async function runStandalone(gate, rootUrl) {
   try {
     const cdp = await session.newTab();
     const raw = await gate.drive(cdp, rootUrl);
-    cdp.close();
+    await cdp.close();
     const { ok, lines } = gate.analyze(raw);
     clearTimeout(hard);
     await session.cleanup();
@@ -160,7 +171,7 @@ export async function runAll(gates, rootUrl) {
       console.log(`\n── ${gate.name} ──────────────────────────────`);
       const cdp = await session.newTab();
       const raw = await gate.drive(cdp, rootUrl);
-      cdp.close();
+      await cdp.close();
       const { ok, lines } = gate.analyze(raw);
       lines.forEach((l) => (ok ? console.log(l) : console.error(l)));
       if (!ok) allOk = false;
