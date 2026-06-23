@@ -19,9 +19,10 @@ async function fetchJson(path) {
   return JSON.parse(await fetchText(path));
 }
 
-const [html, appSource, i18nSource, i18nRuSource, swSource, runtimeConfig, dataHealth, searchSources, editorialRu] = await Promise.all([
+const [html, appSource, moduleManifestSource, i18nSource, i18nRuSource, swSource, runtimeConfig, dataHealth, searchSources, editorialRu] = await Promise.all([
   fetchText("./"),
   fetchText("./app.js"),
+  fetchText("./src/module-manifest.js"),
   fetchText("./src/app-i18n.js"),
   fetchText("./src/i18n-ru.js"),
   fetchText("./sw.js"),
@@ -40,7 +41,9 @@ const regionalPriceCoverage = Object.values(dataHealth.regionCoverage || {})
 const pricePercent = Number(dataHealth.pricePercent || dataHealth.coverage?.prices || (regionalPriceCoverage.length ? Math.min(...regionalPriceCoverage) : 0));
 
 assert(/PlaySputnik/.test(html), "Published HTML should contain PlaySputnik");
-assert(/src\/app-state\.js/.test(html), "Published HTML should load split app-state module");
+assert(/src\/module-manifest\.js/.test(html), "Published HTML should load the runtime module manifest");
+assert(/src\/app-state-migrations\.js/.test(moduleManifestSource), "Published manifest should load state migrations");
+assert(/src\/app-state\.js/.test(moduleManifestSource), "Published manifest should load the split app-state module");
 assert(/data-app-view="discover"/.test(html), "Published HTML should expose Discover navigation");
 assert(/id="game-search-input"/.test(html), "Published HTML should expose global game search");
 assert(/id="game-detail"/.test(html), "Published HTML should expose game detail drawer");
@@ -73,6 +76,7 @@ console.log(JSON.stringify({
   checks: [
     "html",
     "app.js",
+    "module-manifest.js",
     "app-i18n.js",
     "i18n-ru.js",
     "sw.js",

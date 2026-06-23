@@ -1493,6 +1493,7 @@ function checkSelectors() {
   assert(/data-health\.json/.test(productionSmokeSource), "Production smoke should verify published data health");
   assert(/editorial-ru\.json/.test(productionSmokeSource), "Production smoke should verify published Russian editorial data");
   assert(/app-i18n\.js/.test(productionSmokeSource) && /i18n-ru\.js/.test(productionSmokeSource), "Production smoke should verify taxonomy localization assets");
+  assert(/module-manifest/.test(productionSmokeSource) && /app-state-migrations/.test(productionSmokeSource), "Production smoke should verify manifest-backed state boot");
   assert(/CACHE_VERSION = "v\\d\+"/.test(productionSmokeSource), "Production smoke should verify versioned service worker");
   assert(/production-browser-smoke/.test(productionBrowserSmokeSource), "Production browser smoke test is missing");
   assert(/remote-debugging-port/.test(productionBrowserSmokeSource), "Production browser smoke should use a real headless browser");
