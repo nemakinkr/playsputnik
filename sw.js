@@ -1,7 +1,7 @@
 /* PlaySputnik Service Worker — offline-first static assets, network-first data */
 "use strict";
 
-const CACHE_VERSION = "v54";
+const CACHE_VERSION = "v55";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -30,6 +30,7 @@ const STATIC_ASSETS = [
   "./src/app-recommend.js",
   "./src/app-ranking.js",
   "./src/app-answer.js",
+  "./src/app-decisions.js",
   "./src/app-library.js",
   "./src/app-visual.js",
   "./src/app-wishlist.js",

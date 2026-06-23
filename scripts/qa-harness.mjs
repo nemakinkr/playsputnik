@@ -13,6 +13,7 @@ const [
   appRecommendSource,
   appRankingSource,
   appAnswerSource,
+  appDecisionsSource,
   appLibrarySource,
   appVisualSource,
   appWishlistSource,
@@ -83,6 +84,7 @@ const [
   readFile(new URL("src/app-recommend.js", ROOT), "utf8"),
   readFile(new URL("src/app-ranking.js", ROOT), "utf8"),
   readFile(new URL("src/app-answer.js", ROOT), "utf8"),
+  readFile(new URL("src/app-decisions.js", ROOT), "utf8"),
   readFile(new URL("src/app-library.js", ROOT), "utf8"),
   readFile(new URL("src/app-visual.js", ROOT), "utf8"),
   readFile(new URL("src/app-wishlist.js", ROOT), "utf8"),
@@ -147,7 +149,7 @@ const [
 // User-facing copy moved into the i18n catalogs; checks below look here too.
 const i18nEnSource = await readFile(new URL("src/i18n-en.js", ROOT), "utf8");
 
-const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
+const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
 
 const USER_STATE_LABELS = {
   later: "Play later",
@@ -1091,8 +1093,8 @@ function checkSelectors() {
   assert(/app-storage\.js/.test(html), "app-storage.js must be in the load chain");
 
   assert(/function handleScriptError/.test(html), "Script load error handler is missing from index.html");
-  const onerrorCount = (html.match(/\.onerror\s*=/g) || []).length;
-  assert(onerrorCount >= 21, `All script tags must have onerror handlers (found ${onerrorCount})`);
+  assert(/script\.onerror\s*=\s*\(\)\s*=>\s*reject\(new Error\(path\)\)/.test(html), "Dynamic script loader must reject failed module loads");
+  assert(/catch \(error\)\s*{\s*handleScriptError/.test(html), "App boot must surface rejected module loads");
   assert(/src\/app-config\.js/.test(html) && /PlaySputnikConfig/.test(appSource), "App config module is not wired into app.js");
   assert(/APP_VIEWS/.test(appConfigSource), "App view metadata is missing from app config");
   assert(/activeView: "today"/.test(appStateSource), "App view state should default to Today");
@@ -1267,6 +1269,9 @@ function checkSelectors() {
   assert(/data-calibration-rating/.test(appSource), "Stats should let users answer calibration questions immediately");
   assert(/data-calibration-skip/.test(appSource), "Calibration questions should support a neutral Not played replacement");
   assert(/function companionComparison/.test(appAnswerSource), "Companion answer should compare the primary pick with its alternative");
+  assert(/function createDecisionTools/.test(appDecisionsSource), "Decision workflow module is missing");
+  assert(/function comparisonPair/.test(appDecisionsSource) && /function ratingQueueItems/.test(appDecisionsSource), "Comparison and rate-later state should share the decision workflow module");
+  assert(!/function (selectTitleForComparison|toggleRatingQueueTitle|removeRatingQueueGame|comparisonGameByTitle)/.test(appSource), "Decision state logic should stay out of the app composition root");
   assert(/class="answer-comparison"/.test(appSource), "Companion comparison renderer is missing");
   assert(/id="game-comparison-result"/.test(html) && /function renderGameComparison/.test(appSource), "Discover should compare any two selected games");
   assert(/comparePriceLabel/.test(appAnswerSource) && /compareTimeDetail/.test(appAnswerSource), "Game comparison should include price and time tradeoffs");
@@ -1275,6 +1280,8 @@ function checkSelectors() {
   assert(/id="rating-queue-list"/.test(html) && /function renderRatingQueue/.test(appSource), "Taste should expose a separate rate-later queue");
   assert(/data-search-rate-later/.test(appSource), "Search results should feed the rate-later queue");
   assert(/ratingQueue/.test(appStateSource), "Rate-later queue should persist in profile state");
+  assert(/const modulePaths = \[/.test(html) && /for \(const path of modulePaths\) await loadScript\(path\)/.test(html), "App modules should boot through the linear loader");
+  assert(/src\/app-decisions\.js/.test(html), "Decision workflow module should load before app.js");
   assert(/function personalRatingBadge/.test(appRecommendSource), "Cards and search should share an honest personal rating badge");
   assert(/if \(!forecast\.calibrated\) return null/.test(appRecommendSource), "Rating badges must stay hidden until the forecast is calibrated");
   assert(/personal-rating-badge/.test(appCardsSource + appSource + css), "Personal rating badges should render in cards and search");

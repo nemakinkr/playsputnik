@@ -853,185 +853,60 @@
       }
 
       const cacheBust = Date.now();
-      const storageScript = document.createElement("script");
-      storageScript.src = `src/app-storage.js?v=${cacheBust}`;
-      storageScript.onerror = () => handleScriptError("app-storage.js");
-      storageScript.onload = () => {
-      const configScript = document.createElement("script");
-      configScript.src = `src/app-config.js?v=${cacheBust}`;
-      configScript.onerror = () => handleScriptError("app-config.js");
-      configScript.onload = () => {
-        const stateScript = document.createElement("script");
-        stateScript.src = `src/app-state.js?v=${cacheBust}`;
-        stateScript.onerror = () => handleScriptError("app-state.js");
-        stateScript.onload = () => {
-          const searchScript = document.createElement("script");
-          searchScript.src = `src/app-search.js?v=${cacheBust}`;
-          searchScript.onerror = () => handleScriptError("app-search.js");
-          searchScript.onload = () => {
-            const enrichmentScript = document.createElement("script");
-            enrichmentScript.src = `src/app-enrichment.js?v=${cacheBust}`;
-            enrichmentScript.onerror = () => handleScriptError("app-enrichment.js");
-            enrichmentScript.onload = () => {
-              const onboardingScript = document.createElement("script");
-              onboardingScript.src = `src/app-onboarding.js?v=${cacheBust}`;
-              onboardingScript.onerror = () => handleScriptError("app-onboarding.js");
-              onboardingScript.onload = () => {
-              const entryScript = document.createElement("script");
-              entryScript.src = `src/app-entry.js?v=${cacheBust}`;
-              entryScript.onerror = () => handleScriptError("app-entry.js");
-              entryScript.onload = () => {
-              const scoreScript = document.createElement("script");
-              scoreScript.src = `src/app-score.js?v=${cacheBust}`;
-              scoreScript.onerror = () => handleScriptError("app-score.js");
-              scoreScript.onload = () => {
-                const radarScript = document.createElement("script");
-                radarScript.src = `src/app-radar.js?v=${cacheBust}`;
-                radarScript.onerror = () => handleScriptError("app-radar.js");
-                radarScript.onload = () => {
-                const recommendScript = document.createElement("script");
-                recommendScript.src = `src/app-recommend.js?v=${cacheBust}`;
-                recommendScript.onerror = () => handleScriptError("app-recommend.js");
-                recommendScript.onload = () => {
-                  const rankingScript = document.createElement("script");
-                  rankingScript.src = `src/app-ranking.js?v=${cacheBust}`;
-                  rankingScript.onerror = () => handleScriptError("app-ranking.js");
-                  rankingScript.onload = () => {
-                    const answerScript = document.createElement("script");
-                    answerScript.src = `src/app-answer.js?v=${cacheBust}`;
-                    answerScript.onerror = () => handleScriptError("app-answer.js");
-                    answerScript.onload = () => {
-                      const libraryScript = document.createElement("script");
-                      libraryScript.src = `src/app-library.js?v=${cacheBust}`;
-                      libraryScript.onerror = () => handleScriptError("app-library.js");
-                      libraryScript.onload = () => {
-                        const visualScript = document.createElement("script");
-                        visualScript.src = `src/app-visual.js?v=${cacheBust}`;
-                        visualScript.onerror = () => handleScriptError("app-visual.js");
-                        visualScript.onload = () => {
-                        const wishlistScript = document.createElement("script");
-                        wishlistScript.src = `src/app-wishlist.js?v=${cacheBust}`;
-                        wishlistScript.onerror = () => handleScriptError("app-wishlist.js");
-                        wishlistScript.onload = () => {
-                          const detailScript = document.createElement("script");
-                          detailScript.src = `src/app-detail.js?v=${cacheBust}`;
-                          detailScript.onerror = () => handleScriptError("app-detail.js");
-                          detailScript.onload = () => {
-                            const coverScript = document.createElement("script");
-                            coverScript.src = `src/app-cover.js?v=${cacheBust}`;
-                            coverScript.onerror = () => handleScriptError("app-cover.js");
-                            coverScript.onload = () => {
-                              const devScript = document.createElement("script");
-                              devScript.src = `src/app-dev.js?v=${cacheBust}`;
-                              devScript.onerror = () => handleScriptError("app-dev.js");
-                              devScript.onload = () => {
-                              const sessionScript = document.createElement("script");
-                              sessionScript.src = `src/app-session.js?v=${cacheBust}`;
-                              sessionScript.onerror = () => handleScriptError("app-session.js");
-                              sessionScript.onload = () => {
-                              const hltbScript = document.createElement("script");
-                              hltbScript.src = `src/app-hltb.js?v=${cacheBust}`;
-                              hltbScript.onerror = () => handleScriptError("app-hltb.js");
-                              hltbScript.onload = () => {
-                              const aiScript = document.createElement("script");
-                              aiScript.src = `src/app-ai.js?v=${cacheBust}`;
-                              aiScript.onerror = () => handleScriptError("app-ai.js");
-                              aiScript.onload = () => {
-                              const cardsScript = document.createElement("script");
-                              cardsScript.src = `src/app-cards.js?v=${cacheBust}`;
-                              cardsScript.onerror = () => handleScriptError("app-cards.js");
-                              cardsScript.onload = () => {
-                              const dataPanelScript = document.createElement("script");
-                              dataPanelScript.src = `src/app-data-panel.js?v=${cacheBust}`;
-                              dataPanelScript.onerror = () => handleScriptError("app-data-panel.js");
-                              dataPanelScript.onload = () => {
-                              const importScript = document.createElement("script");
-                              importScript.src = `src/app-import.js?v=${cacheBust}`;
-                              importScript.onerror = () => handleScriptError("app-import.js");
-                              importScript.onload = () => {
-                              const exportScript = document.createElement("script");
-                              exportScript.src = `src/app-export.js?v=${cacheBust}`;
-                              exportScript.onerror = () => handleScriptError("app-export.js");
-                              exportScript.onload = () => {
-                                // Preload state from IDB before app.js runs — enables
-                                // synchronous loadState() to read from IndexedDB on cold start
-                                const { STORAGE_KEY } = window.PlaySputnikConfig;
-                                window.PlaySputnikStorage.preload(STORAGE_KEY).then(() => {
-                                  const appScript = document.createElement("script");
-                                  appScript.src = `app.js?v=${cacheBust}`;
-                                  appScript.onerror = () => handleScriptError("app.js");
-                                  document.body.appendChild(appScript);
-                                });
-                              };
-                              document.body.appendChild(exportScript);
-                              };
-                              document.body.appendChild(importScript);
-                              };
-                              document.body.appendChild(dataPanelScript);
-                              };
-                              document.body.appendChild(cardsScript);
-                              };
-                              document.body.appendChild(aiScript);
-                              };
-                              document.body.appendChild(hltbScript);
-              };
-              document.body.appendChild(sessionScript);
-              };
-              document.body.appendChild(devScript);
-                            };
-                            document.body.appendChild(coverScript);
-                          };
-                          document.body.appendChild(detailScript);
-                        };
-                        document.body.appendChild(wishlistScript);
-                        };
-                        document.body.appendChild(visualScript);
-                      };
-                      document.body.appendChild(libraryScript);
-                    };
-                    document.body.appendChild(answerScript);
-                  };
-                  document.body.appendChild(rankingScript);
-                };
-                document.body.appendChild(recommendScript);
-                };
-                document.body.appendChild(radarScript);
-              };
-              document.body.appendChild(scoreScript);
-              };
-              document.body.appendChild(entryScript);
-              };
-              document.body.appendChild(onboardingScript);
-            };
-            document.body.appendChild(enrichmentScript);
-          };
-          document.body.appendChild(searchScript);
-        };
-        document.body.appendChild(stateScript);
-      };
-      document.body.appendChild(configScript);
-      };
-      // i18n loads FIRST so every module + app.js can call the global t().
-      const i18nScript = document.createElement("script");
-      i18nScript.src = `src/app-i18n.js?v=${cacheBust}`;
-      i18nScript.onerror = () => handleScriptError("app-i18n.js");
-      i18nScript.onload = () => {
-        const enScript = document.createElement("script");
-        enScript.src = `src/i18n-en.js?v=${cacheBust}`;
-        enScript.onerror = () => handleScriptError("i18n-en.js");
-        enScript.onload = () => {
-          const ruScript = document.createElement("script");
-          ruScript.src = `src/i18n-ru.js?v=${cacheBust}`;
-          ruScript.onerror = () => handleScriptError("i18n-ru.js");
-          ruScript.onload = () => {
-            window.PlaySputnikI18n.applyStatic();
-            document.body.appendChild(storageScript);
-          };
-          document.body.appendChild(ruScript);
-        };
-        document.body.appendChild(enScript);
-      };
-      document.body.appendChild(i18nScript);
+      const modulePaths = [
+        "src/app-i18n.js",
+        "src/i18n-en.js",
+        "src/i18n-ru.js",
+        "src/app-storage.js",
+        "src/app-config.js",
+        "src/app-state.js",
+        "src/app-search.js",
+        "src/app-enrichment.js",
+        "src/app-onboarding.js",
+        "src/app-entry.js",
+        "src/app-score.js",
+        "src/app-radar.js",
+        "src/app-recommend.js",
+        "src/app-ranking.js",
+        "src/app-answer.js",
+        "src/app-decisions.js",
+        "src/app-library.js",
+        "src/app-visual.js",
+        "src/app-wishlist.js",
+        "src/app-detail.js",
+        "src/app-cover.js",
+        "src/app-dev.js",
+        "src/app-session.js",
+        "src/app-hltb.js",
+        "src/app-ai.js",
+        "src/app-cards.js",
+        "src/app-data-panel.js",
+        "src/app-import.js",
+        "src/app-export.js",
+      ];
+
+      function loadScript(path) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = `${path}?v=${cacheBust}`;
+          script.onload = resolve;
+          script.onerror = () => reject(new Error(path));
+          document.body.appendChild(script);
+        });
+      }
+
+      async function bootPlaySputnik() {
+        try {
+          for (const path of modulePaths) await loadScript(path);
+          window.PlaySputnikI18n.applyStatic();
+          await window.PlaySputnikStorage.preload(window.PlaySputnikConfig.STORAGE_KEY);
+          await loadScript("app.js");
+        } catch (error) {
+          handleScriptError(error.message || "unknown script");
+        }
+      }
+
+      bootPlaySputnik();
     </script>
     <script>
       // Dev mode: no service worker on localhost — cache-first SW made every

@@ -26,6 +26,7 @@ jobs:
           node scripts/i18n-usage-check.mjs
           node scripts/i18n-startup-test.mjs
           node scripts/companion-intelligence-test.mjs
+          node scripts/decision-workflow-test.mjs
           node scripts/ai-narrative-test.mjs
           node scripts/backend-worker-test.mjs
       - name: QA harness (module logic, no browser)
