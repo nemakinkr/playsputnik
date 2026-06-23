@@ -3,7 +3,7 @@
 
 importScripts("./src/module-manifest.js");
 
-const CACHE_VERSION = "v57";
+const CACHE_VERSION = "v58";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -13,6 +13,10 @@ const STATIC_ASSETS = [
   "./index.html",
   "./app.js",
   "./styles.css",
+  "./styles/foundation.css",
+  "./styles/components.css",
+  "./styles/polish.css",
+  "./styles/themes.css",
   "./favicon.svg",
   "./manifest.json",
   "./icons/icon-192.png",
@@ -93,6 +97,13 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Navigations must be network-first so returning users cannot receive an
+  // old HTML shell paired with freshly requested JavaScript modules.
+  if (request.mode === "navigate") {
+    event.respondWith(networkFirstWithCache(request, STATIC_CACHE));
+    return;
+  }
+
   // Data files — network-first, stale cache as offline fallback
   if (pathname.includes("/data/")) {
     event.respondWith(networkFirstWithCache(request, DATA_CACHE));
@@ -101,7 +112,6 @@ self.addEventListener("fetch", (event) => {
 
   // Static assets — cache-first, network fallback (and update cache)
   if (
-    request.mode === "navigate" ||
     pathname.includes("/src/") ||
     pathname.includes("/icons/") ||
     pathname.endsWith("/") ||

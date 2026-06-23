@@ -11,8 +11,13 @@ Run `./scripts/check.sh` before claiming any task done.
 ## Track: Architecture
 
 - Shared runtime manifest for browser boot and Service Worker cache: done.
+- Dependency-phased parallel module boot with explicit loading surface: done.
 - Versioned persisted-state migration pipeline: done.
 - Generated compact architecture map with a CI freshness gate: done.
+- Game-detail markup extracted into a dedicated view module: done.
+- CSS split into foundation/components/polish/themes with cached-shell
+  compatibility: done.
+- Old Service Worker / mixed-release upgrade regression gate: done.
 - Continue extracting domain workflows from `app.js` only when a concrete
   product task touches that area; keep DOM orchestration in the composition
   root and reusable decisions in `src/app-*.js`.

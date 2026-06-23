@@ -52,7 +52,8 @@ retrofit every hex, but the gate + tokens-for-new-code gets ~90% of the way.
   block at the top of `render()` (see CLAUDE.md for the cache list).
   Empty-profile measurements LIE — always test with seeded ratings/states.
 - Service worker is disabled on localhost; in production bump
-  `CACHE_VERSION` in sw.js whenever app.js/styles.css change.
+  `CACHE_VERSION` in sw.js whenever runtime code or files under `styles/`
+  change.
 - Secrets (`RAWG_API_KEY`, `ITAD_API_KEY`) live in `.env.local` (gitignored)
   and GitHub Actions secrets. Never print or commit them.
 - Data honesty: RAWG covers are attributed candidates; never show

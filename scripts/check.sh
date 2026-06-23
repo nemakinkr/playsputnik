@@ -26,7 +26,9 @@ echo "── 2/6 i18n catalogs + usage ─────────────�
 "$NODE" scripts/i18n-startup-test.mjs
 "$NODE" scripts/companion-intelligence-test.mjs
 "$NODE" scripts/decision-workflow-test.mjs
+"$NODE" scripts/detail-view-test.mjs
 "$NODE" scripts/state-migrations-test.mjs
+"$NODE" scripts/release-upgrade-test.mjs
 "$NODE" scripts/architecture-map.mjs --check
 "$NODE" scripts/ai-narrative-test.mjs
 "$NODE" scripts/backend-worker-test.mjs

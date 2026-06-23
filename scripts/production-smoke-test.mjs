@@ -19,10 +19,12 @@ async function fetchJson(path) {
   return JSON.parse(await fetchText(path));
 }
 
-const [html, appSource, moduleManifestSource, i18nSource, i18nRuSource, swSource, runtimeConfig, dataHealth, searchSources, editorialRu] = await Promise.all([
+const [html, appSource, moduleManifestSource, foundationCss, themesCss, i18nSource, i18nRuSource, swSource, runtimeConfig, dataHealth, searchSources, editorialRu] = await Promise.all([
   fetchText("./"),
   fetchText("./app.js"),
   fetchText("./src/module-manifest.js"),
+  fetchText("./styles/foundation.css"),
+  fetchText("./styles/themes.css"),
   fetchText("./src/app-i18n.js"),
   fetchText("./src/i18n-ru.js"),
   fetchText("./sw.js"),
@@ -44,6 +46,9 @@ assert(/PlaySputnik/.test(html), "Published HTML should contain PlaySputnik");
 assert(/src\/module-manifest\.js/.test(html), "Published HTML should load the runtime module manifest");
 assert(/src\/app-state-migrations\.js/.test(moduleManifestSource), "Published manifest should load state migrations");
 assert(/src\/app-state\.js/.test(moduleManifestSource), "Published manifest should load the split app-state module");
+assert(/src\/app-detail-view\.js/.test(moduleManifestSource), "Published manifest should load the detail view module");
+assert(/app-boot-overlay/.test(foundationCss), "Published foundation CSS should contain the boot surface");
+assert(/DARK THEME OVERRIDES/.test(themesCss), "Published theme CSS should contain dark-mode overrides");
 assert(/data-app-view="discover"/.test(html), "Published HTML should expose Discover navigation");
 assert(/id="game-search-input"/.test(html), "Published HTML should expose global game search");
 assert(/id="game-detail"/.test(html), "Published HTML should expose game detail drawer");
@@ -77,6 +82,8 @@ console.log(JSON.stringify({
     "html",
     "app.js",
     "module-manifest.js",
+    "foundation.css",
+    "themes.css",
     "app-i18n.js",
     "i18n-ru.js",
     "sw.js",

@@ -27,7 +27,9 @@ jobs:
           node scripts/i18n-startup-test.mjs
           node scripts/companion-intelligence-test.mjs
           node scripts/decision-workflow-test.mjs
+          node scripts/detail-view-test.mjs
           node scripts/state-migrations-test.mjs
+          node scripts/release-upgrade-test.mjs
           node scripts/architecture-map.mjs --check
           node scripts/ai-narrative-test.mjs
           node scripts/backend-worker-test.mjs

@@ -12,7 +12,10 @@
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles/foundation.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/polish.css" />
+    <link rel="stylesheet" href="styles/themes.css" />
     <script src="runtime-config.js"></script>
     <script src="src/module-manifest.js"></script>
     <script>
@@ -27,7 +30,12 @@
       })();
     </script>
   </head>
-  <body>
+  <body class="is-app-booting" aria-busy="true">
+    <div class="app-boot-overlay" id="app-boot-overlay" role="status" aria-live="polite">
+      <span class="app-boot-mark" aria-hidden="true"></span>
+      <strong data-i18n="system.bootTitle">Preparing your companion</strong>
+      <p id="app-boot-status" data-i18n="system.bootModules">Loading game intelligence…</p>
+    </div>
     <a href="#decision-surface-main" class="skip-link" data-i18n="system.skip">Skip to recommendations</a>
     <main class="app-shell">
       <aside class="setup-panel" id="setup-panel" aria-label="Player setup" data-i18n-attr="aria-label:settings.setupAria">
@@ -878,12 +886,15 @@
       async function bootPlaySputnik() {
         try {
           window.__playsputnikBoot = { phase: "loading-modules" };
-          const modulePaths = window.PlaySputnikModules.map(({ path }) => path);
-          for (const path of modulePaths) await loadScript(path);
+          for (const phase of window.PlaySputnikModulePhases) {
+            await Promise.all(phase.map(({ path }) => loadScript(path)));
+          }
           window.__playsputnikBoot.phase = "loading-profile";
           window.PlaySputnikI18n.applyStatic();
+          document.getElementById("app-boot-status").textContent = window.t("system.bootProfile");
           await window.PlaySputnikStorage.preload(window.PlaySputnikConfig.STORAGE_KEY);
           window.__playsputnikBoot.phase = "loading-app";
+          document.getElementById("app-boot-status").textContent = window.t("system.bootApp");
           await loadScript("app.js");
         } catch (error) {
           handleScriptError(error.message || "unknown script");

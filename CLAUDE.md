@@ -6,6 +6,11 @@ before opening broad files. Runtime order lives in `src/module-manifest.js`;
 persisted state upgrades live in `src/app-state-migrations.js`. Live at
 https://nemakinkr.github.io/playsputnik/ (repo nemakinkr/playsputnik).
 
+Boot uses dependency phases from the manifest and loads each phase in
+parallel. Styles are split into `styles/foundation.css`, `components.css`,
+`polish.css`, and `themes.css`; root `styles.css` remains only for cached-shell
+compatibility. Game-detail markup lives in `src/app-detail-view.js`.
+
 ## Run & verify
 
 ```sh

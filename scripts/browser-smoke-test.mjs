@@ -82,6 +82,8 @@ try {
     nextTitle: document.querySelector(".quick-swipe-main strong")?.textContent || "",
     topPick: document.querySelector("#top-pick")?.textContent || "",
     buttons: document.querySelectorAll("[data-swipe-reaction]").length,
+    booting: document.body.classList.contains("is-app-booting"),
+    bootOverlayHidden: document.querySelector("#app-boot-overlay")?.hidden === true,
   }));
 
   currentStep = "clicking swipe";
@@ -114,6 +116,7 @@ try {
 
   currentStep = "asserting";
   if (before.buttons !== 3) throw new Error(`Expected 3 swipe buttons, got ${before.buttons}`);
+  if (before.booting || !before.bootOverlayHidden) throw new Error("App should unlock only after runtime handlers are ready");
   if (before.likedCount !== "0/30") throw new Error(`Expected clean onboarding 0/30, got ${before.likedCount}`);
   if (devHealth.rowCount < 4) throw new Error(`Expected 4 dev health rows, got ${devHealth.rowCount}`);
   if (!/\d{4}-\d{2}-\d{2}T/.test(devHealth.summary)) throw new Error(`Dev health snapshot did not load: ${devHealth.summary}`);

@@ -1,0 +1,1033 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK THEME OVERRIDES
+   Attribute selectors on class names give (0,2,x) specificity, beating the
+   single-class light rules that hardcode #fff / slate colors.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Surfaces — backgrounds + borders */
+[data-theme="dark"] [class*="-panel"],
+[data-theme="dark"] [class*="-card"],
+[data-theme="dark"] [class*="-row"],
+[data-theme="dark"] [class*="-tile"],
+[data-theme="dark"] [class*="-option"],
+[data-theme="dark"] [class*="-result"],
+[data-theme="dark"] [class*="-banner"],
+[data-theme="dark"] .price-watch,
+[data-theme="dark"] .setup-panel,
+[data-theme="dark"] .decision-surface,
+[data-theme="dark"] .game-detail-drawer,
+[data-theme="dark"] .quick-swipe-card,
+[data-theme="dark"] .hero-card,
+[data-theme="dark"] .field,
+[data-theme="dark"] .chip,
+[data-theme="dark"] .fact,
+[data-theme="dark"] .atom-pill,
+[data-theme="dark"] .visual-catalog-metric,
+[data-theme="dark"] .session-stat,
+[data-theme="dark"] .stats-tile {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .game-detail-section,
+[data-theme="dark"] .detail-atom-signal,
+[data-theme="dark"] .detail-reference-chip {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .game-detail-drawer {
+  background: linear-gradient(180deg, var(--card-bg) 0%, #101826 100%);
+}
+
+[data-theme="dark"] .detail-cockpit {
+  background:
+    linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(0, 0, 0, 0) 44%),
+    var(--card-bg);
+  border-color: rgba(96, 165, 250, 0.28);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .quick-swipe-contract {
+  background: var(--card-bg-soft);
+  border-color: rgba(96, 165, 250, 0.3);
+}
+
+[data-theme="dark"] .quick-swipe-contract p {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .quick-swipe-contract strong {
+  background: rgba(96, 165, 250, 0.16);
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .detail-hero-badges span {
+  background: rgba(15, 23, 42, 0.68);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="dark"] .game-search-memory {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-signal-row,
+[data-theme="dark"] .detail-source-row,
+[data-theme="dark"] .detail-evidence-row {
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .detail-atom-signal.tone-positive {
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(34, 197, 94, 0.34);
+}
+
+[data-theme="dark"] .detail-atom-signal.tone-negative {
+  background: rgba(244, 63, 94, 0.14);
+  border-color: rgba(244, 63, 94, 0.36);
+}
+
+[data-theme="dark"] .detail-atom-signal.tone-mixed {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.36);
+}
+
+[data-theme="dark"] .game-detail-section h3,
+[data-theme="dark"] .detail-cockpit-head strong,
+[data-theme="dark"] .detail-signal-row strong,
+[data-theme="dark"] .detail-source-row strong,
+[data-theme="dark"] .detail-evidence-row strong,
+[data-theme="dark"] .detail-reference-chip strong,
+[data-theme="dark"] .detail-atom-signal strong {
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .game-detail-section p,
+[data-theme="dark"] .detail-cockpit-head > span,
+[data-theme="dark"] .detail-cockpit-actions small,
+[data-theme="dark"] .detail-signal-row > span,
+[data-theme="dark"] .detail-evidence-row > span,
+[data-theme="dark"] .detail-source-row > span,
+[data-theme="dark"] .detail-signal-row small,
+[data-theme="dark"] .detail-source-row small,
+[data-theme="dark"] .detail-reference-chip span,
+[data-theme="dark"] .detail-atom-signal small {
+  color: var(--text-mid);
+}
+
+/* Soft / inset surfaces */
+[data-theme="dark"] .quick-reactions,
+[data-theme="dark"] .taste-gate,
+[data-theme="dark"] .taste-liked-games span,
+[data-theme="dark"] .app-error-details pre,
+[data-theme="dark"] pre,
+[data-theme="dark"] code {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+/* Inputs */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--surface);
+  border-color: var(--card-border);
+  color: var(--ink);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-soft);
+}
+
+/* Strong / heading text inside surfaces — keep readable on dark */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] [class*="-panel"] strong,
+[data-theme="dark"] [class*="-card"] strong,
+[data-theme="dark"] [class*="-tile"] strong,
+[data-theme="dark"] [class*="-row"] strong,
+[data-theme="dark"] .stats-tile strong,
+[data-theme="dark"] .taste-archetype {
+  color: var(--text-strong);
+}
+
+/* Mid / muted text */
+[data-theme="dark"] [class*="-panel"] span,
+[data-theme="dark"] [class*="-panel"] small,
+[data-theme="dark"] [class*="-panel"] p,
+[data-theme="dark"] [class*="-card"] span,
+[data-theme="dark"] [class*="-tile"] span,
+[data-theme="dark"] [class*="-tile"] small,
+[data-theme="dark"] .panel-note,
+[data-theme="dark"] .taste-line,
+[data-theme="dark"] .sort-label,
+[data-theme="dark"] .app-view-copy {
+  color: var(--text-mid);
+}
+
+/* Accent chips / pills */
+[data-theme="dark"] .sort-btn.is-active,
+[data-theme="dark"] .sort-btn:hover,
+[data-theme="dark"] .visual-shelf.is-active,
+[data-theme="dark"] .visual-shelf:hover,
+[data-theme="dark"] .catalog-filter-chip.is-active,
+[data-theme="dark"] .taste-archetype {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  border-color: var(--accent-bg);
+}
+
+/* Buttons that were white */
+[data-theme="dark"] .sort-btn,
+[data-theme="dark"] .visual-shelf,
+[data-theme="dark"] .catalog-filter-chip,
+[data-theme="dark"] .queue-filter,
+[data-theme="dark"] .secondary-action,
+[data-theme="dark"] .tab,
+[data-theme="dark"] .app-view-tab:not(.is-active) {
+  background: var(--card-bg);
+  color: var(--text-mid);
+  border-color: var(--card-border);
+}
+
+/* App error modal stays light-on-dark readable */
+[data-theme="dark"] .app-error-body {
+  background: var(--panel);
+}
+
+[data-theme="dark"] .app-error-title {
+  color: var(--text-strong);
+}
+
+/* Drag handle */
+[data-theme="dark"] .drawer-drag-handle {
+  background: var(--card-border);
+}
+
+/* Theme toggle button */
+.theme-toggle,
+.lang-toggle {
+  min-height: 32px;
+  min-width: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--ink);
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-toggle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0 8px;
+}
+
+.theme-toggle:hover,
+.lang-toggle:hover {
+  border-color: var(--blue);
+}
+
+/* ── Offline indicator ─────────────────────────────────────────────────────── */
+.offline-indicator {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--amber);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.offline-indicator.is-hidden { display: none; }
+
+.offline-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: offline-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes offline-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ── SW update banner ──────────────────────────────────────────────────────── */
+.sw-update-banner {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 8500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.28);
+  max-width: calc(100vw - 40px);
+}
+
+.sw-update-banner.is-hidden { display: none; }
+
+.sw-update-banner button {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.sw-update-banner button:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 640px) {
+  .sw-update-banner {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    justify-content: space-between;
+  }
+}
+
+/* ── Accessibility: skip link ──────────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 9999;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 10px 18px;
+  border-radius: 0 0 10px 10px;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Visible focus ring for keyboard users across interactive elements */
+.decision-surface:focus-visible,
+.game-detail-drawer:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Don't show the focus ring on the surface container when clicked via skip-link */
+.decision-surface:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Dark theme — second pass: catch remaining white surfaces */
+[data-theme="dark"] [class*="-main"],
+[data-theme="dark"] [class*="-button"],
+[data-theme="dark"] [class*="-action"],
+[data-theme="dark"] [class*="-group"],
+[data-theme="dark"] [class*="-step"],
+[data-theme="dark"] [class*="-bucket"],
+[data-theme="dark"] [class*="-toolbar"],
+[data-theme="dark"] [class*="-facet"],
+[data-theme="dark"] [class*="-maturity"],
+[data-theme="dark"] [class*="-payoff"],
+[data-theme="dark"] [class*="-toggle"],
+[data-theme="dark"] [class*="-detail"],
+[data-theme="dark"] [class*="-track"],
+[data-theme="dark"] .segment,
+[data-theme="dark"] .value-strip > div,
+[data-theme="dark"] .quick-swipe-main {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+/* Value-strip tile numbers stay bold/light */
+[data-theme="dark"] .value-strip > div strong,
+[data-theme="dark"] [class*="-bucket"] strong {
+  color: var(--text-strong);
+}
+
+/* Active segments / toggles keep accent */
+[data-theme="dark"] .segment.is-active {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+/* Keep colored badges intact (don't wash to card bg) */
+[data-theme="dark"] .ps-plus-badge,
+[data-theme="dark"] .value-chip--plus,
+[data-theme="dark"] .detail-discount-badge {
+  color: #fff;
+}
+
+/* Inputs that slipped through */
+[data-theme="dark"] .queue-toolbar input,
+[data-theme="dark"] [class*="-action"] input,
+[data-theme="dark"] .price-alert input {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+[data-theme="dark"] .price-alert-input-wrap,
+[data-theme="dark"] .price-alert-input-wrap > span,
+[data-theme="dark"] .price-alert-icon {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .first-run-journey {
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.24) 0%, var(--card-bg) 48%, rgba(14, 165, 233, 0.18) 100%);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .first-run-journey-head,
+[data-theme="dark"] .first-run-journey-step {
+  background: rgba(15, 23, 42, 0.72);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .first-run-journey-head strong,
+[data-theme="dark"] .first-run-journey-step strong {
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .first-run-journey-head span,
+[data-theme="dark"] .first-run-journey-head small,
+[data-theme="dark"] .first-run-journey-step small {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .demo-continuity-panel {
+  background:
+    linear-gradient(90deg, rgba(96, 165, 250, 0.14), rgba(0, 0, 0, 0) 42%),
+    var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .demo-continuity-metric {
+  background: rgba(15, 23, 42, 0.55);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .demo-continuity-actions button {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .edition-note {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .fact.edition {
+  background: rgba(96, 165, 250, 0.14);
+  border-color: rgba(147, 197, 253, 0.32);
+  color: var(--text-strong);
+}
+
+/* Dark theme — kill white gradient backgrounds (proof boxes, etc.) */
+[data-theme="dark"] [class*="-proof"],
+[data-theme="dark"] [class*="-bridge"],
+[data-theme="dark"] [class*="-payoff"],
+[data-theme="dark"] .taste-gate,
+[data-theme="dark"] .first-run-next-step,
+[data-theme="dark"] .amnesty-card,
+[data-theme="dark"] .price-alert,
+[data-theme="dark"] .entry-result {
+  background-image: none !important;
+  background-color: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] [class*="-proof"] *,
+[data-theme="dark"] [class*="-bridge"] *,
+[data-theme="dark"] [class*="-payoff"] * {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] [class*="-proof"] strong,
+[data-theme="dark"] [class*="-bridge"] strong,
+[data-theme="dark"] [class*="-payoff"] strong {
+  color: var(--text-strong);
+}
+
+/* Dark theme — third pass: nested action buttons & proof/dashboard cards.
+   These are class-less <button>/<div> inside *-actions containers that the
+   suffix selectors didn't reach. Primary (blue) CTAs are preserved. */
+[data-theme="dark"] [class*="-actions"] button:not(.primary-action),
+[data-theme="dark"] [class*="-action-buttons"] button:not(.primary-action),
+[data-theme="dark"] .first-run-taste-proof > div,
+[data-theme="dark"] .first-run-readiness > div,
+[data-theme="dark"] .amnesty-facts span,
+[data-theme="dark"] .stats-mini-action,
+[data-theme="dark"] .price-alert button,
+[data-theme="dark"] [class*="-dashboard-card"],
+[data-theme="dark"] .visual-catalog-meta > span {
+  background: var(--card-bg);
+  background-image: none;
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] [class*="-actions"] button:not(.primary-action):hover,
+[data-theme="dark"] [class*="-action-buttons"] button:not(.primary-action):hover {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+[data-theme="dark"] .my-game-more-actions,
+[data-theme="dark"] .my-game-action-group {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .my-game-more-actions summary {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .first-run-taste-proof strong,
+[data-theme="dark"] .first-run-readiness strong,
+[data-theme="dark"] .amnesty-copy strong,
+[data-theme="dark"] .price-alert strong,
+[data-theme="dark"] [class*="-dashboard-card"] strong {
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .first-run-taste-proof span,
+[data-theme="dark"] .first-run-readiness span,
+[data-theme="dark"] .amnesty-copy p,
+[data-theme="dark"] .price-alert span,
+[data-theme="dark"] .price-alert small,
+[data-theme="dark"] [class*="-dashboard-card"] span,
+[data-theme="dark"] [class*="-dashboard-card"] p {
+  color: var(--text-mid);
+}
+
+/* Dark theme — first-run payoff verdict block (Codex-era; the earlier suffix
+   passes covered taste-proof/readiness but not the verdict cards, mini-rows,
+   confidence/eyebrow chips, which kept light backgrounds → unreadable light
+   text on light surfaces on the most important first-impression screen). */
+[data-theme="dark"] .first-run-verdict {
+  background-image: none;
+  background-color: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .first-run-verdict > div,
+[data-theme="dark"] .first-run-mini-row {
+  background: var(--card-bg);
+  background-image: none;
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .first-run-verdict strong,
+[data-theme="dark"] .first-run-mini-row strong {
+  color: var(--text-strong);
+}
+
+[data-theme="dark"] .first-run-verdict span,
+[data-theme="dark"] .first-run-verdict p,
+[data-theme="dark"] .first-run-mini-row span,
+[data-theme="dark"] .first-run-mini-row small {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .first-run-eyebrow {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+/* Keep the confidence chip's semantic color, but legible on dark — the text
+   must be much lighter than the tinted background (a var(--green) text on a
+   green tint reads at ~1.0 contrast). */
+[data-theme="dark"] .first-run-confidence {
+  background: rgba(224, 173, 60, 0.18);
+  color: #f3cd7a;
+}
+
+[data-theme="dark"] .first-run-confidence.is-ready {
+  background: rgba(47, 192, 127, 0.18);
+  color: #86e8b6;
+}
+
+/* Undo confirmation strip (green-tinted; used in first-run and answer) */
+[data-theme="dark"] .undo-strip {
+  background: rgba(47, 192, 127, 0.12);
+  border-color: rgba(47, 192, 127, 0.35);
+}
+
+[data-theme="dark"] .undo-strip span {
+  color: #86e8b6;
+}
+
+[data-theme="dark"] .undo-strip button {
+  background: var(--card-bg);
+  border-color: rgba(47, 192, 127, 0.35);
+  color: #86e8b6;
+}
+
+/* Global status chips — light-gray (#f7f9fb) base slipped through earlier
+   white scans and reads as light-on-light in dark mode across every panel. */
+[data-theme="dark"] .section-heading span,
+[data-theme="dark"] .region-pill,
+[data-theme="dark"] .quick-swipe-progress {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+/* Journey step number badge keeps white text on its solid blue circle —
+   the broad journey dark override had greyed it to ~2.37 contrast. */
+[data-theme="dark"] .first-run-journey-step > span {
+  color: #fff;
+}
+
+/* Dark theme — dashboard card inner cells (segmented stat blocks) */
+[data-theme="dark"] [class*="-dashboard-card"] div,
+[data-theme="dark"] [class*="-dashboard-card"] > * {
+  background-color: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+[data-theme="dark"] [class*="-dashboard-card"] div:empty {
+  background-color: transparent;
+}
+
+/* ── Tonight time chips (session planner) ──────────────────────────────────── */
+.tonight-time {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  background: var(--card-bg);
+}
+
+.tonight-time-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+
+.tonight-time-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.time-chip {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  background: var(--card-bg);
+  color: var(--text-mid);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease;
+}
+
+.time-chip:hover {
+  border-color: var(--blue-bright);
+}
+
+.time-chip.is-active {
+  border-color: transparent;
+  background: var(--cta-gradient);
+  color: #fff;
+  box-shadow: var(--shadow-cta);
+}
+
+.tonight-time-hint {
+  flex-basis: 100%;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+}
+
+.tonight-time-hint:empty {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .tonight-time-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+  .time-chip { white-space: nowrap; }
+}
+
+/* ── "Get it" links in detail drawer ───────────────────────────────────────── */
+.detail-chunk-note {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.detail-get-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.detail-get-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid var(--card-border);
+  color: var(--text-mid);
+  background: var(--card-bg);
+}
+
+.detail-get-link--store {
+  border-color: transparent;
+  background: var(--cta-gradient);
+  color: #fff;
+  box-shadow: var(--shadow-cta);
+}
+
+.detail-get-link:hover {
+  filter: brightness(1.05);
+  border-color: var(--blue-bright);
+}
+
+.detail-get-link--store:hover {
+  border-color: transparent;
+}
+
+/* ── Sputnik rating (1–5) ──────────────────────────────────────────────────── */
+.sputnik-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sputnik-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: #c7d2e3;
+  cursor: pointer;
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+
+[data-theme="dark"] .sputnik-btn {
+  color: #3a4a62;
+}
+
+.sputnik-btn svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sputnik-btn.is-filled {
+  color: var(--blue);
+}
+
+.sputnik-btn:hover {
+  transform: scale(1.15);
+  color: var(--blue-bright);
+}
+
+.sputnik-rating-label {
+  margin-left: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+
+/* Dark theme — status/value micro-pills (Codex-era) with hardcoded light
+   tint backgrounds (green/blue/amber/slate) that the earlier suffix passes
+   never reached. They rendered as light-on-light or dark-on-dark in dark mode
+   across Today/Library/Wishlist/Discover/Data/Taste. One neutral dark surface
+   + readable text fixes both failure modes consistently. */
+[data-theme="dark"] .score,
+[data-theme="dark"] .queue-lane,
+[data-theme="dark"] .catalog-pill,
+[data-theme="dark"] .backbone-pill,
+[data-theme="dark"] .dev-health-state,
+[data-theme="dark"] .source-state,
+[data-theme="dark"] .decision-label,
+[data-theme="dark"] .decision-tag,
+[data-theme="dark"] .library-plan-label,
+[data-theme="dark"] .library-plan-tag,
+[data-theme="dark"] .plan-label,
+[data-theme="dark"] .plan-tag,
+[data-theme="dark"] .policy-cadence,
+[data-theme="dark"] .calendar-status,
+[data-theme="dark"] .enrichment-status,
+[data-theme="dark"] .learning-effect,
+[data-theme="dark"] .visual-value-pill,
+[data-theme="dark"] .wishlist-decision {
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+  border-color: var(--card-border);
+}
+
+/* Price-alert "below target" icon keeps a green hint but legible on dark */
+[data-theme="dark"] .price-alert-icon {
+  background: rgba(47, 192, 127, 0.16);
+  color: #86e8b6;
+  border-color: rgba(47, 192, 127, 0.3);
+}
+
+/* Higher-specificity supplement: these three pills have tone/context variants
+   (.wishlist-row.tone-*, .visual-catalog-meta .visual-value-pill.is-plus,
+   .price-alert.is-triggered) that outrank the single-class dark override. */
+[data-theme="dark"] .wishlist-row .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-buy .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-wait .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-verify .wishlist-decision,
+[data-theme="dark"] .wishlist-row.tone-missing .wishlist-decision,
+[data-theme="dark"] .visual-catalog-meta .visual-value-pill,
+[data-theme="dark"] .visual-catalog-meta .visual-value-pill.is-plus {
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .price-alert .price-alert-icon,
+[data-theme="dark"] .price-alert.is-triggered .price-alert-icon {
+  background: rgba(47, 192, 127, 0.16);
+  color: #86e8b6;
+  border-color: rgba(47, 192, 127, 0.3);
+}
+
+/* Mobile touch targets — the "More states" disclosure summary (14px tall) and
+   the queue Details button (24px) are too thin to tap comfortably on phones. */
+@media (max-width: 640px) {
+  .advanced-section summary,
+  .my-game-more-actions summary,
+  .export-import-sources summary {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+  }
+  .setup-panel .toggle-row input {
+    width: 24px;
+    height: 24px;
+  }
+  .setup-panel input[type="range"] {
+    min-height: 24px;
+  }
+  .queue-detail-button,
+  .deals-filter-btn {
+    min-height: 30px;
+  }
+}
+
+/* Dark theme — recommendation copy cluster (reason / description / evidence /
+   watchout). These carry hardcoded dark text colors (#2f3b4c/#475569/#334155)
+   and light tint backgrounds (#eaf0ff/#f8fafc/#fffaf1) with no dark override,
+   so on a populated profile they rendered dark-on-dark or light-on-light on
+   the hero and cards. (Only visible with a seeded profile — empty-profile
+   checks missed it.) */
+[data-theme="dark"] .reason,
+[data-theme="dark"] .description,
+[data-theme="dark"] .evidence-row p,
+[data-theme="dark"] .watchout {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .evidence-row span {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+[data-theme="dark"] .card-evidence,
+[data-theme="dark"] .answer-evidence {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .hero-evidence,
+[data-theme="dark"] .answer-evidence {
+  border-left-color: var(--card-border);
+}
+
+[data-theme="dark"] .watchout {
+  background: rgba(224, 173, 60, 0.12);
+  border-left-color: var(--amber);
+}
+
+[data-theme="dark"] .watchout strong {
+  color: #f3cd7a;
+}
+
+/* Dark theme — source-check / source-passport rows (data-trust labels like
+   "seed", "Catalog"). Base + tone variants use light bgs (#fff/#f4fbf6/
+   #fffaf1) with dark label text and had no dark override. */
+[data-theme="dark"] .source-check,
+[data-theme="dark"] .source-check.tone-good,
+[data-theme="dark"] .source-check.tone-warn,
+[data-theme="dark"] .source-check.tone-neutral {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .source-check small,
+[data-theme="dark"] .source-check strong {
+  color: var(--text-mid);
+}
+
+/* Dark theme — answer agenda row labels/detail (light #f1f5f9 label pill +
+   dark #475569 detail text, no dark override → light-on-light / dark-on-dark). */
+[data-theme="dark"] .answer-agenda-row > span {
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .answer-agenda-row p {
+  color: var(--text-mid);
+}
+
+/* Dark theme — remaining recommendation/wishlist copy with hardcoded dark text
+   (.deal-reason #334155) and the .ai-enrichment near-white (#f8fbff) panel. */
+[data-theme="dark"] .deal-reason {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .ai-enrichment {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .ai-enrichment p,
+[data-theme="dark"] .ai-enrichment span {
+  color: var(--text-mid);
+}
+
+/* Dark theme — final tail: surfaces with light solid backgrounds that more
+   specific rules kept light in dark mode (caught by the dark light-bg gate). */
+[data-theme="dark"] .visual-catalog-search input[type="search"] {
+  background: var(--surface);
+  border-color: var(--card-border);
+  color: var(--ink);
+}
+
+[data-theme="dark"] .tabs {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .rank-forecast span {
+  background: var(--card-bg-soft);
+}
+
+[data-theme="dark"] .learning-row.negative .learning-effect {
+  background: var(--card-bg-soft);
+}
+
+/* Dark theme — sidebar onboarding/taste components (swipe atom chips,
+   quick-reaction selected states, region toggle, taste-gate insight, counts)
+   with hardcoded light tint/white backgrounds. */
+[data-theme="dark"] .quick-swipe-atom-row span.is-needed {
+  background: var(--accent-bg);
+  color: var(--accent-text);
+}
+
+[data-theme="dark"] .quick-swipe-atom-row span.is-conflict {
+  background: rgba(224, 173, 60, 0.16);
+  color: #f3cd7a;
+}
+
+[data-theme="dark"] .quick-reactions button.is-selected {
+  background: rgba(47, 192, 127, 0.16);
+  color: #86e8b6;
+  border-color: rgba(47, 192, 127, 0.4);
+}
+
+[data-theme="dark"] .quick-reactions button[data-quick-reaction="not_for_me"].is-selected {
+  background: rgba(240, 96, 138, 0.16);
+  color: #f3a3bd;
+  border-color: rgba(240, 96, 138, 0.4);
+}
+
+[data-theme="dark"] .segmented {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .taste-gate-insight {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+/* Dark theme — quick-swipe progress meters (Profile / first-hypothesis /
+   sharper-profile cards in the onboarding sidebar) had white backgrounds. */
+[data-theme="dark"] .quick-swipe-meters > div {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+/* #liked-count is a .section-heading span but a later rule kept it white in
+   dark; pin it by id. */
+[data-theme="dark"] #liked-count {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+/* taste-gate confidence chip (.taste-gate > span) had a white background. */
+[data-theme="dark"] .taste-gate > span {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+  color: var(--text-mid);
+}
+
+/* Dark theme — dev-health code snippets kept a dark-blue text color (#173f9a)
+   on the now-dark code surface; lighten it for readability. */
+[data-theme="dark"] .dev-health-row code {
+  color: var(--blue-bright);
+}

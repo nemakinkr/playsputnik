@@ -28,20 +28,25 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v56 (cache-first static / network-first data), **disabled on
-  localhost**; bump `CACHE_VERSION` in sw.js when shipping app.js/styles.css.
+- Service worker v58 (cache-first static assets / network-first navigation and
+  data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
+  runtime code or styles.
 
 ## Current Prototype
 
-- Static app, no build step: `index.html` + `styles.css` + `app.js` (~6.8k
-  lines) + 30 ordered runtime entries in `src/module-manifest.js`.
-  A linear Promise-based boot loader replaces the old nested script callback
-  chain. Comparison selection and the rate-later queue live in the pure
-  `app-decisions.js` domain module instead of the UI composition root.
+- Static app, no build step: `index.html` + four files in `styles/` + `app.js`
+  (~6.7k lines) + 31 runtime entries in `src/module-manifest.js`.
+  Runtime modules load through six dependency phases, parallel inside each
+  phase. A visible boot overlay blocks interaction until handlers are ready.
+  Comparison selection and the rate-later queue live in `app-decisions.js`;
+  large game-detail markup lives in `app-detail-view.js` instead of the UI
+  composition root.
   The same manifest now drives browser boot and Service Worker precaching.
   Persisted profiles carry a schema version and pass through deterministic
   migrations before hydration. `ARCHITECTURE.md` is generated from the
   manifest and gives agents a compact change-routing map.
+  `release-upgrade-test.mjs` protects mixed old-shell/new-code releases, while
+  Service Worker navigations are network-first to avoid stale HTML shells.
 - Product areas: Today, Library, Discover, Wishlist, Taste, Deals, Data, Stats.
 - Localization: EN/RU engine, complete settings sidebar, Today metrics/sample/
   time controls, and the main "what to play tonight" answer shell with
@@ -219,8 +224,8 @@ runtime errors and desktop overflow.
 - Never claim live prices/Plus without per-record source + freshness.
 - validate-data reports 80 honest price-gap issues (delisted/edge-case games
   missing some regional prices), 0 critical catalog issues — expected.
-- Dark-mode overrides are suffix-selector passes at the end of styles.css —
-  check new components in dark mode.
+- Dark-mode overrides live in `styles/themes.css`; check new components in
+  dark mode.
 
 ## Next Recommended Task
 

@@ -126,6 +126,9 @@ if (!window.PlaySputnikWishlist) {
 if (!window.PlaySputnikDetail) {
   throw new Error("PlaySputnikDetail must load before app.js");
 }
+if (!window.PlaySputnikDetailView) {
+  throw new Error("PlaySputnikDetailView must load before app.js");
+}
 if (!window.PlaySputnikOnboarding) {
   throw new Error("PlaySputnikOnboarding must load before app.js");
 }
@@ -4533,6 +4536,11 @@ function detailAttr(value) {
     .replace(/</g, "&lt;");
 }
 
+const {
+  detailHeroHtml,
+  detailBodyHtml,
+} = window.PlaySputnikDetailView.createDetailViewTools({ detailAttr });
+
 function applyDetailState(game, userState) {
   if (game.searchResult && !canonicalSearchResultSeed(game.searchResult)) {
     applySearchResultState(game.searchResult, userState);
@@ -4913,186 +4921,81 @@ function renderGameDetail(shouldFocus = false) {
   els.gameDetailVisual.replaceChildren();
   // The fit tier already appears as a badge in detailHeroBadgesHtml; don't also
   // render it as a floating eyebrow (it duplicated the same text in the hero).
-  els.gameDetailVisual.innerHTML = `
-    <strong>${game.title}</strong>
-    ${detailHeroBadgesHtml(game, { forecast, valueCard, move: primaryMove })}
-  `;
+  els.gameDetailVisual.innerHTML = detailHeroHtml(
+    game,
+    detailHeroBadgesHtml(game, { forecast, valueCard, move: primaryMove }),
+  );
   applyCoverVisual(els.gameDetailVisual, game);
   renderCoverSourceInto(els.gameDetailCoverSource, game);
-  els.gameDetailBody.innerHTML = `
-    <section class="game-detail-status" aria-label="${t("narrative.detail.stateSummaryAria")}">
-      ${statusCards.map((item) => `
-        <div class="detail-status-card tone-${item.tone}">
-          <span>${item.label}</span>
-          <strong>${item.value}</strong>
-          ${item.detail ? `<small>${item.detail}</small>` : ""}
-        </div>
-      `).join("")}
-    </section>
-    ${editionNoteHtml(game)}
-    ${detailCockpitHtml(game, { move: primaryMove, forecast, evidence, watchout, valueCard })}
-    <section class="game-detail-section detail-decision-copy">
-      <h3>${t("narrative.detail.whyPick")}</h3>
-      <p>${description}</p>
-      <p><strong>${t("narrative.detail.sameLogic")}:</strong> ${rationale.detail}</p>
-      <p><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
-    </section>
-    ${detailTasteFitHtml(game, evidence)}
-    ${(() => {
-      const userGame = explicitUserGame(game.title);
-      if (!isAmnestiedUserGame(userGame)) return "";
-      const meta = normalizeBacklogAmnestyMeta(userGame.amnesty);
-      return `<section class="game-detail-section game-detail-amnesty-restore">
-        <h3>${t("narrative.detail.amnesty")}</h3>
-        <p>${t("narrative.detail.amnestyDetail", { count: meta.skips })}</p>
-        <div class="amnesty-actions amnesty-actions--inline">
-          <button data-amnesty-restore type="button">${t("narrative.detail.restoreWishlist")}</button>
-        </div>
-      </section>`;
-    })()}
-    ${valueCard ? `
-    <section class="game-detail-section game-detail-value">
-      <h3>${t("narrative.detail.valueTitle")}</h3>
-      <div class="value-cards">
-        ${valueCard.criticScore != null ? `
-          <div class="value-chip band-${valueCard.criticScoreBand}">
-            <span>${t("narrative.detail.critic")}</span>
-            <strong>${valueCard.criticScoreLabel}</strong>
-          </div>` : ""}
-        ${valueCard.hltbHours != null ? `
-          <div class="value-chip">
-            <span>${t("narrative.detail.length")}</span>
-            <strong>${valueCard.hltbHoursLabel}</strong>
-          </div>` : ""}
-        ${valueCard.valueScore != null ? `
-          <div class="value-chip band-${valueCard.valueScoreBand}">
-            <span>${t("narrative.detail.valueScore")}</span>
-            <strong>${valueCard.valueScore} · ${valueCard.valueScoreLabel}</strong>
-          </div>` : ""}
-        ${valueCard.progress != null ? `
-          <div class="value-chip">
-            <span>${t("narrative.detail.progressValue")}</span>
-            <strong>${valueCard.progress.label} (${valueCard.progress.pct}%)</strong>
-          </div>` : ""}
-        ${valueCard.roi?.perHourLabel != null ? `
-          <div class="value-chip">
-            <span>${t("narrative.detail.costPerHour")}</span>
-            <strong>${valueCard.roi.perHourLabel} · ${valueCard.roi.verdict}</strong>
-          </div>` : ""}
-        ${(() => {
-          const region = state.activeRegion;
-          const snap = priceSnapshots.find((s) => s.title === game.title && s.region === region);
-          const hist = priceHistory?.[game.title]?.[region];
-          const subMeta = game.subscriptionMeta?.[region];
-          const inPlusList = (game.psPlus || []).includes(region);
-          const plusHtml = inPlusList
-            ? `<div class="value-chip value-chip--plus"><span>PS Plus ${subMeta?.tier || "Extra"}</span><strong>${t("narrative.detail.included")}</strong></div>`
-            : "";
-          if (!snap || snap.price == null) return plusHtml;
-          const spark = hist?.length >= 2 ? priceSparkline(game.title, region, { width: 64, height: 24, color: "var(--teal)" }) : "";
-          const storeLink = snap.storeUrl ? ` <a class="detail-store-link" href="${snap.storeUrl}" target="_blank" rel="noopener">PS Store ↗</a>` : "";
-          const discountBadge = snap.discount > 0 ? ` <span class="detail-discount-badge">-${snap.discount}%</span>` : "";
-          return `${plusHtml}
-          <div class="value-chip value-chip--price">
-            <span>${t("narrative.detail.regionPriceLabel", { region })}${discountBadge}</span>
-            <strong>${snap.currency} ${snap.price.toFixed(2)}${storeLink}</strong>
-            ${spark}
-          </div>`;
-        })()}
-      </div>
-    </section>` : ""}
-    ${(() => {
-      const control = priceWatchControlHtml(game, { context: "detail" });
-      if (!control) return "";
-      return `<section class="game-detail-section game-detail-price-alert">
-        <h3>${t("narrative.detail.priceAlert")}</h3>
-        ${control}
-      </section>`;
-    })()}
-    <section class="game-detail-section detail-source-trust" data-detail-source-trust>
-      <h3>${t("narrative.detail.dataTrust")}</h3>
-      <div class="detail-source-grid">
-        ${trustRows.map((row) => `
-          <div class="detail-source-row tone-${row.tone}">
-            <span>${row.label}</span>
-            <strong>${row.value}</strong>
-            <small>${row.detail}</small>
-          </div>
-        `).join("")}
-      </div>
-      <div class="facts">${facts.map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`).join("")}</div>
-      ${passport}
-    </section>
-    <section class="game-detail-section game-detail-ai" id="detail-ai-section" ${cachedAiExplanation ? "" : "hidden"}>
-      <h3>${t("narrative.ai.detailTitle")}</h3>
-      <div id="detail-ai-body" class="detail-ai-body" aria-live="polite">${cachedAiExplanation
-        ? `<p data-ai-detail-copy></p>`
-        : `<p class="detail-ai-placeholder">${t("narrative.ai.detailPlaceholder")}</p>`}</div>
-      <button class="secondary-action detail-ai-btn" id="detail-ai-btn" type="button">${t("narrative.ai.detailButton")}</button>
-    </section>
-    ${(() => {
-      const similar = findSimilarGames(game);
-      if (!similar.length) return "";
-      const cards = similar.map(({ game: g, shared }) => `
-        <button class="similar-game-card" data-similar-title="${g.title}" type="button">
-          <strong>${g.title}</strong>
-          <span>${shared.slice(0, 3).join(" · ")}</span>
-        </button>`).join("");
-      return `<section class="game-detail-section">
-        <h3>${t("narrative.detail.similar")}</h3>
-        <div class="similar-games-list">${cards}</div>
-      </section>`;
-    })()}
-    <section class="game-detail-section">
-      <h3>${t("narrative.detail.actions")}</h3>
-      <div class="game-detail-actions">
-        <button class="${detailActionClass(game, "saved")}" data-detail-state="saved" type="button">${t("narrative.detail.wishlist")}</button>
-        <button class="${detailActionClass(game, "playing")}" data-detail-state="playing" type="button">${t("narrative.detail.actionPlay")}</button>
-        <button class="${detailActionClass(game, "owned")}" data-detail-state="owned" type="button">${t("narrative.detail.actionOwned")}</button>
-        <button class="${detailActionClass(game, "subscription")}" data-detail-state="subscription" type="button">${t("narrative.detail.actionPlus")}</button>
-        <button class="${detailActionClass(game, "owned_forever")}" data-detail-state="owned_forever" type="button">${t("narrative.detail.actionBought")}</button>
-        <button class="${detailActionClass(game, "completed")}" data-detail-state="completed" type="button">${t("narrative.detail.actionDone")}</button>
-        <button class="${detailActionClass(game, "hidden")}" data-detail-state="hidden" type="button">${t("narrative.detail.actionHide")}</button>
-        <button class="${isTitleQueued(game.title) ? "is-selected" : ""}" data-detail-rate-later type="button">${isTitleQueued(game.title) ? t("discover.actionRateQueued") : t("discover.actionRateLater")}</button>
-        <button data-detail-compare type="button">${t("discover.actionCompare")}</button>
-      </div>
-    </section>
-    ${(() => {
-      const userGame = explicitUserGame(game.title);
-      const currentSputniks = typeof userGame?.rating === "number" ? Math.round(userGame.rating / 20) : 0;
-      const sputnikSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13" rx="9" ry="4.2" transform="rotate(-24 12 13)" fill="none" stroke="currentColor" stroke-width="1.7" opacity="0.55"/><circle cx="12" cy="13" r="4.4" fill="currentColor"/><circle cx="19.2" cy="8.6" r="1.9" fill="currentColor"/></svg>`;
-      return `<section class="game-detail-section">
-        <h3>${t("narrative.detail.yourRating")}</h3>
-        <div class="sputnik-rating" role="radiogroup" aria-label="${t("narrative.detail.rateAria", { title: game.title })}">
-          ${[1, 2, 3, 4, 5].map((n) => `
-            <button class="sputnik-btn ${currentSputniks >= n ? "is-filled" : ""}" data-rate-sputniks="${n}"
-              type="button" role="radio" aria-checked="${currentSputniks === n}" aria-label="${t("narrative.detail.ratingButtonAria", { count: n })}">
-              ${sputnikSvg}
-            </button>`).join("")}
-          <span class="sputnik-rating-label">${currentSputniks
-            ? t("narrative.detail.ratingKnown", { count: currentSputniks })
-            : t("narrative.detail.ratingEmpty")}</span>
-        </div>
-      </section>`;
-    })()}
-    ${(() => {
-      const region = state.activeRegion;
-      const snap = priceSnapshots.find((s) => s.title === game.title && s.region === region);
-      const chunk = gameChunkProfile(game);
-      const links = [
-        snap?.storeUrl ? { href: snap.storeUrl, label: "PS Store", kind: "store" } : null,
-        game.coverMeta?.sourceUrl ? { href: game.coverMeta.sourceUrl, label: t("narrative.detail.gameInfoRawg"), kind: "info" } : null,
-        { href: `https://howlongtobeat.com/?q=${encodeURIComponent(game.title)}`, label: "HowLongToBeat", kind: "info" },
-      ].filter(Boolean);
-      return `<section class="game-detail-section">
-        <h3>${t("narrative.detail.getIt")}</h3>
-        <p class="detail-chunk-note">${t("narrative.detail.naturalSession", { chunk: chunk.label, minutes: chunk.minutes })}</p>
-        <div class="detail-get-links">
-          ${links.map((l) => `<a class="detail-get-link detail-get-link--${l.kind}" href="${l.href}" target="_blank" rel="noopener noreferrer">${l.label} ↗</a>`).join("")}
-        </div>
-      </section>`;
-    })()}
-  `;
+
+  const userGame = explicitUserGame(game.title);
+  const amnesty = isAmnestiedUserGame(userGame)
+    ? normalizeBacklogAmnestyMeta(userGame.amnesty)
+    : null;
+  const region = state.activeRegion;
+  const snap = priceSnapshots.find((item) => item.title === game.title && item.region === region);
+  const history = priceHistory?.[game.title]?.[region];
+  const subMeta = game.subscriptionMeta?.[region];
+  const inPlusList = (game.psPlus || []).includes(region);
+  const plusHtml = inPlusList
+    ? `<div class="value-chip value-chip--plus"><span>PS Plus ${subMeta?.tier || "Extra"}</span><strong>${t("narrative.detail.included")}</strong></div>`
+    : "";
+  const market = snap?.price != null
+    ? `${plusHtml}<div class="value-chip value-chip--price">
+        <span>${t("narrative.detail.regionPriceLabel", { region })}${snap.discount > 0 ? ` <span class="detail-discount-badge">-${snap.discount}%</span>` : ""}</span>
+        <strong>${snap.currency} ${snap.price.toFixed(2)}${snap.storeUrl ? ` <a class="detail-store-link" href="${snap.storeUrl}" target="_blank" rel="noopener">PS Store ↗</a>` : ""}</strong>
+        ${history?.length >= 2 ? priceSparkline(game.title, region, { width: 64, height: 24, color: "var(--teal)" }) : ""}
+      </div>`
+    : plusHtml;
+  const priceWatch = priceWatchControlHtml(game, { context: "detail" });
+  const similar = findSimilarGames(game);
+  const currentSputniks = typeof userGame?.rating === "number" ? Math.round(userGame.rating / 20) : 0;
+  const sputnikSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="13" rx="9" ry="4.2" transform="rotate(-24 12 13)" fill="none" stroke="currentColor" stroke-width="1.7" opacity="0.55"/><circle cx="12" cy="13" r="4.4" fill="currentColor"/><circle cx="19.2" cy="8.6" r="1.9" fill="currentColor"/></svg>`;
+  const chunk = gameChunkProfile(game);
+  const links = [
+    snap?.storeUrl ? { href: snap.storeUrl, label: "PS Store", kind: "store" } : null,
+    game.coverMeta?.sourceUrl ? { href: game.coverMeta.sourceUrl, label: t("narrative.detail.gameInfoRawg"), kind: "info" } : null,
+    { href: `https://howlongtobeat.com/?q=${encodeURIComponent(game.title)}`, label: "HowLongToBeat", kind: "info" },
+  ].filter(Boolean);
+  const actions = [
+    ["saved", t("narrative.detail.wishlist")],
+    ["playing", t("narrative.detail.actionPlay")],
+    ["owned", t("narrative.detail.actionOwned")],
+    ["subscription", t("narrative.detail.actionPlus")],
+    ["owned_forever", t("narrative.detail.actionBought")],
+    ["completed", t("narrative.detail.actionDone")],
+    ["hidden", t("narrative.detail.actionHide")],
+  ].map(([actionState, label]) => ({
+    state: actionState,
+    label,
+    className: detailActionClass(game, actionState),
+  }));
+
+  els.gameDetailBody.innerHTML = detailBodyHtml({
+    game,
+    statusCards,
+    editionNote: editionNoteHtml(game),
+    cockpit: detailCockpitHtml(game, { move: primaryMove, forecast, evidence, watchout, valueCard }),
+    description,
+    rationale,
+    watchout,
+    tasteFit: detailTasteFitHtml(game, evidence),
+    amnesty,
+    valueCard,
+    market,
+    priceWatch,
+    trustRows,
+    facts,
+    passport,
+    cachedAiExplanation,
+    similar,
+    actions,
+    queued: isTitleQueued(game.title),
+    currentSputniks,
+    sputnikSvg,
+    chunk,
+    links,
+  });
   // Wire "Why this game?" AI explain button
   const aiBtn = els.gameDetailBody.querySelector("#detail-ai-btn");
   const aiBody = els.gameDetailBody.querySelector("#detail-ai-body");
@@ -6765,18 +6668,23 @@ function showDataErrorToast(message) {
   setTimeout(() => els.dataErrorToast?.classList.add("is-hidden"), 8000);
 }
 
+window.__playsputnikBoot = {
+  ...(window.__playsputnikBoot || {}),
+  appReadyAt: new Date().toISOString(),
+};
+document.body.classList.remove("is-app-booting");
+document.body.setAttribute("aria-busy", "false");
+document.querySelector("#app-boot-overlay")?.setAttribute("hidden", "");
+
 if (
   typeof window !== "undefined"
   && (window.PLAYSPUTNIK_SKIP_INIT || new URLSearchParams(window.location.search).has("skipInit"))
 ) {
   window.__playsputnikBoot = {
+    ...(window.__playsputnikBoot || {}),
     skippedInit: true,
     appLoadedAt: new Date().toISOString(),
   };
 } else {
-  window.__playsputnikBoot = {
-    ...(window.__playsputnikBoot || {}),
-    appReadyAt: new Date().toISOString(),
-  };
   init();
 }

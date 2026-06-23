@@ -705,6 +705,8 @@
     system: {
       skip: "Skip to recommendations",
       errorTitle: "Couldn't load catalog", errorMessage: "Something went wrong while loading game data.",
+      bootTitle: "Preparing your companion", bootModules: "Loading game intelligence…",
+      bootProfile: "Loading your game memory…", bootApp: "Building tonight's recommendation…",
       retry: "Try again", offlineAction: "Work offline", technical: "Technical details",
       dismiss: "Dismiss", offline: "Offline — showing cached data",
       update: "A new version is available.", reload: "Reload",

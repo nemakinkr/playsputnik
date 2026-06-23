@@ -19,6 +19,7 @@ const [
   appVisualSource,
   appWishlistSource,
   appDetailSource,
+  appDetailViewSource,
   appOnboardingSource,
   appEntrySource,
   appCoverSource,
@@ -33,7 +34,11 @@ const [
   moduleManifestSource,
   appSource,
   html,
-  css,
+  cssCompatSource,
+  foundationCss,
+  componentsCss,
+  polishCss,
+  themesCss,
   swSource,
   catalog,
   priceSnapshots,
@@ -93,6 +98,7 @@ const [
   readFile(new URL("src/app-visual.js", ROOT), "utf8"),
   readFile(new URL("src/app-wishlist.js", ROOT), "utf8"),
   readFile(new URL("src/app-detail.js", ROOT), "utf8"),
+  readFile(new URL("src/app-detail-view.js", ROOT), "utf8"),
   readFile(new URL("src/app-onboarding.js", ROOT), "utf8"),
   readFile(new URL("src/app-entry.js", ROOT), "utf8"),
   readFile(new URL("src/app-cover.js", ROOT), "utf8"),
@@ -108,6 +114,10 @@ const [
   readFile(new URL("app.js", ROOT), "utf8"),
   readFile(new URL("index.html", ROOT), "utf8"),
   readFile(new URL("styles.css", ROOT), "utf8"),
+  readFile(new URL("styles/foundation.css", ROOT), "utf8"),
+  readFile(new URL("styles/components.css", ROOT), "utf8"),
+  readFile(new URL("styles/polish.css", ROOT), "utf8"),
+  readFile(new URL("styles/themes.css", ROOT), "utf8"),
   readFile(new URL("sw.js", ROOT), "utf8"),
   readJson("data/games.json"),
   readJson("data/price-snapshots.json"),
@@ -154,8 +164,9 @@ const [
 
 // User-facing copy moved into the i18n catalogs; checks below look here too.
 const i18nEnSource = await readFile(new URL("src/i18n-en.js", ROOT), "utf8");
+const css = `${foundationCss}\n${componentsCss}\n${polishCss}\n${themesCss}`;
 
-const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateMigrationsSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
+const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateMigrationsSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appDetailViewSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
 const appLoadSource = `${html}\n${moduleManifestSource}`;
 
 const USER_STATE_LABELS = {
@@ -1287,7 +1298,7 @@ function checkSelectors() {
   assert(/id="rating-queue-list"/.test(html) && /function renderRatingQueue/.test(appSource), "Taste should expose a separate rate-later queue");
   assert(/data-search-rate-later/.test(appSource), "Search results should feed the rate-later queue");
   assert(/ratingQueue/.test(appStateSource), "Rate-later queue should persist in profile state");
-  assert(/const modulePaths = window\.PlaySputnikModules\.map/.test(html) && /for \(const path of modulePaths\) await loadScript\(path\)/.test(html), "App modules should boot through the manifest-backed linear loader");
+  assert(/for \(const phase of window\.PlaySputnikModulePhases\)/.test(html) && /Promise\.all\(phase\.map/.test(html), "App modules should boot through dependency phases with parallel loading");
   assert(/src\/app-decisions\.js/.test(appLoadSource), "Decision workflow module should load before app.js");
   assert(/src\/module-manifest\.js/.test(html), "HTML should load the shared module manifest");
   assert(/importScripts\("\.\/src\/module-manifest\.js"\)/.test(swSource), "Service Worker should consume the shared module manifest");
@@ -1459,8 +1470,11 @@ function checkSelectors() {
   assert(/function openGameDetail/.test(appSource), "Game detail opener is missing");
   assert(/function renderGameDetail/.test(appSource), "Game detail renderer is missing");
   assert(/function detailPrimaryMove/.test(appSource), "Game detail primary move helper is missing");
-  assert(/function detailCockpitHtml/.test(appSource), "Game detail cockpit renderer is missing");
-  assert(/narrative\.detail\.whyNow/.test(appSource) && /narrative\.detail\.sameLogic/.test(appSource), "Detail cockpit should reuse the shared decision rationale");
+  assert(/function detailCockpitHtml/.test(appSource), "Game detail cockpit model renderer is missing");
+  assert(/function detailBodyHtml/.test(appDetailViewSource), "Game detail markup should live in app-detail-view.js");
+  assert(/detailBodyHtml\(\{/.test(appSource), "Game detail orchestration should delegate markup to the view module");
+  assert(!/class="game-detail-status"/.test(appSource), "Large game-detail markup should stay out of app.js");
+  assert(/narrative\.detail\.whyNow/.test(appSource) && /narrative\.detail\.sameLogic/.test(appDetailViewSource), "Detail cockpit should reuse the shared decision rationale");
   assert(/function detailTasteFitHtml/.test(appSource), "Game detail taste fit renderer is missing");
   assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
   assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
@@ -1470,12 +1484,14 @@ function checkSelectors() {
   assert(/data-detail-primary-action/.test(appSource), "Game detail primary CTA is missing");
   assert(/data-primary-kind/.test(appSource), "Game detail primary CTA should expose its action kind");
   assert(/data-detail-taste-fit/.test(appSource), "Game detail taste fit slot is missing");
-  assert(/data-detail-source-trust/.test(appSource), "Game detail source trust slot is missing");
-  assert(/detail-atom-signal/.test(appSource + css), "Game detail atom signal chips are missing");
-  assert(/data-detail-state="subscription"/.test(appSource), "Game detail should support subscription-state actions");
-  assert(/data-detail-state="owned_forever"/.test(appSource), "Game detail should support bought-state actions");
+  assert(/data-detail-source-trust/.test(appDetailViewSource), "Game detail source trust slot is missing");
+  assert(/detail-atom-signal/.test(appSource + appDetailViewSource + css), "Game detail atom signal chips are missing");
+  assert(/\["subscription", t\("narrative\.detail\.actionPlus"\)\]/.test(appSource), "Game detail should support subscription-state actions");
+  assert(/\["owned_forever", t\("narrative\.detail\.actionBought"\)\]/.test(appSource), "Game detail should support bought-state actions");
   assert(/data-hero-detail/.test(appSource + appCardsSource) && /data-visual-detail/.test(appSource + appVisualSource), "Game detail entry points are missing");
   assert(/game-detail-drawer/.test(css), "Game detail drawer should be styled");
+  assert(/styles\/foundation\.css/.test(html) && /styles\/themes\.css/.test(html), "HTML should load split CSS directly");
+  assert(/@import url\("styles\/foundation\.css"\)/.test(cssCompatSource), "styles.css should remain a cached-shell compatibility entrypoint");
   assert(/visual-catalog-smoke/.test(visualCatalogSmokeSource), "Visual catalog smoke test is missing");
   assert(/data-visual-shelf="catalog"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify shelf switching");
   assert(/data-visual-state="playing"/.test(visualCatalogSmokeSource), "Visual catalog smoke should verify quick Play actions");
