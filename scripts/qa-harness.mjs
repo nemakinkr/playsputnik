@@ -1269,6 +1269,8 @@ function checkSelectors() {
   assert(/function companionComparison/.test(appAnswerSource), "Companion answer should compare the primary pick with its alternative");
   assert(/class="answer-comparison"/.test(appSource), "Companion comparison renderer is missing");
   assert(/id="game-comparison-result"/.test(html) && /function renderGameComparison/.test(appSource), "Discover should compare any two selected games");
+  assert(/comparePriceLabel/.test(appAnswerSource) && /compareTimeDetail/.test(appAnswerSource), "Game comparison should include price and time tradeoffs");
+  assert(/data-comparison-cover/.test(appSource) && /data-rating-queue-cover/.test(appSource), "Comparison and rating queue should render cover visuals");
   assert(/data-search-compare/.test(appSource), "Search results should feed the manual comparison");
   assert(/id="rating-queue-list"/.test(html) && /function renderRatingQueue/.test(appSource), "Taste should expose a separate rate-later queue");
   assert(/data-search-rate-later/.test(appSource), "Search results should feed the rate-later queue");

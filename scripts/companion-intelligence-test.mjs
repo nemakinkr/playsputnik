@@ -122,16 +122,23 @@ const answerTools = context.window.PlaySputnikAnswer.createAnswerTools({
   getState: () => ({ activeRegion: "US", session: "short" }),
   getIsAlreadyAvailable: (game) => game.title === "Primary",
   personalEvidence: (game) => ({ summary: `${game.title} taste evidence` }),
+  personalRankForecast: (game) => ({ label: `${game.title} fit forecast` }),
+  personalRatingForecast: (game) => ({ known: false, calibrated: true, rating: game.title === "Primary" ? 86 : 72 }),
   watchOutCopy: (game) => ({ detail: `${game.title} risk` }),
+  priceStatus: () => ({ canConfirm: true }),
+  formatPrice: (game) => `$${game.prices?.US || 0}`,
+  gameChunkProfile: (game) => ({ minutes: game.session === "short" ? 40 : 90, label: `${game.session} chunk` }),
   titleMatches: (a, b) => key(a) === key(b),
 });
 const comparison = answerTools.companionComparison(
-  { title: "Primary", score: 90, session: "short", adultTimeFit: "weeknight", psPlus: [] },
-  { title: "Alternative", score: 75, session: "long", adultTimeFit: "weekend", psPlus: [] },
+  { title: "Primary", score: 90, session: "short", adultTimeFit: "weeknight", psPlus: [], prices: { US: 20 } },
+  { title: "Alternative", score: 75, session: "long", adultTimeFit: "weekend", psPlus: [], prices: { US: 40 } },
 );
 assert.equal(comparison.primary, "Primary");
 assert.equal(comparison.alternative, "Alternative");
-assert.equal(comparison.rows.length, 3);
+assert.equal(comparison.rows.length, 6);
 assert.match(comparison.summary, /compareSummaryAccess/, "available primary should win on access");
+assert.match(comparison.rows[2].primary, /86/, "comparison should expose calibrated personal rating");
+assert.match(comparison.rows[3].alternative, /90/, "comparison should expose natural session time");
 
 console.log("✅ companion intelligence classifies fit and calibrates forecasts with held-out personal ratings");

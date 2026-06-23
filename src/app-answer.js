@@ -47,10 +47,12 @@
     watchOutCopy,
     personalEvidence,
     personalRankForecast,
+    personalRatingForecast,
     decisionRationale,
     answerAccessLabel,
     priceStatus,
     formatPrice,
+    gameChunkProfile,
     // from state module
     effectiveGameState,
     // from search module
@@ -303,12 +305,32 @@
 
     function companionComparison(primary, alternative) {
       const state = getState();
+      const region = state.activeRegion;
       const primaryAccessible = isAnswerAccessible(primary);
       const alternativeAccessible = isAnswerAccessible(alternative);
       const primarySession = primary.session === state.session || primary.adultTimeFit === "weeknight";
       const alternativeSession = alternative.session === state.session || alternative.adultTimeFit === "weeknight";
       const primaryRisk = watchOutCopy(primary);
       const alternativeRisk = watchOutCopy(alternative);
+      const primaryChunk = gameChunkProfile(primary);
+      const alternativeChunk = gameChunkProfile(alternative);
+      const primaryRating = personalRatingForecast(primary);
+      const alternativeRating = personalRatingForecast(alternative);
+      const comparisonForecast = (game, forecast) => {
+        if (forecast.known) return t("narrative.answer.compareRatingKnown", { rating: forecast.rating });
+        if (forecast.calibrated && Number.isFinite(forecast.rating)) {
+          return t("narrative.answer.compareRatingForecast", { rating: forecast.rating });
+        }
+        return personalRankForecast(game).label;
+      };
+      const comparisonPrice = (game, accessible) => {
+        if (accessible) return t("narrative.answer.compareAvailable");
+        if (typeof game.prices?.[region] !== "number") return t("narrative.answer.comparePriceMissing");
+        const status = priceStatus(game, region);
+        return status.canConfirm
+          ? t("narrative.answer.comparePrice", { price: formatPrice(game, region) })
+          : t("narrative.answer.comparePriceVerify", { price: formatPrice(game, region) });
+      };
       const scoreLead = Math.max(0, Math.round((primary.score || 0) - (alternative.score || 0)));
       const reason = primaryAccessible && !alternativeAccessible
         ? "Access"
@@ -339,6 +361,21 @@
             label: t("narrative.answer.compareTonight"),
             primary: primarySession ? t("narrative.answer.compareSessionFit") : t("narrative.answer.compareSessionTradeoff"),
             alternative: alternativeSession ? t("narrative.answer.compareSessionFit") : t("narrative.answer.compareSessionTradeoff"),
+          },
+          {
+            label: t("narrative.answer.compareForecast"),
+            primary: comparisonForecast(primary, primaryRating),
+            alternative: comparisonForecast(alternative, alternativeRating),
+          },
+          {
+            label: t("narrative.answer.compareTime"),
+            primary: t("narrative.answer.compareTimeDetail", { minutes: primaryChunk.minutes, chunk: primaryChunk.label }),
+            alternative: t("narrative.answer.compareTimeDetail", { minutes: alternativeChunk.minutes, chunk: alternativeChunk.label }),
+          },
+          {
+            label: t("narrative.answer.comparePriceLabel", { region }),
+            primary: comparisonPrice(primary, primaryAccessible),
+            alternative: comparisonPrice(alternative, alternativeAccessible),
           },
           {
             label: t("narrative.answer.compareAccessRisk"),

@@ -577,10 +577,12 @@ const {
   watchOutCopy,
   personalEvidence,
   personalRankForecast,
+  personalRatingForecast,
   decisionRationale,
   answerAccessLabel,
   priceStatus,
   formatPrice,
+  gameChunkProfile,
   effectiveGameState,
   titleMatches,
   countValues,
@@ -3345,6 +3347,16 @@ function comparisonCardHtml(comparison) {
   if (!comparison) return "";
   return `
     <section class="answer-comparison" aria-label="${comparison.title}">
+      <div class="comparison-covers">
+        ${[comparison.primary, comparison.alternative].map((title) => `
+          <div class="comparison-cover-card">
+            <div class="comparison-cover" data-comparison-cover="${detailAttr(title)}">
+              <strong>${title}</strong>
+            </div>
+            <small class="comparison-cover-source" data-comparison-cover-source="${detailAttr(title)}"></small>
+          </div>
+        `).join("")}
+      </div>
       <div class="answer-comparison-head">
         <strong>${comparison.title}</strong>
         <p>${comparison.summary}</p>
@@ -3360,6 +3372,16 @@ function comparisonCardHtml(comparison) {
       </div>
     </section>
   `;
+}
+
+function hydrateComparisonCovers(root) {
+  root?.querySelectorAll("[data-comparison-cover]").forEach((element) => {
+    const game = recommendationPool().find((item) => titleMatches(item.title, element.dataset.comparisonCover));
+    if (!game) return;
+    applyCoverVisual(element, game);
+    const source = root.querySelector(`[data-comparison-cover-source="${CSS.escape(element.dataset.comparisonCover)}"]`);
+    renderCoverSourceInto(source, game);
+  });
 }
 
 function renderCompanionAnswer(ranked) {
@@ -3422,6 +3444,7 @@ function renderCompanionAnswer(ranked) {
     </div>
     ${renderUndoStrip("answer-undo")}
   `;
+  hydrateComparisonCovers(els.answerCopy);
   if (aiNarrative) {
     const generated = els.answerCopy.querySelector("[data-ai-companion-copy]");
     if (generated) generated.textContent = aiNarrative;
@@ -3878,9 +3901,11 @@ function renderRatingQueue(ranked) {
     const badge = personalRatingBadge(game);
     row.className = "rating-queue-row";
     row.innerHTML = `
+      <div class="rating-queue-cover" data-rating-queue-cover></div>
       <div>
         <strong>${game.title}</strong>
         <span>${badge?.label || t("taste.ratingQueueNoForecast")}</span>
+        <small class="rating-queue-cover-source"></small>
       </div>
       <div class="rating-queue-actions" aria-label="${t("taste.ratingQueueRateAria", { title: game.title })}">
         ${[1, 2, 3, 4, 5].map((rating) => `<button data-queue-rating="${rating}" type="button">${rating}</button>`).join("")}
@@ -3888,6 +3913,8 @@ function renderRatingQueue(ranked) {
         <button data-queue-remove type="button">${t("taste.ratingQueueRemove")}</button>
       </div>
     `;
+    applyCoverVisual(row.querySelector("[data-rating-queue-cover]"), game);
+    renderCoverSourceInto(row.querySelector(".rating-queue-cover-source"), game);
     row.querySelectorAll("[data-queue-rating]").forEach((button) => {
       button.addEventListener("click", () => {
         setGameRating(game.title, Number(button.dataset.queueRating) * 20);
@@ -4438,6 +4465,7 @@ function renderGameComparison(ranked) {
   const comparison = companionComparison(primary, alternative);
   els.comparisonStatus.textContent = t("discover.compareReady");
   els.comparisonResult.innerHTML = comparisonCardHtml(comparison);
+  hydrateComparisonCovers(els.comparisonResult);
 }
 
 const VISUAL_CATALOG_SHELVES = {
