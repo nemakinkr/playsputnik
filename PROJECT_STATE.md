@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v64 (cache-first static assets / network-first navigation and
+- Service worker v65 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -124,11 +124,12 @@ reviews, catalogs, sale pages, and announcements.
   clean first-run hero now states the no-account / 3-tap /
   useful-before-setup value contract and shows a source-aware diagnostic game
   poster before deeper onboarding.
-- Today: the companion plan now reads as a practical command center with
-  localized play/use-access/watch/buy-later rows, highlighted first action,
-  detail links, and stateful Play/Wishlist CTAs. It can also surface explicit
-  "do not buy now" guardrail commands and backlog-amnesty "let go" commands
-  when those decisions are healthier than another purchase.
+- Today: the companion answer and plan now read as a practical command center
+  with a stronger primary answer surface, localized play/use-access/watch/
+  buy-later rows, highlighted first action, detail links, and stateful
+  Play/Wishlist CTAs. It can also surface explicit "do not buy now" guardrail
+  commands and backlog-amnesty "let go" commands when those decisions are
+  healthier than another purchase.
 - Demo/review mode: a top product-path panel can load a stable filled profile
   with taste reactions, library/wishlist memory, ratings, price targets, and
   search context; the same panel connects Today, Discover, Wishlist, and the
@@ -144,7 +145,8 @@ reviews, catalogs, sale pages, and announcements.
 - **Sputnik ratings 1–5** in the game drawer (stored 20–100 in
   `userGames[key].rating`); feed taste via `rated_1..rated_5` feedback
   events (weights −3..+3).
-- Game drawer: polished decision cockpit, shared "why now" rationale, hero
+- Game drawer: polished decision cockpit, mobile full-screen-feeling detail
+  surface, shared "why now" rationale, hero
   badges for fit/time/value/next move, smart primary CTA, status cards,
   facts, "Get it" links (PS Store/RAWG/HLTB), price sparkline, PS Plus chip,
   polished per-region price alert target, similar games, rating,

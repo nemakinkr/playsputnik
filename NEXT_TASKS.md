@@ -216,6 +216,10 @@ rationale from `app-recommend.js`, so "what to play tonight", the Library next
 action, and the detail cockpit explain the same play-before-buy /
 taste-before-store logic instead of drifting into three separate copies.
 
+Follow-up done: the Today companion answer now has a stronger decision-center
+visual hierarchy, and the mobile game drawer behaves more like a focused game
+screen with a sticky title bar, compact sections, and a clearer primary CTA.
+
 ## Track: Data
 
 ### 6. PS Plus Premium category id

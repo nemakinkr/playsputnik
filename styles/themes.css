@@ -40,6 +40,34 @@
   background: linear-gradient(180deg, var(--card-bg) 0%, #101826 100%);
 }
 
+[data-theme="dark"] .answer-main,
+[data-theme="dark"] .answer-agenda-row,
+[data-theme="dark"] .answer-evidence {
+  background:
+    linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(0, 0, 0, 0) 48%),
+    var(--card-bg);
+  border-color: var(--card-border);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .answer-main p,
+[data-theme="dark"] .answer-narrative p,
+[data-theme="dark"] .answer-agenda-row p,
+[data-theme="dark"] .answer-agenda-row > span {
+  color: var(--text-mid);
+}
+
+[data-theme="dark"] .answer-agenda-row:first-child > span {
+  color: #fff;
+}
+
+[data-theme="dark"] .game-detail-header {
+  background:
+    linear-gradient(180deg, rgba(17, 24, 39, 0.96), rgba(16, 24, 38, 0.92)),
+    var(--card-bg);
+  border-color: var(--card-border);
+}
+
 [data-theme="dark"] .detail-cockpit {
   background:
     linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(0, 0, 0, 0) 44%),

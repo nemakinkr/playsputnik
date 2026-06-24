@@ -450,7 +450,65 @@
 }
 
 .answer-main {
-  padding: 15px;
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(37, 87, 214, 0.24);
+  background:
+    linear-gradient(135deg, rgba(0, 100, 210, 0.1), rgba(255, 255, 255, 0) 46%),
+    var(--card-bg);
+  padding: 18px;
+  box-shadow: 0 16px 44px rgba(15, 23, 42, 0.08);
+}
+
+.answer-main::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--blue);
+  content: "";
+}
+
+.answer-main > strong {
+  max-width: 56ch;
+  font-size: 1.16rem;
+  line-height: 1.18;
+}
+
+.answer-narrative {
+  display: grid;
+  gap: 4px;
+  max-width: 74ch;
+}
+
+.answer-agenda {
+  gap: 9px;
+}
+
+.answer-agenda-row {
+  background: var(--card-bg);
+  box-shadow: var(--shadow-hairline);
+}
+
+.answer-agenda-row:first-child {
+  border-color: rgba(37, 87, 214, 0.25);
+  background:
+    linear-gradient(90deg, rgba(0, 100, 210, 0.08), rgba(255, 255, 255, 0) 52%),
+    var(--card-bg);
+}
+
+.answer-agenda-row:first-child > span {
+  background: var(--blue);
+  color: #fff;
+}
+
+.answer-agenda-row.is-actionable {
+  align-items: center;
+}
+
+.answer-evidence {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0)),
+    var(--card-bg);
 }
 
 .answer-agenda-row,
@@ -580,23 +638,98 @@
   }
 
   .game-detail-drawer {
+    gap: 10px;
     width: 100%;
-    max-height: 92vh;
-    border-radius: 16px 16px 10px 10px;
+    max-height: min(94vh, 860px);
+    border-radius: 18px 18px 0 0;
+    padding: 0 0 14px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .drawer-drag-handle {
     display: block;
+    margin: 10px auto 2px;
+  }
+
+  .game-detail-header {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92)),
+      var(--card-bg);
+    padding: 10px 12px;
+    backdrop-filter: blur(12px);
+  }
+
+  .game-detail-header h2 {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 1.02rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .game-detail-header p:last-child {
+    font-size: 0.72rem;
+  }
+
+  .game-detail-close {
+    min-width: 36px;
+    padding: 0 9px;
   }
 
   .game-detail-visual {
-    min-height: 196px;
+    min-height: 210px;
+    margin: 0 12px;
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .game-detail-cover-source {
+    margin: -3px 12px 0;
+  }
+
+  .game-detail-body {
+    gap: 10px;
+    padding: 0 12px 10px;
+  }
+
+  .game-detail-status {
+    gap: 6px;
+  }
+
+  .detail-status-card {
+    padding: 8px;
+  }
+
+  .detail-cockpit {
+    gap: 10px;
+  }
+
+  .detail-cockpit-head {
+    padding-left: 10px;
+  }
+
+  .detail-primary-cta {
+    width: 100%;
+    min-height: 44px;
   }
 
   .game-detail-actions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .game-detail-section {
+    padding: 10px;
+  }
+
+  .detail-get-links,
+  .game-detail-actions {
+    gap: 6px;
   }
 
   .setup-panel,
@@ -617,7 +750,7 @@
   }
 
   .hero-visual {
-    min-height: 178px;
+    min-height: 152px;
     padding: 14px;
   }
 
@@ -627,7 +760,87 @@
   }
 
   .hero-decision-strip {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .hero-decision-strip div {
+    padding: 7px;
+  }
+
+  .hero-decision-strip span,
+  .hero-decision-strip small {
+    font-size: 0.62rem;
+  }
+
+  .hero-decision-strip strong {
+    font-size: 0.74rem;
+  }
+
+  .hero-decision-strip small {
+    display: none;
+  }
+
+  .hero-body .description,
+  .reason,
+  .watchout {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+  }
+
+  .hero-body .description {
+    -webkit-line-clamp: 2;
+  }
+
+  .reason {
+    -webkit-line-clamp: 2;
+  }
+
+  .watchout {
+    -webkit-line-clamp: 2;
+  }
+
+  .hero-evidence {
+    gap: 5px;
+    padding-left: 7px;
+  }
+
+  .hero-evidence .evidence-row:nth-child(n + 3) {
+    display: none;
+  }
+
+  .hero-evidence .evidence-row {
+    gap: 4px;
+  }
+
+  .hero-evidence .evidence-row p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .hero-card .facts {
+    max-height: 34px;
+    overflow: hidden;
+  }
+
+  .hero-primary-cta small {
+    display: none;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .hero-actions .secondary-action {
+    min-width: 0;
+    min-height: 36px;
+    padding: 0 5px;
+    font-size: 0.68rem;
   }
 
   .surface-header h2,
