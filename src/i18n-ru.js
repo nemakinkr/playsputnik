@@ -1098,7 +1098,7 @@
         titleLibrary: "{title} уже готова к запуску.", titleTaste: "Первый вывод: попробуйте {title}.",
         titleTasteEarly: "Первый тест: попробуйте {title}.",
         detailLibrary: "{parts}. {riskLabel}: {riskDetail}.",
-        detailTasteEarly: "{note}{count} сигналов достаточно для маленькой проверки на вечер, но ещё не для уверенного профиля вкуса. Попробуйте {title} как первую пробу; если не попадёт, пропуск тоже улучшит следующий ответ. {riskLabel}: {riskDetail}.",
+        detailTasteEarly: "{note}Первых сигналов достаточно для маленькой проверки на вечер, но ещё не для уверенного профиля вкуса. Попробуйте {title} как первую пробу; если не попадёт, пропуск тоже улучшит следующий ответ. {riskLabel}: {riskDetail}.",
         detailTaste: "{note}Текущих сигналов достаточно, чтобы перестать листать каталог и проверить одно направление: {title}. Это не окончательный профиль, а первый полезный вывод. {riskLabel}: {riskDetail}.",
         actionAgenda: "План", actionPlay: "Играть", actionWishlist: "В желаемое", actionSkip: "Пропустить", actionQuickFill: "Быстро заполнить",
         firstAnswer: "Первый ответ", proofCurrentPull: "Что привлекает", proofCaution: "Осторожно",

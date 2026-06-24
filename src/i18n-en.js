@@ -1099,7 +1099,7 @@
         titleLibrary: "{title} is already ready.", titleTaste: "First read: try {title}.",
         titleTasteEarly: "First test: try {title}.",
         detailLibrary: "{parts}. {riskLabel}: {riskDetail}.",
-        detailTasteEarly: "{note}{count} signals are enough for a small evening test, not enough for a confident taste profile. Try {title} as the first probe; if it misses, skip it and the next answer gets smarter. {riskLabel}: {riskDetail}.",
+        detailTasteEarly: "{note}The first signals are enough for a small evening test, not enough for a confident taste profile. Try {title} as the first probe; if it misses, skip it and the next answer gets smarter. {riskLabel}: {riskDetail}.",
         detailTaste: "{note}The current signals are enough to stop browsing and test one direction: {title}. This is not the final profile; it is the first useful read. {riskLabel}: {riskDetail}.",
         actionAgenda: "Agenda", actionPlay: "Play", actionWishlist: "Wishlist", actionSkip: "Skip", actionQuickFill: "Quick fill",
         firstAnswer: "First answer", proofCurrentPull: "Current pull", proofCaution: "Caution",
