@@ -2281,6 +2281,23 @@ textarea {
   padding: 10px;
 }
 
+.library-dashboard-card,
+.wishlist-dashboard-card,
+.my-game-row,
+.wishlist-row,
+.game-search-row {
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.library-dashboard-card:hover,
+.wishlist-dashboard-card:hover,
+.my-game-row:hover,
+.wishlist-row:hover,
+.game-search-row:hover {
+  border-color: color-mix(in srgb, var(--blue) 24%, var(--line));
+  box-shadow: var(--shadow-soft);
+}
+
 .library-dashboard-card.tone-play,
 .library-dashboard-card.tone-access,
 .wishlist-dashboard-card.tone-access,
@@ -2451,6 +2468,7 @@ textarea {
 
 .library-bucket.has-items {
   background: #fff;
+  box-shadow: var(--shadow-hairline);
 }
 
 .library-bucket.is-empty {
@@ -3351,6 +3369,7 @@ textarea {
   background: var(--blue);
   color: #fff;
   border-color: var(--blue);
+  box-shadow: 0 8px 20px rgba(0, 100, 210, 0.16);
 }
 
 .my-game-quick-actions button:first-child:hover,
@@ -3637,6 +3656,20 @@ textarea {
 .wishlist-row {
   grid-template-columns: minmax(92px, auto) minmax(0, 1fr) minmax(180px, auto);
   align-items: start;
+  border-left-width: 4px;
+}
+
+.wishlist-row.tone-buy {
+  border-left-color: var(--green);
+}
+
+.wishlist-row.tone-wait,
+.wishlist-row.tone-verify {
+  border-left-color: var(--amber);
+}
+
+.wishlist-row.tone-missing {
+  border-left-color: var(--blue);
 }
 
 .wishlist-decision {
@@ -3686,6 +3719,12 @@ textarea {
 .wishlist-actions button.is-selected {
   border-color: var(--blue);
   background: #eaf0ff;
+  color: #173f9a;
+}
+
+.wishlist-actions button:first-child {
+  border-color: #c8d7ff;
+  background: #eef4ff;
   color: #173f9a;
 }
 
@@ -5172,11 +5211,44 @@ textarea {
   margin-top: 0;
 }
 
+.game-search-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
 .game-search-row strong,
 .search-empty strong {
   display: block;
   color: var(--ink);
   line-height: 1.25;
+}
+
+.search-memory-pill {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--text-mid);
+  padding: 4px 7px;
+  font-size: 0.66rem;
+  font-weight: 950;
+  line-height: 1.1;
+}
+
+.search-memory-pill.tone-saved {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.search-memory-pill.tone-owned,
+.search-memory-pill.tone-access {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: var(--green);
 }
 
 .game-search-row span,
@@ -5233,6 +5305,28 @@ textarea {
   padding: 8px;
 }
 
+.game-search-followup {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 3px;
+  border: 1px solid #c8d7ff;
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(0, 100, 210, 0.08), rgba(255, 255, 255, 0) 56%),
+    var(--card-bg);
+  padding: 8px;
+}
+
+.game-search-followup.tone-owned,
+.game-search-followup.tone-access {
+  border-color: #bbf7d0;
+  border-left-color: var(--green);
+  background: #f0fdf4;
+}
+
+.game-search-followup span,
+.game-search-followup small,
 .game-search-memory span,
 .game-search-memory small {
   color: var(--muted);
@@ -5240,6 +5334,7 @@ textarea {
   line-height: 1.25;
 }
 
+.game-search-followup strong,
 .game-search-memory strong {
   color: var(--ink);
   font-size: 0.84rem;

@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v65 (cache-first static assets / network-first navigation and
+- Service worker v66 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -152,11 +152,11 @@ reviews, catalogs, sale pages, and announcements.
   polished per-region price alert target, similar games, rating,
   swipe-to-close, focus trap.
 - Global search: local/provider/manual results can be added directly to
-  Wishlist, Library, or Plus with an in-row memory confirmation panel; external
-  results keep source passport + cover attribution and avoid fake live
-  price/Plus claims. Saved search results now expose an immediate "Open
-  Wishlist" next step and a small checklist so the add action has visible
-  follow-through: remembered, source kept, next destination.
+  Wishlist, Library, or Plus with an in-row memory confirmation panel and an
+  explicit next-step card; external results keep source passport + cover
+  attribution and avoid fake live price/Plus claims. Saved search results now
+  expose an immediate "Open Wishlist" next step and a small checklist so the add
+  action has visible follow-through: remembered, source kept, next destination.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
 - Mobile navigation: all 8 product areas are visible without horizontal
   scrolling; Today/Library/Discover/Wishlist get primary 2x2 slots and
@@ -167,7 +167,8 @@ reviews, catalogs, sale pages, and announcements.
   show a next-step cue (resume, no-spend, intent, or memory) plus compact
   quick actions, with advanced state/rating controls hidden behind a
   disclosure so state changes explain what should happen next without a button
-  wall.
+  wall. Library and Wishlist rows now share the stronger decision-card visual
+  treatment used by Today/detail.
 - Backlog amnesty: repeated explicit skips are tracked per title; after 5
   skips Today can suggest letting a game go without guilt, archiving it as
   hidden with `source: "backlog_amnesty"` and counting it in Stats. Amnestied

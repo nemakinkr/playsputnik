@@ -4302,13 +4302,23 @@ function renderGameSearch() {
       const subscription = resultStateSelected(result, "subscription");
       const memory = searchResultMemoryStatus(result);
       const memoryChecks = searchResultMemoryChecks(result);
+      const remembered = saved || owned || subscription;
       const ratingBadge = personalRatingBadge(canonicalSearchResultSeed(result) || result);
       const canonicalTitle = canonicalSearchResultTitle(result);
       const queuedForRating = isTitleQueued(canonicalTitle);
       const compared = isTitleCompared(canonicalTitle);
+      const followupLabel = saved
+        ? t("discover.actionOpenWishlist")
+        : remembered
+          ? t("discover.actionDetails")
+          : t("discover.actionWishlist");
+      const followupDetail = remembered ? memory.detail : t("discover.memoryReadyDetail");
       row.innerHTML = `
         <div>
-          <strong>${result.title}</strong>
+          <div class="game-search-title-line">
+            <strong>${result.title}</strong>
+            ${remembered ? `<span class="search-memory-pill tone-${memory.tone}">${memory.label}</span>` : ""}
+          </div>
           <span>${result.sourceLabel} / ${t("discover.confidence", { value: discoverConfidenceLabel(result.matchConfidence) })}</span>
           <p>${result.reason}</p>
           ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${detailAttr(ratingBadge.detail)}">${ratingBadge.label}</span>` : ""}
@@ -4325,6 +4335,11 @@ function renderGameSearch() {
           ${enrichment}
         </div>
         <div class="game-search-actions">
+          <div class="game-search-followup tone-${memory.tone}" data-search-followup>
+            <span>${t("discover.memoryCheckNext")}</span>
+            <strong>${followupLabel}</strong>
+            <small>${followupDetail}</small>
+          </div>
           <div class="game-search-memory tone-${memory.tone}" data-search-memory-panel>
             <span>${t("discover.memory")}</span>
             <strong>${memory.label}</strong>

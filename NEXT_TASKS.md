@@ -220,6 +220,10 @@ Follow-up done: the Today companion answer now has a stronger decision-center
 visual hierarchy, and the mobile game drawer behaves more like a focused game
 screen with a sticky title bar, compact sections, and a clearer primary CTA.
 
+Follow-up done: Library/Wishlist rows now share a stronger decision-card polish
+with clearer primary actions, and search results show an explicit next-step
+card after a game is remembered in Wishlist/Library/Plus.
+
 ## Track: Data
 
 ### 6. PS Plus Premium category id
