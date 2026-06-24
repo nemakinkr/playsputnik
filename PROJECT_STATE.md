@@ -28,17 +28,18 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v61 (cache-first static assets / network-first navigation and
+- Service worker v62 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
 ## Current Prototype
 
 - Static app, no build step: `index.html` + four files in `styles/` + `app.js`
-  (~6.7k lines) + 31 runtime entries in `src/module-manifest.js`.
+  (~6.6k lines) + 32 runtime entries in `src/module-manifest.js`.
   Runtime modules load through six dependency phases, parallel inside each
   phase. A visible boot overlay blocks interaction until handlers are ready.
   Comparison selection and the rate-later queue live in `app-decisions.js`;
+  search-result memory workflows live in `app-search-memory.js`;
   large game-detail markup lives in `app-detail-view.js` instead of the UI
   composition root.
   The same manifest now drives browser boot and Service Worker precaching.
@@ -120,6 +121,9 @@ reviews, catalogs, sale pages, and announcements.
   Discover search. Clean profiles now get the one-question taste prompt in the
   first Today viewport; the 3-signal answer is explicitly framed as a test pick,
   and the top-pick hero shows why/risk/next-action before deeper evidence.
+- Today: the companion plan now reads as a practical command center with
+  localized play/use-access/watch/buy-later rows, highlighted first action,
+  detail links, and stateful Play/Wishlist CTAs.
 - Demo/review mode: a top product-path panel can load a stable filled profile
   with taste reactions, library/wishlist memory, ratings, price targets, and
   search context; the same panel connects Today, Discover, Wishlist, and the
@@ -143,7 +147,8 @@ reviews, catalogs, sale pages, and announcements.
 - Global search: local/provider/manual results can be added directly to
   Wishlist, Library, or Plus with an in-row memory confirmation panel; external
   results keep source passport + cover attribution and avoid fake live
-  price/Plus claims.
+  price/Plus claims. Saved search results now expose an immediate "Open
+  Wishlist" next step so the add action has visible follow-through.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
 - Mobile navigation: all 8 product areas are visible without horizontal
   scrolling; Today/Library/Discover/Wishlist get primary 2x2 slots and

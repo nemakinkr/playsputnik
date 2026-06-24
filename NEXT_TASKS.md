@@ -15,6 +15,10 @@ Run `./scripts/check.sh` before claiming any task done.
 - Versioned persisted-state migration pipeline: done.
 - Generated compact architecture map with a CI freshness gate: done.
 - Game-detail markup extracted into a dedicated view module: done.
+- Search-result memory workflows extracted from `app.js` into
+  `src/app-search-memory.js`: done. This keeps Discover result persistence,
+  duplicate canonicalization, Wishlist/Library/Plus state changes, comparison,
+  and rate-later hooks reusable for future search polish.
 - CSS split into foundation/components/polish/themes with cached-shell
   compatibility: done.
 - Old Service Worker / mixed-release upgrade regression gate: done.
@@ -262,9 +266,11 @@ opens the detail cockpit, and checks runtime errors/desktop overflow.
 Status: done. Search result rows now render as compact action cards with
 clear memory confirmation, stronger selected button states, and dark-mode-safe
 surfaces. Visual catalog cards have cleaner state/value pills, hover affordance,
-selected-state accent bars, and more stable action-button layout. Design smoke
-now accepts the visible first-run onboarding panel when the quick swipe card is
-present but hidden.
+selected-state accent bars, and more stable action-button layout. Follow-up
+done: after a Discover result is saved, the row exposes an "Open Wishlist" next
+step while keeping the selected Wishlist state pressed and source-attributed.
+Design smoke now accepts the visible first-run onboarding panel when the quick
+swipe card is present but hidden.
 
 ### 13. Mobile navigation polish
 
@@ -288,6 +294,10 @@ open the recommended detail cockpit, save/start the pick, then continue into
 Discover search with the recommended title prefilled. This makes the prototype
 feel guided from first taste signal to product memory instead of leaving the
 user with disconnected screens.
+
+Follow-up done: Today companion plan now behaves like a command center: the
+first row is highlighted, rows have detail links, and play/watch/buy-later
+commands have localized stateful CTAs instead of passive text only.
 
 ### 16. Demo profile + Today/Discover continuity
 

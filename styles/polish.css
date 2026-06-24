@@ -130,6 +130,7 @@
 .answer-actions button,
 .answer-agenda-actions button,
 .first-run-actions button,
+.plan-actions button,
 .library-plan-actions button,
 .drop-actions button,
 .receipt-action {
@@ -143,6 +144,7 @@
 .answer-actions button:hover,
 .answer-agenda-actions button:hover,
 .first-run-actions button:hover,
+.plan-actions button:hover,
 .library-plan-actions button:hover,
 .drop-actions button:hover,
 .receipt-action:hover {

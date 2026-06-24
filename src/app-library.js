@@ -159,31 +159,38 @@
         const topState = effectiveGameState(topGame);
         rows.push({
           id: `play-${topGame.title}`,
-          label: "Tonight",
+          label: t("today.planTonight"),
           title: topGame.title,
-          tag: topState || t("library.factSession", { session: localizedSession(topGame.session) }),
+          tag: topState ? localizedState(topState) : t("library.factSession", { session: localizedSession(topGame.session) }),
           detail: rationale.headline,
+          primaryState: "playing",
+          primaryLabel: t("today.planPlay"),
         });
       }
 
       if (accessGame) {
         const rationale = decisionRationale(accessGame);
+        const accessState = effectiveGameState(accessGame);
         rows.push({
           id: `access-${accessGame.title}`,
-          label: getIsAlreadyAvailable(accessGame) ? "Use access" : "Subscription",
+          label: getIsAlreadyAvailable(accessGame) ? t("today.planUseAccess") : t("today.planSubscription"),
           title: accessGame.title,
-          tag: effectiveGameState(accessGame) || "PS Plus signal",
+          tag: accessState ? localizedState(accessState) : t("today.planPlusSignal"),
           detail: rationale.headline,
+          primaryState: "playing",
+          primaryLabel: t("today.planPlay"),
         });
       }
 
       if (radarLead) {
         rows.push({
           id: `radar-${radarLead.title}`,
-          label: "Watch",
+          label: t("today.planWatch"),
           title: radarLead.title,
           tag: radarLead.window,
           detail: radarLead.reason,
+          primaryState: "saved",
+          primaryLabel: t("today.planSave"),
         });
       }
 
@@ -191,10 +198,20 @@
         const status = priceStatus(buyLater, region);
         rows.push({
           id: `buy-${buyLater.title}`,
-          label: "Buy later",
+          label: t("today.planBuyLater"),
           title: buyLater.title,
-          tag: status.canConfirm ? "price ok" : "verify price",
-          detail: `${region} ${formatPrice(buyLater, region)} / ${buyLater.discount[region]}% ${status.canConfirm ? "off" : "signal"}. ${dealReason(buyLater)}.`,
+          tag: status.canConfirm ? t("today.planPriceOk") : t("today.planVerifyPrice"),
+          detail: status.canConfirm
+            ? t("today.planDiscountDetail", {
+              region,
+              price: formatPrice(buyLater, region),
+              discount: buyLater.discount[region],
+              freshness: t("today.planOff"),
+              reason: dealReason(buyLater),
+            })
+            : t("today.planVerifyDetail", { reason: dealReason(buyLater) }),
+          primaryState: "saved",
+          primaryLabel: t("today.planSave"),
         });
       }
 

@@ -17,6 +17,7 @@ const [
   appDecisionsSource,
   appLibrarySource,
   appVisualSource,
+  appSearchMemorySource,
   appWishlistSource,
   appDetailSource,
   appDetailViewSource,
@@ -96,6 +97,7 @@ const [
   readFile(new URL("src/app-decisions.js", ROOT), "utf8"),
   readFile(new URL("src/app-library.js", ROOT), "utf8"),
   readFile(new URL("src/app-visual.js", ROOT), "utf8"),
+  readFile(new URL("src/app-search-memory.js", ROOT), "utf8"),
   readFile(new URL("src/app-wishlist.js", ROOT), "utf8"),
   readFile(new URL("src/app-detail.js", ROOT), "utf8"),
   readFile(new URL("src/app-detail-view.js", ROOT), "utf8"),
@@ -166,7 +168,7 @@ const [
 const i18nEnSource = await readFile(new URL("src/i18n-en.js", ROOT), "utf8");
 const css = `${foundationCss}\n${componentsCss}\n${polishCss}\n${themesCss}`;
 
-const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateMigrationsSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appWishlistSource}\n${appDetailSource}\n${appDetailViewSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
+const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateMigrationsSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appSearchMemorySource}\n${appWishlistSource}\n${appDetailSource}\n${appDetailViewSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
 const appLoadSource = `${html}\n${moduleManifestSource}`;
 
 const USER_STATE_LABELS = {
@@ -1199,23 +1201,27 @@ function checkSelectors() {
   assert(/--force-fixture/.test(searchProviderSource), "Provider fixture fallback should be testable even when a key exists");
   assert(/searchIndexStatus/.test(appSource), "Frontend search should track deferred local index status");
   assert(/source-warning/.test(appSource + css), "Frontend search should warn while sources or providers are degraded");
-  assert(/function applySearchResultState/.test(appSource), "Search results should persist to normalized memory states");
+  assert(/PlaySputnikSearchMemory/.test(moduleManifestSource + appSource), "Search memory workflow should be a runtime module");
+  assert(/function applySearchResultState/.test(appSearchMemorySource), "Search results should persist to normalized memory states");
   assert(/function searchResultMemoryStatus/.test(appSource), "Search results should expose memory confirmation status");
-  assert(/function addSearchResultToWishlist/.test(appSource), "Search wishlist add handler is missing");
+  assert(/function addSearchResultToWishlist/.test(appSearchMemorySource), "Search wishlist add handler is missing");
   assert(/data-search-memory-panel/.test(appSource), "Search results should show direct add confirmation panels");
+  assert(/data-search-open-wishlist/.test(appSource), "Saved search results should expose a Wishlist next step");
   assert(/aria-pressed="\$\{saved\}"/.test(appSource), "Search Wishlist action should expose pressed state");
   assert(/data-search-detail/.test(appSource), "Search results should expose a Details path");
   assert(/data-search-state="owned"/.test(appSource), "Search results should support owned memory actions");
   assert(/data-search-state="subscription"/.test(appSource), "Search results should support subscription memory actions");
   assert(/function searchResultDetailGame/.test(appDetailSource), "Search results should open as rich detail drawer games");
-  assert(/coverUrl: result\.coverUrl/.test(appSource), "Search wishlist memory should persist provider coverUrl");
-  assert(/coverLicenseNote/.test(appSource), "Search wishlist memory should persist provider cover license notes");
-  assert(/Attribute RAWG/.test(appSource), "RAWG wishlist covers should preserve attribution notes");
+  assert(/coverUrl: result\.coverUrl/.test(appSearchMemorySource), "Search wishlist memory should persist provider coverUrl");
+  assert(/coverLicenseNote/.test(appSearchMemorySource), "Search wishlist memory should persist provider cover license notes");
+  assert(/Attribute RAWG/.test(appSearchMemorySource), "RAWG wishlist covers should preserve attribution notes");
   assert(/licenseNote: record\.coverLicenseNote/.test(appSource), "External memory games should expose persisted cover license notes");
   assert(/manualSearchResult/.test(appSearchSource), "Manual unverified search fallback is missing");
   assert(/externalMemoryGames/.test(appSource), "External wishlist games should be visible in memory");
   assert(/function recommendationPool/.test(appSource), "External wishlist games should enter the recommendation pool");
   assert(/recommendationPool/.test(appSource + appRankingSource), "Ranked games should use the recommendation pool");
+  assert(/plan-primary-action/.test(appSource + css), "Today command center should expose primary row actions");
+  assert(/today\.planSummary/.test(appSource + appLibrarySource), "Today command center should use localized summary copy");
   assert(/External discovery/.test(appScoreSource), "External discovery should have an explicit scoring line");
   assert(/Price missing/.test(appSource + i18nEnSource), "External recommendation cards should not fake missing prices");
   assert(/function gameSourcePassport/.test(appCoverSource), "External games should expose a source passport");

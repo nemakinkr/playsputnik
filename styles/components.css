@@ -2633,6 +2633,17 @@ textarea {
   padding-top: 0;
 }
 
+.plan-row.is-primary {
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background: var(--card-bg-soft);
+  padding: 10px;
+}
+
+.plan-row.is-primary:first-child {
+  padding-top: 10px;
+}
+
 .plan-row strong {
   display: block;
   color: var(--ink);
@@ -2662,6 +2673,41 @@ textarea {
 .plan-tag {
   background: var(--chip-bg);
   color: #334155;
+}
+
+.plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.plan-actions button {
+  min-height: 31px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--text-strong);
+  padding: 0 10px;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.plan-actions .plan-primary-action {
+  border-color: var(--blue);
+  background: var(--cta-gradient);
+  color: #fff;
+  box-shadow: var(--shadow-cta);
+}
+
+.plan-actions button:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.plan-actions .plan-primary-action:hover {
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 #library-plan-list {

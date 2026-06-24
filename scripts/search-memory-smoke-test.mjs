@@ -93,6 +93,7 @@ try {
     return {
       activeSaved: row?.querySelector('[data-search-state="saved"]')?.classList.contains("is-selected") || false,
       pressedSaved: row?.querySelector('[data-search-state="saved"]')?.getAttribute("aria-pressed") || "",
+      openWishlistButtons: row?.querySelectorAll("[data-search-open-wishlist]").length || 0,
       memoryStatus: row?.querySelector("[data-search-memory-panel]")?.textContent?.replace(/\s+/g, " ").trim() || "",
       record: record ? {
         title: record.title,
@@ -175,6 +176,7 @@ try {
   assert(afterSearchSave.record?.source?.startsWith("search_"), `Expected direct search save source memory, got ${afterSearchSave.record?.source}`);
   assert(afterSearchSave.activeSaved, "Expected direct Wishlist button to become selected");
   assert(afterSearchSave.pressedSaved === "true", `Expected Wishlist aria-pressed=true, got ${afterSearchSave.pressedSaved}`);
+  assert(afterSearchSave.openWishlistButtons >= 1, "Expected saved search result to expose an Open Wishlist next step");
   assert(/Saved to Wishlist|Добавлено в Желаемое/i.test(afterSearchSave.memoryStatus), `Expected search memory confirmation, got ${afterSearchSave.memoryStatus}`);
   assert(afterSearchSave.userState === "saved", `Expected saved userState after direct search action, got ${afterSearchSave.userState}`);
   assert(detail.title === expectedTitle, `Expected ${expectedTitle} detail drawer, got ${detail.title}`);

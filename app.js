@@ -165,6 +165,9 @@ if (!window.PlaySputnikImport) {
 if (!window.PlaySputnikExport) {
   throw new Error("PlaySputnikExport must load before app.js");
 }
+if (!window.PlaySputnikSearchMemory) {
+  throw new Error("PlaySputnikSearchMemory must load before app.js");
+}
 
 const {
   STORAGE_KEY,
@@ -174,8 +177,6 @@ const {
   WISHLIST_QUEUE_FILTERS,
   USER_STATE_LABELS,
   PLAYABLE_STATES,
-  ACCESS_STATES,
-  COMPLETION_STATUS_STATES,
   LIBRARY_ACTIVE_STATES,
   RANK_EXCLUDED_STATES,
   MEMORY_STATE_GROUPS,
@@ -614,6 +615,35 @@ const {
   titleMatches,
   personalRatingForecast,
   recordUserEvent: (type, title, detail) => recordUserEvent(type, title, detail),
+});
+
+const {
+  canonicalSearchResultSeed,
+  canonicalSearchResultTitle,
+  searchResultUserGame,
+  resultStateSelected,
+  resultAlreadySaved,
+  searchResultMemoryRecord,
+  applySearchResultState,
+  addSearchResultToMemory,
+  addSearchResultToWishlist,
+  rememberSearchResultWithoutState,
+  selectSearchResultForComparison,
+  toggleSearchResultRatingQueue,
+} = window.PlaySputnikSearchMemory.createSearchMemoryTools({
+  getState: () => state,
+  knownSeedGame,
+  titleKey,
+  explicitUserGame: (title) => explicitUserGame(title),
+  normalizeUserGameRecord,
+  applyStateToUserGame,
+  legacyStateFromUserGame,
+  setGameState: (title, userState) => setGameState(title, userState),
+  recordUserEvent: (type, title, detail) => recordUserEvent(type, title, detail),
+  recordFeedback: (action, title) => recordFeedback(action, title),
+  selectTitleForComparison,
+  toggleRatingQueueTitle,
+  aiEnrichmentForGame: (item) => aiEnrichmentForGame(item),
 });
 
 const {
@@ -1762,158 +1792,6 @@ function sourceGames() {
   const byTitle = new Map();
   [...profileGames, ...games, ...externalMemoryGames()].forEach((game) => byTitle.set(titleKey(game.title), game));
   return [...byTitle.values()];
-}
-
-function canonicalSearchResultSeed(result) {
-  if (!result?.title) return null;
-  return knownSeedGame(result.title) || (result.duplicateOf ? knownSeedGame(result.duplicateOf) : null);
-}
-
-function canonicalSearchResultTitle(result) {
-  const seed = canonicalSearchResultSeed(result);
-  if (seed) return seed.title;
-  const duplicateMemory = result?.duplicateOf ? explicitUserGame(result.duplicateOf) : null;
-  return duplicateMemory?.title || result?.title || "";
-}
-
-function searchResultUserGame(result) {
-  const canonicalTitle = canonicalSearchResultTitle(result);
-  return canonicalTitle ? explicitUserGame(canonicalTitle) : null;
-}
-
-function resultStateSelected(result, userState) {
-  const userGame = searchResultUserGame(result);
-  if (!userGame) return false;
-  if (ACCESS_STATES.includes(userState)) return userGame.access === userState;
-  if (COMPLETION_STATUS_STATES.includes(userState)) return userGame.completionStatus === userState;
-  if (userState === "saved") return Boolean(userGame.saved);
-  if (userState === "hidden") return Boolean(userGame.hidden);
-  return false;
-}
-
-function resultAlreadySaved(result) {
-  return resultStateSelected(result, "saved");
-}
-
-function searchResultMemoryRecord(result) {
-  const title = canonicalSearchResultTitle(result);
-  const key = titleKey(title);
-  const current = normalizeUserGameRecord(state.userGames[key], title) || normalizeUserGameRecord({ title });
-  const enrichment = aiEnrichmentForGame(result);
-  return {
-    ...current,
-    title,
-    source: `search_${result.sourceId}`,
-    updatedAt: new Date().toISOString(),
-    catalogStatus: result.catalogStatus,
-    matchConfidence: result.matchConfidence,
-    coverStatus: result.coverStatus,
-    priceStatus: result.priceStatus,
-    provider: result.provider || result.sourceId,
-    sourceUrl: result.sourceUrl || "",
-    coverUrl: result.coverUrl || "",
-    coverLicenseNote: result.coverUrl && result.provider === "rawg"
-      ? "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed."
-      : current.coverLicenseNote || "",
-    platforms: result.platforms?.length ? result.platforms : current.platforms || [],
-    atoms: result.atoms?.length ? result.atoms : current.atoms || [],
-    inferredAtoms: result.inferredAtoms?.length
-      ? result.inferredAtoms
-      : result.atoms?.length
-        ? current.inferredAtoms || []
-        : enrichment.atoms,
-    vibe: result.vibe || result.reason || "External wishlist candidate",
-    enrichmentStatus: enrichment.status,
-    enrichmentSummary: enrichment.summary,
-    enrichmentRisk: enrichment.risk,
-    searchQuery: state.gameSearchQuery || result.title,
-    reconciliation: result.reconciliation || null,
-    duplicateOf: result.duplicateOf || "",
-    duplicateSource: result.duplicateSource || "",
-  };
-}
-
-function applySearchResultState(result, userState = "saved") {
-  if (!result?.title) return;
-  const seed = canonicalSearchResultSeed(result);
-  if (seed) {
-    setGameState(seed.title, userState);
-    recordUserEvent("search_seed_state_changed", seed.title, { source: result.sourceId, state: userState });
-    return explicitUserGame(seed.title);
-  }
-
-  const base = searchResultMemoryRecord(result);
-  const key = titleKey(base.title);
-  const next = applyStateToUserGame(base, userState);
-  next.source = base.source;
-  next.catalogStatus = base.catalogStatus;
-  next.matchConfidence = base.matchConfidence;
-  next.coverStatus = base.coverStatus;
-  next.priceStatus = base.priceStatus;
-  next.provider = base.provider;
-  next.sourceUrl = base.sourceUrl;
-  next.coverUrl = base.coverUrl;
-  next.coverLicenseNote = base.coverLicenseNote;
-  next.platforms = base.platforms;
-  next.atoms = base.atoms;
-  next.inferredAtoms = base.inferredAtoms;
-  next.vibe = base.vibe;
-  next.enrichmentStatus = base.enrichmentStatus;
-  next.enrichmentSummary = base.enrichmentSummary;
-  next.enrichmentRisk = base.enrichmentRisk;
-  next.searchQuery = base.searchQuery;
-  next.reconciliation = base.reconciliation;
-  next.duplicateOf = base.duplicateOf;
-  next.duplicateSource = base.duplicateSource;
-  state.userGames[key] = next;
-  state.userStates[key] = { title: next.title, state: legacyStateFromUserGame(next), updatedAt: next.updatedAt };
-  state.hidden.delete(next.title);
-  state.saved.delete(next.title);
-  state.snoozed.delete(next.title);
-  if (next.hidden) state.hidden.add(next.title);
-  if (next.saved) state.saved.add(next.title);
-  recordUserEvent("search_external_state_changed", result.title, {
-    source: result.sourceId,
-    canonicalTitle: next.title,
-    state: userState,
-    access: next.access,
-    completionStatus: next.completionStatus,
-    saved: next.saved,
-    hidden: next.hidden,
-    catalogStatus: result.catalogStatus,
-    matchConfidence: result.matchConfidence,
-    priceStatus: result.priceStatus,
-    coverStatus: result.coverStatus,
-    coverProvider: result.provider || result.sourceId,
-  });
-  recordFeedback(userState, next.title);
-  return next;
-}
-
-function addSearchResultToMemory(result, userState = "saved") {
-  return applySearchResultState(result, userState);
-}
-
-function addSearchResultToWishlist(result) {
-  return applySearchResultState(result, "saved");
-}
-
-function rememberSearchResultWithoutState(result) {
-  const seed = canonicalSearchResultSeed(result);
-  if (seed) return seed.title;
-  const record = searchResultMemoryRecord(result);
-  state.userGames[titleKey(record.title)] = record;
-  return record.title;
-}
-
-function selectSearchResultForComparison(result) {
-  const title = rememberSearchResultWithoutState(result);
-  selectTitleForComparison(title, { source: result.sourceId });
-}
-
-function toggleSearchResultRatingQueue(result) {
-  const title = rememberSearchResultWithoutState(result);
-  toggleRatingQueueTitle(title, { source: result.sourceId });
 }
 
 async function runProviderSearch() {
@@ -3720,19 +3598,28 @@ function renderLibrary() {
 }
 function renderCompanionPlan(ranked) {
   const plan = companionPlan(ranked);
-  els.planSummary.textContent = `${plan.length} next actions`;
+  els.planSummary.textContent = t("today.planSummary", { count: plan.length });
   els.planList.replaceChildren(
-    ...plan.map((item) => {
+    ...plan.map((item, index) => {
       const row = document.createElement("div");
-      row.className = "plan-row";
+      row.className = `plan-row ${index === 0 ? "is-primary" : ""}`;
       row.innerHTML = `
         <span class="plan-label">${item.label}</span>
         <div>
           <strong>${item.title}</strong>
           <p>${item.detail}</p>
         </div>
-        <span class="plan-tag">${item.tag}</span>
+        <div class="plan-actions">
+          <span class="plan-tag">${item.tag}</span>
+          <button data-plan-detail type="button">${t("today.planDetails")}</button>
+          ${item.primaryState ? `<button class="plan-primary-action" data-plan-state="${item.primaryState}" type="button">${item.primaryLabel}</button>` : ""}
+        </div>
       `;
+      row.querySelector("[data-plan-detail]")?.addEventListener("click", () => openGameDetail(item.title));
+      row.querySelector("[data-plan-state]")?.addEventListener("click", (event) => {
+        setGameState(item.title, event.currentTarget.dataset.planState);
+        render();
+      });
       return row;
     }),
   );
@@ -4390,6 +4277,7 @@ function renderGameSearch() {
             <small>${memory.detail}</small>
           </div>
           <button class="memory-action search-primary-action ${saved ? "is-selected" : ""}" data-search-state="saved" aria-pressed="${saved}" type="button">${saved ? t("discover.actionSaved") : t("discover.actionWishlist")}</button>
+          ${saved ? `<button class="memory-action search-next-action" data-search-open-wishlist type="button">${t("discover.actionOpenWishlist")}</button>` : ""}
           <button class="memory-action ${owned ? "is-selected" : ""}" data-search-state="owned" aria-pressed="${owned}" type="button">${t("discover.actionLibrary")}</button>
           <button class="memory-action ${subscription ? "is-selected" : ""}" data-search-state="subscription" aria-pressed="${subscription}" type="button">${t("discover.actionPlus")}</button>
           <button class="memory-action" data-search-detail="${detailAttr(result.title)}" type="button">${t("discover.actionDetails")}</button>
@@ -4404,6 +4292,7 @@ function renderGameSearch() {
           render();
         });
       });
+      row.querySelector("[data-search-open-wishlist]")?.addEventListener("click", () => openAppView("wishlist"));
       row.querySelector("[data-search-compare]").addEventListener("click", () => {
         selectSearchResultForComparison(result);
         render();
