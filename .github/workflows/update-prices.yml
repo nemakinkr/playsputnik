@@ -11,6 +11,10 @@ on:
         required: false
         default: ""
 
+concurrency:
+  group: playsputnik-data-writes-main
+  cancel-in-progress: false
+
 jobs:
   update-prices:
     name: Fetch prices from IsThereAnyDeal
@@ -47,5 +51,13 @@ jobs:
           else
             UPDATED=$(date -u +"%Y-%m-%d %H:%M UTC")
             git commit -m "chore: update PS Store prices [${UPDATED}]"
-            git push
+            for attempt in 1 2 3; do
+              if git push; then
+                exit 0
+              fi
+              echo "::warning::Push failed because main moved; rebasing and retrying (${attempt}/3)."
+              git pull --rebase origin main
+            done
+            echo "::error::Could not push refreshed prices after 3 attempts."
+            exit 1
           fi

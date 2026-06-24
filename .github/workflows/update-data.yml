@@ -12,7 +12,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: update-data
+  group: playsputnik-data-writes-main
   cancel-in-progress: false
 
 jobs:
@@ -71,8 +71,16 @@ jobs:
             echo "pushed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "data: daily refresh (prices / PS Plus / covers)"
-            git push
-            echo "pushed=true" >> "$GITHUB_OUTPUT"
+            for attempt in 1 2 3; do
+              if git push; then
+                echo "pushed=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              echo "::warning::Push failed because main moved; rebasing and retrying (${attempt}/3)."
+              git pull --rebase origin main
+            done
+            echo "::error::Could not push refreshed data after 3 attempts."
+            exit 1
           fi
 
       # GITHUB_TOKEN pushes don't trigger other workflows (loop protection),
