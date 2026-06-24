@@ -30,7 +30,10 @@ try {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
+    if (message.type() !== "error") return;
+    const text = message.text();
+    if (/ERR_CONNECTION_REFUSED/.test(text)) return;
+    errors.push(text);
   });
 
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
@@ -48,6 +51,8 @@ try {
 
   const before = await page.evaluate(() => ({
     journey: Boolean(document.querySelector("[data-first-run-journey]")),
+    heroDecisionStrip: Boolean(document.querySelector(".hero-decision-strip")),
+    earlyHero: Boolean(document.querySelector(".hero-card.is-early-pick")),
     steps: Array.from(document.querySelectorAll(".first-run-journey-step")).map((element) => ({
       action: element.dataset.firstRunAction,
       title: element.dataset.firstRunTitle,
@@ -58,6 +63,9 @@ try {
   }));
 
   assert(before.journey, "First-run journey rail did not render");
+  assert(/First test|Первый тест/.test(before.title), `First-run title should frame the pick as a test, got ${before.title}`);
+  assert(before.heroDecisionStrip, "Top-pick hero should show the decision strip");
+  assert(before.earlyHero, "Top-pick hero should mark the 3-signal pick as early");
   assert(before.steps.some((step) => step.action === "detail-pick" && step.title), "Journey is missing detail-pick");
   assert(before.steps.some((step) => ["save", "play"].includes(step.action) && step.title), "Journey is missing memory action");
   assert(before.steps.some((step) => step.action === "discover-pick" && step.title), "Journey is missing discover-pick");

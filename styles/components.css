@@ -1594,6 +1594,38 @@ textarea {
   padding-left: 9px;
 }
 
+.hero-decision-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.hero-decision-strip div {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  padding: 9px;
+}
+
+.hero-decision-strip span,
+.hero-decision-strip small {
+  display: block;
+  color: var(--text-mid);
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.hero-decision-strip strong {
+  display: block;
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 0.88rem;
+  line-height: 1.15;
+}
+
 .card-evidence {
   border: 1px solid var(--line);
   border-radius: 8px;

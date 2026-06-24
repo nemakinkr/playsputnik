@@ -511,6 +511,12 @@
 
       const isSharp = signalCount >= QUICK_TASTE_SHARP_TARGET;
       const isUsable = signalCount >= QUICK_TASTE_USABLE_TARGET;
+      const isEarlyTaste = !libraryMode && !isUsable;
+      summary[0].detail = libraryMode
+        ? summary[0].detail
+        : isEarlyTaste
+          ? t("narrative.firstRun.summaryTasteEarlyDetail", { count: signalCount })
+          : summary[0].detail;
       const confidenceLabel = isSharp
         ? t("narrative.firstRun.confidenceSharp")
         : isUsable
@@ -540,7 +546,9 @@
         {
           label: t("narrative.firstRun.verdictLearned"),
           value: proof.pull,
-          detail: t("narrative.firstRun.verdictLearnedDetail", { count: signalCount, confidence }),
+          detail: isEarlyTaste
+            ? t("narrative.firstRun.verdictLearnedEarlyDetail", { count: signalCount })
+            : t("narrative.firstRun.verdictLearnedDetail", { count: signalCount, confidence }),
         },
         {
           label: t("narrative.firstRun.verdictUse"),
@@ -598,20 +606,30 @@
           : t("narrative.firstRun.eyebrowTaste"),
         title: libraryMode
           ? t("narrative.firstRun.titleLibrary", { title: topGame.title })
-          : t("narrative.firstRun.titleTaste", { title: topGame.title }),
+          : isEarlyTaste
+            ? t("narrative.firstRun.titleTasteEarly", { title: topGame.title })
+            : t("narrative.firstRun.titleTaste", { title: topGame.title }),
         detail: libraryMode
           ? t("narrative.firstRun.detailLibrary", {
               parts: detailParts.join(" / "),
               riskLabel: watchout.label,
               riskDetail: watchout.detail,
             })
-          : t("narrative.firstRun.detailTaste", {
-              count: signalCount,
-              note: earlyTasteNote,
-              title: topGame.title,
-              riskLabel: watchout.label,
-              riskDetail: watchout.detail,
-            }),
+          : isEarlyTaste
+            ? t("narrative.firstRun.detailTasteEarly", {
+                count: signalCount,
+                note: earlyTasteNote,
+                title: topGame.title,
+                riskLabel: watchout.label,
+                riskDetail: watchout.detail,
+              })
+            : t("narrative.firstRun.detailTaste", {
+                count: signalCount,
+                note: earlyTasteNote,
+                title: topGame.title,
+                riskLabel: watchout.label,
+                riskDetail: watchout.detail,
+              }),
         confidenceLabel,
         confidenceReady,
         verdict,

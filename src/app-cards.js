@@ -50,6 +50,11 @@
       element.textContent = label;
     }
 
+    function quickTasteSignalCountFromState() {
+      const reactions = getState().quickReactions || {};
+      return Object.values(reactions).filter((item) => item?.reaction && item.reaction !== "unplayed").length;
+    }
+
     // ── Profile game row (liked-games sidebar list) ─────────────────────────
     function renderProfileGameRow(game) {
       const state = getState();
@@ -80,13 +85,40 @@
       const watchout = watchOutCopy(game);
       const evidence = personalEvidence(game);
       const ratingBadge = personalRatingBadge(game);
+      const signalCount = quickTasteSignalCountFromState();
+      const isEarlyPick = signalCount >= 3 && signalCount < 6;
       const facts = factList(game)
         .slice(0, 5)
         .map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`)
         .join("");
+      const decisionStrip = [
+        {
+          label: t("today.hero.whyLabel"),
+          value: isEarlyPick
+            ? t("today.hero.earlyBadge")
+            : t("today.hero.matureBadge"),
+          detail: isEarlyPick
+            ? t("today.hero.earlyWhy", { count: signalCount })
+            : t("today.hero.matureWhy"),
+        },
+        {
+          label: t("today.hero.riskLabel"),
+          value: watchout.label,
+          detail: watchout.detail,
+        },
+        {
+          label: t("today.hero.nextLabel"),
+          value: isEarlyPick
+            ? t("narrative.firstRun.confidenceEnough")
+            : confidence,
+          detail: isEarlyPick
+            ? t("today.hero.nextEarly")
+            : t("today.hero.nextMature"),
+        },
+      ];
 
       topPickEl.innerHTML = `
-        <article class="hero-card">
+        <article class="hero-card ${isEarlyPick ? "is-early-pick" : ""}">
           <div class="hero-visual">
             <span>${t("today.hero.meta", { confidence, fit: Math.max(game.score, 0) })}</span>
             <strong class="hero-visual-title">${game.title}</strong>
@@ -100,6 +132,15 @@
             </div>
             <p class="description">${gameDescription(game)}</p>
             <p class="reason">${reason}</p>
+            <div class="hero-decision-strip" aria-label="${t("today.hero.top")}">
+              ${decisionStrip.map((item) => `
+                <div>
+                  <span>${item.label}</span>
+                  <strong>${item.value}</strong>
+                  <small>${item.detail}</small>
+                </div>
+              `).join("")}
+            </div>
             <div class="personal-evidence hero-evidence">
               ${renderEvidenceRows(evidence, 3)}
             </div>

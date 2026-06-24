@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v59 (cache-first static assets / network-first navigation and
+- Service worker v60 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -117,7 +117,9 @@ reviews, catalogs, sale pages, and announcements.
   or pasted ratings. The first payoff
   now shows a concrete verdict: what was learned, what to try now, and what is
   still uncertain, plus a "Next 3 clicks" journey into detail, memory, and
-  Discover search.
+  Discover search. Clean profiles now get the one-question taste prompt in the
+  first Today viewport; the 3-signal answer is explicitly framed as a test pick,
+  and the top-pick hero shows why/risk/next-action before deeper evidence.
 - Demo/review mode: a top product-path panel can load a stable filled profile
   with taste reactions, library/wishlist memory, ratings, price targets, and
   search context; the same panel connects Today, Discover, Wishlist, and the

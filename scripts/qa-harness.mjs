@@ -1336,7 +1336,10 @@ function checkSelectors() {
   assert(/narrative\.firstRun\.verdictLearned/.test(appAnswerSource), "First-run payoff should explain what was learned");
   assert(/narrative\.firstRun\.verdictUse/.test(appAnswerSource), "First-run payoff should tell the user they can act now");
   assert(/narrative\.firstRun\.titleTaste/.test(appAnswerSource), "First-run payoff should name the first read as a concrete pick");
+  assert(/titleTasteEarly/.test(appAnswerSource) && /summaryTasteEarlyDetail/.test(i18nEnSource), "Early first pick should be framed as a test, not a final ranking");
   assert(/data-first-run-journey/.test(appSource), "First-run payoff should expose the core journey rail");
+  assert(/hero-decision-strip/.test(appCardsSource + css), "Top-pick hero should expose a scan-friendly decision strip");
+  assert(/is-early-pick/.test(appCardsSource + css), "Top-pick hero should mark early 3-signal picks distinctly");
   assert(/narrative\.firstRun\.journeyHead/.test(appSource), "Core journey should tell the user what to do next");
   assert(/detail-pick/.test(appAnswerSource + appSource), "Core journey should open the recommended detail cockpit");
   assert(/discover-pick/.test(appAnswerSource + appSource), "Core journey should continue into Discover search");

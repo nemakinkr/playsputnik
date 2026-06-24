@@ -348,6 +348,19 @@
   border-left-color: #b9cafa;
 }
 
+.hero-card.is-early-pick {
+  border-color: rgba(37, 87, 214, 0.28);
+}
+
+.hero-card.is-early-pick .hero-decision-strip div:first-child {
+  border-color: rgba(37, 87, 214, 0.28);
+  background: var(--accent-bg);
+}
+
+.hero-card.is-early-pick .hero-decision-strip div:first-child strong {
+  color: var(--blue);
+}
+
 .watchout {
   background: #fffaf1;
   border-left-color: #e8a94a;
@@ -609,6 +622,10 @@
   .hero-body {
     gap: 10px;
     padding: 16px;
+  }
+
+  .hero-decision-strip {
+    grid-template-columns: 1fr;
   }
 
   .surface-header h2,
@@ -1573,4 +1590,3 @@
 .data-error-toast button:hover {
   color: #f8fafc;
 }
-
