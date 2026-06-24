@@ -82,6 +82,21 @@ try {
     nextTitle: document.querySelector(".quick-swipe-main strong")?.textContent || "",
     topPick: document.querySelector("#top-pick")?.textContent || "",
     buttons: document.querySelectorAll("[data-swipe-reaction]").length,
+    onboardingHero: (() => {
+      const hero = document.querySelector("#onboarding-hero");
+      const buttons = [...document.querySelectorAll("#onboarding-featured [data-onboard-react]")];
+      if (!hero) return { visible: false, top: 9999, buttons: 0, visibleButtons: 0 };
+      const rect = hero.getBoundingClientRect();
+      return {
+        visible: rect.width > 0 && rect.height > 0 && !hero.classList.contains("is-hidden"),
+        top: Math.round(rect.top),
+        buttons: buttons.length,
+        visibleButtons: buttons.filter((button) => {
+          const buttonRect = button.getBoundingClientRect();
+          return buttonRect.width > 0 && buttonRect.height > 0;
+        }).length,
+      };
+    })(),
     booting: document.body.classList.contains("is-app-booting"),
     bootOverlayHidden: document.querySelector("#app-boot-overlay")?.hidden === true,
   }));
@@ -116,6 +131,11 @@ try {
 
   currentStep = "asserting";
   if (before.buttons !== 3) throw new Error(`Expected 3 swipe buttons, got ${before.buttons}`);
+  if (!before.onboardingHero.visible) throw new Error("Expected visible first-run onboarding hero on a clean profile");
+  if (before.onboardingHero.top > 900) throw new Error(`Expected onboarding hero in first viewport, got top ${before.onboardingHero.top}`);
+  if (before.onboardingHero.buttons !== 3 || before.onboardingHero.visibleButtons !== 3) {
+    throw new Error(`Expected 3 visible onboarding reaction buttons, got ${JSON.stringify(before.onboardingHero)}`);
+  }
   if (before.booting || !before.bootOverlayHidden) throw new Error("App should unlock only after runtime handlers are ready");
   if (before.likedCount !== "0/30") throw new Error(`Expected clean onboarding 0/30, got ${before.likedCount}`);
   if (devHealth.rowCount < 4) throw new Error(`Expected 4 dev health rows, got ${devHealth.rowCount}`);

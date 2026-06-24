@@ -2929,30 +2929,27 @@ function renderOnboardingHero() {
 
   hero.dataset.answered = String(answered);
 
-  // Featured games — diagnostic onboarding set, so every tap counts toward the first read.
+  // One diagnostic question at a time keeps the first run focused while using
+  // the same taste engine as the full quick-swipe deck in Settings.
   const featured = document.querySelector("#onboarding-featured");
   if (!featured) return;
-  const pool = [...profileGames]
-    .sort((a, b) => (b.criticScore || 0) - (a.criticScore || 0))
-    .slice(0, 8);
-  featured.replaceChildren(...pool.map((game) => {
-    const reaction = quickReaction(game.title);
-    const tile = document.createElement("article");
-    tile.className = `onboarding-game-tile ${reaction ? `is-${reaction}` : ""}`;
-    tile.dataset.onboardingTitle = game.title;
-    tile.innerHTML = `
+  const game = nextDiagnosticGame() || profileGames.find((item) => !quickReaction(item.title)) || profileGames[0];
+  if (!game) return;
+  featured.innerHTML = `
+    <article class="onboarding-game-tile onboarding-game-tile--hero" data-onboarding-title="${detailAttr(game.title)}">
       <div class="onboarding-tile-poster" style="background:${game.color || "var(--panel)"}"></div>
       <div class="onboarding-tile-body">
+        <span>${labelAtoms((game.atoms || []).slice(0, 2), " · ") || t("settings.quickSwipe.tasteSignal")}</span>
         <strong>${game.title}</strong>
-        <span>${labelAtoms((game.atoms || []).slice(0, 2), " · ")}</span>
+        <small>${quickSwipeFollowUpHint(game)}</small>
       </div>
-      <div class="onboarding-tile-actions">
-        <button class="onboarding-like ${reaction === "loved" ? "is-active" : ""}" data-onboard-react="loved" data-onboard-title="${game.title}" type="button">${t("today.onboarding.like")}</button>
-        <button class="onboarding-pass ${reaction === "not_for_me" ? "is-active" : ""}" data-onboard-react="not_for_me" data-onboard-title="${game.title}" type="button">${t("today.onboarding.no")}</button>
+      <div class="onboarding-tile-actions" role="group" aria-label="${t("settings.reactions.swipeAria", { title: game.title })}">
+        <button class="onboarding-pass" data-onboard-react="not_for_me" data-onboard-title="${detailAttr(game.title)}" type="button">${t("settings.reactions.notForMe")}</button>
+        <button class="onboarding-skip" data-onboard-react="unplayed" data-onboard-title="${detailAttr(game.title)}" type="button">${t("settings.reactions.notPlayed")}</button>
+        <button class="onboarding-like" data-onboard-react="loved" data-onboard-title="${detailAttr(game.title)}" type="button">${t("settings.reactions.liked")}</button>
       </div>
-    `;
-    return tile;
-  }));
+    </article>
+  `;
   featured.querySelectorAll("[data-onboard-react]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();

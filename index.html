@@ -278,6 +278,20 @@
         </nav>
         <p class="app-view-copy" id="app-view-status" data-i18n="views.today.summary">Tonight pick, first value proof, and the short plan.</p>
 
+        <section class="onboarding-hero is-hidden" id="onboarding-hero" aria-label="Welcome" data-i18n-attr="aria-label:today.onboarding.aria" data-view-section="today">
+          <div class="onboarding-hero-text">
+            <h2 data-i18n="today.onboarding.title">Rate 3 games. Get tonight's pick.</h2>
+            <p data-i18n="today.onboarding.detail">PlaySputnik learns what you love and recommends the right game for your mood, time, and budget.</p>
+          </div>
+          <div class="onboarding-progress" id="onboarding-progress">
+            <div class="onboarding-progress-bar">
+              <div class="onboarding-progress-fill" id="onboarding-progress-fill" style="width:0%"></div>
+            </div>
+            <span id="onboarding-progress-label">0 of 3 signals</span>
+          </div>
+          <div class="onboarding-featured" id="onboarding-featured"></div>
+        </section>
+
         <section class="value-strip" aria-label="Decision metrics" data-view-section="today library discover wishlist taste">
           <div>
             <span data-i18n="today.metrics.screenedLabel">Screened</span>
@@ -309,20 +323,6 @@
             <div class="demo-continuity-metrics" id="demo-continuity-metrics"></div>
           </div>
           <div class="demo-continuity-actions" id="demo-continuity-actions"></div>
-        </section>
-
-        <section class="onboarding-hero is-hidden" id="onboarding-hero" aria-label="Welcome" data-i18n-attr="aria-label:today.onboarding.aria" data-view-section="today">
-          <div class="onboarding-hero-text">
-            <h2 data-i18n="today.onboarding.title">Rate 3 games. Get tonight's pick.</h2>
-            <p data-i18n="today.onboarding.detail">PlaySputnik learns what you love and recommends the right game for your mood, time, and budget.</p>
-          </div>
-          <div class="onboarding-progress" id="onboarding-progress">
-            <div class="onboarding-progress-bar">
-              <div class="onboarding-progress-fill" id="onboarding-progress-fill" style="width:0%"></div>
-            </div>
-            <span id="onboarding-progress-label">0 of 3 signals</span>
-          </div>
-          <div class="onboarding-featured" id="onboarding-featured"></div>
         </section>
 
         <section class="tonight-time" aria-label="Time available tonight" data-view-section="today">

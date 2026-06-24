@@ -161,8 +161,12 @@ format as the main swipe deck, and the first-run bridge now says "use now,
 improve later" with swipes / library / pasted-rating paths. Follow-up done:
 the quick swipe card now states the 30-second value contract, and the first
 payoff copy frames 3 signals as the first useful read rather than a final
-profile. Next work here should be driven by real dogfooding notes, not more
-abstract copy tuning.
+profile. Follow-up done: the clean-profile Today screen now surfaces the
+one-question quick onboarding hero in the first viewport, with three visible
+reaction buttons backed by the same diagnostic taste logic as the full swipe
+deck. `browser-smoke-test.mjs` gates that the first-run entry cannot slip below
+the fold again. Next work here should be driven by real dogfooding notes, not
+more abstract copy tuning.
 
 ### 4. Chunk-label copy refinement
 

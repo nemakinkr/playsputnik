@@ -118,7 +118,7 @@
       onboarding: {
         aria: "Welcome", title: "Rate 3 games. Get tonight's pick.",
         detail: "PlaySputnik learns what you love and recommends the right game for your mood, time, and budget.",
-        progressEmpty: "Like or dislike {count} games to unlock your first pick",
+        progressEmpty: { one: "Rate {count} game to unlock your first pick", other: "Rate {count} games to unlock your first pick" },
         progress: "{current} of {target} taste signals — {remaining} more",
         ready: "Your first pick is ready. You can refine it later.",
         like: "Like", no: "No",
