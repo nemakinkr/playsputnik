@@ -3746,15 +3746,18 @@ function renderLibraryPlan(ranked) {
   });
 
   els.libraryPlanList.replaceChildren(
-    ...plan.rows.map((item) => {
+    ...plan.rows.map((item, index) => {
       const row = document.createElement("div");
-      row.className = `library-plan-row tone-${stateClassName(item.tone || item.label)}`;
+      row.className = `library-plan-row tone-${stateClassName(item.tone || item.label)} ${index === 0 ? "is-next-step" : ""}`;
       const facts = libraryPlanFacts(item)
         .slice(0, 4)
         .map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`)
         .join("");
       row.innerHTML = `
-        <span class="library-plan-label">${item.label}</span>
+        <div class="library-plan-step">
+          <span>${t("library.step", { count: index + 1 })}</span>
+          <strong>${item.label}</strong>
+        </div>
         <div>
           <strong>${item.title}</strong>
           <p>${item.detail}</p>
@@ -3768,6 +3771,7 @@ function renderLibraryPlan(ranked) {
         item.actions.forEach((action) => {
           const button = document.createElement("button");
           button.type = "button";
+          if (actions.children.length === 0) button.className = "library-plan-primary";
           button.textContent = action.label;
           button.addEventListener("click", () => {
             setGameState(item.title, action.state);

@@ -1387,6 +1387,8 @@ function checkSelectors() {
   assert(/function renderLibraryDashboard/.test(appSource), "Library dashboard renderer is missing");
   assert(/my-game-facets/.test(appSource), "My Games should show separate access/progress/rating facets");
   assert(/library-next-step/.test(appSource + css), "My Games should show next-step guidance");
+  assert(/library-plan-step/.test(appSource + css), "Library plan should read as ordered next steps");
+  assert(/library-plan-primary/.test(appSource + css), "Library plan rows should expose a primary action");
   assert(/my-game-quick-actions/.test(appSource + css), "My Games should expose compact quick actions");
   assert(/my-game-more-actions/.test(appSource + css), "My Games should hide advanced states behind a disclosure");
   assert(/data-memory-rating/.test(appSource), "My Games rating controls are missing");
@@ -1547,6 +1549,7 @@ function checkSelectors() {
   assert(/function coverSourceLabel/.test(appCoverSource), "Visual catalog should expose cover source labels");
   assert(/function renderCoverSourceInto/.test(appSource + appCardsSource), "Cover source attribution should render through a DOM helper");
   assert(/hero-cover-source/.test(appSource + appCardsSource + css), "Hero cover candidates should have source attribution");
+  assert(/data-hero-primary/.test(appCardsSource) && /hero-primary-cta/.test(appCardsSource + css), "Top-pick hero should expose one primary CTA");
   assert(/card-cover-source/.test(html + appSource + appCardsSource + css), "Recommendation cards should have source attribution");
   assert((/target = "_blank"/.test(appSource) || /target = "_blank"/.test(appCardsSource)) && (/sourceUrl/.test(appSource) || /sourceUrl/.test(appCardsSource)), "RAWG source attribution should link to sourceUrl");
   assert(/narrative\.detail\.sourceNamed/.test(appCoverSource) && /RAWG/.test(appCoverSource), "RAWG cover candidates should be visibly attributed in localized UI copy");

@@ -52,6 +52,7 @@ try {
   const before = await page.evaluate(() => ({
     journey: Boolean(document.querySelector("[data-first-run-journey]")),
     heroDecisionStrip: Boolean(document.querySelector(".hero-decision-strip")),
+    heroPrimary: document.querySelector("[data-hero-primary]")?.textContent.trim() || "",
     earlyHero: Boolean(document.querySelector(".hero-card.is-early-pick")),
     steps: Array.from(document.querySelectorAll(".first-run-journey-step")).map((element) => ({
       action: element.dataset.firstRunAction,
@@ -65,6 +66,7 @@ try {
   assert(before.journey, "First-run journey rail did not render");
   assert(/First test|Первый тест/.test(before.title), `First-run title should frame the pick as a test, got ${before.title}`);
   assert(before.heroDecisionStrip, "Top-pick hero should show the decision strip");
+  assert(/Check why|Проверить почему/.test(before.heroPrimary), `Top-pick hero should expose an early primary CTA, got ${before.heroPrimary}`);
   assert(before.earlyHero, "Top-pick hero should mark the 3-signal pick as early");
   assert(before.steps.some((step) => step.action === "detail-pick" && step.title), "Journey is missing detail-pick");
   assert(before.steps.some((step) => ["save", "play"].includes(step.action) && step.title), "Journey is missing memory action");

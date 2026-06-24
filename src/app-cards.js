@@ -87,6 +87,34 @@
       const ratingBadge = personalRatingBadge(game);
       const signalCount = quickTasteSignalCountFromState();
       const isEarlyPick = signalCount >= 3 && signalCount < 6;
+      const currentState = gameUserState(game.title);
+      const playableStates = new Set(["owned", "owned_forever", "subscription", "playing", "paused", "want_to_finish"]);
+      const primaryMove = isEarlyPick
+        ? {
+          kind: "detail",
+          label: t("today.hero.primaryInspect"),
+          hint: t("today.hero.primaryInspectHint"),
+        }
+        : playableStates.has(currentState)
+          ? {
+            kind: "state",
+            state: "playing",
+            label: currentState === "playing" ? t("today.hero.primaryContinue") : t("today.hero.primaryPlay"),
+            hint: t("today.hero.primaryPlayHint"),
+          }
+          : {
+            kind: "state",
+            state: "saved",
+            label: t("today.hero.primarySave"),
+            hint: t("today.hero.primarySaveHint"),
+          };
+      const secondaryActions = [
+        primaryMove.kind === "detail" ? null : { kind: "detail", label: t("today.hero.details") },
+        primaryMove.state === "saved" ? null : { kind: "state", state: "saved", label: t("today.hero.save") },
+        primaryMove.state === "playing" ? null : { kind: "state", state: "playing", label: t("today.hero.play") },
+        primaryMove.state === "owned" ? null : { kind: "state", state: "owned", label: t("today.hero.owned") },
+        primaryMove.state === "completed" ? null : { kind: "state", state: "completed", label: t("today.hero.done") },
+      ].filter(Boolean);
       const facts = factList(game)
         .slice(0, 5)
         .map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`)
@@ -147,19 +175,31 @@
             <p class="watchout"><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
             <div class="facts">${facts}</div>
             <p class="cover-source hero-cover-source"></p>
+            <div class="hero-primary-cta">
+              <button class="primary-action" data-hero-primary data-hero-primary-kind="${primaryMove.kind}" ${primaryMove.state ? `data-hero-primary-state="${primaryMove.state}"` : ""} type="button">${primaryMove.label}</button>
+              <small>${primaryMove.hint}</small>
+            </div>
             <div class="hero-actions">
-              <button class="secondary-action" data-hero-detail type="button">${t("today.hero.details")}</button>
-              <button class="secondary-action" data-hero-state="saved" type="button">${t("today.hero.save")}</button>
-              <button class="secondary-action" data-hero-state="playing" type="button">${t("today.hero.play")}</button>
-              <button class="secondary-action" data-hero-state="owned" type="button">${t("today.hero.owned")}</button>
-              <button class="secondary-action" data-hero-state="completed" type="button">${t("today.hero.done")}</button>
+              ${secondaryActions.map((action) => action.kind === "detail"
+                ? `<button class="secondary-action" data-hero-detail type="button">${action.label}</button>`
+                : `<button class="secondary-action" data-hero-state="${action.state}" type="button">${action.label}</button>`
+              ).join("")}
             </div>
           </div>
         </article>
       `;
       applyCoverVisual(topPickEl.querySelector(".hero-visual"), game);
       renderCoverSourceInto(topPickEl.querySelector(".hero-cover-source"), game);
-      topPickEl.querySelector("[data-hero-detail]").addEventListener("click", () => openGameDetail(game.title));
+      topPickEl.querySelector("[data-hero-primary]")?.addEventListener("click", (event) => {
+        const button = event.currentTarget;
+        if (button.dataset.heroPrimaryKind === "detail") {
+          openGameDetail(game.title);
+          return;
+        }
+        setGameState(game.title, button.dataset.heroPrimaryState);
+        render();
+      });
+      topPickEl.querySelector("[data-hero-detail]")?.addEventListener("click", () => openGameDetail(game.title));
       topPickEl.querySelectorAll("[data-hero-state]").forEach((button) => {
         button.addEventListener("click", () => {
           setGameState(game.title, button.dataset.heroState);

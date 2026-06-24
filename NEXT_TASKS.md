@@ -168,8 +168,11 @@ deck. `browser-smoke-test.mjs` gates that the first-run entry cannot slip below
 the fold again. Follow-up done: the 3-signal result is framed as a "test pick"
 rather than a personal ranking, and the top-pick hero now shows a compact
 decision strip for why/risk/next action. `core-journey-smoke-test.mjs` gates
-the early framing, hero strip, detail, and Discover path. Next work here should
-be driven by real dogfooding notes, not more abstract copy tuning.
+the early framing, hero strip, detail, and Discover path. Follow-up done: the
+top-pick hero now has one context-aware primary CTA before secondary actions,
+and Library plan rows read as ordered next steps with a primary action per row.
+Next work here should be driven by real dogfooding notes, not more abstract copy
+tuning.
 
 ### 4. Chunk-label copy refinement
 

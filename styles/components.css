@@ -1626,6 +1626,27 @@ textarea {
   line-height: 1.15;
 }
 
+.hero-primary-cta {
+  display: grid;
+  gap: 5px;
+}
+
+.hero-primary-cta .primary-action {
+  width: min(100%, 260px);
+  min-height: 46px;
+  margin-top: 0;
+  padding: 0 16px;
+}
+
+.hero-primary-cta small {
+  display: block;
+  max-width: 42ch;
+  color: var(--text-mid);
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
 .card-evidence {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -2650,7 +2671,7 @@ textarea {
 
 .library-plan-row {
   display: grid;
-  grid-template-columns: minmax(86px, auto) minmax(0, 1fr) minmax(160px, auto);
+  grid-template-columns: minmax(96px, auto) minmax(0, 1fr) minmax(180px, auto);
   gap: 10px;
   align-items: center;
   border-top: 1px solid var(--line);
@@ -2658,9 +2679,20 @@ textarea {
   padding: 9px 0 0 10px;
 }
 
+.library-plan-row.is-next-step {
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--card-bg-soft);
+  padding: 10px;
+}
+
 .library-plan-row:first-child {
   border-top: 0;
   padding-top: 0;
+}
+
+.library-plan-row.is-next-step:first-child {
+  padding: 10px;
 }
 
 .library-plan-row.tone-finish,
@@ -2696,7 +2728,7 @@ textarea {
   line-height: 1.4;
 }
 
-.library-plan-label,
+.library-plan-step,
 .library-plan-tag {
   width: fit-content;
   border-radius: 999px;
@@ -2705,24 +2737,37 @@ textarea {
   font-weight: 900;
 }
 
-.library-plan-label {
+.library-plan-step {
   background: #ecfdf5;
   color: var(--green);
 }
 
-.tone-paused .library-plan-label,
-.tone-wishlist .library-plan-label {
+.library-plan-step span {
+  display: block;
+  color: color-mix(in srgb, currentColor 72%, var(--text-mid));
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.library-plan-step strong {
+  color: currentColor;
+  font-size: 0.76rem;
+  line-height: 1.1;
+}
+
+.tone-paused .library-plan-step,
+.tone-wishlist .library-plan-step {
   background: #fff4df;
   color: var(--amber);
 }
 
-.tone-access .library-plan-label,
-.tone-included .library-plan-label {
+.tone-access .library-plan-step,
+.tone-included .library-plan-step {
   background: #eaf0ff;
   color: var(--blue);
 }
 
-.tone-memory .library-plan-label {
+.tone-memory .library-plan-step {
   background: #ecfeff;
   color: var(--teal);
 }
@@ -2749,10 +2794,24 @@ textarea {
   font-weight: 850;
 }
 
+.library-plan-actions .library-plan-primary {
+  border-color: var(--blue);
+  background: var(--cta-gradient);
+  color: #fff;
+  box-shadow: var(--shadow-cta);
+}
+
 .library-plan-actions button:hover {
   border-color: var(--green);
   background: #eaf7ef;
   color: var(--green);
+}
+
+.library-plan-actions .library-plan-primary:hover {
+  border-color: var(--blue);
+  background: var(--cta-gradient);
+  color: #fff;
+  filter: brightness(1.05);
 }
 
 #memory-grid {
