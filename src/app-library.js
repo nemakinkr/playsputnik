@@ -152,6 +152,10 @@
       const accessGame = ranked.find((game) => getIsAlreadyAvailable(game) || (state.psPlus && game.psPlus.includes(region)));
       const radarLead = getRankedRadar()[0];
       const buyLater = buyLaterCandidate(ranked);
+      const guardGame = ranked.find((game) => (
+        getBlocksPurchase(game)
+        && ![topGame, accessGame, buyLater].some((item) => item && titleKey(item.title) === titleKey(game.title))
+      ));
       const rows = [];
 
       if (topGame) {
@@ -212,6 +216,19 @@
             : t("today.planVerifyDetail", { reason: dealReason(buyLater) }),
           primaryState: "saved",
           primaryLabel: t("today.planSave"),
+        });
+      }
+
+      if (guardGame) {
+        const rationale = decisionRationale(guardGame);
+        rows.push({
+          id: `guard-${guardGame.title}`,
+          label: t("today.planDoNotBuy"),
+          title: guardGame.title,
+          tag: t("today.planGuardrail"),
+          detail: t("today.planDoNotBuyDetail", { reason: rationale.headline }),
+          primaryAction: "snooze",
+          primaryLabel: t("today.planNotNow"),
         });
       }
 

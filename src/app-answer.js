@@ -457,6 +457,11 @@
           preSwipe: true,
           title: t("narrative.firstRun.preTitle"),
           detail: t("narrative.firstRun.preDetail"),
+          valueChips: [
+            t("narrative.firstRun.preChipNoAccount"),
+            t("narrative.firstRun.preChipThreeTaps"),
+            t("narrative.firstRun.preChipUseNow"),
+          ],
           actions: [{ id: "quick-entry", label: t("narrative.firstRun.actionQuickFill"), title: "" }],
         };
       }

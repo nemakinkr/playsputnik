@@ -3104,6 +3104,9 @@ function renderFirstRunFlow(ranked) {
         <div>
           <strong>${bridge.title}</strong>
           <p>${bridge.detail}</p>
+          <div class="first-run-value-contract">
+            ${(bridge.valueChips || []).map((chip) => `<span>${chip}</span>`).join("")}
+          </div>
         </div>
         <div class="first-run-pre-actions">
           <button class="first-run-start-cta" data-first-run-action="more-signal" data-first-run-title="" type="button">${t("narrative.firstRun.preStart")}</button>
@@ -3598,9 +3601,22 @@ function renderLibrary() {
 }
 function renderCompanionPlan(ranked) {
   const plan = companionPlan(ranked);
-  els.planSummary.textContent = t("today.planSummary", { count: plan.length });
+  const amnesty = backlogAmnestyCandidate(ranked);
+  const commandRows = [
+    ...plan,
+    amnesty ? {
+      id: `amnesty-${amnesty.game.title}`,
+      label: t("today.planLetGoLabel"),
+      title: amnesty.game.title,
+      tag: t("today.planNoGuilt"),
+      detail: t("today.planLetGoDetail", { count: amnesty.meta.skips }),
+      primaryAction: "archive",
+      primaryLabel: t("today.planLetGo"),
+    } : null,
+  ].filter(Boolean);
+  els.planSummary.textContent = t("today.planSummary", { count: commandRows.length });
   els.planList.replaceChildren(
-    ...plan.map((item, index) => {
+    ...commandRows.map((item, index) => {
       const row = document.createElement("div");
       row.className = `plan-row ${index === 0 ? "is-primary" : ""}`;
       row.innerHTML = `
@@ -3613,11 +3629,21 @@ function renderCompanionPlan(ranked) {
           <span class="plan-tag">${item.tag}</span>
           <button data-plan-detail type="button">${t("today.planDetails")}</button>
           ${item.primaryState ? `<button class="plan-primary-action" data-plan-state="${item.primaryState}" type="button">${item.primaryLabel}</button>` : ""}
+          ${item.primaryAction ? `<button class="plan-primary-action" data-plan-action="${item.primaryAction}" type="button">${item.primaryLabel}</button>` : ""}
         </div>
       `;
       row.querySelector("[data-plan-detail]")?.addEventListener("click", () => openGameDetail(item.title));
       row.querySelector("[data-plan-state]")?.addEventListener("click", (event) => {
         setGameState(item.title, event.currentTarget.dataset.planState);
+        render();
+      });
+      row.querySelector("[data-plan-action]")?.addEventListener("click", (event) => {
+        const action = event.currentTarget.dataset.planAction;
+        if (action === "snooze") {
+          stageLastUndo("snooze", item.title);
+          snoozeGame(item.title);
+        }
+        if (action === "archive") archiveBacklogCandidate(item.title);
         render();
       });
       return row;
@@ -4120,6 +4146,31 @@ function searchResultMemoryStatus(result) {
   };
 }
 
+function searchResultMemoryChecks(result) {
+  const saved = resultAlreadySaved(result);
+  const owned = resultStateSelected(result, "owned");
+  const subscription = resultStateSelected(result, "subscription");
+  const remembered = saved || owned || subscription;
+  return [
+    {
+      done: remembered,
+      label: remembered ? t("discover.memoryCheckRemembered") : t("discover.memoryCheckChoose"),
+    },
+    {
+      done: Boolean(result.sourceId || result.sourceUrl),
+      label: t("discover.memoryCheckSource"),
+    },
+    {
+      done: saved,
+      label: saved
+        ? t("discover.memoryCheckWishlist")
+        : remembered
+          ? t("discover.memoryCheckLibrary")
+          : t("discover.memoryCheckNext"),
+    },
+  ];
+}
+
 function editionLabelForItem(item) {
   if (!item?.editionLabel) return "";
   if (item.editionRole === "legacy") return `${item.editionLabel} / ${t("narrative.detail.legacyEdition")}`;
@@ -4248,6 +4299,7 @@ function renderGameSearch() {
       const owned = resultStateSelected(result, "owned");
       const subscription = resultStateSelected(result, "subscription");
       const memory = searchResultMemoryStatus(result);
+      const memoryChecks = searchResultMemoryChecks(result);
       const ratingBadge = personalRatingBadge(canonicalSearchResultSeed(result) || result);
       const canonicalTitle = canonicalSearchResultTitle(result);
       const queuedForRating = isTitleQueued(canonicalTitle);
@@ -4275,6 +4327,9 @@ function renderGameSearch() {
             <span>${t("discover.memory")}</span>
             <strong>${memory.label}</strong>
             <small>${memory.detail}</small>
+            <div class="game-search-memory-checks">
+              ${memoryChecks.map((check) => `<span class="${check.done ? "is-done" : ""}">${check.label}</span>`).join("")}
+            </div>
           </div>
           <button class="memory-action search-primary-action ${saved ? "is-selected" : ""}" data-search-state="saved" aria-pressed="${saved}" type="button">${saved ? t("discover.actionSaved") : t("discover.actionWishlist")}</button>
           ${saved ? `<button class="memory-action search-next-action" data-search-open-wishlist type="button">${t("discover.actionOpenWishlist")}</button>` : ""}

@@ -1206,6 +1206,7 @@ function checkSelectors() {
   assert(/function searchResultMemoryStatus/.test(appSource), "Search results should expose memory confirmation status");
   assert(/function addSearchResultToWishlist/.test(appSearchMemorySource), "Search wishlist add handler is missing");
   assert(/data-search-memory-panel/.test(appSource), "Search results should show direct add confirmation panels");
+  assert(/game-search-memory-checks/.test(appSource + css), "Search memory panel should show a result checklist");
   assert(/data-search-open-wishlist/.test(appSource), "Saved search results should expose a Wishlist next step");
   assert(/aria-pressed="\$\{saved\}"/.test(appSource), "Search Wishlist action should expose pressed state");
   assert(/data-search-detail/.test(appSource), "Search results should expose a Details path");
@@ -1221,6 +1222,8 @@ function checkSelectors() {
   assert(/function recommendationPool/.test(appSource), "External wishlist games should enter the recommendation pool");
   assert(/recommendationPool/.test(appSource + appRankingSource), "Ranked games should use the recommendation pool");
   assert(/plan-primary-action/.test(appSource + css), "Today command center should expose primary row actions");
+  assert(/data-plan-action/.test(appSource), "Today command center should expose non-state commands");
+  assert(/today\.planDoNotBuy/.test(appLibrarySource), "Today command center should include a no-buy command");
   assert(/today\.planSummary/.test(appSource + appLibrarySource), "Today command center should use localized summary copy");
   assert(/External discovery/.test(appScoreSource), "External discovery should have an explicit scoring line");
   assert(/Price missing/.test(appSource + i18nEnSource), "External recommendation cards should not fake missing prices");
@@ -1362,6 +1365,7 @@ function checkSelectors() {
   assert(/data-continuity-action="discover"/.test(demoProfileSmokeSource), "Demo smoke should verify Discover continuity");
   assert(/function firstRunTasteProof/.test(appAnswerSource), "First-run taste proof is missing");
   assert(/first-run-taste-proof/.test(appAnswerSource + appSource), "First-run taste proof renderer is missing");
+  assert(/first-run-value-contract/.test(appSource + css), "First-run pre-swipe screen should expose a compact value contract");
   assert(/id: "more-signal"/.test(appAnswerSource), "First-run more-signal action is missing");
   assert(/function bestLibraryPick/.test(appLibrarySource), "Library-first primary pick is missing");
   assert(/function primaryDecisionGame/.test(appLibrarySource), "Primary decision game selector is missing");

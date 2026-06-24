@@ -175,6 +175,9 @@ decision strip for why/risk/next action. `core-journey-smoke-test.mjs` gates
 the early framing, hero strip, detail, and Discover path. Follow-up done: the
 top-pick hero now has one context-aware primary CTA before secondary actions,
 and Library plan rows read as ordered next steps with a primary action per row.
+Follow-up done: the clean first-run panel now makes the first-60-second value
+contract explicit before setup: no account required, three taps to a first
+pick, and usable before PSN/library/rating import.
 Next work here should be driven by real dogfooding notes, not more abstract copy
 tuning.
 
@@ -269,6 +272,9 @@ surfaces. Visual catalog cards have cleaner state/value pills, hover affordance,
 selected-state accent bars, and more stable action-button layout. Follow-up
 done: after a Discover result is saved, the row exposes an "Open Wishlist" next
 step while keeping the selected Wishlist state pressed and source-attributed.
+Follow-up done: the memory panel now shows a compact checklist for remembered
+state, retained source, and next destination, so add-to-Wishlist has visible
+follow-through.
 Design smoke now accepts the visible first-run onboarding panel when the quick
 swipe card is present but hidden.
 
@@ -298,6 +304,10 @@ user with disconnected screens.
 Follow-up done: Today companion plan now behaves like a command center: the
 first row is highlighted, rows have detail links, and play/watch/buy-later
 commands have localized stateful CTAs instead of passive text only.
+
+Follow-up done: the command center can now surface explicit "do not buy now"
+guardrail commands and backlog-amnesty "let go" commands, so avoiding a bad
+purchase or dropping a repeatedly skipped game becomes a first-class action.
 
 ### 16. Demo profile + Today/Discover continuity
 

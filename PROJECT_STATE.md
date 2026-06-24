@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v62 (cache-first static assets / network-first navigation and
+- Service worker v63 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -120,10 +120,14 @@ reviews, catalogs, sale pages, and announcements.
   still uncertain, plus a "Next 3 clicks" journey into detail, memory, and
   Discover search. Clean profiles now get the one-question taste prompt in the
   first Today viewport; the 3-signal answer is explicitly framed as a test pick,
-  and the top-pick hero shows why/risk/next-action before deeper evidence.
+  and the top-pick hero shows why/risk/next-action before deeper evidence. The
+  clean first-run panel now states the no-account / 3-tap / useful-before-setup
+  value contract before deeper onboarding.
 - Today: the companion plan now reads as a practical command center with
   localized play/use-access/watch/buy-later rows, highlighted first action,
-  detail links, and stateful Play/Wishlist CTAs.
+  detail links, and stateful Play/Wishlist CTAs. It can also surface explicit
+  "do not buy now" guardrail commands and backlog-amnesty "let go" commands
+  when those decisions are healthier than another purchase.
 - Demo/review mode: a top product-path panel can load a stable filled profile
   with taste reactions, library/wishlist memory, ratings, price targets, and
   search context; the same panel connects Today, Discover, Wishlist, and the
@@ -148,7 +152,8 @@ reviews, catalogs, sale pages, and announcements.
   Wishlist, Library, or Plus with an in-row memory confirmation panel; external
   results keep source passport + cover attribution and avoid fake live
   price/Plus claims. Saved search results now expose an immediate "Open
-  Wishlist" next step so the add action has visible follow-through.
+  Wishlist" next step and a small checklist so the add action has visible
+  follow-through: remembered, source kept, next destination.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
 - Mobile navigation: all 8 product areas are visible without horizontal
   scrolling; Today/Library/Discover/Wishlist get primary 2x2 slots and
