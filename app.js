@@ -2813,21 +2813,23 @@ function renderOnboardingHero() {
   if (!featured) return;
   const game = nextDiagnosticGame() || profileGames.find((item) => !quickReaction(item.title)) || profileGames[0];
   if (!game) return;
+  const title = detailAttr(game.title);
   featured.innerHTML = `
-    <article class="onboarding-game-tile onboarding-game-tile--hero" data-onboarding-title="${detailAttr(game.title)}">
-      <div class="onboarding-tile-poster" style="background:${game.color || "var(--panel)"}"></div>
+    <article class="onboarding-game-tile onboarding-game-tile--hero" data-onboarding-title="${title}">
+      <div class="onboarding-tile-poster"><span>${title}</span></div>
       <div class="onboarding-tile-body">
         <span>${labelAtoms((game.atoms || []).slice(0, 2), " · ") || t("settings.quickSwipe.tasteSignal")}</span>
-        <strong>${game.title}</strong>
+        <strong>${title}</strong>
         <small>${quickSwipeFollowUpHint(game)}</small>
       </div>
       <div class="onboarding-tile-actions" role="group" aria-label="${t("settings.reactions.swipeAria", { title: game.title })}">
-        <button class="onboarding-pass" data-onboard-react="not_for_me" data-onboard-title="${detailAttr(game.title)}" type="button">${t("settings.reactions.notForMe")}</button>
-        <button class="onboarding-skip" data-onboard-react="unplayed" data-onboard-title="${detailAttr(game.title)}" type="button">${t("settings.reactions.notPlayed")}</button>
-        <button class="onboarding-like" data-onboard-react="loved" data-onboard-title="${detailAttr(game.title)}" type="button">${t("settings.reactions.liked")}</button>
+        <button class="onboarding-pass" data-onboard-react="not_for_me" data-onboard-title="${title}" type="button">${t("settings.reactions.notForMe")}</button>
+        <button class="onboarding-skip" data-onboard-react="unplayed" data-onboard-title="${title}" type="button">${t("settings.reactions.notPlayed")}</button>
+        <button class="onboarding-like" data-onboard-react="loved" data-onboard-title="${title}" type="button">${t("settings.reactions.liked")}</button>
       </div>
     </article>
   `;
+  featured.querySelector(".onboarding-tile-poster")?.style.setProperty("--poster", coverBackground(game));
   featured.querySelectorAll("[data-onboard-react]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();

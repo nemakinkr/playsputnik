@@ -649,6 +649,24 @@ textarea {
   margin: 0;
 }
 
+.onboarding-value-contract {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.onboarding-value-contract span {
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.82);
+  padding: 5px 8px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
 .onboarding-progress {
   display: flex;
   flex-direction: column;
@@ -699,8 +717,37 @@ textarea {
 }
 
 .onboarding-tile-poster {
+  position: relative;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
   min-height: 100%;
   width: 100%;
+  background: var(--poster), linear-gradient(135deg, #17202b, #314156);
+  background-position: center;
+  background-size: cover;
+}
+
+.onboarding-tile-poster::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5, 12, 28, 0) 20%, rgba(5, 12, 28, 0.82) 100%),
+    radial-gradient(circle at 70% 15%, rgba(255,255,255,.18), rgba(255,255,255,0) 34%);
+  content: "";
+}
+
+.onboarding-tile-poster span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 8px;
+  color: #fff;
+  font-size: 0.64rem;
+  font-weight: 950;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 8px rgba(0,0,0,.44);
 }
 
 .onboarding-tile-body {
@@ -763,12 +810,67 @@ textarea {
 .onboarding-pass.is-active { background: rgba(239,68,68,.2); border-color: rgba(239,68,68,.5); }
 
 @media (max-width: 640px) {
+  .onboarding-hero {
+    gap: 14px;
+    padding: 22px 16px 18px;
+  }
+
   .onboarding-hero-text h2 {
     font-size: 1.25rem;
+    margin-bottom: 6px;
+  }
+
+  .onboarding-hero-text p {
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .onboarding-value-contract {
+    gap: 5px;
+    margin-top: 10px;
+  }
+
+  .onboarding-value-contract span {
+    font-size: 0.66rem;
+    padding: 4px 7px;
+  }
+
+  .onboarding-progress {
+    gap: 5px;
   }
 
   .onboarding-game-tile--hero {
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+
+  .onboarding-tile-body {
+    padding: 9px 9px 3px;
+  }
+
+  .onboarding-tile-body strong {
+    font-size: 0.92rem;
+    line-height: 1.22;
+  }
+
+  .onboarding-tile-body small {
+    line-height: 1.28;
+  }
+
+  .onboarding-tile-poster span {
+    font-size: 0.58rem;
+    padding: 7px;
+  }
+
+  .onboarding-tile-actions {
+    gap: 4px;
+    padding: 4px 7px 7px;
+  }
+
+  .onboarding-like,
+  .onboarding-pass,
+  .onboarding-skip {
+    min-height: 34px;
+    font-size: 0.76rem;
   }
 }
 

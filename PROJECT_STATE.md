@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v63 (cache-first static assets / network-first navigation and
+- Service worker v64 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -121,8 +121,9 @@ reviews, catalogs, sale pages, and announcements.
   Discover search. Clean profiles now get the one-question taste prompt in the
   first Today viewport; the 3-signal answer is explicitly framed as a test pick,
   and the top-pick hero shows why/risk/next-action before deeper evidence. The
-  clean first-run panel now states the no-account / 3-tap / useful-before-setup
-  value contract before deeper onboarding.
+  clean first-run hero now states the no-account / 3-tap /
+  useful-before-setup value contract and shows a source-aware diagnostic game
+  poster before deeper onboarding.
 - Today: the companion plan now reads as a practical command center with
   localized play/use-access/watch/buy-later rows, highlighted first action,
   detail links, and stateful Play/Wishlist CTAs. It can also surface explicit

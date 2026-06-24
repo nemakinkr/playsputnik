@@ -175,9 +175,12 @@ decision strip for why/risk/next action. `core-journey-smoke-test.mjs` gates
 the early framing, hero strip, detail, and Discover path. Follow-up done: the
 top-pick hero now has one context-aware primary CTA before secondary actions,
 and Library plan rows read as ordered next steps with a primary action per row.
-Follow-up done: the clean first-run panel now makes the first-60-second value
+Follow-up done: the clean first-run hero now makes the first-60-second value
 contract explicit before setup: no account required, three taps to a first
-pick, and usable before PSN/library/rating import.
+pick, and usable before PSN/library/rating import. The diagnostic game card now
+uses the same source-aware cover treatment as the rest of the product instead
+of a blank color tile, with compact mobile spacing so the reaction buttons
+remain in the first screen.
 Next work here should be driven by real dogfooding notes, not more abstract copy
 tuning.
 
