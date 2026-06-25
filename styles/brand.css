@@ -99,3 +99,43 @@ textarea:focus-visible,
 .region-pill {
   border-radius: var(--radius-pill);
 }
+
+/* ── Phase 6: main-screen hierarchy ─────────────────────────────────────────
+   Eyebrow recedes under the H1 — small, spaced, calmer brand blue. */
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ps-blue);
+  opacity: 0.82;
+}
+/* Review / demo-continuity panel → clean soft-blue info card */
+.demo-continuity-panel {
+  background: var(--ps-blue-soft);
+  border-color: var(--ps-blue-border);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Phase 7: empty / loading / alert states ────────────────────────────────
+   Friendly, soft, centered empties instead of bare blank blocks. */
+.search-empty,
+.queue-empty,
+.learning-empty,
+.drop-empty,
+.taste-profile-empty,
+.rating-queue-empty {
+  text-align: center;
+  color: var(--ps-muted);
+  background: var(--ps-surface-soft);
+  border: 1px dashed var(--ps-border);
+  border-radius: var(--radius-lg);
+  padding: 22px 18px;
+}
+/* Toasts / banners → soft, rounded, gentle shadow (no harsh solid fills) */
+.data-error-toast,
+.onboarding-toast,
+.sw-update-banner,
+.taste-import-banner {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
