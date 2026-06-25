@@ -181,6 +181,10 @@ pick, and usable before PSN/library/rating import. The diagnostic game card now
 uses the same source-aware cover treatment as the rest of the product instead
 of a blank color tile, with compact mobile spacing so the reaction buttons
 remain in the first screen.
+Follow-up done: quick taste now chooses the next known game by diagnostic taste
+axes as well as atoms, while preserving broadly recognizable first questions.
+`onboarding-diagnostic-test.mjs` gates that the first three questions cover
+several taste dimensions and that mixed signals get a focused follow-up.
 Next work here should be driven by real dogfooding notes, not more abstract copy
 tuning.
 

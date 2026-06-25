@@ -37,8 +37,8 @@ The order below is executable boot order and offline-cache order.
 | Phase | Module | Global | Lines | Ownership |
 | ---: | --- | --- | ---: | --- |
 | 0 | `src/app-i18n.js` | `PlaySputnikI18n` | 145 | Localization engine |
-| 1 | `src/i18n-en.js` | catalog side effect | 1236 | English message catalog |
-| 1 | `src/i18n-ru.js` | catalog side effect | 1235 | Russian message catalog |
+| 1 | `src/i18n-en.js` | catalog side effect | 1241 | English message catalog |
+| 1 | `src/i18n-ru.js` | catalog side effect | 1240 | Russian message catalog |
 | 1 | `src/app-storage.js` | `PlaySputnikStorage` | 134 | IndexedDB and localStorage adapter |
 | 1 | `src/app-config.js` | `PlaySputnikConfig` | 291 | Application configuration and constants |
 | 1 | `src/app-state-migrations.js` | `PlaySputnikStateMigrations` | 64 | Persisted state schema migrations |
@@ -48,7 +48,7 @@ The order below is executable boot order and offline-cache order.
 | 1 | `src/app-score.js` | `PlaySputnikScore` | 780 | Taste and session scoring |
 | 1 | `src/app-decisions.js` | `PlaySputnikDecisions` | 133 | Comparison and rate-later workflows |
 | 1 | `src/app-import.js` | `PlaySputnikImport` | 217 | Text import parsing |
-| 2 | `src/app-onboarding.js` | `PlaySputnikOnboarding` | 363 | Taste onboarding logic |
+| 2 | `src/app-onboarding.js` | `PlaySputnikOnboarding` | 433 | Taste onboarding logic |
 | 2 | `src/app-radar.js` | `PlaySputnikRadar` | 120 | Taste radar calculations |
 | 2 | `src/app-recommend.js` | `PlaySputnikRecommend` | 783 | Recommendation evidence and forecasts |
 | 2 | `src/app-session.js` | `PlaySputnikSession` | 136 | Session tracking |

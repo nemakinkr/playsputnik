@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v67 (cache-first static assets / network-first navigation and
+- Service worker v68 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -123,7 +123,9 @@ reviews, catalogs, sale pages, and announcements.
   and the top-pick hero shows why/risk/next-action before deeper evidence. The
   clean first-run hero now states the no-account / 3-tap /
   useful-before-setup value contract and shows a source-aware diagnostic game
-  poster before deeper onboarding.
+  poster before deeper onboarding. The quick taste queue now balances broad
+  recognizability with diagnostic axis coverage, so the first few swipes span
+  different taste dimensions instead of drifting into three similar questions.
 - Today: the companion answer and plan now read as a practical command center
   with a stronger primary answer surface, localized play/use-access/watch/
   buy-later rows, highlighted first action, detail links, and stateful

@@ -11,6 +11,15 @@
     QUICK_TASTE_SHARP_TARGET,
   } = window.PlaySputnikConfig;
 
+  const DIAGNOSTIC_AXIS_GROUPS = [
+    { id: "story", labelKey: "settings.onboarding.axisStory", atoms: ["story", "cinematic", "choice", "reading", "linear"] },
+    { id: "world", labelKey: "settings.onboarding.axisWorld", atoms: ["open-world", "exploration", "sandbox", "rpg", "survival"] },
+    { id: "systems", labelKey: "settings.onboarding.axisSystems", atoms: ["systems", "turn-based", "strategy", "management", "roguelike"] },
+    { id: "intensity", labelKey: "settings.onboarding.axisIntensity", atoms: ["action", "shooter", "horror", "challenge", "soulslike", "tension"] },
+    { id: "life", labelKey: "settings.onboarding.axisLife", atoms: ["short", "long", "slow", "cozy", "routine", "service"] },
+    { id: "social", labelKey: "settings.onboarding.axisSocial", atoms: ["multiplayer", "co-op", "competitive", "social", "sports", "racing", "puzzle"] },
+  ];
+
   function createOnboardingTools({
     getState,
     profileGames,
@@ -63,11 +72,57 @@
       return diagnosticOnboardingAtoms.filter((atom) => !signaledAtoms.has(atom));
     }
 
+    function diagnosticAxisHits(game) {
+      const atoms = new Set(game.atoms || []);
+      return DIAGNOSTIC_AXIS_GROUPS
+        .filter((group) => group.atoms.some((atom) => atoms.has(atom)))
+        .map((group) => group.id);
+    }
+
+    function diagnosticAxisLabels(axisIds, limit = 2) {
+      const uniqueIds = [...new Set(axisIds)].slice(0, limit);
+      return uniqueIds
+        .map((id) => DIAGNOSTIC_AXIS_GROUPS.find((group) => group.id === id)?.labelKey)
+        .filter(Boolean)
+        .map((key) => t(key))
+        .join(" + ");
+    }
+
+    function quickTasteSignalAxes() {
+      const signaledAtoms = quickTasteSignalAtoms();
+      return new Set(
+        DIAGNOSTIC_AXIS_GROUPS
+          .filter((group) => group.atoms.some((atom) => signaledAtoms.has(atom)))
+          .map((group) => group.id),
+      );
+    }
+
+    function quickAnsweredAxes() {
+      const answeredAtoms = quickAnsweredAtoms();
+      return new Set(
+        DIAGNOSTIC_AXIS_GROUPS
+          .filter((group) => group.atoms.some((atom) => answeredAtoms.has(atom)))
+          .map((group) => group.id),
+      );
+    }
+
+    function uncoveredDiagnosticAxes() {
+      const signaledAxes = quickTasteSignalAxes();
+      return DIAGNOSTIC_AXIS_GROUPS.map((group) => group.id).filter((id) => !signaledAxes.has(id));
+    }
+
+    function diagnosticAxisNeedScore(game, missingAxes = uncoveredDiagnosticAxes(), answeredAxes = quickAnsweredAxes()) {
+      const axisHits = diagnosticAxisHits(game);
+      const missingAxisCoverage = axisHits.filter((id) => missingAxes.includes(id)).length;
+      const newAxisCoverage = axisHits.filter((id) => !answeredAxes.has(id)).length;
+      return missingAxisCoverage * 450 + newAxisCoverage * 90;
+    }
+
     function diagnosticNeedScore(game, missingAtoms = uncoveredDiagnosticAtoms(), answeredAtoms = quickAnsweredAtoms()) {
       const atoms = new Set(game.atoms || []);
       const missingCoverage = missingAtoms.filter((atom) => atoms.has(atom)).length;
       const newAtomCoverage = [...atoms].filter((atom) => !answeredAtoms.has(atom)).length;
-      return missingCoverage * 100 + newAtomCoverage;
+      return diagnosticAxisNeedScore(game) + missingCoverage * 100 + newAtomCoverage;
     }
 
     function conflictResolutionScore(game, conflict = quickTasteConflictReport(), answeredAtoms = quickAnsweredAtoms()) {
@@ -97,9 +152,16 @@
 
     function quickSwipeFollowUpHint(game, missingAtoms = uncoveredDiagnosticAtoms(), conflict = quickTasteConflictReport()) {
       const focus = diagnosticFocusForGame(game, missingAtoms, conflict);
-      if (focus.startsWith("Clarifying")) return t("settings.onboarding.hintFollowUp");
-      if (focus.startsWith("Checking")) return t("settings.onboarding.hintFresh");
-      return t("settings.onboarding.hintNext");
+      const axes = diagnosticAxisLabels(diagnosticAxisHits(game));
+      if (focus.startsWith("Clarifying")) return axes
+        ? t("settings.onboarding.hintFollowUpAxes", { axes })
+        : t("settings.onboarding.hintFollowUp");
+      if (focus.startsWith("Checking")) return axes
+        ? t("settings.onboarding.hintFreshAxes", { axes })
+        : t("settings.onboarding.hintFresh");
+      return axes
+        ? t("settings.onboarding.hintNextAxes", { axes })
+        : t("settings.onboarding.hintNext");
     }
 
     function quickSwipeAtomChips(game, missingAtoms = uncoveredDiagnosticAtoms(), conflict = quickTasteConflictReport()) {
@@ -127,7 +189,9 @@
         .sort((a, b) => {
           const aScore = conflict.hasConflict && a.conflictScore ? 10000 + a.conflictScore : a.score;
           const bScore = conflict.hasConflict && b.conflictScore ? 10000 + b.conflictScore : b.score;
-          return bScore - aScore || a.index - b.index;
+          const aOrderPenalty = Math.min(a.index, 24) * 40;
+          const bOrderPenalty = Math.min(b.index, 24) * 40;
+          return (bScore - bOrderPenalty) - (aScore - aOrderPenalty) || a.index - b.index;
         })[0]?.game;
     }
 
@@ -340,6 +404,12 @@
       quickTasteSignalAtoms,
       quickAnsweredAtoms,
       uncoveredDiagnosticAtoms,
+      diagnosticAxisHits,
+      diagnosticAxisLabels,
+      quickTasteSignalAxes,
+      quickAnsweredAxes,
+      uncoveredDiagnosticAxes,
+      diagnosticAxisNeedScore,
       diagnosticNeedScore,
       conflictResolutionScore,
       diagnosticFocusForGame,
