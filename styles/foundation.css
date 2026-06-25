@@ -1,75 +1,111 @@
 :root {
   color-scheme: light;
-  /* ── PlayStation-bold palette ─────────────────────────────────────────── */
-  --ink: #0b1220;            /* near-black for high contrast */
-  --muted: #5b6b82;
-  --line: #d6deea;
-  --paper: #eef2f8;
-  --panel: #ffffff;
-  --surface: #f7f9fd;
-  /* PlayStation blue family */
-  --blue: #0064d2;           /* primary interactive */
-  --blue-deep: #00368e;      /* deep brand blue */
-  --blue-bright: #2e8bff;    /* highlight / focus */
-  --teal: #0b7c85;
-  --green: #0f8a52;
-  --rose: #d12b58;
-  --amber: #b06f00;
-  --cta-gradient: linear-gradient(135deg, #0064d2 0%, #003fa3 100%);
-  --hero-gradient: linear-gradient(150deg, #00368e 0%, #0a1a3f 100%);
-  --shadow: 0 24px 60px rgba(0, 36, 102, 0.16);
-  --shadow-soft: 0 12px 30px rgba(0, 36, 102, 0.1);
-  --shadow-hairline: 0 1px 2px rgba(11, 18, 32, 0.06);
-  --shadow-cta: 0 8px 20px rgba(0, 100, 210, 0.32);
+  /* ── PlaySputnik brand palette ────────────────────────────────────────────
+     Clean white-and-blue, friendly, lightly cosmic. The brand --ps-* tokens are
+     the source of truth; the legacy semantic tokens below are aliased onto them
+     so the whole existing UI adopts the new brand without per-component edits. */
+  --ps-blue: #2563eb;
+  --ps-blue-hover: #1d4ed8;
+  --ps-blue-soft: #eff6ff;
+  --ps-blue-border: #bfdbfe;
+  --ps-ink: #0b132b;
+  --ps-ink-soft: #1e293b;
+  --ps-muted: #64748b;
+  --ps-muted-light: #94a3b8;
+  --ps-bg: #f5f7fb;
+  --ps-surface: #ffffff;
+  --ps-surface-soft: #f8fafc;
+  --ps-border: #e2e8f0;
+  --ps-border-soft: #eef2f7;
+  --ps-success: #10b981;
+  --ps-warning: #f59e0b;
+  --ps-error: #ef4444;
+  --ps-discount: #ef4444;
+
+  /* Legacy semantic aliases → brand palette (keeps existing var() refs working) */
+  --ink: var(--ps-ink);
+  --muted: var(--ps-muted);
+  --line: var(--ps-border);
+  --paper: var(--ps-bg);
+  --panel: var(--ps-surface);
+  --surface: var(--ps-surface-soft);
+  --blue: var(--ps-blue);
+  --blue-deep: var(--ps-blue-hover);
+  --blue-bright: #3b82f6;
+  --teal: #0d9488;
+  --green: var(--ps-success);
+  --rose: var(--ps-error);
+  --amber: var(--ps-warning);
+  --cta-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --hero-gradient: linear-gradient(150deg, #1d4ed8 0%, #0b132b 100%);
+
+  /* Soft shadows — border-led, not floating */
+  --shadow-sm: 0 1px 2px rgba(11, 19, 43, 0.04);
+  --shadow-md: 0 8px 24px rgba(11, 19, 43, 0.06);
+  --shadow-lg: 0 16px 40px rgba(11, 19, 43, 0.10);
+  --shadow: var(--shadow-lg);
+  --shadow-soft: var(--shadow-md);
+  --shadow-hairline: var(--shadow-sm);
+  --shadow-cta: 0 8px 20px rgba(37, 99, 235, 0.18);
+
   /* Semantic surfaces — used by dark theme overrides */
-  --card-bg: #ffffff;
-  --card-bg-soft: #f4f7fc;
-  --card-border: #dfe6f1;
-  --text-strong: #0b1220;
-  --text-mid: #41506a;
-  --text-soft: #8595ad;
-  --accent-bg: #e4eeff;
-  --accent-text: #00368e;
-  --radius-lg: 14px;
-  --radius-md: 10px;
-  --radius-sm: 7px;
-  --body-gradient: linear-gradient(180deg, #eef3fb 0%, #e3eaf5 100%);
+  --card-bg: var(--ps-surface);
+  --card-bg-soft: var(--ps-surface-soft);
+  --card-border: var(--ps-border);
+  --text-strong: var(--ps-ink);
+  --text-mid: #475569;
+  --text-soft: var(--ps-muted-light);
+  --accent-bg: var(--ps-blue-soft);
+  --accent-text: var(--ps-blue);
   --chip-bg: #f1f5f9;
-  --surface-2: #f8fafc;
+  --surface-2: var(--ps-surface-soft);
+
+  /* Radii (4px-grid scale) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-pill: 999px;
+  --body-gradient: linear-gradient(180deg, #f5f7fb 0%, #eef2f7 100%);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --ink: #eaf1fb;
-  --muted: #93a4b8;
-  --line: #243247;
-  --paper: #0b1120;
-  --panel: #131c2e;
-  --surface: #0f1726;
-  --blue: #3b8bff;           /* brighter on dark */
-  --blue-deep: #0a3aa0;
+  /* Calm dark brand — not neon/cyberpunk */
+  --ps-blue: #3b82f6;
+  --ps-blue-hover: #2563eb;
+  --ps-blue-soft: #16264a;
+  --ps-blue-border: rgba(59, 130, 246, 0.35);
+  --ps-ink: #f8fafc;
+  --ps-ink-soft: #cbd5e1;
+  --ps-muted: #94a3b8;
+  --ps-muted-light: #7a8aa0;
+  --ps-bg: #07111f;
+  --ps-surface: #0b132b;
+  --ps-surface-soft: #111c33;
+  --ps-border: rgba(255, 255, 255, 0.10);
+  --ps-border-soft: rgba(255, 255, 255, 0.06);
+
   --blue-bright: #5aa3ff;
-  --teal: #3bb4bd;
+  --teal: #2dd4bf;
   --green: #2fc07f;
   --rose: #f0608a;
   --amber: #e0ad3c;
-  --cta-gradient: linear-gradient(135deg, #1273ee 0%, #0a47bd 100%);
-  --hero-gradient: linear-gradient(150deg, #0a3aa0 0%, #060d1f 100%);
-  --shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
-  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.4);
-  --shadow-hairline: 0 1px 2px rgba(0, 0, 0, 0.45);
-  --shadow-cta: 0 8px 22px rgba(18, 115, 238, 0.4);
-  --card-bg: #131c2e;
-  --card-bg-soft: #1b273c;
+  --cta-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --hero-gradient: linear-gradient(150deg, #1d4ed8 0%, #060d1f 100%);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-cta: 0 8px 22px rgba(37, 99, 235, 0.4);
+  --card-bg: var(--ps-surface);
+  --card-bg-soft: var(--ps-surface-soft);
   --card-border: #28374f;
-  --text-strong: #eaf1fb;
   --text-mid: #b3c0d0;
-  --text-soft: #7a8aa0;
-  --accent-bg: #16264a;
+  --accent-bg: var(--ps-blue-soft);
   --accent-text: #93b8ff;
-  --body-gradient: linear-gradient(180deg, #0e141c 0%, #0a0f16 100%);
   --chip-bg: #1b273c;
-  --surface-2: #1b273c;
+  --body-gradient: linear-gradient(180deg, #0a1120 0%, #07111f 100%);
 }
 
 * {

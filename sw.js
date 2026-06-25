@@ -3,7 +3,7 @@
 
 importScripts("./src/module-manifest.js");
 
-const CACHE_VERSION = "v69";
+const CACHE_VERSION = "v70";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
