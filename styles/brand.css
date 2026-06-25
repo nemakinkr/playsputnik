@@ -1,0 +1,87 @@
+/* PlaySputnik brand polish — final design-system layer.
+ *
+ * Loaded LAST (after themes.css) so it refines key components to the PlaySputnik
+ * design system without editing the 107KB component sheet: compact product-like
+ * tabs, lighter border-led stat cards, brand focus rings, calmer type weights,
+ * unified primary buttons. Tokens come from foundation.css (--ps-*). */
+
+/* ── Typography: dial back excess bold ──────────────────────────────────────
+   Body and secondary copy sit at 500; bold stays for headings, card titles,
+   active items, and key values (which set their own weight). */
+body { font-weight: 500; }
+
+/* ── Navigation tabs: more compact, less heavy ──────────────────────────── */
+.app-view-tab {
+  min-height: 52px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+}
+.app-view-tab strong { font-size: 0.88rem; font-weight: 700; }
+.app-view-tab span {
+  margin-top: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+/* Active tab keeps the brand blue gradient (--cta-gradient, set in foundation):
+   a soft image-backed fill, crisper shadow. */
+.app-view-tab.is-active {
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.22);
+}
+
+/* ── Stat cards (value strip): lighter, border-led, calmer labels ───────── */
+.value-strip {
+  gap: 12px;
+}
+.value-strip div {
+  background: var(--ps-surface);
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  padding: 14px 16px;
+}
+.value-strip div span {
+  color: var(--ps-muted);
+  font-weight: 600;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+.value-strip div strong {
+  font-weight: 800;
+}
+
+/* ── Inputs / search: brand focus ring ──────────────────────────────────── */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+#game-search-input:focus,
+#game-search-input:focus-visible {
+  outline: none;
+  border-color: var(--ps-blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+/* ── Buttons: unified brand primary + soft, non-floating shadow ─────────── */
+.primary-action,
+.primary-action:link {
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+}
+.primary-action:hover {
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
+}
+
+/* ── Time chips: pill, compact, brand-active ────────────────────────────── */
+.time-chip {
+  border-radius: var(--radius-pill);
+}
+.time-chip.is-active {
+  background: var(--ps-blue);
+  border-color: var(--ps-blue);
+  color: #fff;
+}
+
+/* ── Region/status pills: softer, brand-tinted ──────────────────────────── */
+.region-pill {
+  border-radius: var(--radius-pill);
+}

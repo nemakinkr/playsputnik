@@ -103,7 +103,9 @@ export const APP_READY =
 /* Launch one headless Chrome and return a session with a tab factory + cleanup. */
 export async function launchChrome({ label = "playsputnik", port }) {
   const chromePath = await findChrome();
-  const userDataDir = await mkdtemp(join(tmpdir(), `playsputnik-${label}-`));
+  // Sanitize: gate names like "dark/light contrast" must not create subdirs.
+  const safeLabel = String(label).replace(/[^a-z0-9]+/gi, "-");
+  const userDataDir = await mkdtemp(join(tmpdir(), `playsputnik-${safeLabel}-`));
   const chromeProcess = spawn(chromePath, [
     "--headless=new", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage",
     `--remote-debugging-port=${port}`, `--user-data-dir=${userDataDir}`, "about:blank",
