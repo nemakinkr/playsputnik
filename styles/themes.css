@@ -101,6 +101,7 @@
 }
 
 [data-theme="dark"] .game-search-followup,
+[data-theme="dark"] .first-time-empty,
 [data-theme="dark"] .search-memory-pill {
   background: var(--card-bg-soft);
   border-color: var(--card-border);
@@ -138,6 +139,7 @@
 [data-theme="dark"] .game-detail-section h3,
 [data-theme="dark"] .detail-cockpit-head strong,
 [data-theme="dark"] .game-search-followup strong,
+[data-theme="dark"] .first-time-empty strong,
 [data-theme="dark"] .detail-signal-row strong,
 [data-theme="dark"] .detail-source-row strong,
 [data-theme="dark"] .detail-evidence-row strong,
@@ -149,6 +151,8 @@
 [data-theme="dark"] .game-detail-section p,
 [data-theme="dark"] .game-search-followup span,
 [data-theme="dark"] .game-search-followup small,
+[data-theme="dark"] .first-time-empty span,
+[data-theme="dark"] .first-time-empty p,
 [data-theme="dark"] .detail-cockpit-head > span,
 [data-theme="dark"] .detail-cockpit-actions small,
 [data-theme="dark"] .detail-signal-row > span,

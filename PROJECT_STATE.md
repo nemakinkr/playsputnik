@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v66 (cache-first static assets / network-first navigation and
+- Service worker v67 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -168,7 +168,9 @@ reviews, catalogs, sale pages, and announcements.
   quick actions, with advanced state/rating controls hidden behind a
   disclosure so state changes explain what should happen next without a button
   wall. Library and Wishlist rows now share the stronger decision-card visual
-  treatment used by Today/detail.
+  treatment used by Today/detail. Empty Library/Wishlist profiles now show
+  explicit first-step cards instead of dead empty lists, and Wishlist decisions
+  are ordered above search/catalog so buy/wait advice appears earlier.
 - Backlog amnesty: repeated explicit skips are tracked per title; after 5
   skips Today can suggest letting a game go without guilt, archiving it as
   hidden with `source: "backlog_amnesty"` and counting it in Stats. Amnestied

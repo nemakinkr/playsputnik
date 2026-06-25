@@ -960,6 +960,21 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .first-time-empty {
+    grid-template-columns: 1fr;
+  }
+
+  .first-time-empty-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .first-time-empty-actions button {
+    min-height: 40px;
+    padding: 0 5px;
+    white-space: normal;
+    font-size: 0.68rem;
+  }
+
   .quick-swipe-card {
     gap: 8px;
     min-height: 0;

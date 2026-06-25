@@ -3937,6 +3937,90 @@ function createQueueEmpty(title, detail) {
   `;
   return row;
 }
+
+function focusAfterRender(selector, focusSelector = selector) {
+  window.setTimeout(() => {
+    document.querySelector(selector)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.querySelector(focusSelector)?.focus?.({ preventScroll: true });
+  }, 0);
+}
+
+function runFirstTimeAction(action) {
+  if (action === "search") {
+    openAppView("wishlist");
+    focusAfterRender("#game-search-title", "#game-search-input");
+    return;
+  }
+  if (action === "catalog") {
+    const view = APP_VIEWS.wishlist;
+    state.activeView = "wishlist";
+    state.activeCluster = view.cluster;
+    state.visualCatalogShelf = "catalog";
+    state.catalogPage = 1;
+    render();
+    focusAfterRender("#visual-catalog-title", "#catalog-search-input");
+    return;
+  }
+  if (action === "taste") {
+    openAppView("taste");
+    focusAfterRender("#first-run-title");
+  }
+}
+
+function createFirstTimeCard(kind) {
+  const content = kind === "wishlist" ? {
+    prefix: "wishlist",
+    kicker: t("wishlist.emptyStartKicker"),
+    title: t("wishlist.emptyStartTitle"),
+    detail: t("wishlist.emptyStartDetail"),
+    search: t("wishlist.emptyActionSearch"),
+    catalog: t("wishlist.emptyActionCatalog"),
+    taste: t("wishlist.emptyActionTaste"),
+  } : {
+    prefix: "library",
+    kicker: t("library.emptyStartKicker"),
+    title: t("library.emptyStartTitle"),
+    detail: t("library.emptyStartDetail"),
+    search: t("library.emptyActionSearch"),
+    catalog: t("library.emptyActionCatalog"),
+    taste: t("library.emptyActionTaste"),
+  };
+  const card = document.createElement("div");
+  card.className = `first-time-empty first-time-empty--${content.prefix}`;
+  card.innerHTML = `
+    <div>
+      <span>${content.kicker}</span>
+      <strong>${content.title}</strong>
+      <p>${content.detail}</p>
+    </div>
+    <div class="first-time-empty-actions">
+      <button data-first-time-action="search" type="button">${content.search}</button>
+      <button data-first-time-action="catalog" type="button">${content.catalog}</button>
+      <button data-first-time-action="taste" type="button">${content.taste}</button>
+    </div>
+  `;
+  card.querySelectorAll("[data-first-time-action]").forEach((button) => {
+    button.addEventListener("click", () => runFirstTimeAction(button.dataset.firstTimeAction));
+  });
+  return card;
+}
+
+function syncFirstTimeCard(anchor, kind, show) {
+  const parent = anchor?.parentElement;
+  if (!parent) return;
+  const className = `first-time-empty--${kind}`;
+  const existing = Array.from(parent.children).find((child) => child.classList?.contains(className));
+  if (!show) {
+    existing?.remove();
+    return;
+  }
+  if (existing) {
+    if (existing.nextElementSibling !== anchor) anchor.before(existing);
+    return;
+  }
+  anchor.before(createFirstTimeCard(kind));
+}
+
 function renderMyGames(ranked) {
   const candidates = memoryCandidates(ranked);
   const queued = playLaterQueue();
@@ -3965,12 +4049,13 @@ function renderMyGames(ranked) {
   });
   els.myGamesFilterSummary.textContent = libraryFilterSummary(activeFilter, visibleRows.length, allRows.length);
   renderFilterButtons(els.libraryFilterButtons, activeFilter, "libraryFilter");
+  const shouldShowFirstStep = activeFilter === "all" && remembered + queued.length === 0;
+  syncFirstTimeCard(els.myGamesDashboard, "library", shouldShowFirstStep);
   renderLibraryDashboard(ranked);
-  els.myGamesList.replaceChildren(
-    ...(visibleRows.length
-      ? visibleRows.map((item) => (item.type === "queued" ? renderQueuedGame(item.item, item.lane) : renderMyGameRow(item.game, item.index, item.lane)))
-      : [createQueueEmpty(t("library.emptyLaneTitle"), t("library.emptyLaneDetail"))]),
-  );
+  const rows = visibleRows.length
+    ? visibleRows.map((item) => (item.type === "queued" ? renderQueuedGame(item.item, item.lane) : renderMyGameRow(item.game, item.index, item.lane)))
+    : [createQueueEmpty(t("library.emptyLaneTitle"), t("library.emptyLaneDetail"))];
+  els.myGamesList.replaceChildren(...rows);
 }
 
 function libraryQuickActions(game, userGame, lane) {
@@ -5359,6 +5444,13 @@ function wishlistSourceStatus(region) {
   });
 }
 
+function hasUserWishlistMemory() {
+  if (state.saved?.size) return true;
+  return Object.values(state.userGames || {}).some((game) =>
+    game?.saved || Object.keys(game?.priceWatch?.targets || {}).length > 0,
+  );
+}
+
 function priceTargetInputValue(value) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric) || numeric <= 0) return "";
@@ -5458,11 +5550,12 @@ function renderPriceWatch(ranked) {
   });
 
   els.priceWatchRegion.textContent = wishlistSourceStatus(region);
+  const shouldShowFirstStep = activeFilter === "all" && !hasUserWishlistMemory();
+  syncFirstTimeCard(els.wishlistDashboard, "wishlist", shouldShowFirstStep);
   renderWishlistDashboard(ranked, records);
   els.wishlistFilterSummary.textContent = wishlistFilterSummary(activeFilter, visibleRecords.length, records.length);
   renderFilterButtons(els.wishlistFilterButtons, activeFilter, "wishlistFilter");
-  els.priceWatchList.replaceChildren(
-    ...(visibleRecords.length ? visibleRecords.map((record) => {
+  const priceWatchRows = visibleRecords.length ? visibleRecords.map((record) => {
       const { game, watch } = record;
       const row = document.createElement("div");
       const decision = wishlistDecision(record);
@@ -5500,8 +5593,10 @@ function renderPriceWatch(ranked) {
       });
       bindPriceWatchControls(row, game);
       return row;
-    }) : [createQueueEmpty(t("wishlist.emptyTitle"), t("wishlist.emptyDetail"))]),
-  );
+    }) : [
+      createQueueEmpty(t("wishlist.emptyTitle"), t("wishlist.emptyDetail")),
+    ];
+  els.priceWatchList.replaceChildren(...priceWatchRows);
 }
 
 function renderBuyDecision(ranked) {
@@ -5758,6 +5853,7 @@ function renderAppViewShell() {
   const activeView = normalizedAppView(state.activeView);
   if (state.activeView !== activeView) state.activeView = activeView;
   const view = APP_VIEWS[activeView];
+  document.body.dataset.appViewCurrent = activeView;
 
   // Localized per-view summary; fall back to the English config for any view
   // not yet in the catalog (t() returns the key on a miss).

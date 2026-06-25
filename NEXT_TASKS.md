@@ -224,6 +224,10 @@ Follow-up done: Library/Wishlist rows now share a stronger decision-card polish
 with clearer primary actions, and search results show an explicit next-step
 card after a game is remembered in Wishlist/Library/Plus.
 
+Follow-up done: Wishlist now prioritizes buy/wait decisions above search and
+catalog, while empty Library/Wishlist profiles show first-step cards for search,
+catalog, or taste refinement instead of blank queues.
+
 ## Track: Data
 
 ### 6. PS Plus Premium category id

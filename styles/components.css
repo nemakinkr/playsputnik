@@ -600,6 +600,28 @@ textarea {
   line-height: 1.45;
 }
 
+body[data-app-view-current="wishlist"] .app-view-nav { order: 1; }
+body[data-app-view-current="wishlist"] .app-view-copy { order: 2; }
+body[data-app-view-current="wishlist"] .value-strip { order: 3; }
+body[data-app-view-current="wishlist"] .price-watch { order: 4; }
+body[data-app-view-current="wishlist"] .buy-decision-panel { order: 5; }
+body[data-app-view-current="wishlist"] .game-search-panel { order: 6; }
+body[data-app-view-current="wishlist"] .visual-catalog-panel { order: 7; }
+body[data-app-view-current="wishlist"] .tabs { order: 8; }
+body[data-app-view-current="wishlist"] .cluster-grid { order: 9; }
+body[data-app-view-current="wishlist"] .wishlist-share-panel { order: 10; }
+
+body[data-app-view-current="library"] .app-view-nav { order: 1; }
+body[data-app-view-current="library"] .app-view-copy { order: 2; }
+body[data-app-view-current="library"] .value-strip { order: 3; }
+body[data-app-view-current="library"] .my-games-panel { order: 4; }
+body[data-app-view-current="library"] .library-plan-panel { order: 5; }
+body[data-app-view-current="library"] .memory-panel { order: 6; }
+body[data-app-view-current="library"] .visual-catalog-panel { order: 7; }
+body[data-app-view-current="library"] .tabs { order: 8; }
+body[data-app-view-current="library"] .cluster-grid { order: 9; }
+body[data-app-view-current="library"] .library-panel { order: 10; }
+
 .is-view-hidden {
   display: none !important;
 }
@@ -2422,6 +2444,79 @@ textarea {
   border-radius: 8px;
   background: var(--surface-2);
   padding: 14px;
+}
+
+.first-time-empty {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, auto);
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #c8d7ff;
+  border-left: 4px solid var(--blue);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(0, 100, 210, 0.08), rgba(255, 255, 255, 0) 58%),
+    var(--card-bg);
+  box-shadow: var(--shadow-hairline);
+  padding: 12px;
+}
+
+.first-time-empty span,
+.first-time-empty p {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.first-time-empty > div > span {
+  margin-bottom: 4px;
+  color: var(--blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.first-time-empty strong {
+  display: block;
+  color: var(--ink);
+  font-size: 0.96rem;
+  line-height: 1.18;
+}
+
+.first-time-empty p {
+  margin: 5px 0 0;
+  font-weight: 700;
+}
+
+.first-time-empty-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.first-time-empty-actions button {
+  min-height: 34px;
+  border: 1px solid #c8d7ff;
+  border-radius: 7px;
+  background: #fff;
+  color: #173f9a;
+  padding: 0 8px;
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.first-time-empty-actions button:first-child {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+.first-time-empty-actions button:hover {
+  border-color: var(--blue);
+  background: #eaf0ff;
+  color: #173f9a;
 }
 
 .queue-empty strong,
