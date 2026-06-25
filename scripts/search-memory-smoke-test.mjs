@@ -65,7 +65,7 @@ try {
     searchStatus: document.querySelector("#game-search-status")?.textContent || "",
     searchSource: document.querySelector("#game-search-source")?.textContent || "",
     rows: document.querySelectorAll(".game-search-row").length,
-    firstTitle: document.querySelector(".game-search-row > div > strong")?.textContent || "",
+    firstTitle: document.querySelector(".game-search-row")?.firstElementChild?.querySelector("strong")?.textContent || "",
     allTitles: Array.from(document.querySelectorAll(".game-search-row"))
       .map((row) => row.firstElementChild?.querySelector("strong")?.textContent || ""),
     detailButtons: document.querySelectorAll("[data-search-detail]").length,

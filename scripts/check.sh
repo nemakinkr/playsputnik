@@ -16,11 +16,11 @@ if [ ! -x "$NODE" ]; then
   echo "❌ node not found"; exit 1
 fi
 
-echo "── 1/6 validate-data ──────────────────────────"
+echo "── 1/7 validate-data ──────────────────────────"
 "$NODE" scripts/validate-data.mjs
 "$NODE" scripts/editorial-data-check.mjs
 
-echo "── 2/6 i18n catalogs + usage ──────────────────"
+echo "── 2/7 i18n catalogs + usage ──────────────────"
 "$NODE" scripts/i18n-catalog-check.mjs
 "$NODE" scripts/i18n-usage-check.mjs
 "$NODE" scripts/i18n-startup-test.mjs
@@ -34,7 +34,7 @@ echo "── 2/6 i18n catalogs + usage ─────────────�
 "$NODE" scripts/ai-narrative-test.mjs
 "$NODE" scripts/backend-worker-test.mjs
 
-echo "── 3/6 qa-harness ─────────────────────────────"
+echo "── 3/7 qa-harness ─────────────────────────────"
 "$NODE" scripts/qa-harness.mjs
 
 if [ "$1" = "--fast" ]; then
@@ -51,13 +51,16 @@ if ! curl -s -o /dev/null "http://127.0.0.1:7432/index.html"; then
 fi
 trap '[ -n "$STARTED_SERVER" ] && kill $STARTED_SERVER 2>/dev/null' EXIT
 
-echo "── 4/6 browser smoke ──────────────────────────"
+echo "── 4/7 browser smoke ──────────────────────────"
 "$NODE" scripts/browser-smoke-test.mjs "http://127.0.0.1:7432/?v=check" | tail -3
 
-echo "── 5/6 perf budget (populated profile) ────────"
+echo "── 5/7 perf budget (populated profile) ────────"
 "$NODE" scripts/perf-budget-test.mjs "http://127.0.0.1:7432/?v=check-perf"
 
-echo "── 6/6 browser gates (contrast + mobile + a11y + hidden, one Chrome) ──"
+echo "── 6/7 browser gates (contrast + mobile + a11y + hidden, one Chrome) ──"
 "$NODE" scripts/browser-gates.mjs "http://127.0.0.1:7432/"
+
+echo "── 7/7 browser smoke suite (preview :4190 + fixture backend :4191) ──"
+"$NODE" scripts/smoke-suite.mjs
 
 echo "✅ all checks passed"
