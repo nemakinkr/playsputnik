@@ -81,6 +81,20 @@ textarea:focus-visible,
   color: #fff;
 }
 
+/* ── Brand logo: file-based mark + adaptive wordmark ────────────────────── */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.brand-mark-img {
+  height: 32px;
+  width: auto;
+  display: block;
+  flex: none;
+}
+.bl-wordmark { display: inline-flex; align-items: baseline; }
+
 /* ── Region/status pills: softer, brand-tinted ──────────────────────────── */
 .region-pill {
   border-radius: var(--radius-pill);

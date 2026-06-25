@@ -3,7 +3,7 @@
 
 importScripts("./src/module-manifest.js");
 
-const CACHE_VERSION = "v71";
+const CACHE_VERSION = "v72";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -18,6 +18,7 @@ const STATIC_ASSETS = [
   "./styles/polish.css",
   "./styles/themes.css",
   "./styles/brand.css",
+  "./icons/brand/playsputnik-mark.png",
   "./favicon.svg",
   "./manifest.json",
   "./icons/icon-192.png",
