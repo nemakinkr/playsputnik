@@ -8,6 +8,13 @@
     || `http://127.0.0.1:${window.__playsputnikSearchPort || 4191}`;
   const NARRATIVE_ENDPOINT = `${providerOrigin}/api/narrative`;
   const HEALTH_ENDPOINT = `${providerOrigin}/api/health`;
+  // Only probe the backend when it's actually configured: a deployed Worker
+  // (API_MODE "production") or an explicit dev/test override. Otherwise — a plain
+  // static/offline open with no backend — skip the health fetch entirely so the
+  // browser doesn't log net::ERR_CONNECTION_REFUSED on every detail open.
+  const providerConfigured = Boolean(
+    window.__playsputnikAiOrigin || window.PlaySputnikConfig.API_MODE === "production",
+  );
   const CACHE_SCHEMA = "ai-narrative-v2";
   const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -129,6 +136,7 @@
     }
 
     async function narrativeAvailable() {
+      if (!providerConfigured) return false; // no backend configured — don't hit the network
       if (Date.now() - availability.checkedAt < 5 * 60 * 1000) return availability.available;
       if (location.protocol === "https:" && providerOrigin.startsWith("http://")) {
         availability = { checkedAt: Date.now(), available: false };

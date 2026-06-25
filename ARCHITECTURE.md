@@ -53,7 +53,7 @@ The order below is executable boot order and offline-cache order.
 | 2 | `src/app-recommend.js` | `PlaySputnikRecommend` | 783 | Recommendation evidence and forecasts |
 | 2 | `src/app-session.js` | `PlaySputnikSession` | 136 | Session tracking |
 | 2 | `src/app-hltb.js` | `PlaySputnikHltb` | 164 | Time and value calculations |
-| 2 | `src/app-ai.js` | `PlaySputnikAi` | 232 | Optional AI narrative client and cache |
+| 2 | `src/app-ai.js` | `PlaySputnikAi` | 240 | Optional AI narrative client and cache |
 | 3 | `src/app-entry.js` | `PlaySputnikEntry` | 107 | Entry-route decisions |
 | 3 | `src/app-ranking.js` | `PlaySputnikRanking` | 136 | Catalog ranking |
 | 3 | `src/app-answer.js` | `PlaySputnikAnswer` | 763 | Companion answer composition |
