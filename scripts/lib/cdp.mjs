@@ -180,28 +180,34 @@ export async function runStandalone(gate, rootUrl) {
   }
 }
 
-/* Launch Chrome once and run several gates on fresh tabs; exit non-zero if any fail. */
+/* Run several gates back-to-back, each on its OWN fresh headless Chrome.
+ *
+ * A single shared Chrome across all gates was a few seconds faster but degraded
+ * under a loaded CI runner — by the 3rd gate the app stopped reaching #top-pick
+ * even with a fresh-tab retry, because the *instance* (not the tab) was the
+ * bottleneck. A fresh instance per gate trades a little speed for determinism;
+ * gate latency is dominated by the smoke suite anyway. */
 export async function runAll(gates, rootUrl) {
-  const port = Number(process.env.PLAYSPUTNIK_CHROME_PORT || 9350);
-  const session = await launchChrome({ label: "gates", port });
-  const hard = setTimeout(() => { console.error("Browser gates timed out."); session.cleanup().finally(() => process.exit(124)); }, 180000);
+  const basePort = Number(process.env.PLAYSPUTNIK_CHROME_PORT || 9350);
+  const hard = setTimeout(() => { console.error("Browser gates timed out."); process.exit(124); }, 240000);
   let allOk = true;
-  try {
-    for (const gate of gates) {
-      console.log(`\n── ${gate.name} ──────────────────────────────`);
+  for (let i = 0; i < gates.length; i++) {
+    const gate = gates[i];
+    console.log(`\n── ${gate.name} ──────────────────────────────`);
+    const session = await launchChrome({ label: gate.name, port: basePort + i });
+    try {
       const raw = await driveWithRetry(session, gate, rootUrl);
       const { ok, lines } = gate.analyze(raw);
       lines.forEach((l) => (ok ? console.log(l) : console.error(l)));
       if (!ok) allOk = false;
+    } catch (error) {
+      console.error(`❌ ${gate.name} failed to run: ${error.message}`);
+      allOk = false;
+    } finally {
+      await session.cleanup();
     }
-  } catch (error) {
-    clearTimeout(hard);
-    await session.cleanup();
-    console.error(`❌ Browser gates failed to run: ${error.message}`);
-    process.exit(1);
   }
   clearTimeout(hard);
-  await session.cleanup();
   if (!allOk) { console.error("\n❌ One or more browser gates failed."); process.exit(1); }
-  console.log("\n✅ All browser gates passed (contrast, mobile, a11y, stale-hidden) on one Chrome run.");
+  console.log("\n✅ All browser gates passed (contrast, mobile, a11y, stale-hidden).");
 }
