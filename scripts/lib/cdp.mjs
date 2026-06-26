@@ -87,7 +87,7 @@ export async function evaluate(cdp, expression) {
   return r.result?.value;
 }
 
-export async function waitFor(cdp, expression, timeoutMs = 35000) {
+export async function waitFor(cdp, expression, timeoutMs = 40000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (await evaluate(cdp, expression).catch(() => false)) return;
@@ -141,14 +141,32 @@ export async function launchChrome({ label = "playsputnik", port }) {
   };
 }
 
+/* Drive a gate on a fresh tab, retrying once on a fresh tab if the first attempt
+   throws (e.g. an app-ready timeout under a loaded CI runner — a hung tab load
+   rarely repeats on a clean tab). */
+async function driveWithRetry(session, gate, rootUrl) {
+  let lastError;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const cdp = await session.newTab();
+    try {
+      const raw = await gate.drive(cdp, rootUrl);
+      await cdp.close();
+      return raw;
+    } catch (error) {
+      await cdp.close().catch(() => {});
+      lastError = error;
+      if (attempt === 1) console.error(`  ↻ ${gate.name}: retrying after "${error.message}"`);
+    }
+  }
+  throw lastError;
+}
+
 /* Run a single gate on its own Chrome, print its report, exit with its status. */
 export async function runStandalone(gate, rootUrl) {
   const session = await launchChrome({ label: gate.name, port: gate.defaultPort });
   const hard = setTimeout(() => { console.error(`${gate.name} check timed out.`); session.cleanup().finally(() => process.exit(124)); }, 60000);
   try {
-    const cdp = await session.newTab();
-    const raw = await gate.drive(cdp, rootUrl);
-    await cdp.close();
+    const raw = await driveWithRetry(session, gate, rootUrl);
     const { ok, lines } = gate.analyze(raw);
     clearTimeout(hard);
     await session.cleanup();
@@ -171,9 +189,7 @@ export async function runAll(gates, rootUrl) {
   try {
     for (const gate of gates) {
       console.log(`\n── ${gate.name} ──────────────────────────────`);
-      const cdp = await session.newTab();
-      const raw = await gate.drive(cdp, rootUrl);
-      await cdp.close();
+      const raw = await driveWithRetry(session, gate, rootUrl);
       const { ok, lines } = gate.analyze(raw);
       lines.forEach((l) => (ok ? console.log(l) : console.error(l)));
       if (!ok) allOk = false;

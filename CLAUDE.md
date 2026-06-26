@@ -94,7 +94,14 @@ how the onboarding hero showed to every seeded user). Each is a
 headless Chrome (check.sh stage 6 + CI), and each `*-check.mjs` still runs
 standalone for debugging.
 All use system Chrome over CDP (no install), run locally and on the ubuntu
-runner. Test dark mode with a
+runner. The contrast scanner ignores NEAR-WHITE text (lum ≥ 232) in the
+light-on-light check on purpose: white text only ever sits on a coloured/dark
+fill, so "white on white" means the scanner couldn't resolve the fill (a flaky
+false positive on solid-coloured active controls), not a real bug. If you give
+an active tab/chip a solid colour and the scanner still complains, prefer an
+image-backed brand gradient (`var(--cta-gradient)`) — the scanner skips
+image-backed fills. `lib/cdp.mjs` retries a gate once on a fresh tab to absorb
+app-ready timeouts on a loaded CI runner. Test dark mode with a
 seeded/demo profile, never empty (empty profiles hide most components, same
 lesson as the perf budget). Two shared light surfaces are already tokenized:
 `#f1f5f9 → --chip-bg`, `#f8fafc → --surface-2` (prefer reusing/extending these

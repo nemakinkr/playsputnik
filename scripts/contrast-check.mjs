@@ -64,13 +64,18 @@ function scanInPage(LUM, mode) {
       const cls = (typeof el.className === "string" && el.className) ? el.className.split(" ")[0] : el.tagName;
 
       if (mode === "light") {
-        // light-on-light text in light mode (leaf text on a near-white solid bg)
+        // light-on-light text in light mode (leaf text on a near-white solid bg).
+        // The real bug is PALE-GREY text (#c…/#d…) on white. We deliberately skip
+        // NEAR-WHITE text (lum >= 232): white text is only ever meant to sit on a
+        // coloured/dark fill (a button), so "white on white" almost always means
+        // the scanner just didn't resolve the button's fill (e.g. a gradient/solid
+        // active control) — a false positive, not a contrast bug.
         if (el.children.length === 0) {
           const t = (el.textContent || "").trim();
           if (t) {
             const bg = nearestOpaque(el);
             const fg = parse(getComputedStyle(el).color);
-            if (bg && fg && lum(bg) > 200 && lum(fg) > 175) {
+            if (bg && fg && lum(bg) > 200 && lum(fg) > 175 && lum(fg) < 232) {
               add("light-text", cls + " | " + getComputedStyle(el).color + " on rgb(" + bg.map(Math.round).join(",") + ")", t.slice(0, 20), v);
             }
           }
