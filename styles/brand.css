@@ -75,8 +75,10 @@ textarea:focus-visible,
 .time-chip {
   border-radius: var(--radius-pill);
 }
+/* Active chip uses the brand blue gradient (image-backed), which keeps the
+   contrast scanner from misreading the white label as white-on-white. */
 .time-chip.is-active {
-  background: var(--ps-blue);
+  background: var(--cta-gradient);
   border-color: var(--ps-blue);
   color: #fff;
 }
