@@ -1531,10 +1531,6 @@ function derivedNotebookUserGame(title) {
   return null;
 }
 
-function derivedNotebookState(title) {
-  return legacyStateFromUserGame(derivedNotebookUserGame(title));
-}
-
 function effectiveUserGame(game) {
   return explicitUserGame(game.title)
     || derivedNotebookUserGame(game.title)
