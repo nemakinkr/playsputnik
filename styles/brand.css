@@ -142,6 +142,30 @@ textarea:focus-visible,
   box-shadow: var(--shadow-md);
 }
 
+/* ── Anti-hype buy guard: a calm "don't pay full price now" note ─────────── */
+.anti-hype-guard {
+  display: block;
+  margin-top: 6px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+.anti-hype-guard strong { font-weight: 700; }
+.anti-hype-guard.guard-plus {
+  background: var(--ps-blue-soft);
+  border: 1px solid var(--ps-blue-border);
+  color: var(--ps-ink-soft);
+}
+.anti-hype-guard.guard-plus strong { color: var(--ps-blue); }
+.anti-hype-guard.guard-wait {
+  background: color-mix(in srgb, var(--ps-warning) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ps-warning) 38%, transparent);
+  color: var(--ps-ink-soft);
+}
+.anti-hype-guard.guard-wait strong { color: var(--amber); }
+[data-theme="dark"] .anti-hype-guard.guard-wait strong { color: #e0ad3c; }
+
 /* ── Deals: discounts are brand-red and never overlap the title ─────────────
    (the --space-2 / --radius-2 tokens these used are undefined, so the absolute
    badge fell to the top-left over the name and showed the success green.) */

@@ -5569,12 +5569,17 @@ function renderPriceWatch(ranked) {
         ? ` / ${t("wishlist.targetLine", { price: formatMoney(watch.targetPrice, currency) })} / ${historicalLowCopy(watch, currency)}`
         : "";
       const lanes = record.lanes.map(wishlistLaneLabel).join(", ");
+      const guard = antiHypeGuard(game, watch, region, currency);
+      const guardLine = guard
+        ? `<span class="anti-hype-guard guard-${guard.kind}"><strong>${guard.label}</strong> ${guard.detail}</span>`
+        : "";
       row.innerHTML = `
         <span class="wishlist-decision">${decision.label}</span>
         <div>
           <strong>${game.title}</strong>
           <span class="deal-price ${status.canConfirm ? "" : "needs-verify"}">${priceLine}</span>
           <span class="deal-reason">${decision.detail}${watchLine} / ${t("wishlist.lanesLine", { lanes })}</span>
+          ${guardLine}
           ${watch ? priceWatchControlHtml(game, { context: "row" }) : ""}
         </div>
         <div class="wishlist-actions">
@@ -5597,6 +5602,23 @@ function renderPriceWatch(ranked) {
       createQueueEmpty(t("wishlist.emptyTitle"), t("wishlist.emptyDetail")),
     ];
   els.priceWatchList.replaceChildren(...priceWatchRows);
+}
+
+// Anti-hype buy guard: deterministic "don't pay full price now" signals from
+// data we already have — the game is already in PS Plus, or its tracked history
+// shows it was meaningfully cheaper before. Returns null when there's no reason
+// to hold (so it never nags about a genuine buy-zone item).
+function antiHypeGuard(game, watch, region, currency = "USD") {
+  const sub = game.subscriptionMeta?.[region];
+  if (sub && sub.tier) {
+    return { kind: "plus", label: t("wishlist.guardPlusLabel"), detail: t("wishlist.guardPlus", { tier: sub.tier }) };
+  }
+  if (watch && watch.historyCount >= 2
+      && typeof watch.historicalLow === "number" && typeof watch.currentPrice === "number"
+      && !watch.isHistoricalLow && watch.historicalLow <= watch.currentPrice * 0.8) {
+    return { kind: "wait", label: t("wishlist.guardWaitLabel"), detail: t("wishlist.guardWait", { low: formatMoney(watch.historicalLow, currency) }) };
+  }
+  return null;
 }
 
 function renderBuyDecision(ranked) {
