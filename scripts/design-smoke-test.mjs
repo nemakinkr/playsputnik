@@ -1,4 +1,6 @@
 import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const DEFAULT_URL = "http://127.0.0.1:4190/?v=design-smoke";
 const DEFAULT_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -57,7 +59,7 @@ try {
     currentStep = `settling ${viewport.name}`;
     await page.waitForTimeout(2500);
 
-    const screenshot = `/private/tmp/playsputnik-design-${viewport.name}.png`;
+    const screenshot = join(tmpdir(), `playsputnik-design-${viewport.name}.png`);
     currentStep = `screenshot ${viewport.name}`;
     await page.screenshot({ path: screenshot, fullPage: false, timeout: 20000 });
     currentStep = `metrics ${viewport.name}`;
@@ -113,7 +115,7 @@ try {
     }
     if (errors.length) throw new Error(`${viewport.name} page errors: ${errors.join("; ")}`);
 
-    const visualCatalogScreenshot = `/private/tmp/playsputnik-visual-catalog-${viewport.name}.png`;
+    const visualCatalogScreenshot = join(tmpdir(), `playsputnik-visual-catalog-${viewport.name}.png`);
     currentStep = `visual catalog screenshot ${viewport.name}`;
     await page.locator(".visual-catalog-panel").screenshot({ path: visualCatalogScreenshot, timeout: 30000 });
 
