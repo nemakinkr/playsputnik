@@ -782,6 +782,7 @@ const {
   priceStatus,
   priceCanGuideBuy,
   formatPrice,
+  formatMoney,
   priceWatchRecord,
   historicalLowCopy,
   personalRatingFacet,

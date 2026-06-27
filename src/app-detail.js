@@ -30,6 +30,7 @@
     priceStatus,
     priceCanGuideBuy,
     formatPrice,
+    formatMoney,
     // from wishlist module
     priceWatchRecord,
     historicalLowCopy,
@@ -157,6 +158,21 @@
       return { ...game, score: rankedMatch?.score ?? scoreGame(game) };
     }
 
+    // Deterministic "don't pay full price now" guard (mirrors app.js / wishlist):
+    // already in PS Plus, or tracked history shows it was meaningfully cheaper.
+    function antiHypeGuard(game, watch, region, currency = "USD") {
+      const sub = game.subscriptionMeta?.[region];
+      if (sub && sub.tier) {
+        return { kind: "plus", label: t("wishlist.guardPlusLabel"), detail: t("wishlist.guardPlus", { tier: sub.tier }) };
+      }
+      if (watch && watch.historyCount >= 2
+          && typeof watch.historicalLow === "number" && typeof watch.currentPrice === "number"
+          && !watch.isHistoricalLow && watch.historicalLow <= watch.currentPrice * 0.8) {
+        return { kind: "wait", label: t("wishlist.guardWaitLabel"), detail: t("wishlist.guardWait", { low: formatMoney(watch.historicalLow, currency) }) };
+      }
+      return null;
+    }
+
     function detailPriceSummary(game) {
       const state = getState();
       const region = state.activeRegion;
@@ -175,13 +191,19 @@
       const editionPriceNote = game.priceCanonicalTitle && game.priceCanonicalTitle !== game.title
         ? ` / ${t("narrative.detail.trackedVia", { title: game.priceCanonicalTitle })}`
         : "";
+      // Anti-hype buy guard, same signals as the wishlist rows: already in PS
+      // Plus, or tracked history shows it was meaningfully cheaper.
+      const guard = antiHypeGuard(game, watch, region, currency);
+      const guardLine = guard
+        ? `<span class="anti-hype-guard guard-${guard.kind}"><strong>${guard.label}</strong> ${guard.detail}</span>`
+        : "";
       return {
         label: t("narrative.detail.regionPrice", { region }),
         value: formatPrice(game, region),
         detail: `${t("narrative.detail.discount", {
           discount,
           kind: status.canConfirm ? t("narrative.detail.discountOff") : t("narrative.detail.discountSignal"),
-        })}${watch ? ` / ${historicalLowCopy(watch, currency)}` : ""}${editionPriceNote}`,
+        })}${watch ? ` / ${historicalLowCopy(watch, currency)}` : ""}${editionPriceNote}${guardLine}`,
       };
     }
 
