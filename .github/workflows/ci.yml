@@ -22,9 +22,7 @@ jobs:
           node scripts/editorial-data-check.mjs
       - name: Validate i18n catalogs and usage
         run: |
-          node scripts/i18n-catalog-check.mjs
-          node scripts/i18n-usage-check.mjs
-          node scripts/i18n-orphan-check.mjs
+          node scripts/i18n-check.mjs
           node scripts/i18n-startup-test.mjs
           node scripts/companion-intelligence-test.mjs
           node scripts/onboarding-diagnostic-test.mjs

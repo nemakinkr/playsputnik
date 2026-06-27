@@ -137,7 +137,7 @@ export function validateCatalogPair(enCatalog, ruCatalog) {
   };
 }
 
-function validateTaxonomyCoverage(catalog, taxonomy, locale) {
+export function validateTaxonomyCoverage(catalog, taxonomy, locale) {
   const issues = [];
   Object.entries(taxonomy.axes || {}).forEach(([axis, values]) => {
     values.forEach((value) => {
