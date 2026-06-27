@@ -7,11 +7,8 @@
   messages.en = {
     common: {
       language: "Language",
-      languageEnglish: "English",
-      languageRussian: "Russian",
       themeToggle: "Toggle dark mode",
       settings: "Settings",
-      storeSuffix: "Store",
     },
     taxonomy: {
       atoms: {
@@ -121,13 +118,12 @@
         progressEmpty: { one: "Rate {count} game to unlock your first pick", other: "Rate {count} games to unlock your first pick" },
         progress: "{current} of {target} taste signals — {remaining} more",
         ready: "Your first pick is ready. You can refine it later.",
-        like: "Like", no: "No",
       },
       answerTitle: "Companion answer", planTitle: "Today command center",
       planSummary: { one: "{count} practical next move", other: "{count} practical next moves" },
       planTonight: "Play tonight", planUseAccess: "Use access", planSubscription: "Subscription",
       planWatch: "Watch", planBuyLater: "Buy later", planPlusSignal: "PS Plus signal",
-      planPriceOk: "price ok", planVerifyPrice: "verify price", planOff: "off", planSignal: "signal",
+      planPriceOk: "price ok", planVerifyPrice: "verify price", planOff: "off",
       planDiscountDetail: "{region} {price} / {discount}% {freshness}. {reason}.",
       planVerifyDetail: "Price needs verification before buying. {reason}.",
       planDoNotBuy: "Do not buy now", planGuardrail: "guardrail",
@@ -206,7 +202,6 @@
       factPsnLater: "PSN later", factSession: "{session} session",
       facetAccess: "Access", facetProgress: "Progress", facetRating: "Rating",
       noAccess: "No access", notStarted: "Not started", noRating: "No rating",
-      ratingManual: "Manual", ratingImport: "Import", ratingTasteOnly: "Taste only",
       next: "Next", noSpend: "No-spend", intent: "Intent", memory: "Memory", tryLater: "Try later",
       nextFinish: "Finish is the clearest action; keep it above new starts.",
       nextPlaying: "Resume or mark Done before opening another long game.",
@@ -1028,7 +1023,7 @@
         roiExpensive: "Expensive per hour", progressHours: "{played}h of {total}h",
         platform: "Platform", sourcePending: "Source pending", sourceOfficial: "Source: official store",
         sourceGenerated: "Local generated art", sourceNamed: "Source: {source}",
-        catalogSeed: "seed", catalogManual: "manual unverified",
+        catalogManual: "manual unverified",
         passportSeed: "seed", passportMissing: "missing", passportSourceTags: "source tags",
         passportAi: "AI inferred", passportSeedAtoms: "seed atoms",
         storeVerify: "Store verify", plusSignal: "Plus signal", plusUnknown: "Plus unknown",

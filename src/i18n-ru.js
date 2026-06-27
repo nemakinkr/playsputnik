@@ -6,11 +6,8 @@
   messages.ru = {
     common: {
       language: "Язык",
-      languageEnglish: "Английский",
-      languageRussian: "Русский",
       themeToggle: "Переключить тёмную тему",
       settings: "Настройки",
-      storeSuffix: "Store",
     },
     taxonomy: {
       atoms: {
@@ -120,13 +117,12 @@
         progressEmpty: { one: "Оцените {count} игру, чтобы получить первый выбор", few: "Оцените {count} игры, чтобы получить первый выбор", many: "Оцените {count} игр, чтобы получить первый выбор" },
         progress: "сигналов вкуса: {current}/{target} — осталось {remaining}",
         ready: "Первый выбор готов. Уточнить вкус можно позже.",
-        like: "Нравится", no: "Не моё",
       },
       answerTitle: "Ответ компаньона", planTitle: "Командный центр на сегодня",
       planSummary: { one: "{count} практический следующий шаг", few: "{count} практических следующих шага", many: "{count} практических следующих шагов" },
       planTonight: "Играть сегодня", planUseAccess: "Использовать доступ", planSubscription: "Подписка",
       planWatch: "Следить", planBuyLater: "Купить позже", planPlusSignal: "сигнал PS Plus",
-      planPriceOk: "цена ок", planVerifyPrice: "проверить цену", planOff: "скидка", planSignal: "сигнал",
+      planPriceOk: "цена ок", planVerifyPrice: "проверить цену", planOff: "скидка",
       planDiscountDetail: "{region} {price} / {discount}% {freshness}. {reason}.",
       planVerifyDetail: "Перед покупкой нужно проверить цену. {reason}.",
       planDoNotBuy: "Не покупать сейчас", planGuardrail: "ограничитель",
@@ -205,7 +201,6 @@
       factPsnLater: "PSN позже", factSession: "сессия: {session}",
       facetAccess: "Доступ", facetProgress: "Прогресс", facetRating: "Оценка",
       noAccess: "Нет доступа", notStarted: "Не начато", noRating: "Без оценки",
-      ratingManual: "Вручную", ratingImport: "Импорт", ratingTasteOnly: "Только вкус",
       next: "Дальше", noSpend: "Без трат", intent: "Намерение", memory: "Память", tryLater: "Попробовать позже",
       nextFinish: "Самое ясное действие — закончить; держите игру выше новых стартов.",
       nextPlaying: "Продолжите или отметьте прохождение до запуска ещё одной большой игры.",
@@ -1027,7 +1022,7 @@
         roiExpensive: "Дорого за час", progressHours: "{played} ч из {total} ч",
         platform: "Платформа", sourcePending: "Источник уточняется", sourceOfficial: "Источник: официальный магазин",
         sourceGenerated: "Локально созданный постер", sourceNamed: "Источник: {source}",
-        catalogSeed: "основной каталог", catalogManual: "непроверенная ручная запись",
+        catalogManual: "непроверенная ручная запись",
         passportSeed: "каталог", passportMissing: "нет данных", passportSourceTags: "теги источника",
         passportAi: "определено ИИ", passportSeedAtoms: "атомы каталога",
         storeVerify: "Проверить магазин", plusSignal: "Сигнал Plus", plusUnknown: "Plus не проверен",
