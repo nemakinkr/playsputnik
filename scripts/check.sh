@@ -30,6 +30,7 @@ echo "── 2/7 i18n catalogs + usage ─────────────�
 "$NODE" scripts/detail-view-test.mjs
 "$NODE" scripts/state-migrations-test.mjs
 "$NODE" scripts/release-upgrade-test.mjs
+"$NODE" scripts/state-class-check.mjs
 "$NODE" scripts/architecture-map.mjs --check
 "$NODE" scripts/ai-narrative-test.mjs
 "$NODE" scripts/backend-worker-test.mjs

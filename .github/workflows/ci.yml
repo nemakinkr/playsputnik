@@ -26,10 +26,12 @@ jobs:
           node scripts/i18n-usage-check.mjs
           node scripts/i18n-startup-test.mjs
           node scripts/companion-intelligence-test.mjs
+          node scripts/onboarding-diagnostic-test.mjs
           node scripts/decision-workflow-test.mjs
           node scripts/detail-view-test.mjs
           node scripts/state-migrations-test.mjs
           node scripts/release-upgrade-test.mjs
+          node scripts/state-class-check.mjs
           node scripts/architecture-map.mjs --check
           node scripts/ai-narrative-test.mjs
           node scripts/backend-worker-test.mjs
@@ -45,3 +47,16 @@ jobs:
           sleep 1
       - name: Browser gates (contrast + mobile + a11y + stale-hidden)
         run: node scripts/browser-gates.mjs http://127.0.0.1:7432/
+      # Browser smoke suite — the 8 Playwright smokes previously ran only in
+      # check.sh locally, so a smoke regression could slip past CI (search-memory
+      # already rotted that way once). Install Playwright's Chromium and run the
+      # self-contained suite (boots its own preview :4190 + fixture backend :4191).
+      - name: Install Playwright Chromium
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright >/dev/null 2>&1
+          npx playwright install chromium
+      - name: Browser smoke suite (8 Playwright smokes, fixture backend)
+        run: |
+          export PLAYSPUTNIK_CHROME="$(node -e "console.log(require('playwright').chromium.executablePath())")"
+          node scripts/smoke-suite.mjs
