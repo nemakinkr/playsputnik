@@ -6520,7 +6520,7 @@ if (els.dataErrorToastClose) {
     btn.title = isDark ? t("system.lightMode") : t("system.darkMode");
     // Keep meta theme-color in sync for mobile chrome
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", isDark ? "#0b1120" : "#003791");
+    if (meta) meta.setAttribute("content", isDark ? "#07111f" : "#2563eb");
   }
 
   syncButton();
