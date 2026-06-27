@@ -708,6 +708,7 @@ const {
 });
 
 const {
+  antiHypeGuard,
   priceWatchReason,
   priceHistoryForGame,
   historicalLowForGame,
@@ -782,9 +783,9 @@ const {
   priceStatus,
   priceCanGuideBuy,
   formatPrice,
-  formatMoney,
   priceWatchRecord,
   historicalLowCopy,
+  antiHypeGuard,
   personalRatingFacet,
 });
 
@@ -5599,23 +5600,6 @@ function renderPriceWatch(ranked) {
       createQueueEmpty(t("wishlist.emptyTitle"), t("wishlist.emptyDetail")),
     ];
   els.priceWatchList.replaceChildren(...priceWatchRows);
-}
-
-// Anti-hype buy guard: deterministic "don't pay full price now" signals from
-// data we already have — the game is already in PS Plus, or its tracked history
-// shows it was meaningfully cheaper before. Returns null when there's no reason
-// to hold (so it never nags about a genuine buy-zone item).
-function antiHypeGuard(game, watch, region, currency = "USD") {
-  const sub = game.subscriptionMeta?.[region];
-  if (sub && sub.tier) {
-    return { kind: "plus", label: t("wishlist.guardPlusLabel"), detail: t("wishlist.guardPlus", { tier: sub.tier }) };
-  }
-  if (watch && watch.historyCount >= 2
-      && typeof watch.historicalLow === "number" && typeof watch.currentPrice === "number"
-      && !watch.isHistoricalLow && watch.historicalLow <= watch.currentPrice * 0.8) {
-    return { kind: "wait", label: t("wishlist.guardWaitLabel"), detail: t("wishlist.guardWait", { low: formatMoney(watch.historicalLow, currency) }) };
-  }
-  return null;
 }
 
 function renderBuyDecision(ranked) {

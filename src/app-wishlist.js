@@ -298,7 +298,25 @@
       return wishlistDecision(record).tone === filter;
     }
 
+    // Anti-hype buy guard — single source of truth, used by both the wishlist
+    // rows (app.js) and the detail cockpit (app-detail.js). Deterministic "don't
+    // pay full price now" signals: already in PS Plus, or tracked history shows
+    // it was meaningfully cheaper. Returns null for genuine buy-zone items.
+    function antiHypeGuard(game, watch, region, currency = "USD") {
+      const sub = game.subscriptionMeta?.[region];
+      if (sub && sub.tier) {
+        return { kind: "plus", label: t("wishlist.guardPlusLabel"), detail: t("wishlist.guardPlus", { tier: sub.tier }) };
+      }
+      if (watch && watch.historyCount >= 2
+          && typeof watch.historicalLow === "number" && typeof watch.currentPrice === "number"
+          && !watch.isHistoricalLow && watch.historicalLow <= watch.currentPrice * 0.8) {
+        return { kind: "wait", label: t("wishlist.guardWaitLabel"), detail: t("wishlist.guardWait", { low: formatMoney(watch.historicalLow, currency) }) };
+      }
+      return null;
+    }
+
     return {
+      antiHypeGuard,
       priceWatchReason,
       priceHistoryForGame,
       historicalLowForGame,
