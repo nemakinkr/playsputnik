@@ -1033,6 +1033,7 @@ const els = {
   tasteShareBtn: document.querySelector("#taste-share-btn"),
   tasteShareCopy: document.querySelector("#taste-share-copy"),
   tasteShareUrl: document.querySelector("#taste-share-url"),
+  tasteShareSummaryEl: document.querySelector("#taste-share-summary"),
   tasteShareStatus: document.querySelector("#taste-share-status"),
   tasteImportBanner: document.querySelector("#taste-import-banner"),
   tasteImportBannerDesc: document.querySelector("#taste-import-banner-desc"),
@@ -6223,7 +6224,7 @@ const TASTE_SHARE_PARAM = "taste";
 const TASTE_SHARE_MAX_ATOMS = 20;
 const TASTE_SHARE_MAX_REACTIONS = 30;
 
-function encodeTastePayload() {
+function currentTastePayload() {
   const weights = state.atomWeights || {};
   const reactions = state.quickReactions || {};
   // Top atoms by absolute weight
@@ -6238,8 +6239,11 @@ function encodeTastePayload() {
     .sort((a, b) => new Date(b[1].updatedAt || 0) - new Date(a[1].updatedAt || 0))
     .slice(0, TASTE_SHARE_MAX_REACTIONS)
     .reduce((acc, [k, r]) => { acc[r.title || k] = r.reaction; return acc; }, {});
-  const payload = { v: TASTE_SHARE_VERSION, atoms: topAtoms, reactions: topReactions };
-  return btoa(JSON.stringify(payload));
+  return { v: TASTE_SHARE_VERSION, atoms: topAtoms, reactions: topReactions };
+}
+
+function encodeTastePayload() {
+  return btoa(JSON.stringify(currentTastePayload()));
 }
 
 function decodeTastePayload(encoded) {
@@ -6265,7 +6269,7 @@ function tasteShareSummary(payload) {
     .filter(([, w]) => w > 0)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3)
-    .map(([k]) => k)
+    .map(([k]) => (window.labelAtom ? window.labelAtom(k) : k))
     .join(", ");
   return t("taste.shareSummary", {
     atoms: atomCount,
@@ -6294,9 +6298,14 @@ function mergeTastePayload(payload) {
   render();
 }
 
-// Generate share link
+// Generate share link + a friendly taste recap ("wrapped") to share alongside it
 els.tasteShareBtn.addEventListener("click", () => {
   const url = tasteShareUrl();
+  const summary = tasteShareSummary(currentTastePayload());
+  if (els.tasteShareSummaryEl) {
+    els.tasteShareSummaryEl.textContent = summary;
+    els.tasteShareSummaryEl.style.display = "";
+  }
   els.tasteShareUrl.textContent = url;
   els.tasteShareUrl.style.display = "";
   els.tasteShareCopy.style.display = "";
@@ -6304,11 +6313,13 @@ els.tasteShareBtn.addEventListener("click", () => {
   setTimeout(() => { els.tasteShareStatus.textContent = ""; }, 3000);
 });
 
-// Copy to clipboard
+// Copy to clipboard: the recap + the link, ready to paste to a friend
 els.tasteShareCopy.addEventListener("click", async () => {
   const url = els.tasteShareUrl.textContent;
+  const summary = els.tasteShareSummaryEl?.textContent || "";
+  const clip = summary ? `${summary}\n${url}` : url;
   try {
-    await navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText(clip);
     els.tasteShareStatus.textContent = `${t("taste.shareCopied")} ✓`;
   } catch {
     els.tasteShareStatus.textContent = t("taste.shareManual");
