@@ -154,6 +154,28 @@ textarea:focus-visible,
   line-height: 1.45;
 }
 
+/* ── Deals: compact anti-hype pill (full sentence lives in wishlist/drawer) ── */
+.deal-guard {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.deal-guard.guard-plus {
+  background: var(--ps-blue-soft);
+  border: 1px solid var(--ps-blue-border);
+  color: var(--ps-blue);
+}
+.deal-guard.guard-wait {
+  background: color-mix(in srgb, var(--ps-warning) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ps-warning) 40%, transparent);
+  color: var(--amber);
+}
+
 /* ── Anti-hype buy guard: a calm "don't pay full price now" note ─────────── */
 .anti-hype-guard {
   display: block;

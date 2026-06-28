@@ -5,6 +5,7 @@
 
   function createCardsTools({
     getState,
+    getAntiHypeGuard,
     explain,
     personalEvidence,
     personalRatingBadge,
@@ -82,6 +83,7 @@
     // ── Hero card (top-pick section) ────────────────────────────────────────
     function renderHero(game, topPickEl) {
       const { reason, confidence } = explain(game, game.score);
+      const guard = getAntiHypeGuard ? getAntiHypeGuard(game) : null;
       const watchout = watchOutCopy(game);
       const evidence = personalEvidence(game);
       const ratingBadge = personalRatingBadge(game);
@@ -173,6 +175,7 @@
               ${renderEvidenceRows(evidence, 3)}
             </div>
             <p class="watchout"><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
+            ${guard ? `<span class="deal-guard guard-${guard.kind}" title="${String(guard.detail).replace(/"/g, "&quot;")}">${guard.label}</span>` : ""}
             <div class="facts">${facts}</div>
             <p class="cover-source hero-cover-source"></p>
             <div class="hero-primary-cta">

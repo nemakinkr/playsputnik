@@ -863,6 +863,11 @@ const {
   focusTasteImport,
 } = window.PlaySputnikCards.createCardsTools({
   getState: () => state,
+  getAntiHypeGuard: (game) => {
+    const region = state.activeRegion;
+    const currency = game.priceMeta?.[region]?.currency || "USD";
+    return antiHypeGuard(game, priceWatchRecord(game, region, 0), region, currency);
+  },
   explain,
   personalEvidence,
   personalRatingBadge,
@@ -5786,8 +5791,10 @@ function renderDeals() {
       // Anti-hype guard right where a sale tempts: already in PS Plus, or the
       // tracked history shows this "deal" isn't the real low.
       const guard = game ? antiHypeGuard(game, priceWatchRecord(game, region, 0), region, snap.currency) : null;
+      // Compact pill in the dense deals grid (full sentence lives in wishlist /
+      // the drawer where there's room); title = the full guard detail on hover.
       const guardLine = guard
-        ? `<div class="anti-hype-guard guard-${guard.kind}"><strong>${guard.label}</strong> ${guard.detail}</div>`
+        ? `<span class="deal-guard guard-${guard.kind}" title="${detailAttr(guard.detail)}">${guard.label}</span>`
         : "";
       card.innerHTML = `
         <div class="deal-badge">-${snap.discount}%</div>
