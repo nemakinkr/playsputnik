@@ -141,21 +141,39 @@ export async function launchChrome({ label = "playsputnik", port }) {
   };
 }
 
-/* Drive a gate on a fresh tab, retrying once on a fresh tab if the first attempt
-   throws (e.g. an app-ready timeout under a loaded CI runner — a hung tab load
-   rarely repeats on a clean tab). */
+/* Drive a gate on a fresh tab, retrying on a fresh tab if an attempt throws
+   (e.g. an app-ready timeout under a loaded CI runner — a hung tab load rarely
+   repeats on a clean tab). Up to 3 attempts with a short pause between; on a
+   failed attempt, probe the tab's boot state so a flake is diagnosable instead
+   of a bare timeout. */
+async function bootDiagnostic(cdp) {
+  try {
+    const raw = await evaluate(cdp, `JSON.stringify({
+      phase: (window.__playsputnikBoot && (window.__playsputnikBoot.coreRenderedAt ? "rendered" : window.__playsputnikBoot.appReadyAt ? "ready" : "booting")) || "no-boot",
+      topPick: Boolean(document.querySelector('#top-pick') && document.querySelector('#top-pick').innerHTML.trim()),
+      errors: (window.__playsputnikErrors || []).slice(0, 2).map((e) => e.message || String(e)),
+    })`);
+    return raw ? ` [boot: ${raw}]` : "";
+  } catch { return ""; }
+}
+
 async function driveWithRetry(session, gate, rootUrl) {
+  const MAX = 3;
   let lastError;
-  for (let attempt = 1; attempt <= 2; attempt++) {
+  for (let attempt = 1; attempt <= MAX; attempt++) {
     const cdp = await session.newTab();
     try {
       const raw = await gate.drive(cdp, rootUrl);
       await cdp.close();
       return raw;
     } catch (error) {
+      const diag = await bootDiagnostic(cdp);
       await cdp.close().catch(() => {});
-      lastError = error;
-      if (attempt === 1) console.error(`  ↻ ${gate.name}: retrying after "${error.message}"`);
+      lastError = new Error(`${error.message}${diag}`);
+      if (attempt < MAX) {
+        console.error(`  ↻ ${gate.name}: attempt ${attempt}/${MAX} failed — "${error.message}"${diag}; retrying`);
+        await wait(800);
+      }
     }
   }
   throw lastError;
