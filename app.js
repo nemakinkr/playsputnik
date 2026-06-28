@@ -3373,6 +3373,11 @@ function isBacklogAmnestyCandidate(game) {
   if (["playing", "paused", "want_to_finish", "completed", "dropped", "hidden", "owned", "owned_forever", "subscription"].includes(memoryState)) {
     return false;
   }
+  // A game the user rated highly (4–5 sputniks, stored as 80–100) is never
+  // "let it go" material — repeated skips of a loved game are a timing deferral,
+  // not a rejection, so don't nag to archive it.
+  const rating = explicitUserGame(game.title)?.rating;
+  if (typeof rating === "number" && rating >= 80) return false;
   const meta = backlogAmnestyMeta(game.title);
   if (meta.archivedAt) return false;
   if (meta.skips < BACKLOG_AMNESTY_SKIP_TARGET) return false;
