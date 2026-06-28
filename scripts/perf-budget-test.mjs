@@ -39,9 +39,12 @@ try {
   await page.waitForFunction(() => document.querySelector("#top-pick")?.innerHTML.trim().length > 0, { timeout: 20000 });
 
   const result = await page.evaluate(() => {
-    // Seed a realistic profile: 8 graded ratings + 2 active states
-    ["Hades", "Stray", "Bloodborne", "Celeste", "INSIDE", "Tunic", "Returnal", "Control Ultimate Edition"]
-      .forEach((t, i) => setGameRating(t, ((i % 5) + 1) * 20));
+    // Seed a LARGE realistic profile: ~120 graded ratings to stress the
+    // O(feedback × catalog) path at scale (a heavy long-term user), plus a
+    // couple of active states. This is where the memoization contract has to
+    // hold — an empty/tiny profile hides it.
+    const titles = (recommendationPool() || []).map((g) => g.title).slice(0, 120);
+    titles.forEach((t, i) => setGameRating(t, ((i % 5) + 1) * 20));
     setGameState("Portal 2", "completed");
     setGameState("DOOM Eternal", "playing");
     render();
@@ -54,6 +57,7 @@ try {
 
     return {
       avgMs: Math.round(avgMs * 10) / 10,
+      ratedGames: Object.values(state.userGames || {}).filter((g) => typeof g.rating === "number").length,
       feedbackEvents: state.feedbackLog.length,
       poolSize: recommendationPool().length,
       errors: window.__playsputnikErrors || [],
@@ -61,7 +65,7 @@ try {
   });
 
   console.log(`Render with populated profile: ${result.avgMs}ms avg (budget ${BUDGET_MS}ms)`);
-  console.log(`  feedback events: ${result.feedbackEvents}, pool: ${result.poolSize}`);
+  console.log(`  rated games: ${result.ratedGames}, feedback events: ${result.feedbackEvents}, pool: ${result.poolSize}`);
   if (result.errors.length) {
     console.error("  runtime errors:", result.errors);
     process.exit(1);

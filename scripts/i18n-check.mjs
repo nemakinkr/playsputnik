@@ -50,6 +50,17 @@ const usage = validateI18nUsage(catalogKeys, references, html.issues);
 const corpus = [appSource, htmlSource, ...srcSources].join("\n");
 const { allKeys, orphans } = findOrphans(enCatalog, corpus);
 
+// ── 4. Dynamic-namespace coverage ─────────────────────────────────────────────
+// Dynamic keys like `views.${view}.summary` are skipped by the orphan check by
+// design; make sure each dynamic prefix rooted at a real catalog namespace still
+// has at least one key — so a renamed/emptied namespace can't silently break a
+// dynamic lookup (which would render the raw key). The namespace-root filter
+// keeps non-i18n templates (e.g. `source.${x}`) out, avoiding false positives.
+const topNamespaces = new Set(Object.keys(enCatalog));
+const dynamicPrefixes = [...new Set([...corpus.matchAll(/`([a-z][a-z0-9_]*(?:\.[a-z0-9_]+)*\.)\$\{/g)].map((m) => m[1]))]
+  .filter((p) => topNamespaces.has(p.split(".")[0]));
+const emptyDynamic = dynamicPrefixes.filter((p) => !allKeys.some((k) => k.startsWith(p)));
+
 // ── Unified report ────────────────────────────────────────────────────────────
 let failed = false;
 function stage(ok, okLine, label, issues) {
@@ -61,6 +72,7 @@ function stage(ok, okLine, label, issues) {
 stage(!syncIssues.length, `catalog sync (${sync.enLeafCount} logical keys, EN + RU)`, "catalog sync", syncIssues);
 stage(!usage.issues.length, `usage (${usage.referenceCount} references, ${usage.uniqueKeyCount} keys)`, "usage", usage.issues);
 stage(!orphans.length, `no orphans (${allKeys.length} leaf keys)`, "orphans", orphans.map((k) => `unused key: ${k}`));
+stage(!emptyDynamic.length, `dynamic namespaces (${dynamicPrefixes.length} prefixes populated)`, "dynamic namespaces", emptyDynamic.map((p) => `prefix has no catalog keys: ${p}`));
 
 if (failed) { console.error("\n❌ i18n check failed."); process.exit(1); }
 console.log("✅ i18n OK (catalog sync + usage + no orphans).");
