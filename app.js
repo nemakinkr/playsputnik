@@ -2255,6 +2255,14 @@ function renderEntryPaths() {
 }
 
 
+// feedbackLog is a capped RECENCY log (last 20 actions), powering only the
+// transient feedback-weight boost in combinedTasteWeight. It is NOT the taste
+// source of record: the persistent profile lives in atomWeights, and the full
+// rating set drives the forecast/calibration model via personalRatingRecords()
+// (which reads ALL of state.userGames). So a 120-rating user keeps every signal
+// — verified: calibration sample shows 123/123. Do NOT raise this cap to
+// "recover signal" (there's none to recover) — it would re-introduce the
+// O(feedbackLog × catalog) render blow-up the cap exists to prevent.
 function recordFeedback(action, title) {
   state.feedbackLog = [
     { action, title, at: new Date().toISOString() },
