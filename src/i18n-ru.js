@@ -467,6 +467,7 @@
       importDismiss: "Закрыть", importMerged: "Вкус объединён",
       shareSummary: "весов атомов: {atoms} · реакций на игры: {reactions}{top}",
       shareTop: " · любит: {atoms}",
+      shareGames: " · в фаворитах: {games}",
     },
     deals: {
       title: "Скидки сейчас", loading: "Загрузка",

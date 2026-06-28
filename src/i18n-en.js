@@ -468,6 +468,7 @@
       importDismiss: "Dismiss", importMerged: "Taste merged",
       shareSummary: "{atoms} atom weights · {reactions} game reactions{top}",
       shareTop: " · loves {atoms}",
+      shareGames: " · favourites: {games}",
     },
     deals: {
       title: "On sale now", loading: "Loading",

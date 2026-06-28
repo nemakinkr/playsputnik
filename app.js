@@ -6271,10 +6271,17 @@ function tasteShareSummary(payload) {
     .slice(0, 3)
     .map(([k]) => (window.labelAtom ? window.labelAtom(k) : k))
     .join(", ");
+  const lovedGames = Object.entries(payload.reactions || {})
+    .filter(([, reaction]) => reaction === "loved")
+    .slice(0, 2)
+    .map(([title]) => title)
+    .join(", ");
+  const top = (topAtoms ? t("taste.shareTop", { atoms: topAtoms }) : "")
+    + (lovedGames ? t("taste.shareGames", { games: lovedGames }) : "");
   return t("taste.shareSummary", {
     atoms: atomCount,
     reactions: reactionCount,
-    top: topAtoms ? t("taste.shareTop", { atoms: topAtoms }) : "",
+    top,
   });
 }
 
