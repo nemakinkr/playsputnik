@@ -5783,6 +5783,12 @@ function renderDeals() {
       const atoms = game?.atoms?.slice(0, 3).map((a) => `<span class="atom-pill">${labelAtom(a)}</span>`).join("") ?? "";
       const score = game?.criticScore ? `<span class="deal-score">${game.criticScore}</span>` : "";
       const spark = priceSparkline(snap.title, region);
+      // Anti-hype guard right where a sale tempts: already in PS Plus, or the
+      // tracked history shows this "deal" isn't the real low.
+      const guard = game ? antiHypeGuard(game, priceWatchRecord(game, region, 0), region, snap.currency) : null;
+      const guardLine = guard
+        ? `<div class="anti-hype-guard guard-${guard.kind}"><strong>${guard.label}</strong> ${guard.detail}</div>`
+        : "";
       card.innerHTML = `
         <div class="deal-badge">-${snap.discount}%</div>
         <div class="deal-card-body">
@@ -5793,6 +5799,7 @@ function renderDeals() {
             <strong class="deal-price-now">${snap.currency} ${snap.price.toFixed(2)}</strong>
             ${spark}
           </div>
+          ${guardLine}
           ${snap.storeUrl ? `<a class="deal-store-link" href="${snap.storeUrl}" target="_blank" rel="noopener">PS Store ↗</a>` : ""}
         </div>
       `;
