@@ -60,7 +60,7 @@ function run(script) {
   });
 }
 
-const preview = spawn("python3", ["-m", "http.server", "4190", "--bind", "127.0.0.1"], { cwd: ROOT, stdio: "ignore" });
+const preview = spawn("python3", ["scripts/serve-static.py", "4190"], { cwd: ROOT, stdio: "ignore" });
 const provider = start("search-provider-server.mjs", ["--force-fixture"]);
 const cleanup = () => { try { preview.kill("SIGKILL"); } catch {} try { provider.kill("SIGKILL"); } catch {} };
 process.on("exit", cleanup);

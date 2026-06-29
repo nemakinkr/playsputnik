@@ -46,7 +46,7 @@ fi
 # Ensure a server is up on :7432
 STARTED_SERVER=""
 if ! curl -s -o /dev/null "http://127.0.0.1:7432/index.html"; then
-  python3 -m http.server 7432 >/dev/null 2>&1 &
+  python3 scripts/serve-static.py 7432 >/dev/null 2>&1 &
   STARTED_SERVER=$!
   sleep 1
 fi

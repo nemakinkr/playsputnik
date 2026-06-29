@@ -42,7 +42,7 @@ jobs:
       # preinstalled on ubuntu runners; CDP, no browser download needed).
       - name: Serve static site
         run: |
-          python3 -m http.server 7432 >/dev/null 2>&1 &
+          python3 scripts/serve-static.py 7432 >/dev/null 2>&1 &
           sleep 1
       - name: Browser gates (contrast + mobile + a11y + stale-hidden)
         run: node scripts/browser-gates.mjs http://127.0.0.1:7432/
