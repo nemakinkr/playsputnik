@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-23. Pick the next task here without rereading the
+Last updated: 2026-06-30. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 ARCHITECTURE.md (generated ownership map), CLAUDE.md (dev workflow + perf
 rules). The user's decision remains **polish before showing the product to
@@ -240,6 +240,12 @@ Follow-up done: final visual tightening moved the app closer to the provided
 design-system reference: compact radii, calmer shadows, border-led cards,
 denser buttons/chips, and stricter card rhythm live in the final `brand.css`
 layer without rewriting the older component sheets.
+
+Follow-up done: mobile drawer/card pass tightened the game-detail bottom sheet
+after visual inspection on a 390px viewport. The pass made the drawer chrome
+quieter, reduced hero/status/cockpit spacing, kept the price guardrail readable
+instead of clipped by mobile line-clamp, and preserved the primary CTA in the
+first screen of the drawer.
 
 ## Track: Data
 

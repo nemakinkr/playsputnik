@@ -453,6 +453,14 @@ textarea:focus-visible,
   padding: 8px 10px;
 }
 
+.detail-status-card .anti-hype-guard strong {
+  display: inline;
+  margin: 0;
+  overflow-wrap: normal;
+  font-size: inherit;
+  line-height: inherit;
+}
+
 @media (max-width: 700px) {
   .app-shell {
     padding: 10px;
@@ -476,5 +484,147 @@ textarea:focus-visible,
   .buy-decision-row,
   .game-search-row {
     padding: 11px;
+  }
+}
+
+/* ── Mobile drawer/card pass: cleaner bottom sheet and denser detail rhythm ─ */
+@media (max-width: 640px) {
+  .game-detail-drawer {
+    max-height: min(96vh, 880px);
+    border-color: var(--ps-border);
+    border-radius: 14px 14px 0 0;
+    background: var(--ps-surface);
+    box-shadow: 0 -8px 30px rgba(11, 19, 43, 0.16);
+    outline: 0;
+  }
+
+  .game-detail-drawer:focus,
+  .game-detail-drawer:focus-visible {
+    outline: 2px solid rgba(37, 99, 235, 0.18);
+    outline-offset: -2px;
+  }
+
+  .drawer-drag-handle {
+    width: 42px;
+    height: 4px;
+    background: var(--ps-border);
+  }
+
+  .game-detail-header {
+    padding: 9px 12px;
+  }
+
+  .game-detail-header h2 {
+    font-size: 1rem;
+    line-height: 1.1;
+  }
+
+  .game-detail-header p:last-child {
+    max-width: 22ch;
+    line-height: 1.2;
+  }
+
+  .game-detail-close {
+    min-height: 34px;
+    border-radius: var(--radius-md);
+  }
+
+  .game-detail-visual {
+    min-height: 188px;
+    border-radius: var(--radius-lg);
+    padding: 13px;
+  }
+
+  .game-detail-visual strong {
+    font-size: 1.42rem;
+  }
+
+  .detail-hero-badges {
+    gap: 5px;
+  }
+
+  .detail-hero-badges span {
+    padding: 4px 7px;
+    font-size: 0.66rem;
+  }
+
+  .game-detail-body {
+    gap: 9px;
+  }
+
+  .game-detail-status {
+    gap: 7px;
+  }
+
+  .detail-status-card {
+    min-height: 0;
+    padding: 7px 8px;
+  }
+
+  .detail-status-card.tone-price {
+    grid-column: 1 / -1;
+  }
+
+  .detail-status-card strong {
+    font-size: 0.8rem;
+  }
+
+  .detail-status-card small {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .detail-status-card.tone-price small {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+  }
+
+  .detail-status-card .anti-hype-guard {
+    margin-top: 6px;
+    padding: 6px 8px;
+  }
+
+  .detail-cockpit {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .detail-cockpit-head {
+    gap: 4px;
+    padding-left: 9px;
+  }
+
+  .detail-cockpit-head strong {
+    font-size: 1.04rem;
+  }
+
+  .detail-primary-cta {
+    min-height: 40px;
+    border-radius: var(--radius-md);
+  }
+
+  .detail-cockpit-actions small {
+    font-size: 0.7rem;
+  }
+
+  .game-detail-section {
+    padding: 9px;
+  }
+
+  .game-detail-section h3 {
+    margin-bottom: 5px;
+  }
+
+  .game-detail-section p {
+    font-size: 0.8rem;
+    line-height: 1.36;
+  }
+
+  .game-detail-actions button {
+    min-height: 34px;
+    border-radius: var(--radius-md);
   }
 }

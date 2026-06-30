@@ -1,7 +1,7 @@
 # PlaySputnik Project State
 
-Last updated: 2026-06-23 (Codex resumed after Claude session series; see
-HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
+Last updated: 2026-06-30 (Codex resumed after Claude polish/architecture
+series; see HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
 performance rules).
 
 ## Product
@@ -28,14 +28,15 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v87 (cache-first static assets / network-first navigation and
+- Service worker v88 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
 ## Current Prototype
 
-- Static app, no build step: `index.html` + four files in `styles/` + `app.js`
-  (~6.6k lines) + 32 runtime entries in `src/module-manifest.js`.
+- Static app, no build step: `index.html` + layered CSS in `styles/`
+  (`foundation`, `components`, `polish`, `themes`, final `brand` overrides) +
+  `app.js` + 32 runtime entries in `src/module-manifest.js`.
   Runtime modules load through six dependency phases, parallel inside each
   phase. A visible boot overlay blocks interaction until handlers are ready.
   Comparison selection and the rate-later queue live in `app-decisions.js`;
@@ -181,7 +182,13 @@ reviews, catalogs, sale pages, and announcements.
 - Dark mode (`data-theme="dark"`, toggle, OS-follow, anti-flash); design
   tokens are PlayStation-clean (`--ps-blue #2563eb`, compact radii,
   border-led cards, soft shadows); file-based PlaySputnik mark/wordmark and
-  PWA icons.
+  PWA icons. The current visual direction is intentionally close to the
+  provided design-system reference: white/blue PlayStation-clean surfaces,
+  compact 6-8px card radii, calmer shadows, denser chips/buttons, and a final
+  `styles/brand.css` layer that tightens older component CSS without broad
+  rewrites. The latest pass also tightened mobile game-detail drawer rhythm:
+  subtler bottom-sheet chrome, denser hero/status/cockpit spacing, and readable
+  price guardrails on small screens.
 - Taste/wishlist share links (`?taste=`, `?wl=`) with import banners.
 - Error states: init overlay, deferred-data toast, offline indicator,
   SW update banner.
@@ -195,7 +202,8 @@ See AGENTS.md "Core engineering principle" / CLAUDE.md.
 ## Performance contract (critical)
 
 `render()` re-renders everything; budget <800ms WITH a populated profile
-(enforced by `scripts/perf-budget-test.mjs`; current ~33ms). Per-render memo
+(enforced by `scripts/perf-budget-test.mjs`; recent checked runs are roughly
+~60ms with a seeded profile, far below budget). Per-render memo
 caches invalidated at the top of `render()`: tasteProfile (+feedback
 weights), rankedGames, tasteMemory, companionAgenda, effectiveGameState,
 sourceLookups. `titleKey` is memoized in src/app-search.js and invalidated
@@ -219,11 +227,14 @@ the active view.
 ## Current Verification
 
 ```sh
-./scripts/check.sh          # validate → i18n → qa → browser smoke → perf → browser gates (~45s)
+./scripts/check.sh          # validate → i18n → qa → browser smoke → perf → browser gates
 ./scripts/check.sh --fast   # ~3s, skips browser stages
 ```
 
-The i18n stage validates EN/RU catalog structure and every literal
+The full gate includes data validation, SW/cache manifest drift checks, i18n
+catalog/usage checks, state-class QA, browser smoke, seeded performance budget,
+dark-mode contrast, mobile layout, a11y, release-upgrade protection, and the
+smoke-suite. The i18n stage validates EN/RU catalog structure and every literal
 `data-i18n*` / `t("...")` reference. The mobile browser gate runs both locales
 across all 8 views plus the open settings sidebar at 375px.
 
@@ -254,7 +265,9 @@ User decision: polish before showing to people. Search-to-memory, production
 smoke, Discover/search visual polish, mobile navigation, first-session payoff,
 core journey, demo Today/Discover continuity, demo review-mode polish, TLOU
 Part II edition decision, detail-drawer visual hierarchy, data-health issue
-triage, and Today/Library/detail recommendation coherence are now
-strengthened. Top next candidates are onboarding dogfood, expanded catalog/data
-trust polish, and Library queue dogfooding. See NEXT_TASKS.md and HANDOFF.md
+triage, Today/Library/detail recommendation coherence, architecture gates, and
+final visual tightening are now strengthened. Top next candidates are real-user
+onboarding dogfood, expanded catalog/data trust polish, Library queue
+dogfooding, shareable investor/demo flow, and AI narrative activation when the
+project is ready to spend paid tokens. See NEXT_TASKS.md and HANDOFF.md
 "Backlog".
