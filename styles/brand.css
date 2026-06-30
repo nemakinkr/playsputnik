@@ -407,6 +407,7 @@ textarea:focus-visible,
 
 .library-dashboard,
 .wishlist-dashboard,
+.library-command,
 #my-games-list,
 #price-watch-list,
 #buy-decision-list,
@@ -416,11 +417,26 @@ textarea:focus-visible,
 
 .library-dashboard-card,
 .wishlist-dashboard-card,
+.library-command-focus,
+.library-command-lanes button,
 .my-game-row,
 .wishlist-row,
 .buy-decision-row,
 .game-search-row {
   padding: 12px;
+}
+
+.library-command-focus,
+.library-command-lanes button {
+  border-radius: var(--radius-md);
+}
+
+.library-command-focus strong {
+  font-size: 1.05rem;
+}
+
+.library-command-lanes button strong {
+  font-size: 1rem;
 }
 
 .visual-catalog-card,
@@ -479,6 +495,8 @@ textarea:focus-visible,
   .value-strip div,
   .library-dashboard-card,
   .wishlist-dashboard-card,
+  .library-command-focus,
+  .library-command-lanes button,
   .my-game-row,
   .wishlist-row,
   .buy-decision-row,

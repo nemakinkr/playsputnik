@@ -192,6 +192,11 @@ several taste dimensions and that mixed signals get a focused follow-up.
 Next work here should be driven by real dogfooding notes, not more abstract copy
 tuning.
 
+Follow-up done: onboarding now points more explicitly into gradual Library
+memory instead of implying a full PSN/import setup. Quick swipe completion and
+the 3-signal contract both say the app is usable now and My Games can start
+later with one title, PSN access, or a pasted list.
+
 ### 4. Chunk-label copy refinement
 
 Status: done. `gameChunkProfile` now reserves "one full run" for true
@@ -246,6 +251,17 @@ after visual inspection on a 390px viewport. The pass made the drawer chrome
 quieter, reduced hero/status/cockpit spacing, kept the price guardrail readable
 instead of clipped by mobile line-clamp, and preserved the primary CTA in the
 first screen of the drawer.
+
+### 5b. Library / My Games operating queue
+
+Status: first pass done. My Games now has a working command bar above the row
+list: a current focus plus All/Active/Access/Wishlist/Finished lane counters.
+The command bar uses the same filter state as the existing queue tabs, so it is
+not decorative; clicking a lane changes the actual list. The Library/Wishlist
+smoke test now gates the command bar, counts, focus copy, and filter syncing.
+
+Next dogfood should check whether the command focus chooses the right title for
+a real user with many paused games, subscription items, and wishlist entries.
 
 ## Track: Data
 

@@ -983,6 +983,7 @@ const els = {
   ratingQueueList: document.querySelector("#rating-queue-list"),
   myGamesSummary: document.querySelector("#my-games-summary"),
   myGamesDashboard: document.querySelector("#my-games-dashboard"),
+  myGamesCommand: document.querySelector("#my-games-command"),
   myGamesFilterSummary: document.querySelector("#my-games-filter-summary"),
   libraryFilterButtons: document.querySelectorAll("[data-library-filter]"),
   myGamesList: document.querySelector("#my-games-list"),
@@ -4038,6 +4039,76 @@ function syncFirstTimeCard(anchor, kind, show) {
   anchor.before(createFirstTimeCard(kind));
 }
 
+function libraryCommandFocus(rows, counts, activeFilter) {
+  const active = rows.find((item) => item.lane === "active");
+  const access = rows.find((item) => item.lane === "access");
+  const wishlist = rows.find((item) => item.lane === "wishlist");
+  const queued = rows.find((item) => item.lane === "queued");
+  const pick = active || access || queued || wishlist;
+  if (pick?.type === "game") {
+    const step = libraryNextStep(pick.game);
+    return {
+      title: pick.game.title,
+      label: step.label,
+      detail: step.detail,
+      tone: step.tone,
+    };
+  }
+  if (pick?.type === "queued") {
+    return {
+      title: pick.item.title,
+      label: t("library.commandQueued"),
+      detail: pick.item.nextAction || pick.item.detail,
+      tone: "active",
+    };
+  }
+  return {
+    title: t("library.commandEmptyTitle"),
+    label: t("library.commandEmptyLabel"),
+    detail: counts.all ? t("library.commandFilteredDetail", { filter: queueLaneLabel(activeFilter) }) : t("library.commandEmptyDetail"),
+    tone: counts.all ? "suggested" : "empty",
+  };
+}
+
+function renderLibraryCommand(rows, activeFilter) {
+  if (!els.myGamesCommand) return;
+  const counts = rows.reduce((acc, item) => {
+    acc.all += 1;
+    acc[item.lane] = (acc[item.lane] || 0) + 1;
+    return acc;
+  }, { all: 0, active: 0, queued: 0, access: 0, wishlist: 0, finished: 0, suggested: 0 });
+  counts.active += counts.queued;
+  const focus = libraryCommandFocus(rows, counts, activeFilter);
+  const laneButtons = [
+    ["all", t("library.filterAll"), counts.all],
+    ["active", t("library.filterActive"), counts.active],
+    ["access", t("library.filterAccess"), counts.access],
+    ["wishlist", t("library.filterWishlist"), counts.wishlist],
+    ["finished", t("library.filterFinished"), counts.finished],
+  ];
+  els.myGamesCommand.innerHTML = `
+    <div class="library-command-focus tone-${focus.tone}">
+      <span>${focus.label}</span>
+      <strong>${focus.title}</strong>
+      <p>${focus.detail}</p>
+    </div>
+    <div class="library-command-lanes" aria-label="${t("library.commandLanesAria")}">
+      ${laneButtons.map(([filter, label, count]) => `
+        <button class="${activeFilter === filter ? "is-active" : ""}" data-library-command-filter="${filter}" type="button" aria-pressed="${activeFilter === filter}">
+          <span>${label}</span>
+          <strong>${count}</strong>
+        </button>
+      `).join("")}
+    </div>
+  `;
+  els.myGamesCommand.querySelectorAll("[data-library-command-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.libraryFilter = button.dataset.libraryCommandFilter || "all";
+      render();
+    });
+  });
+}
+
 function renderMyGames(ranked) {
   const candidates = memoryCandidates(ranked);
   const queued = playLaterQueue();
@@ -4069,6 +4140,7 @@ function renderMyGames(ranked) {
   const shouldShowFirstStep = activeFilter === "all" && remembered + queued.length === 0;
   syncFirstTimeCard(els.myGamesDashboard, "library", shouldShowFirstStep);
   renderLibraryDashboard(ranked);
+  renderLibraryCommand(allRows, activeFilter);
   const rows = visibleRows.length
     ? visibleRows.map((item) => (item.type === "queued" ? renderQueuedGame(item.item, item.lane) : renderMyGameRow(item.game, item.index, item.lane)))
     : [createQueueEmpty(t("library.emptyLaneTitle"), t("library.emptyLaneDetail"))];

@@ -1395,6 +1395,10 @@ function checkSelectors() {
   assert(/function libraryNextStep/.test(appLibrarySource), "Library rows should explain the next step");
   assert(/function libraryFilterMatches/.test(appLibrarySource), "Library queue filter logic is missing");
   assert(/function renderLibraryDashboard/.test(appSource), "Library dashboard renderer is missing");
+  assert(/id="my-games-command"/.test(html), "Library view should expose a working command bar");
+  assert(/function renderLibraryCommand/.test(appSource), "Library command bar renderer is missing");
+  assert(/data-library-command-filter/.test(appSource), "Library command bar should switch queue lanes");
+  assert(/library-command/.test(css), "Library command bar should be styled");
   assert(/my-game-facets/.test(appSource), "My Games should show separate access/progress/rating facets");
   assert(/library-next-step/.test(appSource + css), "My Games should show next-step guidance");
   assert(/library-plan-step/.test(appSource + css), "Library plan should read as ordered next steps");

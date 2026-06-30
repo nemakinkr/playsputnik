@@ -871,6 +871,18 @@ select:focus-visible,
   border-color: rgba(47, 192, 127, 0.3);
 }
 
+[data-theme="dark"] .library-command-focus,
+[data-theme="dark"] .library-command-lanes button {
+  background: var(--card-bg-soft);
+  border-color: var(--card-border);
+}
+
+[data-theme="dark"] .library-command-lanes button:hover,
+[data-theme="dark"] .library-command-lanes button.is-active {
+  background: var(--accent-bg);
+  border-color: var(--blue);
+}
+
 /* Higher-specificity supplement: these three pills have tone/context variants
    (.wishlist-row.tone-*, .visual-catalog-meta .visual-value-pill.is-plus,
    .price-alert.is-triggered) that outrank the single-class dark override. */

@@ -230,6 +230,10 @@ try {
     activeFilter: document.querySelector("[data-library-filter].is-active")?.dataset.libraryFilter || "",
     filterSummary: document.querySelector("#my-games-filter-summary")?.textContent || "",
     dashboardText: document.querySelector("#my-games-dashboard")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    commandText: document.querySelector("#my-games-command")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    commandButtons: document.querySelectorAll("[data-library-command-filter]").length,
+    commandActive: document.querySelector("[data-library-command-filter].is-active")?.dataset.libraryCommandFilter || "",
+    commandCounts: [...document.querySelectorAll("[data-library-command-filter] strong")].map((node) => Number(node.textContent.trim())),
     myRows: document.querySelectorAll(".my-game-row").length,
     nextSteps: document.querySelectorAll(".library-next-step").length,
     nextStepText: document.querySelector(".library-next-step")?.textContent?.replace(/\s+/g, " ").trim() || "",
@@ -244,6 +248,14 @@ try {
     activeFilter: document.querySelector("[data-library-filter].is-active")?.dataset.libraryFilter || "",
     rows: document.querySelectorAll(".my-game-row").length,
     lanes: [...document.querySelectorAll(".queue-lane")].map((node) => node.textContent).join(" / "),
+    summary: document.querySelector("#my-games-filter-summary")?.textContent || "",
+  }));
+
+  await page.evaluate(() => document.querySelector('[data-library-command-filter="wishlist"]')?.click());
+  await page.waitForFunction(() => document.querySelector('[data-library-filter="wishlist"]')?.classList.contains("is-active"), null, { timeout: 5000 });
+  const libraryCommandFiltered = await page.evaluate(() => ({
+    activeFilter: document.querySelector("[data-library-filter].is-active")?.dataset.libraryFilter || "",
+    commandActive: document.querySelector("[data-library-command-filter].is-active")?.dataset.libraryCommandFilter || "",
     summary: document.querySelector("#my-games-filter-summary")?.textContent || "",
   }));
 
@@ -325,16 +337,22 @@ try {
 
   const afterBuy = await markBoughtThroughAppMemory(page, beforeBuyTitle);
 
-  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, wishlistBefore, priceAlertTitle, wishlistTargetSet, wishlistTargetCleared, wishlistFiltered, afterBuy, errors };
+  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, libraryCommandFiltered, wishlistBefore, priceAlertTitle, wishlistTargetSet, wishlistTargetCleared, wishlistFiltered, afterBuy, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(library.activeView === "library", `Expected Library view, got ${library.activeView}`);
   assert(library.dashboardCards >= 4, `Expected library dashboard cards, got ${library.dashboardCards}`);
+  assert(library.commandButtons >= 5, `Expected library command lane buttons, got ${library.commandButtons}`);
+  assert(library.commandActive === "all", `Expected command bar to mirror all filter, got ${library.commandActive}`);
+  assert(library.commandCounts.some((count) => count > 0), "Expected command bar to expose non-empty lane counts");
+  assert(/Continue|Start|Queued|First memory|Next|No-spend|Intent|Продолжить|Начать|В очереди|Первая память|Дальше|Без трат|Намерение/.test(library.commandText), "Library command bar should expose a current working focus");
   assert(library.filters >= 5, `Expected library filters, got ${library.filters}`);
   assert(library.activeFilter === "all", `Expected all library filter by default, got ${library.activeFilter}`);
   assert(libraryFiltered.activeFilter === "access", `Expected access library filter, got ${libraryFiltered.activeFilter}`);
   assert(/Access:|Доступные:/.test(libraryFiltered.summary), "Expected access library filter summary to render");
   assert(/(?:Access|Доступные): \d+\/\d+/.test(libraryFiltered.summary), "Expected access filter to report visible/total rows");
+  assert(libraryCommandFiltered.activeFilter === "wishlist", `Expected command bar to switch wishlist filter, got ${libraryCommandFiltered.activeFilter}`);
+  assert(libraryCommandFiltered.commandActive === "wishlist", `Expected command bar active state to mirror wishlist, got ${libraryCommandFiltered.commandActive}`);
   assert(library.myRows >= 4, `Expected My games rows after PSN demo, got ${library.myRows}`);
   assert(library.nextSteps >= library.myRows, `Expected next-step guidance for each My games row, got ${library.nextSteps}/${library.myRows}`);
   assert(/Next|No-spend|Intent|Memory|Дальше|Без трат|Намерение|Память/.test(library.nextStepText), "Expected actionable next-step copy in Library rows");

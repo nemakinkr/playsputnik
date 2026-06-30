@@ -1019,6 +1019,21 @@
     grid-template-columns: 1fr;
   }
 
+  .library-command {
+    grid-template-columns: 1fr;
+  }
+
+  .library-command-lanes {
+    grid-template-columns: repeat(5, minmax(54px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .library-command-lanes button {
+    min-height: 58px;
+    padding: 7px;
+  }
+
   .my-game-actions,
   .my-game-action-matrix,
   .my-game-facets,
