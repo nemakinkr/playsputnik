@@ -236,6 +236,11 @@ Follow-up done: Wishlist now prioritizes buy/wait decisions above search and
 catalog, while empty Library/Wishlist profiles show first-step cards for search,
 catalog, or taste refinement instead of blank queues.
 
+Follow-up done: final visual tightening moved the app closer to the provided
+design-system reference: compact radii, calmer shadows, border-led cards,
+denser buttons/chips, and stricter card rhythm live in the final `brand.css`
+layer without rewriting the older component sheets.
+
 ## Track: Data
 
 ### 6. PS Plus Premium category id

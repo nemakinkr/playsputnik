@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v86 (cache-first static assets / network-first navigation and
+- Service worker v87 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -179,8 +179,9 @@ reviews, catalogs, sale pages, and announcements.
   games can be restored to Wishlist from the drawer or Stats; "Keep it" has a
   small skip cooldown to avoid nagging after one more skip.
 - Dark mode (`data-theme="dark"`, toggle, OS-follow, anti-flash); design
-  tokens are PlayStation-bold (`--blue #0064d2`, `--cta-gradient`, etc.);
-  wordmark logo with orbit/satellite tittle; PWA icons.
+  tokens are PlayStation-clean (`--ps-blue #2563eb`, compact radii,
+  border-led cards, soft shadows); file-based PlaySputnik mark/wordmark and
+  PWA icons.
 - Taste/wishlist share links (`?taste=`, `?wl=`) with import banners.
 - Error states: init overlay, deferred-data toast, offline indicator,
   SW update banner.
