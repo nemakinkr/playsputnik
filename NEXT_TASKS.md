@@ -11,6 +11,10 @@ Run `./scripts/check.sh` before claiming any task done.
 ## Track: Architecture
 
 - Shared runtime manifest for browser boot and Service Worker cache: done.
+- Manifest/cache drift gate: done. `manifest-cache-check.mjs` verifies that
+  HTML boots through manifest phases, SW imports the same manifest, derives
+  module cache entries from it, and explicitly precaches the shell assets used
+  by the HTML entrypoint.
 - Dependency-phased parallel module boot with explicit loading surface: done.
 - Versioned persisted-state migration pipeline: done.
 - Generated compact architecture map with a CI freshness gate: done.

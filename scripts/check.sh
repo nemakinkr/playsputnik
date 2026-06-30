@@ -20,6 +20,7 @@ echo "── 1/7 validate-data ────────────────�
 "$NODE" scripts/validate-data.mjs
 "$NODE" scripts/editorial-data-check.mjs
 "$NODE" scripts/sw-version-check.mjs
+"$NODE" scripts/manifest-cache-check.mjs
 
 echo "── 2/7 i18n catalogs + usage ──────────────────"
 "$NODE" scripts/i18n-check.mjs

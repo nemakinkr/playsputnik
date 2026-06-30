@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v68 (cache-first static assets / network-first navigation and
+- Service worker v86 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
