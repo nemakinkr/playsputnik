@@ -103,10 +103,14 @@ const knownCorpus = [
   ...(catalogBackbone.records || []).map((record) => ({ ...record, corpus: "backbone" })),
   ...(globalSearchFixtures.records || []).map((record) => ({ ...record, corpus: "external" })),
 ];
+const corpusPriority = { seed: 0, backbone: 1, external: 2 };
 const knownByKey = new Map();
 knownCorpus.forEach((record) => {
   const key = titleKey(record.title);
-  if (!knownByKey.has(key) || knownByKey.get(key).corpus !== "seed") knownByKey.set(key, record);
+  const existing = knownByKey.get(key);
+  if (!existing || (corpusPriority[record.corpus] ?? 9) < (corpusPriority[existing.corpus] ?? 9)) {
+    knownByKey.set(key, record);
+  }
 });
 const ranking = parseRanking(rankingText);
 const rows = ranking.map((entry) => {
@@ -220,7 +224,7 @@ if (OUTPUT_JSON) {
 } else {
   const topUnknown = audit.weakSpots.topUnknown.map((item) => `${item.rank}. ${item.title}`).slice(0, 5).join("; ");
   const nextUnknown = audit.weakSpots.nextLayerUnknown.map((item) => `${item.rank}. ${item.title}`).slice(0, 5).join("; ");
-  const promotion = audit.weakSpots.seedPromotionCandidates.map((item) => `${item.rank}. ${item.knownTitle}`).slice(0, 5).join("; ");
+  const promotion = audit.weakSpots.seedPromotionCandidates.map((item) => `${item.rank}. ${item.knownTitle} (${item.source})`).slice(0, 5).join("; ");
   console.log(`✅ Ranking dogfood OK: ${audit.ranking.seedMatched}/${audit.ranking.total} seed, ${audit.ranking.knownMatched}/${audit.ranking.total} known, top10 seed ${audit.ranking.seedTop10Matched}/10, top30 known ${audit.ranking.knownTop30Matched}/30, top60 known ${audit.ranking.knownTop60Matched}/60`);
   console.log(`   Top taste shape: ${audit.tasteShape.top25Signals.slice(0, 5).map((item) => `${item.signal}:${item.count}`).join(", ")}`);
   console.log(`   Promote next: ${promotion || "none"}`);
@@ -233,6 +237,10 @@ assert(platformMarkerLeaks.length === 0, `Platform emoji markers leaked into tit
 assert(top10Matched >= SEED_TOP_10_MIN_MATCHED, `Seed top-10 coverage too low: ${top10Matched}/10`);
 assert(coverage >= SEED_TOTAL_MIN_COVERAGE, `Seed ranking coverage too low: ${matched.length}/${rows.length}`);
 assert(knownTop30Matched >= KNOWN_TOP_30_MIN_MATCHED, `Known-corpus top-30 coverage too low: ${knownTop30Matched}/30`);
+assert(
+  audit.weakSpots.seedPromotionCandidates.filter((item) => item.rank <= 30).every((item) => item.source !== "external"),
+  "Top-30 seed promotion candidates should be managed by backbone before seed promotion",
+);
 assert(knownTop60Matched >= KNOWN_TOP_60_MIN_MATCHED, `Known-corpus top-60 coverage too low: ${knownTop60Matched}/60`);
 assert(knownCoverage >= KNOWN_TOTAL_MIN_COVERAGE, `Known-corpus ranking coverage too low: ${knownMatched.length}/${rows.length}`);
 assert((rows.at(-1)?.derivedRating || 0) >= BOTTOM_MIN_DERIVED_RATING, "Ranked-list tail must remain positive taste evidence");

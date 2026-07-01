@@ -1,12 +1,12 @@
 {
   "mode": "pre-mvp-catalog-backbone",
-  "updatedAt": "2026-07-01T08:00:00Z",
+  "updatedAt": "2026-07-01T09:00:00Z",
   "goal": "Provide a structured growth queue from the 24-game seed catalog toward a 150-game private-demo catalog without requiring full price or cover ingestion for every title.",
   "target": {
     "seedTarget": 150,
     "currentSeed": 461,
-    "backboneRecords": 101,
-    "nextPromotionBatch": 5,
+    "backboneRecords": 110,
+    "nextPromotionBatch": 9,
     "minimumReadyForInvestorDemo": 60
   },
   "promotionChecklist": [
@@ -2636,6 +2636,233 @@
       "atomStatus": "draft",
       "priceNeed": "warm",
       "reason": "Small folklore title for low-cost experimental fit."
+    },
+    {
+      "title": "Kingdom Come: Deliverance II",
+      "lane": "open_world_rpg",
+      "priority": 1,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "open-world",
+        "realistic",
+        "story"
+      ],
+      "session": "long",
+      "commitment": "high",
+      "adultTimeFit": "vacation",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "Founder ranking top-3 favorite; needs full seed promotion path once cover and price trust are resolved."
+    },
+    {
+      "title": "Days Gone",
+      "lane": "open_world_rpg",
+      "priority": 1,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "survival",
+        "action",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "Founder ranking top-10 favorite; useful for open-world survival-action taste scoring before seed promotion."
+    },
+    {
+      "title": "Atomic Heart",
+      "lane": "action_challenge",
+      "priority": 1,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "sci-fi",
+        "atmosphere",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "Founder ranking top-15 favorite; covers stylized sci-fi shooter taste better than generic action candidates."
+    },
+    {
+      "title": "Dispatch",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "cinematic",
+        "indie"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking top-15 favorite; keeps choice-led narrative taste visible outside the external search layer."
+    },
+    {
+      "title": "Marvel's Guardians of the Galaxy",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "cinematic"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking top-20 favorite; resolves the Russian title alias into a managed story-action catalog candidate."
+    },
+    {
+      "title": "Metro Exodus",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "dark",
+        "atmosphere",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking top-25 favorite; important atmosphere-driven shooter signal before seed promotion."
+    },
+    {
+      "title": "The Thaumaturge",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "story",
+        "strange",
+        "systems"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking top-30 favorite; adds a weird story-RPG bridge from external search into managed backbone."
+    },
+    {
+      "title": "Nobody Wants to Die",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "mystery",
+        "sci-fi",
+        "story",
+        "atmosphere"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking top-30 favorite; compact noir sci-fi signal for recommendation explanations."
+    },
+    {
+      "title": "Dying Light 2 Stay Human",
+      "lane": "open_world_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "open-world",
+        "survival",
+        "action",
+        "platforming"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking top-30 favorite; adds parkour survival action to managed backbone before full enrichment."
     }
   ]
 }

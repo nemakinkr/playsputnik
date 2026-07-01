@@ -296,16 +296,21 @@ follow-up added explicit `--title` support to `promote-catalog-candidates.mjs`
 and promoted five high-value backbone favorites into seed with generated cover
 fallbacks + low-confidence sample prices: Kingdom Come: Deliverance, Mafia:
 Definitive Edition, Hogwarts Legacy, Until Dawn, and The Dark Pictures
-Anthology: House of Ashes.
+Anthology: House of Ashes. The third follow-up moved the remaining top-30
+external-only favorites through backbone as `ranking_dogfood` candidates:
+Kingdom Come: Deliverance II, Days Gone, Atomic Heart, Dispatch, Marvel's
+Guardians of the Galaxy, Metro Exodus, The Thaumaturge, Nobody Wants to Die,
+and Dying Light 2 Stay Human. The audit now prioritizes seed > backbone >
+external when duplicate known titles exist and asserts that top-30 seed
+promotion candidates are not external-only.
 
-Next work: move the remaining top-30 external-only favorites through backbone
-before seed promotion (Kingdom Come: Deliverance II, Days Gone, Atomic Heart,
-Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus, The Thaumaturge,
-Nobody Wants to Die, Dying Light 2 Stay Human), then expand search/backbone for
-the 31-60 unknown queue: Wolfenstein: The New Order, As Dusk Falls, The
-Invincible, Road 96, The Dark Pictures: The Devil in Me, Pentiment, Indika,
-Star Wars Outlaws, Banishers: Ghosts of New Eden, RoboCop: Rogue City, The Dark
-Pictures: Little Hope, Life is Strange: True Colors, and Dead Island 2.
+Next work: either promote the managed top-30 backbone candidates into seed once
+their fallback cover/sample price treatment is acceptable, or expand
+search/backbone for the 31-60 unknown queue: Wolfenstein: The New Order, As
+Dusk Falls, The Invincible, Road 96, The Dark Pictures: The Devil in Me,
+Pentiment, Indika, Star Wars Outlaws, Banishers: Ghosts of New Eden, RoboCop:
+Rogue City, The Dark Pictures: Little Hope, Life is Strange: True Colors, and
+Dead Island 2.
 
 ### 7. TLOU Part II SKU merge decision
 

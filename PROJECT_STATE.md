@@ -141,7 +141,10 @@ reviews, catalogs, sale pages, and announcements.
   promoted five high-value backbone favorites into seed catalog with generated
   cover fallbacks and sample prices: Kingdom Come: Deliverance, Mafia:
   Definitive Edition, Hogwarts Legacy, Until Dawn, and The Dark Pictures
-  Anthology: House of Ashes. The next ranking dogfood queue is now explicit:
+  Anthology: House of Ashes. The third follow-up moved the remaining top-30
+  external-only favorites into managed backbone candidates and gated source
+  priority so seed promotion candidates cannot silently regress from backbone
+  back to external-only. The next ranking dogfood queue is now explicit:
   unknown 31-60 gaps start with Wolfenstein: The New Order, As Dusk Falls, The
   Invincible, Road 96, and The Dark Pictures: The Devil in Me.
 - Today: the companion answer and plan now read as a practical command center
