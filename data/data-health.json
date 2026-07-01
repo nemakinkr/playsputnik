@@ -20,8 +20,8 @@
     "catalogBackboneReadyCount": 0,
     "catalogBackbonePromotedCount": 24,
     "searchSourceCount": 5,
-    "globalSearchFixtureCount": 117,
-    "titleAliasCount": 119,
+    "globalSearchFixtureCount": 125,
+    "titleAliasCount": 124,
     "priceHistoryCount": 6787,
     "priceHistoryGameCount": 437,
     "libraryStates": [
@@ -177,10 +177,10 @@
     "mode": "prototype-global-search-p0",
     "sourceCount": 5,
     "fixtureMode": "prototype-external-index",
-    "fixtureCount": 117,
+    "fixtureCount": 125,
     "wishlistCapableSources": 5,
-    "externalFixtureCount": 117,
-    "missingPriceCount": 117
+    "externalFixtureCount": 125,
+    "missingPriceCount": 125
   },
   "refreshPolicy": {
     "mode": "intent-weighted-refresh-p0",

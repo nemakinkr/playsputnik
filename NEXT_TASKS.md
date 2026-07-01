@@ -280,19 +280,23 @@ the parser strips PlayStation-generation emoji markers and keeps the ranking
 tail as weaker positive taste evidence, not dislike. It also separates
 full seed-catalog coverage from broader known search/backbone coverage.
 
-Current baseline: 42/111 seed matches, 8/10 seed top-10 matches, 61/111
-known-corpus matches, 22/30 known top-30 matches. New aliases were added for
+Current baseline: 42/111 seed matches, 8/10 seed top-10 matches, 69/111
+known-corpus matches, 30/30 known top-30 matches. New aliases were added for
 high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of
-Ashes, and The Stanley Parable.
+Ashes, The Stanley Parable, Marvel's Guardians of the Galaxy, and Dying Light 2
+Stay Human. The first follow-up also added honest external-index records for
+the previous top-30 unknowns: Kingdom Come: Deliverance II, Days Gone, Atomic
+Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus, Nobody Wants
+to Die, and Dying Light 2 Stay Human. They are searchable memory candidates
+only; cover, price, and subscription status remain unverified.
 
-Next work: promote known top favorites from backbone/search into seed where
-they need full taste scoring (Kingdom Come: Deliverance, Mafia: Definitive
-Edition, The Thaumaturge, Hogwarts Legacy, Until Dawn, House of Ashes), then add
-unknown top favorites to the catalog/search corpus (Kingdom Come: Deliverance
-II, Days Gone, Atomic Heart, Dispatch, Metro Exodus, Nobody Wants to Die,
-Dying Light 2, etc.).
+Next work: promote the highest-value known favorites from backbone/search into
+seed where they need full taste scoring and richer UI treatment (Kingdom Come:
+Deliverance II, Kingdom Come: Deliverance, Days Gone, Atomic Heart, Mafia:
+Definitive Edition, The Thaumaturge, Hogwarts Legacy, Until Dawn, House of
+Ashes), then continue real-ranking dogfood below the top 30.
 
 ### 7. TLOU Part II SKU merge decision
 

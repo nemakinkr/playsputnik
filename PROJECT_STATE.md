@@ -132,11 +132,14 @@ reviews, catalogs, sale pages, and announcements.
   PlayStation-generation emoji markers, treats the ranking tail as weaker
   positive affinity rather than dislike, checks seed-catalog and broader
   search/backbone coverage separately, and prints weak spots. Current baseline:
-  42/111 seed matches, 8/10 seed top-10 matches, 61/111 known-corpus matches,
-  22/30 known top-30 matches. The audit exposed the next catalog/data priority:
-  promote known top favorites from backbone/search into seed and add unknown
-  top favorites such as Kingdom Come: Deliverance II, Days Gone, Atomic Heart,
-  Dispatch, Metro Exodus, Nobody Wants to Die, and Dying Light 2.
+  42/111 seed matches, 8/10 seed top-10 matches, 69/111 known-corpus matches,
+  and 30/30 known top-30 matches. The first follow-up closed the top-30 unknown
+  search gaps by adding honest external-index records for Kingdom Come:
+  Deliverance II, Days Gone, Atomic Heart, Dispatch, Marvel's Guardians of the
+  Galaxy, Metro Exodus, Nobody Wants to Die, and Dying Light 2 Stay Human.
+  These records are searchable memory candidates only: cover, price, and
+  subscription status remain explicitly unverified until provider enrichment or
+  seed promotion.
 - Today: the companion answer and plan now read as a practical command center
   with a stronger primary answer surface, localized play/use-access/watch/
   buy-later rows, highlighted first action, detail links, and stateful

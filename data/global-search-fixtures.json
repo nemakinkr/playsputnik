@@ -2475,6 +2475,184 @@
       "priceStatus": "missing",
       "priceNeed": "warm",
       "reason": "Imported into the no-key search index for strategy and tactical discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Kingdom Come: Deliverance II",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/kingdom-come-deliverance-ii",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "rpg",
+        "open-world",
+        "realistic",
+        "story"
+      ],
+      "vibe": "Grounded medieval RPG and top-tier taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "hot",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so search can remember a high-affinity RPG while price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Days Gone",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/days-gone",
+      "platforms": [
+        "PS4",
+        "PC"
+      ],
+      "atoms": [
+        "open-world",
+        "survival",
+        "action",
+        "story"
+      ],
+      "vibe": "Narrative open-world survival action and strong taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "hot",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so search can recognize a high-affinity open-world action favorite without inventing store data."
+    },
+    {
+      "title": "Atomic Heart",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/atomic-heart",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "sci-fi",
+        "atmosphere",
+        "story"
+      ],
+      "vibe": "Stylized sci-fi shooter and strong atmosphere signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "hot",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so search can retain a high-affinity sci-fi shooter while provider metadata remains pending."
+    },
+    {
+      "title": "Dispatch",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dispatch",
+      "platforms": [
+        "PS5",
+        "PC"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "cinematic",
+        "indie"
+      ],
+      "vibe": "Choice-led narrative candidate and personal ranking signal",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so search can remember this narrative favorite candidate; exact provider metadata still needs resolution."
+    },
+    {
+      "title": "Marvel's Guardians of the Galaxy",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/marvels-guardians-of-the-galaxy",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "cinematic"
+      ],
+      "vibe": "Cinematic team adventure and high-affinity story action signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so Russian and English searches can resolve a key story-action favorite before full catalog promotion."
+    },
+    {
+      "title": "Metro Exodus",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/metro-exodus",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "dark",
+        "atmosphere",
+        "story"
+      ],
+      "vibe": "Atmospheric post-apocalyptic shooter and strong taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so search can recognize an important atmosphere-driven shooter while store data remains unverified."
+    },
+    {
+      "title": "Nobody Wants to Die",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/nobody-wants-to-die",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "mystery",
+        "sci-fi",
+        "story",
+        "atmosphere"
+      ],
+      "vibe": "Noir sci-fi investigation and strong compact-story signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so search can remember a compact narrative favorite without implying price or subscription coverage."
+    },
+    {
+      "title": "Dying Light 2 Stay Human",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dying-light-2-stay-human",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "open-world",
+        "survival",
+        "action",
+        "platforming"
+      ],
+      "vibe": "Open-world survival parkour and useful action-taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood top-30 gaps so searches for Dying Light 2 resolve before full catalog price and cover enrichment."
     }
   ]
 }
