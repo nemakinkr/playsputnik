@@ -132,14 +132,18 @@ reviews, catalogs, sale pages, and announcements.
   PlayStation-generation emoji markers, treats the ranking tail as weaker
   positive affinity rather than dislike, checks seed-catalog and broader
   search/backbone coverage separately, and prints weak spots. Current baseline:
-  42/111 seed matches, 8/10 seed top-10 matches, 69/111 known-corpus matches,
-  and 30/30 known top-30 matches. The first follow-up closed the top-30 unknown
-  search gaps by adding honest external-index records for Kingdom Come:
-  Deliverance II, Days Gone, Atomic Heart, Dispatch, Marvel's Guardians of the
-  Galaxy, Metro Exodus, Nobody Wants to Die, and Dying Light 2 Stay Human.
-  These records are searchable memory candidates only: cover, price, and
-  subscription status remain explicitly unverified until provider enrichment or
-  seed promotion.
+  47/111 seed matches, 8/10 seed top-10 matches, 21/30 seed top-30 matches,
+  69/111 known-corpus matches, 30/30 known top-30 matches, and 47/60 known
+  top-60 matches. The first follow-up closed the top-30 unknown search gaps by
+  adding honest external-index records for Kingdom Come: Deliverance II, Days
+  Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,
+  Nobody Wants to Die, and Dying Light 2 Stay Human. The second follow-up
+  promoted five high-value backbone favorites into seed catalog with generated
+  cover fallbacks and sample prices: Kingdom Come: Deliverance, Mafia:
+  Definitive Edition, Hogwarts Legacy, Until Dawn, and The Dark Pictures
+  Anthology: House of Ashes. The next ranking dogfood queue is now explicit:
+  unknown 31-60 gaps start with Wolfenstein: The New Order, As Dusk Falls, The
+  Invincible, Road 96, and The Dark Pictures: The Devil in Me.
 - Today: the companion answer and plan now read as a practical command center
   with a stronger primary answer surface, localized play/use-access/watch/
   buy-later rows, highlighted first action, detail links, and stateful

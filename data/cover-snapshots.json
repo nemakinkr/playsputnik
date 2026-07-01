@@ -5470,5 +5470,50 @@
     "providerGameId": 40470,
     "providerTitle": "Disgaea 4: A Promise Unforgotten",
     "matchConfidence": "medium"
+  },
+  {
+    "title": "Kingdom Come: Deliverance",
+    "status": "fallback",
+    "source": "generated_color_poster",
+    "sourceUrl": "local://generated-color-poster",
+    "checkedAt": "2026-07-01T08:00:00Z",
+    "licenseNote": "Generated placeholder; no third-party image cached.",
+    "url": ""
+  },
+  {
+    "title": "Mafia: Definitive Edition",
+    "status": "fallback",
+    "source": "generated_color_poster",
+    "sourceUrl": "local://generated-color-poster",
+    "checkedAt": "2026-07-01T08:00:00Z",
+    "licenseNote": "Generated placeholder; no third-party image cached.",
+    "url": ""
+  },
+  {
+    "title": "Hogwarts Legacy",
+    "status": "fallback",
+    "source": "generated_color_poster",
+    "sourceUrl": "local://generated-color-poster",
+    "checkedAt": "2026-07-01T08:00:00Z",
+    "licenseNote": "Generated placeholder; no third-party image cached.",
+    "url": ""
+  },
+  {
+    "title": "Until Dawn",
+    "status": "fallback",
+    "source": "generated_color_poster",
+    "sourceUrl": "local://generated-color-poster",
+    "checkedAt": "2026-07-01T08:00:00Z",
+    "licenseNote": "Generated placeholder; no third-party image cached.",
+    "url": ""
+  },
+  {
+    "title": "The Dark Pictures Anthology: House of Ashes",
+    "status": "fallback",
+    "source": "generated_color_poster",
+    "sourceUrl": "local://generated-color-poster",
+    "checkedAt": "2026-07-01T08:00:00Z",
+    "licenseNote": "Generated placeholder; no third-party image cached.",
+    "url": ""
   }
 ]

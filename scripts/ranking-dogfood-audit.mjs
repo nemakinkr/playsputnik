@@ -11,6 +11,7 @@ const OUTPUT_JSON = process.argv.includes("--json");
 const SEED_TOP_10_MIN_MATCHED = 8;
 const SEED_TOTAL_MIN_COVERAGE = 0.35;
 const KNOWN_TOP_30_MIN_MATCHED = 22;
+const KNOWN_TOP_60_MIN_MATCHED = 45;
 const KNOWN_TOTAL_MIN_COVERAGE = 0.54;
 const BOTTOM_MIN_DERIVED_RATING = 58;
 
@@ -130,11 +131,14 @@ const missing = rows.filter((row) => !row.game);
 const unknown = rows.filter((row) => !row.known);
 const top10 = rows.slice(0, 10);
 const top30 = rows.slice(0, 30);
+const top60 = rows.slice(0, 60);
 const bottom25 = rows.slice(-25);
 const top25 = rows.slice(0, 25);
 const top10Matched = top10.filter((row) => row.game).length;
 const top30Matched = top30.filter((row) => row.game).length;
+const top60Matched = top60.filter((row) => row.game).length;
 const knownTop30Matched = top30.filter((row) => row.known).length;
+const knownTop60Matched = top60.filter((row) => row.known).length;
 const coverage = matched.length / rows.length;
 const knownCoverage = knownMatched.length / rows.length;
 const platformMarkerLeaks = rows.filter((row) => /^[0-9]\uFE0F?\u20E3/u.test(row.title));
@@ -142,6 +146,8 @@ const russianSeedGaps = missing.filter((row) => hasCyrillic(row.title));
 const russianUnknown = unknown.filter((row) => hasCyrillic(row.title));
 const topMissing = missing.filter((row) => row.rank <= 30);
 const topUnknown = unknown.filter((row) => row.rank <= 30);
+const top60Unknown = unknown.filter((row) => row.rank <= 60);
+const nextLayerUnknown = unknown.filter((row) => row.rank > 30 && row.rank <= 60);
 const onboardingProbeTitles = ["Red Dead Redemption 2", "Cyberpunk 2077", "Stardew Valley"];
 const onboardingKnownTasteAnchors = onboardingProbeTitles
   .filter((title) => rows.some((row) => row.game && titleKey(row.title) === titleKey(title)));
@@ -155,10 +161,12 @@ const audit = {
     seedCoverage: Number(coverage.toFixed(3)),
     seedTop10Matched: top10Matched,
     seedTop30Matched: top30Matched,
+    seedTop60Matched: top60Matched,
     seedMissing: missing.length,
     knownMatched: knownMatched.length,
     knownCoverage: Number(knownCoverage.toFixed(3)),
     knownTop30Matched,
+    knownTop60Matched,
     unknown: unknown.length,
   },
   parser: {
@@ -179,6 +187,8 @@ const audit = {
   weakSpots: {
     topMissing: topMissing.map(({ rank, title }) => ({ rank, title })),
     topUnknown: topUnknown.map(({ rank, title }) => ({ rank, title })),
+    top60Unknown: top60Unknown.map(({ rank, title }) => ({ rank, title })),
+    nextLayerUnknown: nextLayerUnknown.map(({ rank, title }) => ({ rank, title })),
     russianSeedGaps: russianSeedGaps.map(({ rank, title }) => ({ rank, title })),
     russianUnknown: russianUnknown.map(({ rank, title }) => ({ rank, title })),
     seedPromotionCandidates: rows
@@ -197,6 +207,9 @@ const audit = {
     topUnknown.length
       ? "Add unknown top favorites to the catalog/search corpus; they are invisible to every product surface."
       : "Top-30 favorites are at least known to search/backbone.",
+    nextLayerUnknown.length
+      ? "Use the 31-60 ranking window as the next catalog/search expansion queue."
+      : "Top-60 favorites are at least known to search/backbone.",
     "Treat ranked-list tail as lower positive affinity, not negative feedback.",
     "Use the top-vs-bottom signal shape to tune taste explanations and onboarding probes.",
   ],
@@ -206,11 +219,13 @@ if (OUTPUT_JSON) {
   console.log(JSON.stringify(audit, null, 2));
 } else {
   const topUnknown = audit.weakSpots.topUnknown.map((item) => `${item.rank}. ${item.title}`).slice(0, 5).join("; ");
+  const nextUnknown = audit.weakSpots.nextLayerUnknown.map((item) => `${item.rank}. ${item.title}`).slice(0, 5).join("; ");
   const promotion = audit.weakSpots.seedPromotionCandidates.map((item) => `${item.rank}. ${item.knownTitle}`).slice(0, 5).join("; ");
-  console.log(`✅ Ranking dogfood OK: ${audit.ranking.seedMatched}/${audit.ranking.total} seed, ${audit.ranking.knownMatched}/${audit.ranking.total} known, top10 seed ${audit.ranking.seedTop10Matched}/10, top30 known ${audit.ranking.knownTop30Matched}/30`);
+  console.log(`✅ Ranking dogfood OK: ${audit.ranking.seedMatched}/${audit.ranking.total} seed, ${audit.ranking.knownMatched}/${audit.ranking.total} known, top10 seed ${audit.ranking.seedTop10Matched}/10, top30 known ${audit.ranking.knownTop30Matched}/30, top60 known ${audit.ranking.knownTop60Matched}/60`);
   console.log(`   Top taste shape: ${audit.tasteShape.top25Signals.slice(0, 5).map((item) => `${item.signal}:${item.count}`).join(", ")}`);
   console.log(`   Promote next: ${promotion || "none"}`);
   console.log(`   Unknown top gaps: ${topUnknown || "none"}`);
+  console.log(`   Unknown 31-60 gaps: ${nextUnknown || "none"}`);
 }
 
 assert(rows.length >= 100, `Expected a large real ranking fixture, got ${rows.length}`);
@@ -218,6 +233,7 @@ assert(platformMarkerLeaks.length === 0, `Platform emoji markers leaked into tit
 assert(top10Matched >= SEED_TOP_10_MIN_MATCHED, `Seed top-10 coverage too low: ${top10Matched}/10`);
 assert(coverage >= SEED_TOTAL_MIN_COVERAGE, `Seed ranking coverage too low: ${matched.length}/${rows.length}`);
 assert(knownTop30Matched >= KNOWN_TOP_30_MIN_MATCHED, `Known-corpus top-30 coverage too low: ${knownTop30Matched}/30`);
+assert(knownTop60Matched >= KNOWN_TOP_60_MIN_MATCHED, `Known-corpus top-60 coverage too low: ${knownTop60Matched}/60`);
 assert(knownCoverage >= KNOWN_TOTAL_MIN_COVERAGE, `Known-corpus ranking coverage too low: ${knownMatched.length}/${rows.length}`);
 assert((rows.at(-1)?.derivedRating || 0) >= BOTTOM_MIN_DERIVED_RATING, "Ranked-list tail must remain positive taste evidence");
 assert(onboardingKnownTasteAnchors.length >= 2, `Onboarding probes should include at least two known taste anchors, got ${onboardingKnownTasteAnchors.join(", ")}`);

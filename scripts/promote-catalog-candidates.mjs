@@ -3,12 +3,13 @@ import { readFile, writeFile } from "node:fs/promises";
 const ROOT = new URL("../", import.meta.url);
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dry-run");
+const requestedTitles = valuesAfter("--title");
 const limitArg = valueAfter("--limit") || args.find((arg) => /^\d+$/.test(arg));
 const limit = Number(limitArg || 24);
 const checkedAt = valueAfter("--checked-at") || "2026-06-02T12:30:00Z";
 
 if (!Number.isFinite(limit) || limit < 1) {
-  console.error("Usage: node scripts/promote-catalog-candidates.mjs [--limit 24] [--dry-run] [--checked-at ISO_DATE]");
+  console.error("Usage: node scripts/promote-catalog-candidates.mjs [--limit 24] [--title EXACT_TITLE] [--dry-run] [--checked-at ISO_DATE]");
   process.exit(1);
 }
 
@@ -95,7 +96,8 @@ const candidates = (catalogBackbone.records || [])
     || a.priority - b.priority
     || String(a.title).localeCompare(String(b.title)));
 
-const selected = candidates.slice(0, limit);
+const requestedKeys = requestedTitles.map(titleKey);
+const selected = requestedKeys.length ? selectRequestedCandidates(requestedKeys) : candidates.slice(0, limit);
 
 if (selected.length === 0) {
   console.log("No catalog candidates to promote.");
@@ -122,7 +124,7 @@ const nextCatalogBackbone = {
   target: {
     ...catalogBackbone.target,
     currentSeed: nextGames.length,
-    nextPromotionBatch: limit,
+    nextPromotionBatch: selected.length,
     backboneRecords: catalogBackbone.records?.length || 0,
   },
   records: (catalogBackbone.records || []).map((record) => {
@@ -157,6 +159,24 @@ function valueAfter(flag) {
   const index = args.indexOf(flag);
   if (index === -1) return "";
   return args[index + 1] || "";
+}
+
+function valuesAfter(flag) {
+  const values = [];
+  args.forEach((arg, index) => {
+    if (arg === flag && args[index + 1]) values.push(args[index + 1]);
+  });
+  return values;
+}
+
+function selectRequestedCandidates(keys) {
+  const selectedByKey = new Map(candidates.map((record) => [titleKey(record.title), record]));
+  const missing = keys.filter((key) => !selectedByKey.has(key));
+  if (missing.length) {
+    console.error(`Requested titles are not promotable: ${missing.join(", ")}`);
+    process.exit(1);
+  }
+  return keys.map((key) => selectedByKey.get(key));
 }
 
 function readJson(path) {

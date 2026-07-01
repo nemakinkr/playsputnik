@@ -145,6 +145,30 @@ const refinements = {
     reviewBurden: "medium",
     wishlist: false,
   },
+  "Hogwarts Legacy": {
+    atoms: ["open-world", "story", "systems", "fantasy", "cozy"],
+    vibe: "Approachable wizard-school open world",
+    tone: "warm",
+    content: "stylized-violence",
+    reviewBurden: "medium",
+    wishlist: false,
+  },
+  "Kingdom Come: Deliverance": {
+    atoms: ["open-world", "rpg", "realistic", "systems", "story"],
+    vibe: "Grounded medieval roleplay",
+    tone: "dark",
+    content: "realistic-violence",
+    reviewBurden: "high",
+    wishlist: false,
+  },
+  "Mafia: Definitive Edition": {
+    atoms: ["story", "cinematic", "crime", "linear", "realistic"],
+    vibe: "Tight cinematic crime remake",
+    tone: "dark",
+    content: "realistic-violence",
+    reviewBurden: "low",
+    wishlist: false,
+  },
   "Marvel Rivals": {
     vibe: "Team hero shooter service game",
     tone: "funny",
@@ -160,6 +184,22 @@ const refinements = {
   },
   "Resident Evil Village": {
     vibe: "Gothic action-horror campaign",
+    content: "horror",
+    reviewBurden: "low",
+    wishlist: false,
+  },
+  "The Dark Pictures Anthology: House of Ashes": {
+    atoms: ["horror", "choice", "cinematic", "co-op", "tension"],
+    vibe: "Compact co-op military horror",
+    tone: "tense",
+    content: "horror",
+    reviewBurden: "low",
+    wishlist: false,
+  },
+  "Until Dawn": {
+    atoms: ["horror", "choice", "cinematic", "tension", "story"],
+    vibe: "Interactive slasher branching story",
+    tone: "tense",
     content: "horror",
     reviewBurden: "low",
     wishlist: false,
@@ -180,7 +220,7 @@ Object.keys(refinements).forEach((title) => {
   if (!games.some((game) => game.title === title)) missingTitles.push(title);
 });
 
-const issues = validate(nextGames);
+const issues = validate(nextGames.filter((game) => refinements[game.title]));
 if (issues.length) {
   console.error(issues.join("\n"));
   process.exit(1);

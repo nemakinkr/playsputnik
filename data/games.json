@@ -834,12 +834,13 @@
   {
     "title": "Ghost of Tsushima",
     "atoms": [
-      "action",
-      "story",
       "open-world",
-      "atmosphere"
+      "cinematic",
+      "action",
+      "stealth",
+      "story"
     ],
-    "vibe": "Samurai open-world epic",
+    "vibe": "Samurai open-world drama",
     "session": "medium",
     "difficulty": "normal",
     "length": "medium",
@@ -10514,5 +10515,115 @@
     "color": "linear-gradient(135deg, #0d0d0d, #c0c0c0)",
     "hltbHours": 50,
     "criticScore": 75
+  },
+  {
+    "title": "Kingdom Come: Deliverance",
+    "atoms": [
+      "open-world",
+      "rpg",
+      "realistic",
+      "systems",
+      "story"
+    ],
+    "vibe": "Grounded medieval roleplay",
+    "session": "long",
+    "difficulty": "normal",
+    "length": "long",
+    "commitment": "high",
+    "tone": "dark",
+    "content": "realistic-violence",
+    "reviewBurden": "high",
+    "adultTimeFit": "vacation",
+    "backlog": false,
+    "wishlist": false,
+    "color": "linear-gradient(135deg, #19302a, #5fb86d)"
+  },
+  {
+    "title": "Mafia: Definitive Edition",
+    "atoms": [
+      "story",
+      "cinematic",
+      "crime",
+      "linear",
+      "realistic"
+    ],
+    "vibe": "Tight cinematic crime remake",
+    "session": "medium",
+    "difficulty": "normal",
+    "length": "medium",
+    "commitment": "medium",
+    "tone": "dark",
+    "content": "realistic-violence",
+    "reviewBurden": "low",
+    "adultTimeFit": "weekend",
+    "backlog": false,
+    "wishlist": false,
+    "color": "linear-gradient(135deg, #233044, #d65f46)"
+  },
+  {
+    "title": "Hogwarts Legacy",
+    "atoms": [
+      "open-world",
+      "story",
+      "systems",
+      "fantasy",
+      "cozy"
+    ],
+    "vibe": "Approachable wizard-school open world",
+    "session": "medium",
+    "difficulty": "low",
+    "length": "medium",
+    "commitment": "medium",
+    "tone": "warm",
+    "content": "stylized-violence",
+    "reviewBurden": "medium",
+    "adultTimeFit": "weekend",
+    "backlog": false,
+    "wishlist": false,
+    "color": "linear-gradient(135deg, #19302a, #5fb86d)"
+  },
+  {
+    "title": "Until Dawn",
+    "atoms": [
+      "horror",
+      "choice",
+      "cinematic",
+      "tension",
+      "story"
+    ],
+    "vibe": "Interactive slasher branching story",
+    "session": "medium",
+    "difficulty": "normal",
+    "length": "medium",
+    "commitment": "medium",
+    "tone": "tense",
+    "content": "horror",
+    "reviewBurden": "low",
+    "adultTimeFit": "weekend",
+    "backlog": false,
+    "wishlist": false,
+    "color": "linear-gradient(135deg, #15151c, #8d2f45)"
+  },
+  {
+    "title": "The Dark Pictures Anthology: House of Ashes",
+    "atoms": [
+      "horror",
+      "choice",
+      "cinematic",
+      "co-op",
+      "tension"
+    ],
+    "vibe": "Compact co-op military horror",
+    "session": "medium",
+    "difficulty": "normal",
+    "length": "short",
+    "commitment": "low",
+    "tone": "tense",
+    "content": "horror",
+    "reviewBurden": "low",
+    "adultTimeFit": "weeknight",
+    "backlog": false,
+    "wishlist": false,
+    "color": "linear-gradient(135deg, #15151c, #8d2f45)"
   }
 ]

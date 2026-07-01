@@ -280,8 +280,9 @@ the parser strips PlayStation-generation emoji markers and keeps the ranking
 tail as weaker positive taste evidence, not dislike. It also separates
 full seed-catalog coverage from broader known search/backbone coverage.
 
-Current baseline: 42/111 seed matches, 8/10 seed top-10 matches, 69/111
-known-corpus matches, 30/30 known top-30 matches. New aliases were added for
+Current baseline: 47/111 seed matches, 8/10 seed top-10 matches, 21/30 seed
+top-30 matches, 69/111 known-corpus matches, 30/30 known top-30 matches, and
+47/60 known top-60 matches. New aliases were added for
 high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of
@@ -290,13 +291,21 @@ Stay Human. The first follow-up also added honest external-index records for
 the previous top-30 unknowns: Kingdom Come: Deliverance II, Days Gone, Atomic
 Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus, Nobody Wants
 to Die, and Dying Light 2 Stay Human. They are searchable memory candidates
-only; cover, price, and subscription status remain unverified.
+only; cover, price, and subscription status remain unverified. The second
+follow-up added explicit `--title` support to `promote-catalog-candidates.mjs`
+and promoted five high-value backbone favorites into seed with generated cover
+fallbacks + low-confidence sample prices: Kingdom Come: Deliverance, Mafia:
+Definitive Edition, Hogwarts Legacy, Until Dawn, and The Dark Pictures
+Anthology: House of Ashes.
 
-Next work: promote the highest-value known favorites from backbone/search into
-seed where they need full taste scoring and richer UI treatment (Kingdom Come:
-Deliverance II, Kingdom Come: Deliverance, Days Gone, Atomic Heart, Mafia:
-Definitive Edition, The Thaumaturge, Hogwarts Legacy, Until Dawn, House of
-Ashes), then continue real-ranking dogfood below the top 30.
+Next work: move the remaining top-30 external-only favorites through backbone
+before seed promotion (Kingdom Come: Deliverance II, Days Gone, Atomic Heart,
+Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus, The Thaumaturge,
+Nobody Wants to Die, Dying Light 2 Stay Human), then expand search/backbone for
+the 31-60 unknown queue: Wolfenstein: The New Order, As Dusk Falls, The
+Invincible, Road 96, The Dark Pictures: The Devil in Me, Pentiment, Indika,
+Star Wars Outlaws, Banishers: Ghosts of New Eden, RoboCop: Rogue City, The Dark
+Pictures: Little Hope, Life is Strange: True Colors, and Dead Island 2.
 
 ### 7. TLOU Part II SKU merge decision
 

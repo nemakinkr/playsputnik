@@ -1,7 +1,7 @@
 {
   "generatedAt": "2026-06-30T13:31:44.904Z",
   "mode": "no-paid-provider-p0",
-  "gameCount": 456,
+  "gameCount": 461,
   "regions": [
     "US",
     "GB",
@@ -18,7 +18,7 @@
     "catalogWorkbenchCount": 6,
     "catalogBackboneCount": 101,
     "catalogBackboneReadyCount": 0,
-    "catalogBackbonePromotedCount": 24,
+    "catalogBackbonePromotedCount": 29,
     "searchSourceCount": 5,
     "globalSearchFixtureCount": 125,
     "titleAliasCount": 124,
@@ -83,12 +83,12 @@
     "recordCount": 101,
     "laneCount": 10,
     "seedTarget": 150,
-    "currentSeed": 456,
-    "promotedCount": 24,
+    "currentSeed": 461,
+    "promotedCount": 29,
     "readyForSeedCount": 0,
     "atomReviewCount": 0,
     "blockedIdentityCount": 1,
-    "coverMissingCount": 77,
+    "coverMissingCount": 72,
     "hotPriceNeedCount": 4,
     "laneCounts": [
       {
@@ -96,7 +96,7 @@
         "label": "Cinematic story",
         "target": 18,
         "count": 10,
-        "promoted": 5,
+        "promoted": 6,
         "ready": 0
       },
       {
@@ -104,7 +104,7 @@
         "label": "Open-world / RPG",
         "target": 18,
         "count": 10,
-        "promoted": 4,
+        "promoted": 6,
         "ready": 0
       },
       {
@@ -128,7 +128,7 @@
         "label": "Horror / tension",
         "target": 14,
         "count": 10,
-        "promoted": 1,
+        "promoted": 3,
         "ready": 0
       },
       {
@@ -205,39 +205,39 @@
   },
   "regionCoverage": {
     "US": {
-      "priceCount": 438,
-      "discountCount": 456,
+      "priceCount": 443,
+      "discountCount": 461,
       "psPlusCount": 146,
       "priceCoverage": 96,
       "discountCoverage": 100
     },
     "GB": {
-      "priceCount": 434,
-      "discountCount": 456,
+      "priceCount": 439,
+      "discountCount": 461,
       "psPlusCount": 122,
       "priceCoverage": 95,
       "discountCoverage": 100
     },
     "DE": {
-      "priceCount": 435,
-      "discountCount": 456,
+      "priceCount": 440,
+      "discountCount": 461,
       "psPlusCount": 113,
       "priceCoverage": 95,
       "discountCoverage": 100
     },
     "TR": {
-      "priceCount": 437,
-      "discountCount": 456,
+      "priceCount": 442,
+      "discountCount": 461,
       "psPlusCount": 108,
       "priceCoverage": 96,
       "discountCoverage": 100
     }
   },
   "coverCoverage": {
-    "coverCount": 456,
+    "coverCount": 461,
     "coverage": 100,
     "realImageCount": 456,
-    "fallbackCount": 0,
+    "fallbackCount": 5,
     "candidateCount": 456,
     "verifiedCount": 0
   },
@@ -255,11 +255,11 @@
     },
     {
       "atom": "story",
-      "count": 248
+      "count": 252
     },
     {
       "atom": "systems",
-      "count": 167
+      "count": 169
     },
     {
       "atom": "indie",
@@ -267,11 +267,11 @@
     },
     {
       "atom": "atmosphere",
-      "count": 123
+      "count": 122
     },
     {
       "atom": "rpg",
-      "count": 121
+      "count": 122
     },
     {
       "atom": "multiplayer",
@@ -283,7 +283,7 @@
     },
     {
       "atom": "co-op",
-      "count": 50
+      "count": 51
     },
     {
       "atom": "sci-fi",
@@ -291,7 +291,7 @@
     },
     {
       "atom": "open-world",
-      "count": 38
+      "count": 40
     },
     {
       "atom": "strategy",

@@ -1,12 +1,12 @@
 {
   "mode": "pre-mvp-catalog-backbone",
-  "updatedAt": "2026-06-02T12:30:00Z",
+  "updatedAt": "2026-07-01T08:00:00Z",
   "goal": "Provide a structured growth queue from the 24-game seed catalog toward a 150-game private-demo catalog without requiring full price or cover ingestion for every title.",
   "target": {
     "seedTarget": 150,
-    "currentSeed": 456,
+    "currentSeed": 461,
     "backboneRecords": 101,
-    "nextPromotionBatch": 24,
+    "nextPromotionBatch": 5,
     "minimumReadyForInvestorDemo": 60
   },
   "promotionChecklist": [
@@ -288,7 +288,7 @@
       "title": "Mafia: Definitive Edition",
       "lane": "cinematic_story",
       "priority": 2,
-      "status": "candidate",
+      "status": "promoted_to_seed",
       "source": "manual_backbone",
       "platforms": [
         "PS5",
@@ -304,10 +304,12 @@
       "session": "medium",
       "commitment": "medium",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
-      "atomStatus": "draft",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
       "priceNeed": "warm",
-      "reason": "Strong crime-story comparison point for future Mafia interest."
+      "reason": "Strong crime-story comparison point for future Mafia interest.",
+      "promotedAt": "2026-07-01T08:00:00Z",
+      "promotedSource": "promote-catalog-candidates"
     },
     {
       "title": "A Plague Tale: Innocence",
@@ -470,7 +472,7 @@
       "title": "Kingdom Come: Deliverance",
       "lane": "open_world_rpg",
       "priority": 2,
-      "status": "candidate",
+      "status": "promoted_to_seed",
       "source": "manual_backbone",
       "platforms": [
         "PS5",
@@ -486,10 +488,12 @@
       "session": "long",
       "commitment": "high",
       "adultTimeFit": "vacation",
-      "coverStatus": "missing",
-      "atomStatus": "draft",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
       "priceNeed": "warm",
-      "reason": "High-risk, high-fit medieval realism reference."
+      "reason": "High-risk, high-fit medieval realism reference.",
+      "promotedAt": "2026-07-01T08:00:00Z",
+      "promotedSource": "promote-catalog-candidates"
     },
     {
       "title": "Assassin's Creed Odyssey",
@@ -520,7 +524,7 @@
       "title": "Hogwarts Legacy",
       "lane": "open_world_rpg",
       "priority": 3,
-      "status": "candidate",
+      "status": "promoted_to_seed",
       "source": "manual_backbone",
       "platforms": [
         "PS5",
@@ -537,10 +541,12 @@
       "session": "medium",
       "commitment": "medium",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
-      "atomStatus": "draft",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
       "priceNeed": "warm",
-      "reason": "Broad mainstream reference for approachable open-world play."
+      "reason": "Broad mainstream reference for approachable open-world play.",
+      "promotedAt": "2026-07-01T08:00:00Z",
+      "promotedSource": "promote-catalog-candidates"
     },
     {
       "title": "Red Dead Redemption",
@@ -1178,7 +1184,7 @@
       "title": "Until Dawn",
       "lane": "horror_tension",
       "priority": 2,
-      "status": "candidate",
+      "status": "promoted_to_seed",
       "source": "manual_backbone",
       "platforms": [
         "PS5",
@@ -1194,10 +1200,12 @@
       "session": "medium",
       "commitment": "medium",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
-      "atomStatus": "draft",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
       "priceNeed": "watch_only",
-      "reason": "Interactive-horror benchmark."
+      "reason": "Interactive-horror benchmark.",
+      "promotedAt": "2026-07-01T08:00:00Z",
+      "promotedSource": "promote-catalog-candidates"
     },
     {
       "title": "The Quarry",
@@ -1277,7 +1285,7 @@
       "title": "The Dark Pictures Anthology: House of Ashes",
       "lane": "horror_tension",
       "priority": 3,
-      "status": "candidate",
+      "status": "promoted_to_seed",
       "source": "manual_backbone",
       "platforms": [
         "PS5",
@@ -1293,10 +1301,12 @@
       "session": "medium",
       "commitment": "low",
       "adultTimeFit": "weeknight",
-      "coverStatus": "missing",
-      "atomStatus": "draft",
+      "coverStatus": "fallback",
+      "atomStatus": "complete",
       "priceNeed": "none",
-      "reason": "Useful for compact interactive-horror and co-op signals."
+      "reason": "Useful for compact interactive-horror and co-op signals.",
+      "promotedAt": "2026-07-01T08:00:00Z",
+      "promotedSource": "promote-catalog-candidates"
     },
     {
       "title": "Alien: Isolation",

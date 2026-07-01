@@ -1160,6 +1160,7 @@ function checkSelectors() {
   assert(/promoted_to_seed/.test(appSource + appDataPanelSource), "Catalog backbone UI should understand promoted records");
   assert(/function makeGameRecord/.test(catalogPromoterSource), "Catalog promotion game builder is missing");
   assert(/function makePriceSnapshots/.test(catalogPromoterSource), "Catalog promotion price snapshot builder is missing");
+  assert(/--title/.test(catalogPromoterSource) && /selectRequestedCandidates/.test(catalogPromoterSource), "Catalog promotion should support explicit title-driven batches");
   assert(/promoted_to_seed/.test(catalogPromoterSource), "Catalog promotion should mark promoted backbone records");
   assert(catalog.length >= 48, `Expected promoted seed catalog to have at least 48 games, got ${catalog.length}`);
   assert(catalogBackbone.target.currentSeed === catalog.length, "Catalog backbone currentSeed should match seed catalog size");

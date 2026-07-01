@@ -34,7 +34,7 @@
       "checkedAt": "2026-06-05T09:51:17Z",
       "freshnessState": "sample",
       "confidence": "medium",
-      "note": "All 48 seed games have attributed RAWG cover candidates; generated posters remain the fallback for unresolved future imports."
+      "note": "Seed games use attributed RAWG cover candidates where available; generated posters remain the fallback for unresolved imports."
     },
     {
       "id": "catalog_backbone",
