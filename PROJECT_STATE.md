@@ -127,6 +127,16 @@ reviews, catalogs, sale pages, and announcements.
   poster before deeper onboarding. The quick taste queue now balances broad
   recognizability with diagnostic axis coverage, so the first few swipes span
   different taste dimensions instead of drifting into three similar questions.
+- Ranking dogfood: a real 111-title ranked-favorites fixture now gates the
+  import/taste baseline. `scripts/ranking-dogfood-audit.mjs` strips
+  PlayStation-generation emoji markers, treats the ranking tail as weaker
+  positive affinity rather than dislike, checks seed-catalog and broader
+  search/backbone coverage separately, and prints weak spots. Current baseline:
+  42/111 seed matches, 8/10 seed top-10 matches, 61/111 known-corpus matches,
+  22/30 known top-30 matches. The audit exposed the next catalog/data priority:
+  promote known top favorites from backbone/search into seed and add unknown
+  top favorites such as Kingdom Come: Deliverance II, Days Gone, Atomic Heart,
+  Dispatch, Metro Exodus, Nobody Wants to Die, and Dying Light 2.
 - Today: the companion answer and plan now read as a practical command center
   with a stronger primary answer surface, localized play/use-access/watch/
   buy-later rows, highlighted first action, detail links, and stateful

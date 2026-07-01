@@ -26,6 +26,7 @@ jobs:
           node scripts/i18n-startup-test.mjs
           node scripts/companion-intelligence-test.mjs
           node scripts/onboarding-diagnostic-test.mjs
+          node scripts/ranking-dogfood-audit.mjs
           node scripts/decision-workflow-test.mjs
           node scripts/detail-view-test.mjs
           node scripts/state-migrations-test.mjs

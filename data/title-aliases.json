@@ -8,6 +8,15 @@
     ]
   },
   {
+    "title": "The Last of Us Part II",
+    "aliases": [
+      "The Last of Us 2",
+      "The Last of Us Part 2",
+      "\u041e\u0434\u043d\u0438 \u0438\u0437 \u043d\u0430\u0441. \u0427\u0430\u0441\u0442\u044c II",
+      "\u041e\u0434\u043d\u0438 \u0438\u0437 \u043d\u0430\u0441 2"
+    ]
+  },
+  {
     "title": "God of War Ragnarok",
     "aliases": [
       "God of War Ragnar\u00f6k",
@@ -52,7 +61,9 @@
     "aliases": [
       "Marvel\u2019s Spider-Man 2",
       "Spider-Man 2",
-      "Spiderman 2"
+      "Spiderman 2",
+      "Marvel\u2019s \u0427\u0435\u043b\u043e\u0432\u0435\u043a-\u043f\u0430\u0443\u043a 2",
+      "\u0427\u0435\u043b\u043e\u0432\u0435\u043a-\u043f\u0430\u0443\u043a 2"
     ]
   },
   {
@@ -61,6 +72,26 @@
       "Marvel\u2019s Spider-Man Remastered",
       "Spider-Man Remastered",
       "Spiderman Remastered"
+    ]
+  },
+  {
+    "title": "Marvel's Spider-Man",
+    "aliases": [
+      "Marvel\u2019s Spider-Man",
+      "Spider-Man",
+      "Spiderman",
+      "Marvel\u2019s \u0427\u0435\u043b\u043e\u0432\u0435\u043a-\u043f\u0430\u0443\u043a",
+      "\u0427\u0435\u043b\u043e\u0432\u0435\u043a-\u043f\u0430\u0443\u043a"
+    ]
+  },
+  {
+    "title": "Marvel's Spider-Man: Miles Morales",
+    "aliases": [
+      "Marvel\u2019s Spider-Man: Miles Morales",
+      "Spider-Man: Miles Morales",
+      "Spiderman Miles Morales",
+      "Marvel\u2019s \u0427\u0435\u043b\u043e\u0432\u0435\u043a-\u043f\u0430\u0443\u043a:\u041c\u0430\u0439\u043b\u0437 \u041c\u043e\u0440\u0430\u043b\u0435\u0441",
+      "Marvel\u2019s \u0427\u0435\u043b\u043e\u0432\u0435\u043a-\u043f\u0430\u0443\u043a: \u041c\u0430\u0439\u043b\u0437 \u041c\u043e\u0440\u0430\u043b\u0435\u0441"
     ]
   },
   {
@@ -175,6 +206,83 @@
       "Kingdom Come Deliverance II",
       "KCD2",
       "KCD II"
+    ]
+  },
+  {
+    "title": "The Witcher 3: Wild Hunt",
+    "aliases": [
+      "The Witcher 3 Wild Hunt",
+      "Witcher 3",
+      "\u0412\u0435\u0434\u044c\u043c\u0430\u043a 3: \u0414\u0438\u043a\u0430\u044f \u041e\u0445\u043e\u0442\u0430",
+      "\u0412\u0435\u0434\u044c\u043c\u0430\u043a 3"
+    ]
+  },
+  {
+    "title": "Assassin's Creed Odyssey",
+    "aliases": [
+      "Assassins Creed Odyssey",
+      "Assassin\u2019s Creed Odyssey",
+      "AC Odyssey",
+      "Assassin's creed: \u041e\u0434\u0438\u0441\u0441\u0435\u044f",
+      "Assassin\u2019s creed: \u041e\u0434\u0438\u0441\u0441\u0435\u044f"
+    ]
+  },
+  {
+    "title": "Detroit: Become Human",
+    "aliases": [
+      "\u0414\u0435\u0442\u0440\u043e\u0439\u0442: \u0421\u0442\u0430\u0442\u044c \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u043e\u043c",
+      "Detroit: \u0421\u0442\u0430\u0442\u044c \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u043e\u043c",
+      "Detroit Become Human"
+    ]
+  },
+  {
+    "title": "Uncharted 4: A Thief's End",
+    "aliases": [
+      "Uncharted 4",
+      "Uncharted 4: \u041f\u0443\u0442\u044c \u0432\u043e\u0440\u0430",
+      "Uncharted 4 A Thief's End"
+    ]
+  },
+  {
+    "title": "Uncharted: The Lost Legacy",
+    "aliases": [
+      "Uncharted Lost Legacy",
+      "Uncharted: \u0423\u0442\u0440\u0430\u0447\u0435\u043d\u043d\u043e\u0435 \u043d\u0430\u0441\u043b\u0435\u0434\u0438\u0435",
+      "\u0423\u0442\u0440\u0430\u0447\u0435\u043d\u043d\u043e\u0435 \u043d\u0430\u0441\u043b\u0435\u0434\u0438\u0435"
+    ]
+  },
+  {
+    "title": "Ratchet & Clank: Rift Apart",
+    "aliases": [
+      "Ratchet and Clank: Rift Apart",
+      "Ratchet & Clank: \u0421\u043a\u0432\u043e\u0437\u044c \u043c\u0438\u0440\u044b",
+      "Ratchet and Clank: \u0421\u043a\u0432\u043e\u0437\u044c \u043c\u0438\u0440\u044b"
+    ]
+  },
+  {
+    "title": "Until Dawn",
+    "aliases": [
+      "\u0414\u043e\u0436\u0438\u0442\u044c \u0434\u043e \u0440\u0430\u0441\u0441\u0432\u0435\u0442\u0430"
+    ]
+  },
+  {
+    "title": "The Order: 1886",
+    "aliases": [
+      "\u041e\u0440\u0434\u0435\u043d: 1886",
+      "Order 1886"
+    ]
+  },
+  {
+    "title": "The Dark Pictures Anthology: House of Ashes",
+    "aliases": [
+      "The Dark Pictures: House of Ashes",
+      "House of Ashes"
+    ]
+  },
+  {
+    "title": "The Stanley Parable: Ultra Deluxe",
+    "aliases": [
+      "The Stanley Parable"
     ]
   },
   {

@@ -271,6 +271,29 @@ Status: blocked/parked. 8 UUID candidates from the PS Store hub page all
 returned 0 products. 3 manual Premium records remain in
 subscription-availability.json. Revisit occasionally.
 
+### 6b. Ranking dogfood catalog gaps
+
+Status: active follow-up. A real 111-title ranked-favorites fixture is now in
+`test/fixtures/founder-ranking-ru.txt` and gated by
+`scripts/ranking-dogfood-audit.mjs` in local checks and CI. The audit confirms
+the parser strips PlayStation-generation emoji markers and keeps the ranking
+tail as weaker positive taste evidence, not dislike. It also separates
+full seed-catalog coverage from broader known search/backbone coverage.
+
+Current baseline: 42/111 seed matches, 8/10 seed top-10 matches, 61/111
+known-corpus matches, 22/30 known top-30 matches. New aliases were added for
+high-value Russian/variant titles already present in the corpus: The Witcher 3,
+The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
+Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of
+Ashes, and The Stanley Parable.
+
+Next work: promote known top favorites from backbone/search into seed where
+they need full taste scoring (Kingdom Come: Deliverance, Mafia: Definitive
+Edition, The Thaumaturge, Hogwarts Legacy, Until Dawn, House of Ashes), then add
+unknown top favorites to the catalog/search corpus (Kingdom Come: Deliverance
+II, Days Gone, Atomic Heart, Dispatch, Metro Exodus, Nobody Wants to Die,
+Dying Light 2, etc.).
+
 ### 7. TLOU Part II SKU merge decision
 
 Status: done. "The Last of Us Part II Remastered" and "The Last of Us Part
