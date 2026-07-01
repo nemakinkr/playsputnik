@@ -5473,47 +5473,62 @@
   },
   {
     "title": "Kingdom Come: Deliverance",
-    "status": "fallback",
-    "source": "generated_color_poster",
-    "sourceUrl": "local://generated-color-poster",
-    "checkedAt": "2026-07-01T08:00:00Z",
-    "licenseNote": "Generated placeholder; no third-party image cached.",
-    "url": ""
+    "status": "candidate",
+    "source": "rawg",
+    "url": "https://media.rawg.io/media/games/d8f/d8f3b28fc747ed6f92943cdd33fb91b5.jpeg",
+    "sourceUrl": "https://rawg.io/games/kingdom-come-deliverance",
+    "checkedAt": "2026-07-01T16:15:48.358Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "providerGameId": 28172,
+    "providerTitle": "Kingdom Come: Deliverance",
+    "matchConfidence": "high"
   },
   {
     "title": "Mafia: Definitive Edition",
-    "status": "fallback",
-    "source": "generated_color_poster",
-    "sourceUrl": "local://generated-color-poster",
-    "checkedAt": "2026-07-01T08:00:00Z",
-    "licenseNote": "Generated placeholder; no third-party image cached.",
-    "url": ""
+    "status": "candidate",
+    "source": "rawg",
+    "url": "https://media.rawg.io/media/games/345/3452d9d4483686c602372e0e6b3bb4cc.jpg",
+    "sourceUrl": "https://rawg.io/games/mafia",
+    "checkedAt": "2026-07-01T16:15:49.073Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "providerGameId": 442854,
+    "providerTitle": "Mafia: Definitive Edition",
+    "matchConfidence": "high"
   },
   {
     "title": "Hogwarts Legacy",
-    "status": "fallback",
-    "source": "generated_color_poster",
-    "sourceUrl": "local://generated-color-poster",
-    "checkedAt": "2026-07-01T08:00:00Z",
-    "licenseNote": "Generated placeholder; no third-party image cached.",
-    "url": ""
+    "status": "candidate",
+    "source": "rawg",
+    "url": "https://media.rawg.io/media/games/044/044b2ee023930ca138deda151f40c18c.jpg",
+    "sourceUrl": "https://rawg.io/games/hogwarts-legacy",
+    "checkedAt": "2026-07-01T16:15:50.069Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "providerGameId": 906547,
+    "providerTitle": "Hogwarts Legacy",
+    "matchConfidence": "high"
   },
   {
     "title": "Until Dawn",
-    "status": "fallback",
-    "source": "generated_color_poster",
-    "sourceUrl": "local://generated-color-poster",
-    "checkedAt": "2026-07-01T08:00:00Z",
-    "licenseNote": "Generated placeholder; no third-party image cached.",
-    "url": ""
+    "status": "candidate",
+    "source": "rawg",
+    "url": "https://media.rawg.io/media/games/d64/d6443375f9971152866ea76bff97d6d6.jpg",
+    "sourceUrl": "https://rawg.io/games/until-dawn",
+    "checkedAt": "2026-07-01T16:15:50.641Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "providerGameId": 3209,
+    "providerTitle": "Until Dawn",
+    "matchConfidence": "high"
   },
   {
     "title": "The Dark Pictures Anthology: House of Ashes",
-    "status": "fallback",
-    "source": "generated_color_poster",
-    "sourceUrl": "local://generated-color-poster",
-    "checkedAt": "2026-07-01T08:00:00Z",
-    "licenseNote": "Generated placeholder; no third-party image cached.",
-    "url": ""
+    "status": "candidate",
+    "source": "rawg",
+    "url": "https://media.rawg.io/media/games/326/326cbbdc3bc2da0b10cc3f7edd57161a.jpg",
+    "sourceUrl": "https://rawg.io/games/the-dark-pictures-anthology-house-of-ashes",
+    "checkedAt": "2026-07-01T16:15:51.567Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "providerGameId": 514896,
+    "providerTitle": "The Dark Pictures Anthology: House of Ashes",
+    "matchConfidence": "high"
   }
 ]
