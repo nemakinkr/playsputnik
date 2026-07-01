@@ -264,6 +264,52 @@
       );
     }
 
+    // ── Provider Imports ────────────────────────────────────────────────────
+    function providerImportRecords() {
+      const state = getState();
+      return Object.values(state.userGames || {})
+        .filter((record) => record?.providerImport?.provider === "rawg")
+        .sort((a, b) => String(b.providerImport?.importedAt || b.updatedAt || "").localeCompare(String(a.providerImport?.importedAt || a.updatedAt || "")));
+    }
+
+    function renderProviderImports() {
+      if (!els.providerImportStatus || !els.providerImportList) return;
+      const records = providerImportRecords();
+      const missingPrice = records.filter((record) => (record.providerImport?.priceStatus || record.priceStatus) === "missing").length;
+      els.providerImportStatus.textContent = t("data.providerImportStatus", { count: records.length, missing: missingPrice });
+      if (!records.length) {
+        const empty = document.createElement("div");
+        empty.className = "catalog-import-row is-empty";
+        empty.innerHTML = `
+          <div>
+            <strong>${t("data.providerImportEmptyTitle")}</strong>
+            <span>${t("data.providerImportEmptyDetail")}</span>
+          </div>
+        `;
+        els.providerImportList.replaceChildren(empty);
+        return;
+      }
+      els.providerImportList.replaceChildren(
+        ...records.slice(0, 12).map((record) => {
+          const row = document.createElement("div");
+          row.className = "catalog-import-row provider-import-row";
+          const importedAt = record.providerImport?.importedAt || record.updatedAt || "";
+          row.innerHTML = `
+            <div>
+              <strong>${record.title}</strong>
+              <span>${record.sourceUrl || t("data.providerImportNoSource")}</span>
+            </div>
+            <span class="catalog-pill ${catalogStatusClass(record.providerImport?.matchConfidence || record.matchConfidence)}">${localizedDiagnosticStatus(record.providerImport?.matchConfidence || record.matchConfidence || "unknown")}</span>
+            <span class="catalog-pill ${catalogStatusClass(record.providerImport?.coverStatus || record.coverStatus)}">${localizedDiagnosticStatus(record.providerImport?.coverStatus || record.coverStatus || "missing")}</span>
+            <span class="catalog-pill ${catalogStatusClass(record.providerImport?.priceStatus || record.priceStatus)}">${localizedDiagnosticStatus(record.providerImport?.priceStatus || record.priceStatus || "missing")}</span>
+            <span>${record.providerImport?.attributionRequired ? t("data.providerImportAttribution") : t("data.providerImportNoCover")}</span>
+            <span>${importedAt ? t("data.providerImportImportedAt", { date: importedAt.slice(0, 10) }) : t("data.providerImportReview")}</span>
+          `;
+          return row;
+        }),
+      );
+    }
+
     // ── Catalog Backbone ────────────────────────────────────────────────────
     function renderCatalogBackbone() {
       const catalogBackbone = getCatalogBackbone();
@@ -369,6 +415,7 @@
       renderSourceHealth,
       renderDevHealth,
       renderDataWorkbench,
+      renderProviderImports,
       renderCatalogBackbone,
       renderCatalogWorkbench,
     };

@@ -10,6 +10,7 @@ const { CURRENT_STATE_VERSION, migrateState } = context.window.PlaySputnikStateM
 const legacy = {
   liked: ["Control"],
   providerSearch: { query: "alan wake", results: "invalid" },
+  providerSearchCache: { broken: { results: "invalid" } },
 };
 const migrated = migrateState(legacy);
 
@@ -18,6 +19,7 @@ assert.deepEqual({ ...migrated.comparisonGames }, { first: "", second: "" });
 assert.deepEqual({ ...migrated.ratingQueue }, {});
 assert.equal(migrated.activeView, "today");
 assert.deepEqual([...migrated.providerSearch.results], []);
+assert.deepEqual({ ...migrated.providerSearchCache }, {});
 assert.equal(legacy.stateVersion, undefined, "migration must not mutate stored input");
 assert.deepEqual(
   JSON.parse(JSON.stringify(migrateState(migrated))),

@@ -66,13 +66,23 @@ try {
         activeView: "discover",
         gameSearchQuery: query,
         providerSearch: {
+          query: "",
+          status: "idle",
+          provider: "",
+          sourceHealth: "",
+          results: [],
+          error: "",
+        },
+        providerSearchCache: {
+          [query.toLowerCase()]: {
           query,
-          status: "live",
+          status: "cached",
           provider: "rawg",
-          sourceHealth: "live_results",
-          sourceHealthDetail: "RAWG returned normalized game metadata candidates.",
+          sourceHealth: "cached_results",
+          sourceHealthDetail: "Using locally cached provider results.",
           resultShapeVersion: "search-result-v2",
           checkedAt: "2026-07-01T11:30:00Z",
+          cachedAt: "2026-07-01T11:35:00Z",
           results: [{
             resultShapeVersion: "search-result-v2",
             title,
@@ -94,6 +104,7 @@ try {
             canAddToWishlist: true,
           }],
         },
+        },
       }));
     }, { key: STORAGE_KEY, query: searchQuery, title: expectedTitle });
   }
@@ -102,6 +113,7 @@ try {
 
   await page.evaluate(() => document.querySelector('[data-app-view="discover"]')?.click());
   await page.locator("#game-search-input").fill(searchQuery);
+  if (injectRawg) await page.locator("#game-search-submit").click();
   await page.waitForTimeout(500);
   await page.waitForFunction((title) => {
     const rows = Array.from(document.querySelectorAll(".game-search-row"));
@@ -217,11 +229,22 @@ try {
       .filter((item) => /Subscription|Plus/i.test(item.textContent || "")).length,
   }), expectedTitle);
 
-  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, errors };
+  await page.evaluate(() => document.querySelector('[data-app-view="data"]')?.click());
+  await page.waitForTimeout(500);
+  const dataProviderImports = await page.evaluate((expectedTitle) => ({
+    activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
+    status: document.querySelector("#provider-import-status")?.textContent || "",
+    rows: document.querySelectorAll("#provider-import-list .provider-import-row").length,
+    hasGame: Array.from(document.querySelectorAll("#provider-import-list .provider-import-row strong"))
+      .some((item) => (item.textContent || "").trim() === expectedTitle),
+  }), expectedTitle);
+
+  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, dataProviderImports, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(before.rows >= 1, `Expected search rows, got ${before.rows}`);
   assert(before.firstTitle === expectedTitle, `Expected ${expectedTitle} as first result, got ${before.firstTitle}`);
+  if (injectRawg) assert(/cached|кеш/i.test(before.searchStatus), `Expected cached provider status, got ${before.searchStatus}`);
   assert(before.detailButtons >= 1, "Expected search Details action");
   assert(before.memoryPanels >= 1, "Expected search memory confirmation panels");
   assert(before.savedButtons >= 1, "Expected search Wishlist action");
@@ -263,6 +286,9 @@ try {
     assert(after.record?.sourcePassport?.sourceId === "rawg_provider_hook", `Expected source passport rawg hook, got ${after.record?.sourcePassport?.sourceId}`);
     assert(after.record?.sourcePassport?.resultShapeVersion === "search-result-v2", "Expected provider result shape version to persist");
     assert(after.record?.coverUrl && after.record?.sourceUrl, "Expected RAWG cover/source URLs to persist");
+    assert(dataProviderImports.activeView === "data", `Expected Data view for provider import review, got ${dataProviderImports.activeView}`);
+    assert(dataProviderImports.rows >= 1, "Expected provider import review rows in Data");
+    assert(dataProviderImports.hasGame, "Expected RAWG imported game in Data provider import review");
   }
   assert(after.userState === targetState, `Expected ${targetState} userState, got ${after.userState}`);
   assert(after.activeState, `Expected ${targetState} action to become active`);

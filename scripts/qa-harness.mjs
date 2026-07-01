@@ -1378,11 +1378,13 @@ function checkSelectors() {
   assert(/userGames/.test(appSource), "Normalized user-game memory store is missing");
   assert(/function effectiveUserGame/.test(appSource), "Effective user-game resolver is missing");
   assert(/src\/app-state\.js/.test(appLoadSource) && /PlaySputnikState/.test(appSource), "State module is not wired into app.js");
-  assert(/CURRENT_STATE_VERSION = 3/.test(appStateMigrationsSource), "Persisted state schema version is missing");
+  assert(/CURRENT_STATE_VERSION = 4/.test(appStateMigrationsSource), "Persisted state schema version is missing");
   assert(/function migrateState/.test(appStateMigrationsSource), "Persisted state migration pipeline is missing");
   assert(/const migrations = stateMigrations \|\|/.test(appStateSource), "State hydration should tolerate a cached pre-migration HTML shell");
   assert(/migrations\.migrateState/.test(appStateSource), "State hydration must pass through schema migrations");
   assert(/stateVersion: migrations\.CURRENT_STATE_VERSION/.test(appStateSource), "State saves must record the active schema version");
+  assert(/providerSearchCache/.test(appStateSource + appStateMigrationsSource + appSource), "Provider search cache should persist across reloads");
+  assert(/providerSearchCacheRecord/.test(appSource) && /rememberProviderSearch/.test(appSource), "Provider search cache read/write helpers are missing");
   assert(/function userStateToUserGame/.test(appStateSource), "Legacy state to user-game mapper is missing");
   assert(/function recordUserEvent/.test(appStateSource), "User event log is missing");
   assert(/completionStatus/.test(appStateSource), "User-game memory should separate completion status");
@@ -1393,6 +1395,8 @@ function checkSelectors() {
   assert(dataHealth.issueTriage?.mode === "price_gap_only", "Data health should classify current issues as price gaps only");
   assert(dataHealth.issueTriage?.criticalIssueCount === 0, "Data health should expose zero critical issues for current catalog");
   assert(/Issue triage/.test(appDataPanelSource + i18nEnSource), "Data workbench should explain issue triage");
+  assert(/provider-import-list/.test(html) && /renderProviderImports/.test(appDataPanelSource), "Data view should expose provider import review");
+  assert(!/kind: "alias_partial"/.test(appSearchSource + searchProviderSource), "Search scoring should not accept broad alias_partial matches");
   assert(/Price gaps/i.test(appDataPanelSource + i18nEnSource), "Data workbench should distinguish price gaps from critical issues");
   assert(/function libraryDashboardCards/.test(appLibrarySource), "Library dashboard cards are missing");
   assert(/function libraryLaneForGame/.test(appLibrarySource), "Library queue lanes are missing");

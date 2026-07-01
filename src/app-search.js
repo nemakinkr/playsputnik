@@ -95,6 +95,30 @@
         .filter((token) => token.length >= 2);
     }
 
+    function oneEditApart(a, b) {
+      if (a === b) return true;
+      if (Math.abs(a.length - b.length) > 1) return false;
+      let edits = 0;
+      let i = 0;
+      let j = 0;
+      while (i < a.length && j < b.length) {
+        if (a[i] === b[j]) {
+          i += 1;
+          j += 1;
+        } else {
+          edits += 1;
+          if (edits > 1) return false;
+          if (a.length > b.length) i += 1;
+          else if (b.length > a.length) j += 1;
+          else {
+            i += 1;
+            j += 1;
+          }
+        }
+      }
+      return edits + (a.length - i) + (b.length - j) <= 1;
+    }
+
     function tokenCoverageScore(blob, query) {
       const tokens = searchTokens(query).filter((token) => token.length >= 3);
       if (!tokens.length) return 0;
@@ -103,6 +127,7 @@
         candidate === token
         || candidate.startsWith(token)
         || (token.length >= 5 && token.startsWith(candidate))
+        || (token.length >= 5 && candidate.length >= 5 && oneEditApart(candidate, token))
       )));
       if (!hits.length) return 0;
       const coverage = hits.length / tokens.length;
@@ -121,7 +146,6 @@
       if (rawQuery && aliasTermsForTitle(title).map(normalizeTitle).includes(rawQuery)) return { score: 96, kind: "alias" };
       if (rawQuery && normalizedTitle.startsWith(rawQuery)) return { score: 82, kind: "prefix" };
       if (rawQuery.length >= 3 && normalizedTitle.includes(rawQuery)) return { score: 70, kind: "contains" };
-      if (rawQuery && aliasBlob.includes(rawQuery)) return { score: 68, kind: "alias_partial" };
       if (rawQuery.length >= 3 && blob.includes(rawQuery)) return { score: 38, kind: "text" };
       const tokenScore = tokenCoverageScore(`${normalizedTitle} ${aliasBlob} ${blob}`, query);
       return { score: tokenScore, kind: tokenScore ? "token" : "none" };
@@ -246,7 +270,7 @@
         reason: alias
           ? t("discover.reasonManualAlias")
           : t("discover.reasonManual"),
-        score: 10,
+        score: alias ? 90 : 56,
         matchKind: alias ? "alias_manual" : "manual",
       };
     }
@@ -307,7 +331,7 @@
       const exact = deduped.some((result) => titleMatches(result.title, query));
       const manual = manualSearchResult(query);
       if (manual && !exact) deduped.push(manual);
-      return deduped.slice(0, 8);
+      return deduped.sort(compareSearchResults).slice(0, 8);
     }
 
     return {

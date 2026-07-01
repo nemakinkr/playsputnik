@@ -901,6 +901,7 @@ const {
 
 // Data panel tools are wired after els is defined (requires DOM refs)
 let renderRefreshPolicy, renderSourceHealth, renderDevHealth, renderDataWorkbench, renderCatalogBackbone, renderCatalogWorkbench, refreshQueue;
+let renderProviderImports;
 
 const {
   cachedNarrative,
@@ -1068,6 +1069,8 @@ const els = {
   workbenchStatus: document.querySelector("#workbench-status"),
   workbenchGrid: document.querySelector("#workbench-grid"),
   topAtoms: document.querySelector("#top-atoms"),
+  providerImportStatus: document.querySelector("#provider-import-status"),
+  providerImportList: document.querySelector("#provider-import-list"),
   sessionCurrent: document.querySelector("#session-current"),
   sessionTotal: document.querySelector("#session-total"),
   sessionCount: document.querySelector("#session-count"),
@@ -1117,6 +1120,7 @@ const els = {
   renderSourceHealth,
   renderDevHealth,
   renderDataWorkbench,
+  renderProviderImports,
   renderCatalogBackbone,
   renderCatalogWorkbench,
 } = window.PlaySputnikDataPanel.createDataPanelTools({
@@ -1799,6 +1803,41 @@ function sourceGames() {
   return [...byTitle.values()];
 }
 
+function providerSearchCacheKey(query) {
+  return titleKey(query);
+}
+
+function providerSearchCacheRecord(query) {
+  const record = state.providerSearchCache?.[providerSearchCacheKey(query)];
+  if (!record || !Array.isArray(record.results)) return null;
+  return {
+    ...record,
+    query,
+    status: "cached",
+    sourceHealth: "cached_results",
+    sourceHealthDetail: "Using locally cached provider results. Refresh search later if source freshness matters.",
+    cached: true,
+  };
+}
+
+function rememberProviderSearch(query, record) {
+  if (!record || record.status !== "live" || !Array.isArray(record.results) || !record.results.length) return;
+  const key = providerSearchCacheKey(query);
+  const nextCache = {
+    ...(state.providerSearchCache || {}),
+    [key]: {
+      ...record,
+      query,
+      cached: true,
+      cachedAt: new Date().toISOString(),
+    },
+  };
+  const entries = Object.entries(nextCache)
+    .sort((a, b) => String(b[1].cachedAt || b[1].checkedAt || "").localeCompare(String(a[1].cachedAt || a[1].checkedAt || "")))
+    .slice(0, 24);
+  state.providerSearchCache = Object.fromEntries(entries);
+}
+
 async function runProviderSearch() {
   const query = (els.gameSearchInput.value || state.gameSearchQuery || "").trim();
   state.gameSearchQuery = query;
@@ -1817,6 +1856,13 @@ async function runProviderSearch() {
       httpStatus: null,
       retryAfterSeconds: null,
     };
+    render();
+    return;
+  }
+
+  const cached = providerSearchCacheRecord(query);
+  if (cached) {
+    state.providerSearch = cached;
     render();
     return;
   }
@@ -1843,7 +1889,7 @@ async function runProviderSearch() {
     const response = await fetch(endpoint, { cache: "no-store" });
     if (!response.ok) throw new Error(`Provider search failed: ${response.status}`);
     const payload = await response.json();
-    state.providerSearch = {
+    const nextProviderSearch = {
       query,
       status: payload.mode === "provider_live" ? "live" : "fallback",
       provider: payload.provider || "",
@@ -1858,6 +1904,8 @@ async function runProviderSearch() {
       retryAfterSeconds: payload.retryAfterSeconds || null,
       checkedAt: payload.checkedAt || "",
     };
+    state.providerSearch = nextProviderSearch;
+    rememberProviderSearch(query, nextProviderSearch);
   } catch (error) {
     state.providerSearch = {
       query,
@@ -4397,6 +4445,8 @@ function renderGameSearch() {
   const provider = state.providerSearch || {};
   const providerLabel = provider.status === "loading"
     ? t("discover.providerLoading")
+    : provider.status === "cached"
+      ? t("discover.providerCached", { provider: provider.provider })
     : provider.status === "live"
       ? t("discover.providerLive", { provider: provider.provider })
       : provider.status === "fallback"
@@ -5922,6 +5972,7 @@ function renderDeferredPanels(ranked, primaryGame, ticket) {
   renderSourceHealth();
   renderDevHealth();
   renderDataWorkbench();
+  renderProviderImports();
   renderCatalogBackbone();
   renderCatalogWorkbench();
   if (typeof window !== "undefined") {

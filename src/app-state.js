@@ -87,6 +87,7 @@
           results: [],
           error: "",
         },
+        providerSearchCache: {},
         feedbackLog: [],
         userEvents: [],
         dropDecisions: {},
@@ -256,6 +257,9 @@
           calibrationSkips: saved.calibrationSkips || {},
           comparisonGames: saved.comparisonGames || { first: "", second: "" },
           ratingQueue: saved.ratingQueue || {},
+          providerSearchCache: saved.providerSearchCache && typeof saved.providerSearchCache === "object" && !Array.isArray(saved.providerSearchCache)
+            ? saved.providerSearchCache
+            : {},
           atomWeights: saved.atomWeights || {},
           importedRatings: saved.importedRatings || [],
           notebook: saved.notebook || emptyNotebook(),

@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 3;
+  const CURRENT_STATE_VERSION = 4;
 
   const migrations = {
     1(state) {
@@ -35,6 +35,17 @@
           ...providerSearch,
           results: Array.isArray(providerSearch.results) ? providerSearch.results : [],
         },
+      };
+    },
+    4(state) {
+      const providerSearchCache = state.providerSearchCache && typeof state.providerSearchCache === "object" && !Array.isArray(state.providerSearchCache)
+        ? Object.fromEntries(
+            Object.entries(state.providerSearchCache).filter(([, record]) => record && typeof record === "object" && Array.isArray(record.results)),
+          )
+        : {};
+      return {
+        ...state,
+        providerSearchCache,
       };
     },
   };

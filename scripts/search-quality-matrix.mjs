@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import vm from "node:vm";
 
 const ROOT = new URL("../", import.meta.url);
+const JSON_OUTPUT = process.argv.includes("--json");
 
 const [
   appSearchSource,
@@ -19,7 +20,13 @@ const [
   readJson("data/global-search-fixtures.json"),
 ]);
 
-const sandbox = { window: {} };
+const sandbox = {
+  window: {
+    PlaySputnikI18n: {
+      t: (key, params = {}) => Object.entries(params).reduce((text, [name, value]) => text.replaceAll(`{${name}}`, value), key),
+    },
+  },
+};
 vm.runInNewContext(appSearchSource, sandbox, { filename: "src/app-search.js" });
 
 const state = {
@@ -64,7 +71,7 @@ const CASES = [
   { id: "alias-wukong", query: "Wukong", expectedTop: "Black Myth: Wukong", sourceId: "prototype_external_index", matchKind: "exact" },
   { id: "expedition-short", query: "Expedition 33", expectedTop: "Clair Obscur: Expedition 33", sourceId: "prototype_external_index", matchKind: "exact" },
   { id: "expedition-full", query: "Clair Obscur Expedition 33", expectedTop: "Clair Obscur: Expedition 33", sourceId: "prototype_external_index", matchKind: "exact" },
-  { id: "kcd2", query: "KCD2", expectedTop: "Kingdom Come: Deliverance II", sourceId: "manual_unverified", matchKind: "alias_manual" },
+  { id: "kcd2", query: "KCD2", expectedTop: "Kingdom Come: Deliverance II", sourceId: "catalog_backbone", matchKind: "exact" },
   { id: "death-stranding-subtitle", query: "Death Stranding 2 On the Beach", expectedTop: "Death Stranding 2", sourceId: "seed_catalog", matchKind: "exact" },
   { id: "spider-man-2", query: "Spider Man 2", expectedTop: "Marvel's Spider-Man 2", sourceId: "seed_catalog", matchKind: "exact" },
   { id: "indiana-short", query: "Great Circle", expectedTop: "Indiana Jones and the Great Circle", sourceId: "catalog_backbone", matchKind: "exact" },
@@ -110,13 +117,31 @@ function runCase(testCase) {
 const results = CASES.map(runCase);
 const failures = results.filter((result) => !result.pass);
 
-console.log(JSON.stringify({
+const report = {
   mode: "search-quality-matrix",
   cases: CASES.length,
   passed: results.length - failures.length,
   failed: failures.length,
   results,
-}, null, 2));
+};
+
+if (JSON_OUTPUT) {
+  console.log(JSON.stringify(report, null, 2));
+} else {
+  console.log(JSON.stringify({
+    mode: report.mode,
+    cases: report.cases,
+    passed: report.passed,
+    failed: report.failed,
+    failures: failures.map((failure) => ({
+      id: failure.id,
+      query: failure.query,
+      expectedTop: failure.expectedTop,
+      top: failure.top,
+      rank: failure.rank,
+    })),
+  }, null, 2));
+}
 
 if (failures.length) {
   throw new Error(`Search quality matrix failed: ${failures.map((item) => item.id).join(", ")}`);
