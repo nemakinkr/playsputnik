@@ -2653,6 +2653,301 @@
       "priceStatus": "missing",
       "priceNeed": "warm",
       "reason": "Added from the founder ranking dogfood top-30 gaps so searches for Dying Light 2 resolve before full catalog price and cover enrichment."
+    },
+    {
+      "title": "Wolfenstein: The New Order",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/wolfenstein-the-new-order",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "action",
+        "story",
+        "dark"
+      ],
+      "vibe": "Story-driven alternate-history shooter and strong action signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can recognize a key shooter favorite without inventing store data."
+    },
+    {
+      "title": "As Dusk Falls",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/as-dusk-falls",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "cinematic",
+        "crime"
+      ],
+      "vibe": "Interactive crime drama and branching-story taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can keep a choice-led narrative favorite visible."
+    },
+    {
+      "title": "The Invincible",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-invincible",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sci-fi",
+        "story",
+        "exploration",
+        "atmosphere"
+      ],
+      "vibe": "Slow sci-fi exploration and atmosphere signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can recognize compact sci-fi exploration fit."
+    },
+    {
+      "title": "Road 96",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/road-96",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "indie",
+        "exploration"
+      ],
+      "vibe": "Road-trip narrative choice game and compact story signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can keep road-trip narrative taste visible."
+    },
+    {
+      "title": "The Dark Pictures Anthology: The Devil in Me",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-dark-pictures-anthology-the-devil-in-me",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "tension"
+      ],
+      "vibe": "Interactive slasher horror and Supermassive-format signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search resolves the short Dark Pictures title before seed enrichment."
+    },
+    {
+      "title": "Pentiment",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/pentiment",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "reading",
+        "mystery"
+      ],
+      "vibe": "Reading-heavy historical mystery and taste-depth signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can retain a strong text-forward narrative favorite."
+    },
+    {
+      "title": "Indika",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/indika",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "strange",
+        "dark",
+        "indie"
+      ],
+      "vibe": "Strange dark narrative and arthouse taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can recognize weird authored narrative taste."
+    },
+    {
+      "title": "Star Wars Outlaws",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/star-wars-outlaws",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "open-world",
+        "action",
+        "sci-fi",
+        "story"
+      ],
+      "vibe": "Cinematic sci-fi open-world candidate",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can remember an important recent open-world story signal."
+    },
+    {
+      "title": "Banishers: Ghosts of New Eden",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/banishers-ghosts-of-new-eden",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "dark",
+        "action"
+      ],
+      "vibe": "Dark choice-led action RPG and relationship-drama signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can retain a strong narrative-action favorite."
+    },
+    {
+      "title": "RoboCop: Rogue City",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/robocop-rogue-city",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "action",
+        "crime",
+        "story"
+      ],
+      "vibe": "Licensed crime shooter and direct action-story signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can recognize compact shooter-story appetite."
+    },
+    {
+      "title": "The Dark Pictures Anthology: Little Hope",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-dark-pictures-anthology-little-hope",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "tension"
+      ],
+      "vibe": "Compact interactive horror and Supermassive taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search resolves the short Little Hope title before full catalog enrichment."
+    },
+    {
+      "title": "Life is Strange: True Colors",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/life-is-strange-true-colors",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "cozy",
+        "cinematic"
+      ],
+      "vibe": "Emotional choice-led small-town story signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can recognize emotional narrative adventure taste."
+    },
+    {
+      "title": "Dead Island 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dead-island-2",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "horror",
+        "co-op",
+        "funny"
+      ],
+      "vibe": "Gory co-op action-horror and lighter zombie signal",
+      "matchConfidence": "medium",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Added from the founder ranking dogfood 31-60 gaps so search can retain an action-horror favorite without pretending to know price or Plus status."
     }
   ]
 }

@@ -133,7 +133,7 @@ reviews, catalogs, sale pages, and announcements.
   positive affinity rather than dislike, checks seed-catalog and broader
   search/backbone coverage separately, and prints weak spots. Current baseline:
   47/111 seed matches, 8/10 seed top-10 matches, 21/30 seed top-30 matches,
-  69/111 known-corpus matches, 30/30 known top-30 matches, and 47/60 known
+  82/111 known-corpus matches, 30/30 known top-30 matches, and 60/60 known
   top-60 matches. The first follow-up closed the top-30 unknown search gaps by
   adding honest external-index records for Kingdom Come: Deliverance II, Days
   Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,
@@ -144,9 +144,12 @@ reviews, catalogs, sale pages, and announcements.
   Anthology: House of Ashes. The third follow-up moved the remaining top-30
   external-only favorites into managed backbone candidates and gated source
   priority so seed promotion candidates cannot silently regress from backbone
-  back to external-only. The next ranking dogfood queue is now explicit:
-  unknown 31-60 gaps start with Wolfenstein: The New Order, As Dusk Falls, The
-  Invincible, Road 96, and The Dark Pictures: The Devil in Me.
+  back to external-only. The fourth follow-up closed the 31-60 unknown queue by
+  adding 13 more ranking-driven records to search + backbone, including
+  Wolfenstein: The New Order, As Dusk Falls, The Invincible, Road 96, The Dark
+  Pictures: The Devil in Me, Pentiment, Indika, Star Wars Outlaws, Banishers:
+  Ghosts of New Eden, RoboCop: Rogue City, Little Hope, True Colors, and Dead
+  Island 2.
 - Today: the companion answer and plan now read as a practical command center
   with a stronger primary answer surface, localized play/use-access/watch/
   buy-later rows, highlighted first action, detail links, and stateful

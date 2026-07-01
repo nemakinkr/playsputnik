@@ -281,8 +281,8 @@ tail as weaker positive taste evidence, not dislike. It also separates
 full seed-catalog coverage from broader known search/backbone coverage.
 
 Current baseline: 47/111 seed matches, 8/10 seed top-10 matches, 21/30 seed
-top-30 matches, 69/111 known-corpus matches, 30/30 known top-30 matches, and
-47/60 known top-60 matches. New aliases were added for
+top-30 matches, 82/111 known-corpus matches, 30/30 known top-30 matches, and
+60/60 known top-60 matches. New aliases were added for
 high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of
@@ -302,15 +302,17 @@ Kingdom Come: Deliverance II, Days Gone, Atomic Heart, Dispatch, Marvel's
 Guardians of the Galaxy, Metro Exodus, The Thaumaturge, Nobody Wants to Die,
 and Dying Light 2 Stay Human. The audit now prioritizes seed > backbone >
 external when duplicate known titles exist and asserts that top-30 seed
-promotion candidates are not external-only.
+promotion candidates are not external-only. The fourth follow-up closed the
+31-60 unknown queue by adding search + backbone records for Wolfenstein: The
+New Order, As Dusk Falls, The Invincible, Road 96, The Dark Pictures Anthology:
+The Devil in Me, Pentiment, Indika, Star Wars Outlaws, Banishers: Ghosts of New
+Eden, RoboCop: Rogue City, The Dark Pictures Anthology: Little Hope, Life is
+Strange: True Colors, and Dead Island 2. The top-60 known-corpus contract is
+now gated at 60/60.
 
-Next work: either promote the managed top-30 backbone candidates into seed once
-their fallback cover/sample price treatment is acceptable, or expand
-search/backbone for the 31-60 unknown queue: Wolfenstein: The New Order, As
-Dusk Falls, The Invincible, Road 96, The Dark Pictures: The Devil in Me,
-Pentiment, Indika, Star Wars Outlaws, Banishers: Ghosts of New Eden, RoboCop:
-Rogue City, The Dark Pictures: Little Hope, Life is Strange: True Colors, and
-Dead Island 2.
+Next work: either promote a small batch of managed top-30 backbone candidates
+into seed, enrich covers/prices for high-ranking backbone candidates, or start
+the next ranking window below 60.
 
 ### 7. TLOU Part II SKU merge decision
 

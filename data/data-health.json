@@ -16,12 +16,12 @@
     "catalogProviderCount": 5,
     "catalogTierCount": 3,
     "catalogWorkbenchCount": 6,
-    "catalogBackboneCount": 110,
+    "catalogBackboneCount": 123,
     "catalogBackboneReadyCount": 0,
     "catalogBackbonePromotedCount": 29,
     "searchSourceCount": 5,
-    "globalSearchFixtureCount": 125,
-    "titleAliasCount": 124,
+    "globalSearchFixtureCount": 138,
+    "titleAliasCount": 128,
     "priceHistoryCount": 6787,
     "priceHistoryGameCount": 437,
     "libraryStates": [
@@ -80,7 +80,7 @@
   },
   "catalogBackbone": {
     "mode": "pre-mvp-catalog-backbone",
-    "recordCount": 110,
+    "recordCount": 123,
     "laneCount": 10,
     "seedTarget": 150,
     "currentSeed": 461,
@@ -88,14 +88,14 @@
     "readyForSeedCount": 0,
     "atomReviewCount": 0,
     "blockedIdentityCount": 1,
-    "coverMissingCount": 81,
+    "coverMissingCount": 94,
     "hotPriceNeedCount": 7,
     "laneCounts": [
       {
         "id": "cinematic_story",
         "label": "Cinematic story",
         "target": 18,
-        "count": 13,
+        "count": 17,
         "promoted": 6,
         "ready": 0
       },
@@ -103,7 +103,7 @@
         "id": "open_world_rpg",
         "label": "Open-world / RPG",
         "target": 18,
-        "count": 13,
+        "count": 14,
         "promoted": 6,
         "ready": 0
       },
@@ -111,7 +111,7 @@
         "id": "systems_rpg",
         "label": "Systems RPG",
         "target": 16,
-        "count": 11,
+        "count": 13,
         "promoted": 2,
         "ready": 0
       },
@@ -119,7 +119,7 @@
         "id": "action_challenge",
         "label": "Action challenge",
         "target": 16,
-        "count": 11,
+        "count": 13,
         "promoted": 2,
         "ready": 0
       },
@@ -127,7 +127,7 @@
         "id": "horror_tension",
         "label": "Horror / tension",
         "target": 14,
-        "count": 11,
+        "count": 13,
         "promoted": 3,
         "ready": 0
       },
@@ -135,7 +135,7 @@
         "id": "cozy_short",
         "label": "Cozy / short",
         "target": 14,
-        "count": 10,
+        "count": 11,
         "promoted": 1,
         "ready": 0
       },
@@ -143,7 +143,7 @@
         "id": "co_op_multiplayer",
         "label": "Co-op / multiplayer",
         "target": 14,
-        "count": 10,
+        "count": 11,
         "promoted": 3,
         "ready": 0
       },
@@ -177,10 +177,10 @@
     "mode": "prototype-global-search-p0",
     "sourceCount": 5,
     "fixtureMode": "prototype-external-index",
-    "fixtureCount": 125,
+    "fixtureCount": 138,
     "wishlistCapableSources": 5,
-    "externalFixtureCount": 125,
-    "missingPriceCount": 125
+    "externalFixtureCount": 138,
+    "missingPriceCount": 138
   },
   "refreshPolicy": {
     "mode": "intent-weighted-refresh-p0",

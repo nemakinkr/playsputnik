@@ -1,12 +1,12 @@
 {
   "mode": "pre-mvp-catalog-backbone",
-  "updatedAt": "2026-07-01T09:00:00Z",
+  "updatedAt": "2026-07-01T10:00:00Z",
   "goal": "Provide a structured growth queue from the 24-game seed catalog toward a 150-game private-demo catalog without requiring full price or cover ingestion for every title.",
   "target": {
     "seedTarget": 150,
     "currentSeed": 461,
-    "backboneRecords": 110,
-    "nextPromotionBatch": 9,
+    "backboneRecords": 123,
+    "nextPromotionBatch": 13,
     "minimumReadyForInvestorDemo": 60
   },
   "promotionChecklist": [
@@ -2863,6 +2863,340 @@
       "atomStatus": "complete",
       "priceNeed": "warm",
       "reason": "Founder ranking top-30 favorite; adds parkour survival action to managed backbone before full enrichment."
+    },
+    {
+      "title": "Wolfenstein: The New Order",
+      "lane": "action_challenge",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "action",
+        "story",
+        "dark"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; adds story-shooter taste depth below the top-30 seed queue."
+    },
+    {
+      "title": "As Dusk Falls",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "cinematic",
+        "crime"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; strengthens compact branching-drama coverage."
+    },
+    {
+      "title": "The Invincible",
+      "lane": "cozy_short",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "sci-fi",
+        "story",
+        "exploration",
+        "atmosphere"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; covers compact sci-fi exploration and atmosphere-driven taste."
+    },
+    {
+      "title": "Road 96",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "indie",
+        "exploration"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; adds road-trip narrative choice coverage."
+    },
+    {
+      "title": "The Dark Pictures Anthology: The Devil in Me",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; expands Supermassive horror branch coverage."
+    },
+    {
+      "title": "Pentiment",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "reading",
+        "mystery"
+      ],
+      "session": "short",
+      "commitment": "medium",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; keeps reading-heavy mystery taste in the managed catalog queue."
+    },
+    {
+      "title": "Indika",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "strange",
+        "dark",
+        "indie"
+      ],
+      "session": "short",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; captures strange authored narrative taste."
+    },
+    {
+      "title": "Star Wars Outlaws",
+      "lane": "open_world_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "open-world",
+        "action",
+        "sci-fi",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; adds recent cinematic open-world sci-fi taste coverage."
+    },
+    {
+      "title": "Banishers: Ghosts of New Eden",
+      "lane": "systems_rpg",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "dark",
+        "action"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; adds choice-led action drama to the managed queue."
+    },
+    {
+      "title": "RoboCop: Rogue City",
+      "lane": "action_challenge",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "action",
+        "crime",
+        "story"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; adds compact licensed shooter-story coverage."
+    },
+    {
+      "title": "The Dark Pictures Anthology: Little Hope",
+      "lane": "horror_tension",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "tension"
+      ],
+      "session": "medium",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; rounds out Dark Pictures interactive-horror coverage."
+    },
+    {
+      "title": "Life is Strange: True Colors",
+      "lane": "cinematic_story",
+      "priority": 2,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "cozy",
+        "cinematic"
+      ],
+      "session": "medium",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; adds emotional choice adventure coverage."
+    },
+    {
+      "title": "Dead Island 2",
+      "lane": "co_op_multiplayer",
+      "priority": 3,
+      "status": "candidate",
+      "source": "ranking_dogfood",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "horror",
+        "co-op",
+        "funny"
+      ],
+      "session": "medium",
+      "commitment": "medium",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "warm",
+      "reason": "Founder ranking 31-60 favorite; captures lighter co-op action-horror appetite."
     }
   ]
 }
