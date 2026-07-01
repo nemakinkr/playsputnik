@@ -38,10 +38,10 @@ Run `./scripts/check.sh` before claiming any task done.
   ranking without manual fallback: 82/111 local known, 29/29 local-missing
   resolved by RAWG, 111/111 RAWG matches, 111/111 RAWG cover candidates.
   Keep this as a non-CI diagnostic because it uses live network and secrets.
-- Next catalog/product work should turn provider hits into a user-facing lazy
-  search/import cache: when a user searches an unknown title, save the RAWG
-  candidate with source attribution, match confidence, cover candidate, and
-  missing-price honesty instead of requiring prior seed/backbone coverage.
+- Provider-hit lazy import: done. Search memory now persists RAWG candidates
+  with `providerImport` + `sourcePassport`, source/cover URLs, attribution flag,
+  match confidence, and missing-price honesty; `rawg-lazy-import-smoke` gates
+  the flow without live network or secrets.
 
 ## Track: Localization (EN + RU) — ACTIVE, large multi-phase project
 

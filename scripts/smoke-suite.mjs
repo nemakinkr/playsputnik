@@ -1,8 +1,8 @@
 /* Browser smoke suite orchestrator.
  *
  * The Playwright smoke tests (app-view, core-journey, demo-profile, design,
- * game-detail, library-wishlist, search-memory, visual-catalog) default to the
- * app on :4190 and the provider backend on :4191. Run on their own they fail
+ * game-detail, library-wishlist, search-memory, rawg-lazy-import,
+ * visual-catalog) default to the app on :4190 and the provider backend on :4191. Run on their own they fail
  * (no servers) and silently rot — exactly what bit search-memory-smoke after a
  * search-row markup refactor. This brings them under one command: serve the
  * static app (4190) from an in-process server we fully control, boot the
@@ -20,8 +20,19 @@ import { fileURLToPath } from "node:url";
 const NODE = process.execPath;
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const SMOKES = [
-  "app-view-smoke", "core-journey-smoke", "demo-profile-smoke", "design-smoke",
-  "game-detail-smoke", "library-wishlist-smoke", "search-memory-smoke", "visual-catalog-smoke",
+  { id: "app-view-smoke", script: "app-view-smoke-test.mjs" },
+  { id: "core-journey-smoke", script: "core-journey-smoke-test.mjs" },
+  { id: "demo-profile-smoke", script: "demo-profile-smoke-test.mjs" },
+  { id: "design-smoke", script: "design-smoke-test.mjs" },
+  { id: "game-detail-smoke", script: "game-detail-smoke-test.mjs" },
+  { id: "library-wishlist-smoke", script: "library-wishlist-smoke-test.mjs" },
+  { id: "search-memory-smoke", script: "search-memory-smoke-test.mjs" },
+  {
+    id: "rawg-lazy-import-smoke",
+    script: "search-memory-smoke-test.mjs",
+    args: ["--query=Firewatch", "--expected=Firewatch", "--state=saved", "--inject-rawg"],
+  },
+  { id: "visual-catalog-smoke", script: "visual-catalog-smoke-test.mjs" },
 ];
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -51,9 +62,9 @@ async function waitForHttp(url, timeoutMs = 15000) {
   return false;
 }
 
-function run(script) {
+function run(smoke) {
   return new Promise((resolve) => {
-    const child = spawn(NODE, [`scripts/${script}.mjs`], { stdio: ["ignore", "ignore", "pipe"] });
+    const child = spawn(NODE, [`scripts/${smoke.script}`, ...(smoke.args || [])], { stdio: ["ignore", "ignore", "pipe"] });
     let stderr = "";
     child.stderr.on("data", (d) => { stderr += d; });
     child.on("close", (code) => resolve({ code, stderr }));
@@ -77,13 +88,13 @@ if (!previewUp || !providerUp) {
 
 let failed = 0;
 for (const smoke of SMOKES) {
-  const { code, stderr } = await run(`${smoke}-test`);
+  const { code, stderr } = await run(smoke);
   if (code === 0) {
-    console.log(`  ✅ ${smoke}`);
+    console.log(`  ✅ ${smoke.id}`);
   } else {
     failed += 1;
     const firstError = (stderr.match(/Error:.*/m) || ["(no Error line; see stderr)"])[0];
-    console.error(`  ❌ ${smoke} (exit ${code}) — ${firstError}`);
+    console.error(`  ❌ ${smoke.id} (exit ${code}) — ${firstError}`);
   }
 }
 

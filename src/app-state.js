@@ -151,6 +151,10 @@
       };
     }
 
+    function normalizePlainObject(record) {
+      return record && typeof record === "object" && !Array.isArray(record) ? record : null;
+    }
+
     function normalizeUserGameRecord(record, fallbackTitle = "") {
       if (!record) return null;
       const title = record.title || fallbackTitle;
@@ -189,6 +193,8 @@
         reconciliation: record.reconciliation || null,
         duplicateOf: record.duplicateOf || "",
         duplicateSource: record.duplicateSource || "",
+        sourcePassport: normalizePlainObject(record.sourcePassport),
+        providerImport: normalizePlainObject(record.providerImport),
         amnesty: normalizeAmnestyRecord(record.amnesty),
         priceWatch: normalizePriceWatchRecord(record.priceWatch),
         source: record.source || legacyRecord.source || "manual",

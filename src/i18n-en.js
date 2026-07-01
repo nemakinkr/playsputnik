@@ -355,7 +355,7 @@
       memoryOwned: "Added to Library", memoryOwnedDetail: "It can now shape recommendations and backlog planning.",
       memorySaved: "Saved to Wishlist", memorySavedDetail: "It now contributes taste and price-watch intent.",
       memoryCheckRemembered: "remembered", memoryCheckChoose: "choose a memory state",
-      memoryCheckSource: "source kept", memoryCheckWishlist: "Wishlist next",
+      memoryCheckSource: "source kept", memoryCheckProviderImport: "RAWG candidate kept", memoryCheckWishlist: "Wishlist next",
       memoryCheckLibrary: "Library next", memoryCheckNext: "detail or wishlist next",
       memoryReady: "Ready to add", memoryReadyDetail: "Choose Wishlist, Library, or Plus now; details and rating can come later.",
       actionSaved: "Saved", actionWishlist: "Wishlist", actionOpenWishlist: "Open Wishlist", actionLibrary: "Library", actionPlus: "Plus", actionDetails: "Details",

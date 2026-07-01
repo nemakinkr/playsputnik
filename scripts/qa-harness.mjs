@@ -1217,6 +1217,9 @@ function checkSelectors() {
   assert(/coverUrl: result\.coverUrl/.test(appSearchMemorySource), "Search wishlist memory should persist provider coverUrl");
   assert(/coverLicenseNote/.test(appSearchMemorySource), "Search wishlist memory should persist provider cover license notes");
   assert(/Attribute RAWG/.test(appSearchMemorySource), "RAWG wishlist covers should preserve attribution notes");
+  assert(/providerImport/.test(appSearchMemorySource + appStateSource), "RAWG search imports should persist provider import metadata");
+  assert(/sourcePassport/.test(appSearchMemorySource + appStateSource), "Search imports should persist source passport metadata");
+  assert(/--inject-rawg/.test(searchMemorySmokeSource), "Search-to-memory smoke should cover RAWG-shaped provider imports");
   assert(/licenseNote: record\.coverLicenseNote/.test(appSource), "External memory games should expose persisted cover license notes");
   assert(/manualSearchResult/.test(appSearchSource), "Manual unverified search fallback is missing");
   assert(/externalMemoryGames/.test(appSource), "External wishlist games should be visible in memory");

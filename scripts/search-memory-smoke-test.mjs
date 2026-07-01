@@ -9,6 +9,7 @@ const STORAGE_KEY = "playsputnik.prototype.state.v2";
 const searchQuery = argValue("query", "Black Myth");
 const expectedTitle = argValue("expected", "Black Myth: Wukong");
 const targetState = argValue("state", "subscription");
+const injectRawg = process.argv.includes("--inject-rawg");
 
 function argValue(name, fallback) {
   const prefix = `--${name}=`;
@@ -48,6 +49,54 @@ try {
 
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
   await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
+  if (injectRawg) {
+    await page.evaluate(({ key, query, title }) => {
+      localStorage.setItem(key, JSON.stringify({
+        stateVersion: 3,
+        liked: [],
+        hidden: [],
+        saved: [],
+        snoozed: [],
+        userStates: {},
+        userGames: {},
+        quickReactions: {},
+        calibrationSkips: {},
+        comparisonGames: { first: "", second: "" },
+        ratingQueue: {},
+        activeView: "discover",
+        gameSearchQuery: query,
+        providerSearch: {
+          query,
+          status: "live",
+          provider: "rawg",
+          sourceHealth: "live_results",
+          sourceHealthDetail: "RAWG returned normalized game metadata candidates.",
+          resultShapeVersion: "search-result-v2",
+          checkedAt: "2026-07-01T11:30:00Z",
+          results: [{
+            resultShapeVersion: "search-result-v2",
+            title,
+            sourceId: "rawg_provider_hook",
+            sourceLabel: "RAWG provider",
+            catalogStatus: "provider_result",
+            matchConfidence: "high",
+            matchKind: "exact",
+            coverStatus: "candidate",
+            priceStatus: "missing",
+            provider: "rawg",
+            sourceUrl: "https://rawg.io/games/firewatch",
+            coverUrl: "https://media.rawg.io/media/games/firewatch-test.jpg",
+            platforms: ["PC", "PlayStation", "Xbox", "Nintendo"],
+            atoms: ["exploration", "story", "mystery"],
+            vibe: "Adventure provider result",
+            reason: "Live metadata provider result; price and subscription status still need store-backed checks.",
+            score: 96,
+            canAddToWishlist: true,
+          }],
+        },
+      }));
+    }, { key: STORAGE_KEY, query: searchQuery, title: expectedTitle });
+  }
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
 
@@ -147,6 +196,10 @@ try {
         priceStatus: record.priceStatus || "",
         atoms: Array.isArray(record.atoms) ? record.atoms.length : 0,
         inferredAtoms: Array.isArray(record.inferredAtoms) ? record.inferredAtoms.length : 0,
+        providerImport: record.providerImport || null,
+        sourcePassport: record.sourcePassport || null,
+        coverUrl: record.coverUrl || "",
+        sourceUrl: record.sourceUrl || "",
       } : null,
       userState: userState?.state || "",
     };
@@ -190,7 +243,11 @@ try {
   assert(detail.actions >= 7, `Expected detail actions including Plus, got ${detail.actions}`);
   assert(detail.plusAction, "Expected detail Plus action");
   assert(detail.passportChecks >= 5, `Expected detail source passport checks, got ${detail.passportChecks}`);
-  assert(after.record?.access === targetState, `Expected ${targetState} access, got ${after.record?.access}`);
+  if (targetState === "saved") {
+    assert(after.record?.saved, "Expected saved target state to persist as Wishlist memory");
+  } else {
+    assert(after.record?.access === targetState, `Expected ${targetState} access, got ${after.record?.access}`);
+  }
   assert(after.record?.source?.startsWith("search_"), `Expected search source memory, got ${after.record?.source}`);
   assert(after.record?.catalogStatus, "Expected catalog status to persist");
   assert(after.record?.matchConfidence, "Expected match confidence to persist");
@@ -198,6 +255,15 @@ try {
   assert(after.record?.priceStatus, "Expected price status to persist");
   assert(after.record?.provider, "Expected provider metadata to persist");
   assert(after.record.atoms + after.record.inferredAtoms > 0, "Expected source or inferred atoms to persist");
+  if (injectRawg) {
+    assert(after.record?.provider === "rawg", `Expected RAWG provider memory, got ${after.record?.provider}`);
+    assert(after.record?.providerImport?.provider === "rawg", "Expected RAWG provider import passport to persist");
+    assert(after.record?.providerImport?.status === "candidate", `Expected RAWG provider import candidate status, got ${after.record?.providerImport?.status}`);
+    assert(after.record?.providerImport?.attributionRequired, "Expected RAWG cover attribution flag");
+    assert(after.record?.sourcePassport?.sourceId === "rawg_provider_hook", `Expected source passport rawg hook, got ${after.record?.sourcePassport?.sourceId}`);
+    assert(after.record?.sourcePassport?.resultShapeVersion === "search-result-v2", "Expected provider result shape version to persist");
+    assert(after.record?.coverUrl && after.record?.sourceUrl, "Expected RAWG cover/source URLs to persist");
+  }
   assert(after.userState === targetState, `Expected ${targetState} userState, got ${after.userState}`);
   assert(after.activeState, `Expected ${targetState} action to become active`);
   assert(library.activeView === "library", `Expected Library view, got ${library.activeView}`);

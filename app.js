@@ -4327,6 +4327,7 @@ function searchResultMemoryChecks(result) {
   const owned = resultStateSelected(result, "owned");
   const subscription = resultStateSelected(result, "subscription");
   const remembered = saved || owned || subscription;
+  const providerImported = result.sourceId === "rawg_provider_hook" || result.provider === "rawg";
   return [
     {
       done: remembered,
@@ -4334,7 +4335,7 @@ function searchResultMemoryChecks(result) {
     },
     {
       done: Boolean(result.sourceId || result.sourceUrl),
-      label: t("discover.memoryCheckSource"),
+      label: providerImported ? t("discover.memoryCheckProviderImport") : t("discover.memoryCheckSource"),
     },
     {
       done: saved,

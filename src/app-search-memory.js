@@ -57,6 +57,36 @@
       const key = titleKey(title);
       const current = normalizeUserGameRecord(state.userGames[key], title) || normalizeUserGameRecord({ title });
       const enrichment = aiEnrichmentForGame(result);
+      const sourcePassport = {
+        sourceId: result.sourceId || "",
+        sourceLabel: result.sourceLabel || "",
+        catalogStatus: result.catalogStatus || "",
+        matchConfidence: result.matchConfidence || "",
+        matchKind: result.matchKind || "",
+        coverStatus: result.coverStatus || "",
+        priceStatus: result.priceStatus || "",
+        provider: result.provider || result.sourceId || "",
+        sourceUrl: result.sourceUrl || "",
+        resultShapeVersion: state.providerSearch?.resultShapeVersion || "",
+        sourceHealth: state.providerSearch?.sourceHealth || "",
+        sourceHealthDetail: state.providerSearch?.sourceHealthDetail || "",
+        checkedAt: state.providerSearch?.checkedAt || "",
+      };
+      const providerImport = result.sourceId === "rawg_provider_hook" || result.provider === "rawg"
+        ? {
+            provider: "rawg",
+            status: "candidate",
+            importedAt: new Date().toISOString(),
+            query: state.gameSearchQuery || result.title,
+            sourceUrl: result.sourceUrl || "",
+            coverUrl: result.coverUrl || "",
+            coverStatus: result.coverStatus || (result.coverUrl ? "candidate" : "missing"),
+            priceStatus: result.priceStatus || "missing",
+            matchConfidence: result.matchConfidence || "",
+            matchKind: result.matchKind || "",
+            attributionRequired: Boolean(result.coverUrl),
+          }
+        : current.providerImport || null;
       return {
         ...current,
         title,
@@ -87,6 +117,8 @@
         reconciliation: result.reconciliation || null,
         duplicateOf: result.duplicateOf || "",
         duplicateSource: result.duplicateSource || "",
+        sourcePassport,
+        providerImport,
       };
     }
 
@@ -111,6 +143,8 @@
       target.reconciliation = base.reconciliation;
       target.duplicateOf = base.duplicateOf;
       target.duplicateSource = base.duplicateSource;
+      target.sourcePassport = base.sourcePassport;
+      target.providerImport = base.providerImport;
       return target;
     }
 
@@ -147,6 +181,8 @@
         priceStatus: result.priceStatus,
         coverStatus: result.coverStatus,
         coverProvider: result.provider || result.sourceId,
+        providerImport: next.providerImport?.provider || "",
+        providerImportStatus: next.providerImport?.status || "",
       });
       recordFeedback(userState, next.title);
       return next;

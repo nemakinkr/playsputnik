@@ -354,7 +354,7 @@
       memoryOwned: "Добавлено в Библиотеку", memoryOwnedDetail: "Теперь игра влияет на рекомендации и планирование бэклога.",
       memorySaved: "Добавлено в Желаемое", memorySavedDetail: "Теперь игра учитывается как сигнал вкуса и намерение следить за ценой.",
       memoryCheckRemembered: "запомнили", memoryCheckChoose: "выберите состояние",
-      memoryCheckSource: "источник сохранён", memoryCheckWishlist: "дальше Wishlist",
+      memoryCheckSource: "источник сохранён", memoryCheckProviderImport: "RAWG-кандидат сохранён", memoryCheckWishlist: "дальше Wishlist",
       memoryCheckLibrary: "дальше Библиотека", memoryCheckNext: "дальше детали или желаемое",
       memoryReady: "Можно добавить", memoryReadyDetail: "Сейчас выберите Желаемое, Библиотеку или Plus; подробности и оценку можно добавить позже.",
       actionSaved: "Сохранено", actionWishlist: "В желаемое", actionOpenWishlist: "Открыть Wishlist", actionLibrary: "В библиотеку", actionPlus: "Plus", actionDetails: "Подробнее",

@@ -194,6 +194,12 @@ reviews, catalogs, sale pages, and announcements.
   attribution and avoid fake live price/Plus claims. Saved search results now
   expose an immediate "Open Wishlist" next step and a small checklist so the add
   action has visible follow-through: remembered, source kept, next destination.
+  RAWG provider hits now persist as lazy-import memory records with
+  `providerImport` and `sourcePassport` metadata, so user-searched games outside
+  the seed/backbone catalog can immediately enter Wishlist/Library/Plus with
+  attributed cover candidates and honest missing-price status. The browser
+  smoke suite includes a deterministic `rawg-lazy-import-smoke` without live
+  network or secrets.
 - Visual catalog: search, filter chips, sort, pagination, keyboard grid nav.
 - Mobile navigation: all 8 product areas are visible without horizontal
   scrolling; Today/Library/Discover/Wishlist get primary 2x2 slots and
