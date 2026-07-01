@@ -150,6 +150,17 @@ reviews, catalogs, sale pages, and announcements.
   Pictures: The Devil in Me, Pentiment, Indika, Star Wars Outlaws, Banishers:
   Ghosts of New Eden, RoboCop: Rogue City, Little Hope, True Colors, and Dead
   Island 2.
+- Provider coverage dogfood: `scripts/resolve-founder-ranking-provider-coverage.mjs`
+  now runs the full 111-title founder ranking through the production-style
+  source chain: seed catalog → catalog backbone → external fixtures → RAWG
+  live search → manual fallback. The committed report at
+  `reports/founder-ranking-provider-coverage.json` was generated with
+  `--rawg-all` against the local RAWG key. Current baseline: 82/111 local known,
+  29/29 local-missing titles resolved by RAWG, 111/111 RAWG matches, 111/111
+  RAWG cover candidates, and 0/111 manual fallback. Three natural user-title
+  variants were fixed at the alias layer, not by hand-adding game records:
+  `The Dark Pictures: Man of Medan`, `Sherlock Holmes: Devil's Daughter`, and
+  `Mafia 3`.
 - Today: the companion answer and plan now read as a practical command center
   with a stronger primary answer surface, localized play/use-access/watch/
   buy-later rows, highlighted first action, detail links, and stateful
@@ -247,6 +258,9 @@ the active view.
 - PS Plus: live Extra list from PS Store category pages; Premium category id
   unknown (3 manual records).
 - Covers: RAWG candidates with attribution (`sourceUrl`, `licenseNote`).
+- Provider-backed search coverage: the live RAWG layer can resolve all 111
+  titles in the founder ranking when aliases are applied, while prices and
+  subscription status remain separate store-backed freshness signals.
 - Secrets in `.env.local` (gitignored) and Actions secrets: `RAWG_API_KEY`,
   `ITAD_API_KEY`. Never print them.
 

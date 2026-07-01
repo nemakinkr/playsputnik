@@ -30,6 +30,19 @@ Run `./scripts/check.sh` before claiming any task done.
   product task touches that area; keep DOM orchestration in the composition
   root and reusable decisions in `src/app-*.js`.
 
+## Track: Catalog / Provider Coverage
+
+- Founder-ranking RAWG coverage audit: done.
+  `scripts/resolve-founder-ranking-provider-coverage.mjs --rawg-all --write`
+  proves the current source chain can resolve the full 111-title founder
+  ranking without manual fallback: 82/111 local known, 29/29 local-missing
+  resolved by RAWG, 111/111 RAWG matches, 111/111 RAWG cover candidates.
+  Keep this as a non-CI diagnostic because it uses live network and secrets.
+- Next catalog/product work should turn provider hits into a user-facing lazy
+  search/import cache: when a user searches an unknown title, save the RAWG
+  candidate with source attribution, match confidence, cover candidate, and
+  missing-price honesty instead of requiring prior seed/backbone coverage.
+
 ## Track: Localization (EN + RU) — ACTIVE, large multi-phase project
 
 Decision (2026-06-18): ship a full EN + RU app (more languages later); target

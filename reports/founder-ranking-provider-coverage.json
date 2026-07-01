@@ -1,0 +1,4818 @@
+{
+  "mode": "founder-ranking-provider-coverage",
+  "checkedAt": "2026-07-01T11:30:00Z",
+  "fixture": "test/fixtures/founder-ranking-ru.txt",
+  "provider": {
+    "id": "rawg",
+    "keySource": ".env.local",
+    "queriedAllRows": true,
+    "minimumTrustedScore": 70,
+    "note": "RAWG is used for live search, metadata, platforms, atoms, and attributed cover candidates. Prices and subscription status remain store-backed signals."
+  },
+  "localSources": [
+    "data/games.json",
+    "data/catalog-backbone.json",
+    "data/global-search-fixtures.json",
+    "data/title-aliases.json"
+  ],
+  "summary": {
+    "total": 111,
+    "seedCatalog": 47,
+    "catalogBackbone": 33,
+    "externalFixture": 2,
+    "rawgLive": 29,
+    "manualFallback": 0,
+    "localKnown": 82,
+    "rawgMatched": 111,
+    "coverCandidateFromRawg": 111,
+    "resolvedForWishlist": 111,
+    "top30ResolvedWithoutManual": 30,
+    "top60ResolvedWithoutManual": 60,
+    "localMissingResolvedByRawg": 29,
+    "localMissingTotal": 29
+  },
+  "unresolved": [],
+  "rows": [
+    {
+      "rank": 1,
+      "title": "Red Dead Redemption 2",
+      "canonicalTitle": "Red Dead Redemption 2",
+      "key": "red dead redemption 2",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Red Dead Redemption 2",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Red Dead Redemption 2",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/red-dead-redemption-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "multiplayer",
+          "co-op",
+          "open-world",
+          "exploration"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 2,
+      "title": "Ведьмак 3: Дикая Охота",
+      "canonicalTitle": "The Witcher 3: Wild Hunt",
+      "key": "the witcher 3 wild hunt",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Witcher 3: Wild Hunt",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Witcher 3: Wild Hunt",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-witcher-3-wild-hunt",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "rpg",
+          "choice",
+          "open-world",
+          "exploration"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 3,
+      "title": "Kingdom Come: Deliverance II",
+      "canonicalTitle": "Kingdom Come: Deliverance II",
+      "key": "kingdom come deliverance ii",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Kingdom Come: Deliverance II",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Kingdom Come: Deliverance II",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/kingdom-come-deliverance-ii",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 4,
+      "title": "Одни из нас. Часть II",
+      "canonicalTitle": "The Last of Us Part II",
+      "key": "the last of us part ii",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Last of Us Part II",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Last of Us Part II",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-last-of-us-part-2",
+        "platforms": [
+          "PlayStation",
+          "PlayStation 5",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "survival",
+          "systems"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 5,
+      "title": "Assassin's creed: Одиссея",
+      "canonicalTitle": "Assassin's Creed Odyssey",
+      "key": "assassin s creed odyssey",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Assassin's Creed Odyssey",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Assassin's Creed Odyssey",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/assassins-creed-odyssey",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "rpg",
+          "choice",
+          "open-world",
+          "exploration",
+          "stealth",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 6,
+      "title": "Cyberpunk 2077",
+      "canonicalTitle": "Cyberpunk 2077",
+      "key": "cyberpunk 2077",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Cyberpunk 2077",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Cyberpunk 2077",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/cyberpunk-2077",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 7,
+      "title": "Days Gone",
+      "canonicalTitle": "Days Gone",
+      "key": "days gone",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Days Gone",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Days Gone",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/days-gone",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 8,
+      "title": "Grand Theft Auto V",
+      "canonicalTitle": "Grand Theft Auto V",
+      "key": "grand theft auto v",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Grand Theft Auto V",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Grand Theft Auto V",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/grand-theft-auto-v",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X",
+          "Xbox 360"
+        ],
+        "atoms": [
+          "action",
+          "rpg",
+          "choice",
+          "shooter",
+          "multiplayer",
+          "co-op",
+          "open-world",
+          "exploration"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 9,
+      "title": "Detroit: Стать человеком",
+      "canonicalTitle": "Detroit: Become Human",
+      "key": "detroit become human",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Detroit: Become Human",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Detroit: Become Human",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/detroit-become-human",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 10,
+      "title": "Red Dead Redemption",
+      "canonicalTitle": "Red Dead Redemption",
+      "key": "red dead redemption",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Red Dead Redemption",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Red Dead Redemption",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/red-dead-redemption",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "multiplayer",
+          "co-op",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 11,
+      "title": "Marvel’s Человек-паук 2",
+      "canonicalTitle": "Marvel's Spider-Man 2",
+      "key": "marvel s spider man 2",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Marvel's Spider-Man 2",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Marvel's Spider-Man 2",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/marvels-spider-man-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "multiplayer",
+          "co-op",
+          "open-world",
+          "stealth",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 12,
+      "title": "Atomic Heart",
+      "canonicalTitle": "Atomic Heart",
+      "key": "atomic heart",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Atomic Heart",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Atomic Heart",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/atomic-heart",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 13,
+      "title": "Dispatch",
+      "canonicalTitle": "Dispatch",
+      "key": "dispatch",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Dispatch",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Dispatch",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/dispatch-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "strategy",
+          "systems",
+          "horror",
+          "tension",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 14,
+      "title": "Kingdom Come: Deliverance",
+      "canonicalTitle": "Kingdom Come: Deliverance",
+      "key": "kingdom come deliverance",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Kingdom Come: Deliverance",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Kingdom Come: Deliverance",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/kingdom-come-deliverance",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 15,
+      "title": "Призрак Цусимы",
+      "canonicalTitle": "Ghost of Tsushima",
+      "key": "ghost of tsushima",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Ghost of Tsushima",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Ghost of Tsushima",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/ghost-of-tsushima",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 16,
+      "title": "God of War Ragnarök",
+      "canonicalTitle": "God of War Ragnarok",
+      "key": "god of war ragnarok",
+      "local": {
+        "status": "seed_catalog",
+        "title": "God of War Ragnarok",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "God of War Ragnarök",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/god-of-war-ragnarok-2",
+        "platforms": [
+          "PC"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 17,
+      "title": "Mafia: Definitive Edition",
+      "canonicalTitle": "Mafia: Definitive Edition",
+      "key": "mafia definitive edition",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Mafia: Definitive Edition",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Mafia: Definitive Edition",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/mafia",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "open-world",
+          "exploration"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 18,
+      "title": "Стражи галактики Marvel",
+      "canonicalTitle": "Marvel's Guardians of the Galaxy",
+      "key": "marvel s guardians of the galaxy",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Marvel's Guardians of the Galaxy",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Marvel's Guardians of the Galaxy",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/guardians-of-the-galaxy",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 19,
+      "title": "Одни из нас",
+      "canonicalTitle": "The Last of Us Part I",
+      "key": "the last of us part i",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Last of Us Part I",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Last of Us Part I",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-last-of-us-part-i",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 20,
+      "title": "The Outer Worlds",
+      "canonicalTitle": "The Outer Worlds",
+      "key": "the outer worlds",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Outer Worlds",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Outer Worlds",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-outer-worlds",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 21,
+      "title": "Control",
+      "canonicalTitle": "Control",
+      "key": "control",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Control",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Control",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/control",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 22,
+      "title": "Disco Elysium",
+      "canonicalTitle": "Disco Elysium",
+      "key": "disco elysium",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Disco Elysium",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Disco Elysium",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/disco-elysium",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 23,
+      "title": "Metro Exodus",
+      "canonicalTitle": "Metro Exodus",
+      "key": "metro exodus",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Metro Exodus",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Metro Exodus",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/metro-exodus",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "horror",
+          "tension",
+          "survival",
+          "systems",
+          "stealth"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 24,
+      "title": "Marvel’s Человек-паук",
+      "canonicalTitle": "Marvel's Spider-Man",
+      "key": "marvel s spider man",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Marvel's Spider-Man",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Marvel's Spider-Man",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/marvels-spider-man",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 25,
+      "title": "Wolfenstein II: The New Colossus",
+      "canonicalTitle": "Wolfenstein II: The New Colossus",
+      "key": "wolfenstein ii the new colossus",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Wolfenstein II: The New Colossus",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Wolfenstein II: The New Colossus",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/wolfenstein-2-the-new-colossus",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "horror",
+          "tension",
+          "open-world",
+          "exploration",
+          "stealth"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 26,
+      "title": "The Thaumaturge",
+      "canonicalTitle": "The Thaumaturge",
+      "key": "the thaumaturge",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "The Thaumaturge",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Thaumaturge",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-thaumaturge",
+        "platforms": [
+          "PC"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 27,
+      "title": "Nobody Wants to Die",
+      "canonicalTitle": "Nobody Wants to Die",
+      "key": "nobody wants to die",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Nobody Wants to Die",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Nobody Wants to Die",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/nobody-wants-to-die",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "rpg",
+          "choice"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 28,
+      "title": "Alan Wake 2",
+      "canonicalTitle": "Alan Wake 2",
+      "key": "alan wake 2",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Alan Wake 2",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Alan Wake 2",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/alan-wake-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 29,
+      "title": "Hogwarts Legacy",
+      "canonicalTitle": "Hogwarts Legacy",
+      "key": "hogwarts legacy",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Hogwarts Legacy",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Hogwarts Legacy",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/hogwarts-legacy",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 30,
+      "title": "Dying Light 2",
+      "canonicalTitle": "Dying Light 2 Stay Human",
+      "key": "dying light 2 stay human",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Dying Light 2 Stay Human",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Dying Light 2 Stay Human",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/dying-light-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "horror",
+          "tension",
+          "multiplayer"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 31,
+      "title": "Uncharted 4: Путь вора",
+      "canonicalTitle": "Uncharted 4: A Thief's End",
+      "key": "uncharted 4 a thief s end",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Uncharted 4: A Thief's End",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Uncharted 4: A Thief’s End",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/uncharted-4-a-thiefs-end",
+        "platforms": [
+          "PlayStation",
+          "PlayStation 5",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 32,
+      "title": "Wolfenstein: The New Order",
+      "canonicalTitle": "Wolfenstein: The New Order",
+      "key": "wolfenstein the new order",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Wolfenstein: The New Order",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Wolfenstein: The New Order",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/wolfenstein-the-new-order",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox 360",
+          "PlayStation 3"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op",
+          "stealth"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 33,
+      "title": "As Dusk Falls",
+      "canonicalTitle": "As Dusk Falls",
+      "key": "as dusk falls",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "As Dusk Falls",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "As Dusk Falls",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/as-dusk-falls",
+        "platforms": [
+          "PC",
+          "Xbox",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 34,
+      "title": "Дожить до рассвета",
+      "canonicalTitle": "Until Dawn",
+      "key": "until dawn",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Until Dawn",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Until Dawn",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/until-dawn",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 4",
+          "PlayStation 3"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 35,
+      "title": "Ratchet & Clank: Сквозь миры",
+      "canonicalTitle": "Ratchet & Clank: Rift Apart",
+      "key": "ratchet and clank rift apart",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Ratchet & Clank: Rift Apart",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Ratchet & Clank: Rift Apart",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/ratchet-clank-rift-apart",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "platforming",
+          "multiplayer",
+          "co-op",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 36,
+      "title": "God of War",
+      "canonicalTitle": "God of War",
+      "key": "god of war",
+      "local": {
+        "status": "seed_catalog",
+        "title": "God of War",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "God Of War",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/god-of-war-3",
+        "platforms": [
+          "Web"
+        ],
+        "atoms": [
+          "management",
+          "systems"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 37,
+      "title": "This is the Police",
+      "canonicalTitle": "This is the Police",
+      "key": "this is the police",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "This Is the Police",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "This is the Police",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/this-is-the-police",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "iOS",
+          "Android",
+          "Apple Macintosh",
+          "Linux",
+          "Nintendo"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "strategy",
+          "systems",
+          "horror",
+          "tension",
+          "management",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 38,
+      "title": "Warhammer 40,000: Space Marine 2",
+      "canonicalTitle": "Warhammer 40,000: Space Marine 2",
+      "key": "warhammer 40 000 space marine 2",
+      "local": {
+        "status": "external_fixture",
+        "title": "Warhammer 40,000: Space Marine 2",
+        "sourceId": "prototype_external_index",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Warhammer 40,000: Space Marine 2",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/warhammer-40000-space-marine-2",
+        "platforms": [
+          "PC"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "external_fixture",
+        "sourceId": "prototype_external_index",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "prototype_external_index",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 39,
+      "title": "Marvel’s Человек-паук:Майлз Моралес",
+      "canonicalTitle": "Marvel's Spider-Man: Miles Morales",
+      "key": "marvel s spider man miles morales",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Marvel's Spider-Man: Miles Morales",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Marvel's Spider-Man: Miles Morales",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/marvels-spider-man-miles-morales",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "multiplayer",
+          "co-op",
+          "open-world",
+          "stealth",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 40,
+      "title": "The Dark Pictures: House of Ashes",
+      "canonicalTitle": "The Dark Pictures Anthology: House of Ashes",
+      "key": "the dark pictures anthology house of ashes",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Dark Pictures Anthology: House of Ashes",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Dark Pictures Anthology: House of Ashes",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-dark-pictures-anthology-house-of-ashes",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op",
+          "survival"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 41,
+      "title": "The Invincible",
+      "canonicalTitle": "The Invincible",
+      "key": "the invincible",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "The Invincible",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Invincible",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-invincible",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 42,
+      "title": "Road 96",
+      "canonicalTitle": "Road 96",
+      "key": "road 96",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Road 96",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Road 96",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/road-96",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 43,
+      "title": "The Dark Pictures: The Devil in Me",
+      "canonicalTitle": "The Dark Pictures Anthology: The Devil in Me",
+      "key": "the dark pictures anthology the devil in me",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "The Dark Pictures Anthology: The Devil in Me",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Dark Pictures Anthology: The Devil In Me",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-dark-pictures-anthology-the-devil-in-me",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op",
+          "survival"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 44,
+      "title": "The Life and Suffering of Sir Brante",
+      "canonicalTitle": "The Life and Suffering of Sir Brante",
+      "key": "the life and suffering of sir brante",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Life and Suffering of Sir Brante",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Life and Suffering of Sir Brante",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-life-and-suffering-of-sir-brante",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "strategy",
+          "systems",
+          "management",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 45,
+      "title": "Stray",
+      "canonicalTitle": "Stray",
+      "key": "stray",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Stray",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Stray",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/stray-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "puzzle",
+          "systems",
+          "horror",
+          "tension",
+          "platforming"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 46,
+      "title": "Pentiment",
+      "canonicalTitle": "Pentiment",
+      "key": "pentiment",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Pentiment",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Pentiment",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/pentiment",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "rpg",
+          "choice"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 47,
+      "title": "Indika",
+      "canonicalTitle": "Indika",
+      "key": "indika",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Indika",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Indika",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/indika",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 48,
+      "title": "Орден: 1886",
+      "canonicalTitle": "The Order: 1886",
+      "key": "the order 1886",
+      "local": {
+        "status": "external_fixture",
+        "title": "The Order: 1886",
+        "sourceId": "prototype_external_index",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Order: 1886",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-order-1886",
+        "platforms": [
+          "PlayStation",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "stealth",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "external_fixture",
+        "sourceId": "prototype_external_index",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "prototype_external_index",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 49,
+      "title": "Ratchet and Clank",
+      "canonicalTitle": "Ratchet and Clank",
+      "key": "ratchet and clank",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Ratchet & Clank",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Ratchet & Clank",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/ratchet-clank",
+        "platforms": [
+          "PlayStation",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 50,
+      "title": "L. A. Noire",
+      "canonicalTitle": "L. A. Noire",
+      "key": "l a noire",
+      "local": {
+        "status": "seed_catalog",
+        "title": "L.A. Noire",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "L.A. Noire",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/la-noire",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch",
+          "Xbox 360"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 51,
+      "title": "Uncharted: Утраченное наследие",
+      "canonicalTitle": "Uncharted: The Lost Legacy",
+      "key": "uncharted the lost legacy",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Uncharted: The Lost Legacy",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Uncharted: The Lost Legacy",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/uncharted-the-lost-legacy",
+        "platforms": [
+          "PlayStation",
+          "PlayStation 5",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 52,
+      "title": "Still Wakes the Deep",
+      "canonicalTitle": "Still Wakes the Deep",
+      "key": "still wakes the deep",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Still Wakes the Deep",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Still Wakes the Deep",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/still-wakes-the-deep",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "stealth"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 53,
+      "title": "Yakuza: Like a Dragon",
+      "canonicalTitle": "Yakuza: Like a Dragon",
+      "key": "yakuza like a dragon",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Yakuza: Like a Dragon",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Yakuza: Like a Dragon",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/yakuza-7",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 54,
+      "title": "Star Wars Outlaws",
+      "canonicalTitle": "Star Wars Outlaws",
+      "key": "star wars outlaws",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Star Wars Outlaws",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Star Wars Outlaws",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/star-wars-outlaws",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox Series S/X",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 55,
+      "title": "Banishers: Ghosts of New Eden",
+      "canonicalTitle": "Banishers: Ghosts of New Eden",
+      "key": "banishers ghosts of new eden",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Banishers: Ghosts of New Eden",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Banishers: Ghosts of New Eden",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/banishers-ghosts-of-new-eden",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 56,
+      "title": "RoboCop: Rogue City",
+      "canonicalTitle": "RoboCop: Rogue City",
+      "key": "robocop rogue city",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "RoboCop: Rogue City",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "RoboCop: Rogue City",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/robocop-rogue-city",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 57,
+      "title": "The Dark Pictures: Little Hope",
+      "canonicalTitle": "The Dark Pictures Anthology: Little Hope",
+      "key": "the dark pictures anthology little hope",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "The Dark Pictures Anthology: Little Hope",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Dark Pictures Anthology: Little Hope",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-dark-pictures-anthology-little-hope",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op",
+          "survival"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 58,
+      "title": "Life is Strange: True Colors",
+      "canonicalTitle": "Life is Strange: True Colors",
+      "key": "life is strange true colors",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Life is Strange: True Colors",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Life is Strange: True Colors",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/life-is-strange-true-colors",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 59,
+      "title": "A Way Out",
+      "canonicalTitle": "A Way Out",
+      "key": "a way out",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "A Way Out",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "A Way Out",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/a-way-out-2018",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "multiplayer",
+          "co-op",
+          "stealth",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 60,
+      "title": "Dead Island 2",
+      "canonicalTitle": "Dead Island 2",
+      "key": "dead island 2",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Dead Island 2",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Dead Island 2",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/dead-island-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "shooter",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 61,
+      "title": "The Council",
+      "canonicalTitle": "The Council",
+      "key": "the council",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "The Council",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-council",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 62,
+      "title": "Heavy Rain",
+      "canonicalTitle": "Heavy Rain",
+      "key": "heavy rain",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Heavy Rain",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Heavy Rain",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/heavy-rain",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 4",
+          "PlayStation 3"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 63,
+      "title": "Valiant Hearts: The Great War",
+      "canonicalTitle": "Valiant Hearts: The Great War",
+      "key": "valiant hearts the great war",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Valiant Hearts: The Great War",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/valiant-hearts-the-great-war",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "iOS",
+          "Android",
+          "Nintendo",
+          "PlayStation 4",
+          "Xbox One"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "puzzle",
+          "systems"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 64,
+      "title": "Bramble: The Mountain King",
+      "canonicalTitle": "Bramble: The Mountain King",
+      "key": "bramble the mountain king",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Bramble: The Mountain King",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/bramble-the-mountain-king",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "platforming",
+          "indie",
+          "survival"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 65,
+      "title": "Diablo IV",
+      "canonicalTitle": "Diablo IV",
+      "key": "diablo iv",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Diablo IV",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Diablo IV",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/diablo-iv",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "rpg",
+          "choice",
+          "platforming",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 66,
+      "title": "Resident Evil Village",
+      "canonicalTitle": "Resident Evil Village",
+      "key": "resident evil village",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Resident Evil Village",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Resident Evil: Village",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/resident-evil-village",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "iOS",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 67,
+      "title": "The Quarry",
+      "canonicalTitle": "The Quarry",
+      "key": "the quarry",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "The Quarry",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Quarry",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-quarry-3",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op",
+          "survival"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 68,
+      "title": "Not For Broadcast",
+      "canonicalTitle": "Not For Broadcast",
+      "key": "not for broadcast",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Not For Broadcast",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Not For Broadcast",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/not-for-broadcast",
+        "platforms": [
+          "PC"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "management",
+          "systems",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 69,
+      "title": "Call of Cthulhu",
+      "canonicalTitle": "Call of Cthulhu",
+      "key": "call of cthulhu",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Call of Cthulhu",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Call of Cthulhu",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/call-of-cthulhu-the-official-video-game",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "horror",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 70,
+      "title": "Lake",
+      "canonicalTitle": "Lake",
+      "key": "lake",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Lake",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Lake",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/lake",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 71,
+      "title": "Dave the Diver",
+      "canonicalTitle": "Dave the Diver",
+      "key": "dave the diver",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Dave the Diver",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Dave the Diver",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/dave-the-diver",
+        "platforms": [
+          "PC",
+          "Apple Macintosh",
+          "Nintendo",
+          "Nintendo Switch",
+          "macOS"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "management",
+          "systems"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 72,
+      "title": "Firewatch",
+      "canonicalTitle": "Firewatch",
+      "key": "firewatch",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Firewatch",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/firewatch",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Linux",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 73,
+      "title": "The Dark Pictures: Man of Medan",
+      "canonicalTitle": "The Dark Pictures Anthology: Man of Medan",
+      "key": "the dark pictures anthology man of medan",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "The Dark Pictures Anthology: Man of Medan",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/man-of-medan",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 74,
+      "title": "Cult of the Lamb",
+      "canonicalTitle": "Cult of the Lamb",
+      "key": "cult of the lamb",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Cult of the Lamb",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/cult-of-the-lamb",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "strategy",
+          "systems",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 75,
+      "title": "Sword of the Sea",
+      "canonicalTitle": "Sword of the Sea",
+      "key": "sword of the sea",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Sword of the Sea",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/sword-of-the-sea",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 76,
+      "title": "Jusant",
+      "canonicalTitle": "Jusant",
+      "key": "jusant",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Jusant",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/jusant",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "platforming",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 77,
+      "title": "Killer Frequency",
+      "canonicalTitle": "Killer Frequency",
+      "key": "killer frequency",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Killer Frequency",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/killer-frequency",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "PlayStation 5",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "management",
+          "systems",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 78,
+      "title": "Tails Noir",
+      "canonicalTitle": "Tails Noir",
+      "key": "tails noir",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Tails Noir",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/backbone",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Linux",
+          "Nintendo",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 79,
+      "title": "The Forgotten City",
+      "canonicalTitle": "The Forgotten City",
+      "key": "the forgotten city",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Forgotten City",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Forgotten City",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/forgotten-city",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "indie",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 80,
+      "title": "Thank Goodness You’re Here!",
+      "canonicalTitle": "Thank Goodness You’re Here!",
+      "key": "thank goodness you re here",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Thank Goodness You're Here!",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Thank Goodness You're Here!",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/thank-goodness-youre-here",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "PlayStation 5",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "puzzle",
+          "systems",
+          "platforming",
+          "action",
+          "indie",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 81,
+      "title": "LEGO Horizon Adventures",
+      "canonicalTitle": "LEGO Horizon Adventures",
+      "key": "lego horizon adventures",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Lego Horizon Adventures",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/lego-horizon-adventures",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Nintendo",
+          "PlayStation 5",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "puzzle",
+          "systems",
+          "platforming",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 82,
+      "title": "Infamous: First Light",
+      "canonicalTitle": "Infamous: First Light",
+      "key": "infamous first light",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "inFAMOUS: First Light",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/infamous-first-light",
+        "platforms": [
+          "PlayStation",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 83,
+      "title": "Sifu",
+      "canonicalTitle": "Sifu",
+      "key": "sifu",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Sifu",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Sifu",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/sifu",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 84,
+      "title": "Late shift",
+      "canonicalTitle": "Late shift",
+      "key": "late shift",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Late Shift",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/late-shift",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "indie",
+          "survival",
+          "systems"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 85,
+      "title": "1979 Revolution: Black Friday",
+      "canonicalTitle": "1979 Revolution: Black Friday",
+      "key": "1979 revolution black friday",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "1979 Revolution: Black Friday",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/1979-revolution-black-friday",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Android",
+          "Apple Macintosh",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 86,
+      "title": "Sherlock Holmes: Devil's Daughter",
+      "canonicalTitle": "Sherlock Holmes: The Devil's Daughter",
+      "key": "sherlock holmes the devil s daughter",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Sherlock Holmes: The Devil's Daughter",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/sherlock-holmes-the-devils-daughter",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 87,
+      "title": "Call of Duty: WWII",
+      "canonicalTitle": "Call of Duty: WWII",
+      "key": "call of duty wwii",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Call of Duty: WWII",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/call-of-duty-wwii",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 88,
+      "title": "Mafia 3",
+      "canonicalTitle": "Mafia III",
+      "key": "mafia iii",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Mafia III: Definitive Edition",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/mafia-iii-definitive-edition",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 89,
+      "title": "What Remains of Edith Finch",
+      "canonicalTitle": "What Remains of Edith Finch",
+      "key": "what remains of edith finch",
+      "local": {
+        "status": "seed_catalog",
+        "title": "What Remains of Edith Finch",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "What Remains of Edith Finch",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/what-remains-of-edith-finch",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "iOS",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "shooter",
+          "action",
+          "horror",
+          "tension",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 90,
+      "title": "The Casting of Frank Stone",
+      "canonicalTitle": "The Casting of Frank Stone",
+      "key": "the casting of frank stone",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "The Casting of Frank Stone",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-casting-of-frank-stone",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "multiplayer",
+          "co-op"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 91,
+      "title": "Harold Halibut",
+      "canonicalTitle": "Harold Halibut",
+      "key": "harold halibut",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Harold Halibut",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Harold Halibut",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/harold-halibut",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 92,
+      "title": "11-11: Memories Retold",
+      "canonicalTitle": "11-11: Memories Retold",
+      "key": "11 11 memories retold",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "11-11 Memories Retold",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/11-11-memories-retold",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "exploration",
+          "story"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 93,
+      "title": "Crime Boss: Rockay City",
+      "canonicalTitle": "Crime Boss: Rockay City",
+      "key": "crime boss rockay city",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Crime Boss: Rockay City",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/crime-boss-rockay-city",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "strategy",
+          "systems",
+          "multiplayer",
+          "co-op",
+          "stealth",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 94,
+      "title": "Battlefield 1",
+      "canonicalTitle": "Battlefield 1",
+      "key": "battlefield 1",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Battlefield 1",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Battlefield 1",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/battlefield-1",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "shooter",
+          "multiplayer",
+          "co-op",
+          "open-world",
+          "exploration"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 95,
+      "title": "Kena: Bridge of Spirits",
+      "canonicalTitle": "Kena: Bridge of Spirits",
+      "key": "kena bridge of spirits",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Kena: Bridge of Spirits",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Kena: Bridge of Spirits",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/kena-bridge-of-spirits",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "PlayStation 5",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "strategy",
+          "systems",
+          "platforming",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 96,
+      "title": "Police Simulator: Patrol Officers",
+      "canonicalTitle": "Police Simulator: Patrol Officers",
+      "key": "police simulator patrol officers",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Police Simulator: Patrol Officers",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/police-simulator-patrol-officers",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "management",
+          "systems",
+          "multiplayer",
+          "co-op",
+          "open-world",
+          "exploration"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 97,
+      "title": "Unpacking",
+      "canonicalTitle": "Unpacking",
+      "key": "unpacking",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Unpacking",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Unpacking",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/unpacking-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Linux",
+          "Nintendo",
+          "PlayStation 5",
+          "Xbox One"
+        ],
+        "atoms": [
+          "management",
+          "systems"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 98,
+      "title": "Battlefield V",
+      "canonicalTitle": "Battlefield V",
+      "key": "battlefield v",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Battlefield V",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/battlefield-v",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "multiplayer",
+          "co-op",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 99,
+      "title": "Sayonara Wild Hearts",
+      "canonicalTitle": "Sayonara Wild Hearts",
+      "key": "sayonara wild hearts",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Sayonara Wild Hearts",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Sayonara Wild Hearts",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/sayonara-wild-hearts",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "iOS",
+          "Apple Macintosh",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 100,
+      "title": "Twelve Minutes",
+      "canonicalTitle": "Twelve Minutes",
+      "key": "twelve minutes",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Twelve Minutes",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/12-minutes-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "iOS",
+          "PlayStation 5",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 101,
+      "title": "Untitled Goose Game",
+      "canonicalTitle": "Untitled Goose Game",
+      "key": "untitled goose game",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Untitled Goose Game",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Untitled Goose Game",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/untitled-goose-game",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "puzzle",
+          "systems",
+          "indie",
+          "stealth",
+          "tension"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 102,
+      "title": "Neva",
+      "canonicalTitle": "Neva",
+      "key": "neva",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Neva",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/neva-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "PlayStation 5",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "puzzle",
+          "systems",
+          "platforming",
+          "action",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 103,
+      "title": "Röki",
+      "canonicalTitle": "Röki",
+      "key": "roki",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Röki",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/roki",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "PlayStation 5",
+          "PlayStation 4",
+          "Xbox Series S/X"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 104,
+      "title": "The Plucky Squire",
+      "canonicalTitle": "The Plucky Squire",
+      "key": "the plucky squire",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "The Plucky Squire",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-plucky-squire",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Nintendo",
+          "PlayStation 5",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "puzzle",
+          "systems",
+          "platforming",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 105,
+      "title": "Erica",
+      "canonicalTitle": "Erica",
+      "key": "erica",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Erica",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/erica",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "iOS",
+          "Android",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "horror",
+          "tension",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 106,
+      "title": "Coffee Talk",
+      "canonicalTitle": "Coffee Talk",
+      "key": "coffee talk",
+      "local": {
+        "status": "catalog_backbone",
+        "title": "Coffee Talk",
+        "sourceId": "catalog_backbone",
+        "hasCoverCandidate": false,
+        "priceStatus": "missing"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Coffee Talk",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/coffee-talk",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Apple Macintosh",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "catalog_backbone",
+        "sourceId": "catalog_backbone",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "catalog_backbone",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 107,
+      "title": "The Occupation",
+      "canonicalTitle": "The Occupation",
+      "key": "the occupation",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "The Occupation",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-occupation",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 108,
+      "title": "The Stanley Parable",
+      "canonicalTitle": "The Stanley Parable: Ultra Deluxe",
+      "key": "the stanley parable ultra deluxe",
+      "local": {
+        "status": "seed_catalog",
+        "title": "The Stanley Parable: Ultra Deluxe",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "The Stanley Parable",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/the-stanley-parable",
+        "platforms": [
+          "PC",
+          "Apple Macintosh",
+          "Linux",
+          "macOS"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "indie"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 109,
+      "title": "Murdered: Soul Suspect",
+      "canonicalTitle": "Murdered: Soul Suspect",
+      "key": "murdered soul suspect",
+      "local": null,
+      "rawg": {
+        "status": "matched",
+        "title": "Murdered: Soul Suspect",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/murdered-soul-suspect",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Xbox One",
+          "PlayStation 4",
+          "Xbox 360",
+          "PlayStation 3"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "rpg",
+          "choice",
+          "horror",
+          "tension",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "rawg_live",
+        "sourceId": "rawg_provider_hook",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "rawg",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 110,
+      "title": "Journey",
+      "canonicalTitle": "Journey",
+      "key": "journey",
+      "local": {
+        "status": "seed_catalog",
+        "title": "Journey",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "Journey",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/journey",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "iOS",
+          "PlayStation 4",
+          "PlayStation 3"
+        ],
+        "atoms": [
+          "action",
+          "exploration",
+          "story",
+          "shooter",
+          "horror",
+          "tension",
+          "indie",
+          "multiplayer"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    },
+    {
+      "rank": 111,
+      "title": "Abzu",
+      "canonicalTitle": "Abzu",
+      "key": "abzu",
+      "local": {
+        "status": "seed_catalog",
+        "title": "ABZU",
+        "sourceId": "seed_catalog",
+        "hasCoverCandidate": false,
+        "priceStatus": "seed_or_history"
+      },
+      "rawg": {
+        "status": "matched",
+        "title": "ABZU",
+        "score": 100,
+        "matchKind": "exact",
+        "confidence": "high",
+        "coverStatus": "candidate",
+        "sourceUrl": "https://rawg.io/games/abzu-2",
+        "platforms": [
+          "PC",
+          "PlayStation",
+          "Xbox",
+          "Nintendo",
+          "Xbox One",
+          "PlayStation 4",
+          "Nintendo Switch"
+        ],
+        "atoms": [
+          "exploration",
+          "story",
+          "management",
+          "systems",
+          "indie",
+          "open-world"
+        ]
+      },
+      "resolution": {
+        "status": "seed_catalog",
+        "sourceId": "seed_catalog",
+        "trustedEnoughForWishlist": true,
+        "metadataSource": "seed_catalog",
+        "coverSource": "rawg_candidate"
+      }
+    }
+  ]
+}

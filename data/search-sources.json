@@ -31,7 +31,7 @@
       "canAddToWishlist": true,
       "priceCoverage": "missing",
       "coverCoverage": "missing",
-      "note": "117-record offline stand-in for a future RAWG/IGDB/provider lookup, with alias and token-coverage search support."
+      "note": "Offline stand-in for provider lookup, with alias and token-coverage search support. Keep it as a deterministic fallback behind live RAWG search."
     },
     {
       "id": "manual_unverified",
