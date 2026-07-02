@@ -190,6 +190,105 @@
       els.devHealthList.replaceChildren(...checks.map(createDevHealthRow));
     }
 
+    function providerImportRecords() {
+      const state = getState();
+      return Object.values(state.userGames || {})
+        .filter((record) => record?.providerImport?.provider === "rawg")
+        .sort((a, b) => String(b.providerImport?.importedAt || b.updatedAt || "").localeCompare(String(a.providerImport?.importedAt || a.updatedAt || "")));
+    }
+
+    function averagePriceCoverage(dataHealth) {
+      const coverages = (dataHealth?.regions || [])
+        .map((region) => dataHealth.regionCoverage?.[region]?.priceCoverage)
+        .filter((value) => typeof value === "number");
+      if (!coverages.length) return 0;
+      return Math.round(coverages.reduce((sum, value) => sum + value, 0) / coverages.length);
+    }
+
+    function renderDataQualitySnapshot() {
+      if (!els.dataQualityStatus || !els.dataQualitySummary || !els.dataQualityList) return;
+      const dataHealth = getDataHealth();
+      if (!dataHealth) return;
+      const triage = dataHealth.issueTriage || {};
+      const sourceStatus = getSourceStatus();
+      const catalogBackbone = getCatalogBackbone();
+      const catalogWorkbench = getCatalogWorkbench();
+      const providerImports = providerImportRecords();
+      const priceCoverage = averagePriceCoverage(dataHealth);
+      const freshSources = (sourceStatus?.sources || []).filter((source) => source.freshnessState === "fresh").length;
+      const sourceCount = (sourceStatus?.sources || []).length;
+      const backboneRecords = catalogBackbone?.records || [];
+      const promotedBackbone = backboneRecords.filter((record) => record.status === "promoted_to_seed").length;
+      const readyWorkbench = (catalogWorkbench?.records || []).filter((record) => record.matchConfidence === "high" && record.coverStatus !== "missing").length;
+      const critical = triage.criticalIssueCount || 0;
+      els.dataQualityStatus.textContent = t(critical ? "data.qualityStatusAttention" : "data.qualityStatusReady", {
+        critical,
+        issues: dataHealth.issueCount || 0,
+      });
+      els.dataQualitySummary.textContent = t("data.qualitySummary", {
+        games: dataHealth.gameCount || 0,
+        critical,
+        priceIssues: triage.priceGapIssueCount ?? dataHealth.issueCount ?? 0,
+      });
+      const cards = [
+        {
+          tone: critical ? "warn" : "good",
+          label: t("data.qualityCatalogLabel"),
+          value: t("data.gameCount", { count: dataHealth.gameCount || 0 }),
+          sub: t("data.qualityCriticalSub", { count: critical }),
+        },
+        {
+          tone: (dataHealth.coverCoverage?.coverage || 0) >= 95 ? "good" : "warn",
+          label: t("data.qualityCoversLabel"),
+          value: `${dataHealth.coverCoverage?.coverage || 0}%`,
+          sub: t("data.qualityCoversSub", {
+            images: dataHealth.coverCoverage?.realImageCount || 0,
+            fallback: dataHealth.coverCoverage?.fallbackCount || 0,
+          }),
+        },
+        {
+          tone: priceCoverage >= 95 ? "good" : "warn",
+          label: t("data.qualityPricesLabel"),
+          value: `${priceCoverage}%`,
+          sub: t("data.qualityPricesSub", {
+            regions: (dataHealth.regions || []).length,
+            issues: triage.priceGapIssueCount ?? dataHealth.issueCount ?? 0,
+          }),
+        },
+        {
+          tone: freshSources >= Math.max(1, Math.ceil(sourceCount / 3)) ? "good" : "info",
+          label: t("data.qualitySourcesLabel"),
+          value: t("data.qualitySourcesValue", { fresh: freshSources, total: sourceCount }),
+          sub: t("data.qualitySourcesSub", {
+            aliases: dataHealth.companionLayers?.titleAliasCount || 0,
+            fixtures: dataHealth.companionLayers?.globalSearchFixtureCount || 0,
+          }),
+        },
+        {
+          tone: providerImports.length ? "info" : "neutral",
+          label: t("data.qualityProviderLabel"),
+          value: t("data.qualityProviderValue", { count: providerImports.length }),
+          sub: t("data.qualityProviderSub", {
+            missing: providerImports.filter((record) => (record.providerImport?.priceStatus || record.priceStatus) === "missing").length,
+          }),
+        },
+        {
+          tone: readyWorkbench || promotedBackbone ? "info" : "neutral",
+          label: t("data.qualityBackboneLabel"),
+          value: t("data.qualityBackboneValue", { promoted: promotedBackbone, queued: backboneRecords.length }),
+          sub: t("data.qualityBackboneSub", { ready: readyWorkbench }),
+        },
+      ];
+      els.dataQualityList.replaceChildren(
+        ...cards.map((card) => {
+          const item = document.createElement("div");
+          item.className = `data-quality-card tone-${card.tone}`;
+          item.innerHTML = `<span>${card.label}</span><strong>${card.value}</strong><small>${card.sub}</small>`;
+          return item;
+        }),
+      );
+    }
+
     // ── Data Workbench ──────────────────────────────────────────────────────
     function renderDataWorkbench() {
       const dataHealth = getDataHealth();
@@ -265,13 +364,6 @@
     }
 
     // ── Provider Imports ────────────────────────────────────────────────────
-    function providerImportRecords() {
-      const state = getState();
-      return Object.values(state.userGames || {})
-        .filter((record) => record?.providerImport?.provider === "rawg")
-        .sort((a, b) => String(b.providerImport?.importedAt || b.updatedAt || "").localeCompare(String(a.providerImport?.importedAt || a.updatedAt || "")));
-    }
-
     function renderProviderImports() {
       if (!els.providerImportStatus || !els.providerImportList) return;
       const records = providerImportRecords();
@@ -411,6 +503,7 @@
     return {
       refreshQueue,
       refreshBandForGame,
+      renderDataQualitySnapshot,
       renderRefreshPolicy,
       renderSourceHealth,
       renderDevHealth,

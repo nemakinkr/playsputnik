@@ -900,7 +900,7 @@ const {
 } = window.PlaySputnikImport;
 
 // Data panel tools are wired after els is defined (requires DOM refs)
-let renderRefreshPolicy, renderSourceHealth, renderDevHealth, renderDataWorkbench, renderCatalogBackbone, renderCatalogWorkbench, refreshQueue;
+let renderDataQualitySnapshot, renderRefreshPolicy, renderSourceHealth, renderDevHealth, renderDataWorkbench, renderCatalogBackbone, renderCatalogWorkbench, refreshQueue;
 let renderProviderImports;
 
 const {
@@ -1069,6 +1069,9 @@ const els = {
   workbenchStatus: document.querySelector("#workbench-status"),
   workbenchGrid: document.querySelector("#workbench-grid"),
   topAtoms: document.querySelector("#top-atoms"),
+  dataQualityStatus: document.querySelector("#data-quality-status"),
+  dataQualitySummary: document.querySelector("#data-quality-summary"),
+  dataQualityList: document.querySelector("#data-quality-list"),
   providerImportStatus: document.querySelector("#provider-import-status"),
   providerImportList: document.querySelector("#provider-import-list"),
   sessionCurrent: document.querySelector("#session-current"),
@@ -1116,6 +1119,7 @@ const els = {
 // Initialise data panel module now that els and all helper functions are in scope
 ({
   refreshQueue,
+  renderDataQualitySnapshot,
   renderRefreshPolicy,
   renderSourceHealth,
   renderDevHealth,
@@ -5970,6 +5974,7 @@ function renderDeferredPanels(ranked, primaryGame, ticket) {
   renderMonthlyDrop();
   renderTasteRadar();
   renderSourceHealth();
+  renderDataQualitySnapshot();
   renderDevHealth();
   renderDataWorkbench();
   renderProviderImports();

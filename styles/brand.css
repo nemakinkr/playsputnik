@@ -646,3 +646,242 @@ textarea:focus-visible,
     border-radius: var(--radius-md);
   }
 }
+
+/* ── Phase 9: investor-grade Today/Data polish ─────────────────────────────
+   Keep the app utilitarian, but make the first screen and data health area read
+   like a finished product surface rather than a prototype/debug log. */
+.surface-header {
+  align-items: center;
+  padding-bottom: 2px;
+}
+
+.surface-header h2 {
+  font-size: clamp(1.72rem, 2vw, 2.2rem);
+}
+
+.surface-header-right {
+  align-items: center;
+}
+
+.app-view-copy {
+  margin: -4px 0 2px;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--ps-border);
+  color: var(--text-mid);
+  font-size: 0.9rem;
+}
+
+.app-view-nav {
+  padding: 6px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg-soft);
+}
+
+.app-view-tab {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app-view-tab:not(.is-active):hover {
+  border-color: var(--ps-border);
+  background: var(--card-bg);
+}
+
+.value-strip div {
+  position: relative;
+  overflow: hidden;
+}
+
+.value-strip div::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--ps-blue);
+  opacity: 0.88;
+}
+
+.tonight-time {
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg-soft);
+}
+
+.tonight-time-label {
+  color: var(--text-strong);
+  font-weight: 800;
+}
+
+.tonight-time-hint {
+  color: var(--text-mid);
+  font-weight: 650;
+}
+
+.hero-card {
+  border-color: var(--ps-blue-border);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-bg) 42%, transparent), transparent 44%),
+    var(--card-bg);
+}
+
+.hero-decision-strip div {
+  border-color: var(--ps-border);
+  background: var(--card-bg-soft);
+}
+
+.answer-panel,
+.plan-panel,
+.library-plan-panel,
+.data-quality-panel,
+.refresh-panel,
+.source-panel,
+.dev-health-panel,
+.workbench-panel,
+.provider-import-panel,
+.catalog-backbone-panel,
+.catalog-workbench-panel,
+.debug-panel {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+}
+
+.answer-panel,
+.plan-panel,
+.library-plan-panel,
+.data-quality-panel {
+  box-shadow: var(--shadow-sm);
+}
+
+.data-quality-panel {
+  padding: 14px;
+}
+
+.data-quality-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.data-quality-card {
+  position: relative;
+  min-height: 112px;
+  overflow: hidden;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg-soft);
+  padding: 12px 13px 13px;
+}
+
+.data-quality-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--text-soft);
+}
+
+.data-quality-card.tone-good::before { background: var(--green); }
+.data-quality-card.tone-warn::before { background: var(--amber); }
+.data-quality-card.tone-info::before { background: var(--ps-blue); }
+
+.data-quality-card span,
+.data-quality-card small {
+  display: block;
+  color: var(--text-mid);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.data-quality-card span {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.data-quality-card strong {
+  display: block;
+  margin: 10px 0 4px;
+  color: var(--text-strong);
+  font-size: 1.28rem;
+  line-height: 1.05;
+}
+
+.refresh-panel,
+.source-panel,
+.dev-health-panel,
+.workbench-panel,
+.provider-import-panel,
+.catalog-backbone-panel,
+.catalog-workbench-panel,
+.debug-panel {
+  padding: 13px;
+}
+
+.source-row,
+.policy-row,
+.dev-health-row,
+.backbone-row,
+.catalog-import-row {
+  min-height: 52px;
+  border-top-color: var(--ps-border-soft);
+}
+
+.source-state,
+.policy-cadence,
+.catalog-pill,
+.backbone-pill,
+.dev-health-state {
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 900px) {
+  .data-quality-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .surface-header {
+    align-items: flex-start;
+  }
+
+  .app-view-nav {
+    padding: 5px;
+  }
+
+  .app-view-copy {
+    font-size: 0.82rem;
+  }
+
+  .tonight-time {
+    align-items: flex-start;
+  }
+
+  .data-quality-panel,
+  .refresh-panel,
+  .source-panel,
+  .dev-health-panel,
+  .workbench-panel,
+  .provider-import-panel,
+  .catalog-backbone-panel,
+  .catalog-workbench-panel,
+  .debug-panel {
+    padding: 10px;
+  }
+
+  .data-quality-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .data-quality-card {
+    min-height: 0;
+    padding: 10px 11px;
+  }
+}
