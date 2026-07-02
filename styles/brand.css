@@ -885,3 +885,218 @@ textarea:focus-visible,
     padding: 10px 11px;
   }
 }
+
+/* ── Universal search: source ladder and clearer result trust ───────────── */
+.game-search-panel {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+}
+
+.game-search-trust {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+
+.search-trust-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg-soft);
+  padding: 10px 11px;
+}
+
+.search-trust-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--text-soft);
+}
+
+.search-trust-card.tone-good::before { background: var(--green); }
+.search-trust-card.tone-info::before { background: var(--ps-blue); }
+.search-trust-card.tone-warn::before { background: var(--amber); }
+
+.search-trust-card span,
+.search-trust-card small {
+  display: block;
+  color: var(--text-mid);
+  font-size: 0.7rem;
+  font-weight: 750;
+  line-height: 1.3;
+}
+
+.search-trust-card span {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.search-trust-card strong {
+  display: block;
+  margin: 5px 0 3px;
+  color: var(--text-strong);
+  font-size: 0.95rem;
+  line-height: 1.15;
+}
+
+.search-source-pill {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-pill);
+  background: var(--chip-bg);
+  color: var(--text-mid);
+  padding: 4px 7px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.search-source-pill.tone-trusted {
+  border-color: color-mix(in srgb, var(--green) 28%, var(--ps-border));
+  background: color-mix(in srgb, var(--green) 10%, var(--card-bg));
+}
+
+.search-source-pill.tone-provider,
+.search-source-pill.tone-external {
+  border-color: color-mix(in srgb, var(--ps-blue) 28%, var(--ps-border));
+  background: var(--accent-bg);
+}
+
+.search-source-pill.tone-review,
+.search-source-pill.tone-manual {
+  border-color: color-mix(in srgb, var(--amber) 34%, var(--ps-border));
+  background: color-mix(in srgb, var(--amber) 10%, var(--card-bg));
+}
+
+.game-search-row {
+  border-color: var(--ps-border);
+  background: var(--card-bg);
+}
+
+.game-search-row.source-manual-unverified {
+  border-style: dashed;
+}
+
+/* ── Library/Wishlist: stronger dashboard rhythm and row polish ─────────── */
+.my-games-panel,
+.price-watch,
+.buy-decision-panel {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+}
+
+.library-dashboard,
+.wishlist-dashboard {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.wishlist-dashboard {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.library-dashboard-card,
+.wishlist-dashboard-card {
+  position: relative;
+  overflow: hidden;
+  border-left-width: 1px;
+  background: var(--card-bg-soft);
+  padding: 12px;
+}
+
+.library-dashboard-card::before,
+.wishlist-dashboard-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--text-soft);
+}
+
+.library-dashboard-card.tone-play::before,
+.library-dashboard-card.tone-access::before,
+.wishlist-dashboard-card.tone-access::before,
+.wishlist-dashboard-card.tone-buy::before {
+  background: var(--green);
+}
+
+.library-dashboard-card.tone-wishlist::before,
+.wishlist-dashboard-card.tone-wishlist::before,
+.wishlist-dashboard-card.tone-wait::before,
+.wishlist-dashboard-card.tone-verify::before {
+  background: var(--amber);
+}
+
+.library-dashboard-card.tone-taste::before,
+.wishlist-dashboard-card.tone-missing::before {
+  background: var(--ps-blue);
+}
+
+.library-dashboard-card p,
+.wishlist-dashboard-card p {
+  color: var(--text-mid);
+}
+
+.library-dashboard-card button,
+.wishlist-dashboard-card button {
+  background: var(--card-bg);
+}
+
+.queue-toolbar {
+  border-color: var(--ps-border);
+  background: var(--card-bg-soft);
+}
+
+.my-game-row,
+.wishlist-row {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  padding: 12px;
+}
+
+.my-game-row:first-child,
+.wishlist-row:first-child {
+  padding-top: 12px;
+}
+
+.my-game-row.is-queued {
+  margin: 0;
+  border-color: var(--ps-blue-border);
+  background: var(--accent-bg);
+  padding: 12px;
+}
+
+.my-game-row .my-game-facet,
+.library-next-step,
+.wishlist-decision {
+  border-radius: var(--radius-md);
+}
+
+.my-game-row .my-game-facet {
+  background: var(--card-bg-soft);
+}
+
+.wishlist-row {
+  border-left-width: 4px;
+}
+
+.wishlist-actions button,
+.my-game-quick-actions button,
+.my-game-action-buttons button {
+  background: var(--card-bg);
+}
+
+@media (max-width: 900px) {
+  .library-dashboard,
+  .wishlist-dashboard,
+  .game-search-trust {
+    grid-template-columns: 1fr;
+  }
+}

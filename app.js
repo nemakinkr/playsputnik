@@ -992,6 +992,7 @@ const els = {
   gameSearchInput: document.querySelector("#game-search-input"),
   gameSearchSubmit: document.querySelector("#game-search-submit"),
   gameSearchSource: document.querySelector("#game-search-source"),
+  gameSearchTrust: document.querySelector("#game-search-trust"),
   gameSearchList: document.querySelector("#game-search-list"),
   comparisonFirst: document.querySelector("#comparison-first"),
   comparisonSecond: document.querySelector("#comparison-second"),
@@ -4434,6 +4435,66 @@ function editionNoteHtml(game) {
   `;
 }
 
+function searchResultTrust(result) {
+  if (result.sourceId === "seed_catalog") return { tone: "trusted", label: t("discover.trustSeed") };
+  if (result.sourceId === "catalog_backbone") return { tone: "review", label: t("discover.trustBackbone") };
+  if (result.sourceId === "rawg_provider_hook" || result.provider === "rawg") return { tone: "provider", label: t("discover.trustProvider") };
+  if (result.sourceId === "manual_unverified") return { tone: "manual", label: t("discover.trustManual") };
+  return { tone: "external", label: t("discover.trustExternal") };
+}
+
+function renderSearchTrustStrip(query, results, provider, localIndexReady) {
+  if (!els.gameSearchTrust) return;
+  const hasQuery = query.length >= 2;
+  const localCount = results.filter((result) => ["seed_catalog", "catalog_backbone", "prototype_external_index"].includes(result.sourceId)).length;
+  const providerCount = results.filter((result) => result.sourceId === "rawg_provider_hook" || result.provider === "rawg").length;
+  const manualAvailable = hasQuery && results.some((result) => result.sourceId === "manual_unverified");
+  const providerReady = ["live", "cached", "fallback"].includes(provider.status);
+  const providerTone = provider.status === "offline"
+    ? "warn"
+    : providerReady || providerCount
+      ? "good"
+      : "neutral";
+  const cards = [
+    {
+      tone: localIndexReady ? "good" : "neutral",
+      label: t("discover.searchTrustLocalTitle"),
+      value: hasQuery ? t("discover.searchTrustLocalValue", { count: localCount }) : t("discover.searchTrustReady"),
+      detail: t("discover.searchTrustLocalDetail"),
+    },
+    {
+      tone: providerTone,
+      label: t("discover.searchTrustProviderTitle"),
+      value: providerCount
+        ? t("discover.searchTrustProviderValue", { count: providerCount })
+        : provider.status === "offline"
+          ? t("discover.searchTrustProviderOffline")
+          : provider.status === "cached"
+            ? t("discover.searchTrustProviderCached")
+            : t("discover.searchTrustProviderReady"),
+      detail: t("discover.searchTrustProviderDetail"),
+    },
+    {
+      tone: manualAvailable ? "info" : "neutral",
+      label: t("discover.searchTrustManualTitle"),
+      value: manualAvailable ? t("discover.searchTrustManualValue") : t("discover.searchTrustManualReady"),
+      detail: t("discover.searchTrustManualDetail"),
+    },
+  ];
+  els.gameSearchTrust.replaceChildren(
+    ...cards.map((card) => {
+      const item = document.createElement("div");
+      item.className = `search-trust-card tone-${card.tone}`;
+      item.innerHTML = `
+        <span>${card.label}</span>
+        <strong>${card.value}</strong>
+        <small>${card.detail}</small>
+      `;
+      return item;
+    }),
+  );
+}
+
 function renderGameSearch() {
   const query = (state.gameSearchQuery || "").trim();
   const results = globalSearchResults();
@@ -4475,6 +4536,7 @@ function renderGameSearch() {
     health: provider.status ? providerLabel : t("discover.localFirst"),
     detail: providerDetail,
   });
+  renderSearchTrustStrip(query, results, provider, localIndexReady);
 
   if (query.length < 2) {
     const empty = document.createElement("div");
@@ -4525,6 +4587,7 @@ function renderGameSearch() {
         ? `<span class="fact ${reconciliation === "new_external" ? "warn" : "access"}">${compactStatus(reconciliation)}</span>`
         : "";
       const saved = resultAlreadySaved(result);
+      const trust = searchResultTrust(result);
       const sourcePassport = sourcePassportHtml(searchResultSourcePassport(result), "compact");
       const enrichment = result.sourceId === "seed_catalog" ? "" : aiEnrichmentHtml(result, "compact");
       const owned = resultStateSelected(result, "owned");
@@ -4546,6 +4609,7 @@ function renderGameSearch() {
         <div>
           <div class="game-search-title-line">
             <strong>${result.title}</strong>
+            <span class="search-source-pill tone-${trust.tone}">${trust.label}</span>
             ${remembered ? `<span class="search-memory-pill tone-${memory.tone}">${memory.label}</span>` : ""}
           </div>
           <span>${result.sourceLabel} / ${t("discover.confidence", { value: discoverConfidenceLabel(result.matchConfidence) })}</span>
