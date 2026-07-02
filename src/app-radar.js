@@ -48,6 +48,36 @@
       return { title: match[1].trim(), rating };
     }
 
+    function stripRankingMarker(line) {
+      return stripNotebookMarker(line)
+        .replace(/^(?:[0-9]\uFE0F?\u20E3)+\s*/u, "")
+        .replace(/^\d+[.)]\s*/, "")
+        .trim();
+    }
+
+    function parseRankedTasteLines(textOrLines) {
+      const lines = Array.isArray(textOrLines)
+        ? textOrLines
+        : String(textOrLines || "").split(/\n|\\n/);
+      const entries = [];
+      const looksLikeExplicitRating = (line) => {
+        if (/\/\s*(?:5|10)\s*$/i.test(line)) return true;
+        const match = line.match(/[,:-]\s*(\d+(?:\.\d+)?)\s*$/i);
+        return match ? Number(match[1]) <= 10 : false;
+      };
+      lines
+        .map((line) => String(line || "").trim())
+        .filter(Boolean)
+        .forEach((line) => {
+          if (notebookSection(line) || /^_+$/.test(line)) return;
+          if (looksLikeExplicitRating(line)) return;
+          const title = stripRankingMarker(line);
+          if (!title || title.length < 2 || title.length > 120) return;
+          entries.push({ title, rank: entries.length + 1 });
+        });
+      return entries;
+    }
+
     function findRatedGame(rawTitle) {
       const needle = normalizeTitle(rawTitle);
       return getSourceGames().find((game) => titleMatches(game.title, rawTitle))
@@ -104,6 +134,7 @@
       stripNotebookMarker,
       notebookSection,
       parseRatingLine,
+      parseRankedTasteLines,
       findRatedGame,
       importedTasteScore,
       radarScore,

@@ -448,6 +448,7 @@ const {
   stripNotebookMarker,
   notebookSection,
   parseRatingLine,
+  parseRankedTasteLines,
   findRatedGame,
   importedTasteScore,
   radarScore,
@@ -2017,28 +2018,92 @@ function parseNotebook() {
   state.notebook = notebook;
 }
 
+function derivedRatingFromRank(rank, total) {
+  if (total <= 1) return 10;
+  const bottomPositiveRating = 5.8;
+  return Math.round((10 - ((rank - 1) / (total - 1)) * (10 - bottomPositiveRating)) * 10) / 10;
+}
+
+function ratingStrength(parsedRating) {
+  const polarity = parsedRating >= 7 ? 1 : parsedRating <= 5 ? -1 : 0;
+  const strength = polarity > 0 ? parsedRating - 6 : polarity < 0 ? 6 - parsedRating : 0;
+  return { polarity, strength };
+}
+
+function applyRatingWeight(weights, game, parsedRating) {
+  const { polarity, strength } = ratingStrength(parsedRating);
+  if (strength === 0) return;
+  gameSignals(game).forEach((signal) => {
+    weights[signal] = (weights[signal] || 0) + polarity * strength;
+  });
+}
+
+function canMarkDeepTasteImport() {
+  return !["demo", "psn", "quick"].includes(state.entryPath);
+}
+
+function analyzeRankedTasteImport(rankedEntries) {
+  const weights = {};
+  const matched = [];
+  const total = rankedEntries.length;
+  const ranked = rankedEntries.map((entry, index) => ({
+    title: entry.title,
+    rank: entry.rank || index + 1,
+  }));
+
+  ranked.forEach((entry) => {
+    const game = findRatedGame(entry.title);
+    if (!game) return;
+    const rating = derivedRatingFromRank(entry.rank, total);
+    applyRatingWeight(weights, game, rating);
+    matched.push({ title: game.title, rating });
+  });
+
+  state.atomWeights = weights;
+  state.importedRatings = matched;
+  state.notebook = {
+    ...state.notebook,
+    ranked,
+  };
+  if (canMarkDeepTasteImport()) {
+    state.entryPath = "deep";
+    state.entryResult = t("settings.tasteImport.rankedResult", {
+      matched: matched.length,
+      total,
+    });
+  }
+  return { matched, total };
+}
+
 function analyzeTasteImport() {
   const weights = {};
   const matched = [];
-  state.ratingImport
+  const text = state.ratingImport || "";
+  const rankedEntries = parseRankedTasteLines(text);
+  const lines = text
     .split(/\n|\\n/)
     .map((line) => line.trim())
-    .filter(Boolean)
-    .forEach((line) => {
+    .filter(Boolean);
+
+  if (rankedEntries.length >= 8 && rankedEntries.length >= lines.length * 0.6) {
+    analyzeRankedTasteImport(rankedEntries);
+    return;
+  }
+
+  lines.forEach((line) => {
       const parsed = parseRatingLine(line);
       if (!parsed) return;
       const game = findRatedGame(parsed.title);
       if (!game) return;
-      const polarity = parsed.rating >= 7 ? 1 : parsed.rating <= 5 ? -1 : 0;
-      const strength = polarity > 0 ? parsed.rating - 6 : polarity < 0 ? 6 - parsed.rating : 0;
-      if (strength === 0) return;
-      gameSignals(game).forEach((signal) => {
-        weights[signal] = (weights[signal] || 0) + polarity * strength;
-      });
+      applyRatingWeight(weights, game, parsed.rating);
       matched.push({ title: game.title, rating: parsed.rating });
     });
   state.atomWeights = weights;
   state.importedRatings = matched;
+  if (matched.length && canMarkDeepTasteImport()) {
+    state.entryPath = matched.length >= 8 ? "deep" : state.entryPath;
+    state.entryResult = t("settings.tasteImport.ratingResult", { count: matched.length });
+  }
 }
 
 function applyQuickEntry() {
@@ -2403,6 +2468,9 @@ function buildTasteProfileText() {
   const reactions = Object.values(state.quickReactions || {});
   const loved = reactions.filter((r) => r.reaction === "loved").map((r) => r.title);
   const avoided = reactions.filter((r) => r.reaction === "not_for_me").map((r) => r.title);
+  const importedLoved = (state.importedRatings || [])
+    .filter((item) => item.rating >= 8.5)
+    .map((item) => item.title);
   const totalSignals = reactions.length + (state.importedRatings || []).length;
 
   // Atom weights: positive & negative
@@ -2449,9 +2517,19 @@ function buildTasteProfileText() {
   const archetype = archetypeScores[0]?.label || null;
 
   // Sample liked game titles (up to 3, from loved quickReactions)
-  const lovedSample = loved.slice(0, 3);
+  const lovedSample = [...new Set([...loved, ...importedLoved])].slice(0, 3);
 
-  return { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, loved, avoided };
+  return {
+    totalSignals,
+    strength,
+    allPositive,
+    negativeAtoms,
+    archetype,
+    lovedSample,
+    loved,
+    avoided,
+    rankedCount: state.notebook?.ranked?.length || 0,
+  };
 }
 
 function renderTasteProfile() {
@@ -2472,7 +2550,7 @@ function renderTasteProfile() {
 
   // Rich profile summary
   if (!els.tasteProfileSummary) return;
-  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample } = buildTasteProfileText();
+  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, rankedCount } = buildTasteProfileText();
 
   if (els.tasteProfileBadge) {
     els.tasteProfileBadge.textContent = totalSignals === 0
@@ -2514,6 +2592,10 @@ function renderTasteProfile() {
 
   if (state.importedRatings?.length) {
     parts.push(`<p class="taste-line">${t("settings.tasteProfileDynamic.enriched", { count: state.importedRatings.length })}</p>`);
+  }
+
+  if (rankedCount >= 8) {
+    parts.push(`<p class="taste-line">${t("settings.tasteProfileDynamic.rankedBaseline", { count: rankedCount })}</p>`);
   }
 
   els.tasteProfileSummary.innerHTML = parts.join("\n");

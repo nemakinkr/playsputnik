@@ -950,6 +950,7 @@
         skips: "Чаще пропускаете: {atoms}.",
         liked: "Понравились:",
         enriched: { one: "Дополнено {count} импортированной оценкой.", few: "Дополнено {count} импортированными оценками.", many: "Дополнено {count} импортированными оценками." },
+        rankedBaseline: "Ранжированный список на {count} игр уже используется как база для прогноза личного места.",
         archetypeStory: "Исследователь сюжетов", archetypeAction: "Охотник за экшеном",
         archetypeWorld: "Строитель миров", archetypeThrill: "Искатель острых ощущений",
         archetypePuzzle: "Любитель головоломок", archetypeSystem: "Мастер систем",
@@ -957,10 +958,12 @@
         archetypeSport: "Спорт и гонки",
       },
       tasteImport: {
-        title: "Импорт вкуса", summary: "Ручной профиль", label: "Вставьте оценки",
-        placeholder: "Hades - 5/5\nElden Ring - 9/10\nStray - 4/5",
+        title: "Импорт вкуса", summary: "Ручной профиль", label: "Вставьте оценки или рейтинг списком",
+        placeholder: "Red Dead Redemption 2\nВедьмак 3: Дикая Охота\nCyberpunk 2077\n\nили: Stray - 4/5",
         sample: "Вставить пример", analyze: "Проанализировать вкус",
         analyzed: { one: "Проанализирована {count} оценка", few: "Проанализированы {count} оценки", many: "Проанализировано {count} оценок" },
+        ratingResult: "Проанализировано явных оценок: {count}.",
+        rankedResult: "Импортирован ранжированный список: {matched}/{total} игр сопоставлено для калибровки прогноза.",
       },
       sessionStats: {
         title: "Сессия", now: "Сейчас", total: "Всего", sessions: "Сессии", average: "Среднее",

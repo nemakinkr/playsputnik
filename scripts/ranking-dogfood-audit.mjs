@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import vm from "node:vm";
 
 const ROOT = new URL("../", import.meta.url);
 const rankingText = await readFile(new URL("test/fixtures/founder-ranking-ru.txt", ROOT), "utf8");
@@ -6,6 +7,7 @@ const games = JSON.parse(await readFile(new URL("data/games.json", ROOT), "utf8"
 const titleAliases = JSON.parse(await readFile(new URL("data/title-aliases.json", ROOT), "utf8"));
 const catalogBackbone = JSON.parse(await readFile(new URL("data/catalog-backbone.json", ROOT), "utf8"));
 const globalSearchFixtures = JSON.parse(await readFile(new URL("data/global-search-fixtures.json", ROOT), "utf8"));
+const appRadarSource = await readFile(new URL("src/app-radar.js", ROOT), "utf8");
 const OUTPUT_JSON = process.argv.includes("--json");
 
 const SEED_TOP_10_MIN_MATCHED = 8;
@@ -77,6 +79,39 @@ function gameSignals(game) {
   ].filter(Boolean);
 }
 
+function appTasteSignals(game) {
+  return [
+    ...(game.atoms || []),
+    game.tone,
+    game.content,
+    game.adultTimeFit,
+    game.commitment,
+  ].filter(Boolean);
+}
+
+function rankedImportWeights(rows) {
+  const weights = {};
+  rows.forEach((row) => {
+    if (!row.game) return;
+    const rating = row.derivedRating / 10;
+    const polarity = rating >= 7 ? 1 : rating <= 5 ? -1 : 0;
+    const strength = polarity > 0 ? rating - 6 : polarity < 0 ? 6 - rating : 0;
+    if (!strength) return;
+    appTasteSignals(row.game).forEach((signal) => {
+      weights[signal] = (weights[signal] || 0) + polarity * strength;
+    });
+  });
+  return weights;
+}
+
+function rankedImportScore(game, weights) {
+  return appTasteSignals(game).reduce((sum, signal) => sum + Math.max(0, weights[signal] || 0), 0);
+}
+
+function average(values) {
+  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+}
+
 function countSignals(rows) {
   const counts = new Map();
   rows.forEach(({ game }) => {
@@ -97,6 +132,32 @@ function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function loadAppRankedParser() {
+  const sandbox = {
+    window: {
+      PlaySputnikConfig: {},
+      PlaySputnikSearch: {},
+      PlaySputnikScore: {},
+    },
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(appRadarSource, sandbox, { filename: "src/app-radar.js" });
+  const tools = sandbox.window.PlaySputnikRadar.createRadarTools({
+    getState: () => ({}),
+    getSelectedAtoms: () => [],
+    getSourceGames: () => [],
+    getSourceStatus: () => ({}),
+    tasteRadar: [],
+    monthlyDrop: [],
+    normalizeTitle,
+    titleMatches: (a, b) => titleKey(a) === titleKey(b),
+    titleIncludes: (title, needle) => normalizeTitle(title).includes(needle),
+    gameSignals: appTasteSignals,
+    combinedTasteWeight: () => 0,
+  });
+  return tools.parseRankedTasteLines;
+}
+
 const gameByKey = new Map(games.map((game) => [titleKey(game.title), game]));
 const knownCorpus = [
   ...games.map((game) => ({ ...game, corpus: "seed" })),
@@ -113,6 +174,7 @@ knownCorpus.forEach((record) => {
   }
 });
 const ranking = parseRanking(rankingText);
+const appParsedRanking = loadAppRankedParser()(rankingText);
 const rows = ranking.map((entry) => {
   const key = titleKey(entry.title);
   const game = gameByKey.get(key) || null;
@@ -155,6 +217,19 @@ const nextLayerUnknown = unknown.filter((row) => row.rank > 30 && row.rank <= 60
 const onboardingProbeTitles = ["Red Dead Redemption 2", "Cyberpunk 2077", "Stardew Valley"];
 const onboardingKnownTasteAnchors = onboardingProbeTitles
   .filter((title) => rows.some((row) => row.game && titleKey(row.title) === titleKey(title)));
+const importWeights = rankedImportWeights(rows);
+const importTopSignals = Object.entries(importWeights)
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 10)
+  .map(([signal, weight]) => ({ signal, weight: Math.round(weight * 10) / 10 }));
+const top25ImportScores = top25
+  .filter((row) => row.game)
+  .map((row) => rankedImportScore(row.game, importWeights));
+const bottom25ImportScores = bottom25
+  .filter((row) => row.game)
+  .map((row) => rankedImportScore(row.game, importWeights));
+const top25ImportAverage = average(top25ImportScores);
+const bottom25ImportAverage = average(bottom25ImportScores);
 
 const audit = {
   mode: "ranking-dogfood-audit",
@@ -177,6 +252,9 @@ const audit = {
     platformMarkerLeaks: platformMarkerLeaks.map((row) => row.title),
     lowestDerivedRating: rows.at(-1)?.derivedRating || null,
     tailIsPositiveTaste: (rows.at(-1)?.derivedRating || 0) >= BOTTOM_MIN_DERIVED_RATING,
+    appParserCount: appParsedRanking.length,
+    appParserFirstTitle: appParsedRanking[0]?.title || "",
+    appParserLastTitle: appParsedRanking.at(-1)?.title || "",
   },
   tasteShape: {
     top25Signals: countSignals(top25),
@@ -187,6 +265,13 @@ const audit = {
     probeTitles: onboardingProbeTitles,
     knownTasteAnchors: onboardingKnownTasteAnchors,
     hasContrastProbe: onboardingProbeTitles.some((title) => !rows.some((row) => titleKey(row.title) === titleKey(title))),
+  },
+  rankedImport: {
+    matchedRatings: matched.length,
+    topSignals: importTopSignals,
+    top25Average: Number(top25ImportAverage.toFixed(1)),
+    bottom25Average: Number(bottom25ImportAverage.toFixed(1)),
+    topBeatsTail: top25ImportAverage > bottom25ImportAverage,
   },
   weakSpots: {
     topMissing: topMissing.map(({ rank, title }) => ({ rank, title })),
@@ -227,12 +312,16 @@ if (OUTPUT_JSON) {
   const promotion = audit.weakSpots.seedPromotionCandidates.map((item) => `${item.rank}. ${item.knownTitle} (${item.source})`).slice(0, 5).join("; ");
   console.log(`✅ Ranking dogfood OK: ${audit.ranking.seedMatched}/${audit.ranking.total} seed, ${audit.ranking.knownMatched}/${audit.ranking.total} known, top10 seed ${audit.ranking.seedTop10Matched}/10, top30 known ${audit.ranking.knownTop30Matched}/30, top60 known ${audit.ranking.knownTop60Matched}/60`);
   console.log(`   Top taste shape: ${audit.tasteShape.top25Signals.slice(0, 5).map((item) => `${item.signal}:${item.count}`).join(", ")}`);
+  console.log(`   Ranked import: top25 avg ${audit.rankedImport.top25Average}, bottom25 avg ${audit.rankedImport.bottom25Average}, signals ${audit.rankedImport.topSignals.slice(0, 5).map((item) => `${item.signal}:${item.weight}`).join(", ")}`);
   console.log(`   Promote next: ${promotion || "none"}`);
   console.log(`   Unknown top gaps: ${topUnknown || "none"}`);
   console.log(`   Unknown 31-60 gaps: ${nextUnknown || "none"}`);
 }
 
 assert(rows.length >= 100, `Expected a large real ranking fixture, got ${rows.length}`);
+assert(appParsedRanking.length === rows.length, `App ranked parser should parse ${rows.length} rows, got ${appParsedRanking.length}`);
+assert(appParsedRanking[0]?.title === rows[0]?.title, `App ranked parser first title mismatch: ${appParsedRanking[0]?.title}`);
+assert(appParsedRanking.at(-1)?.title === rows.at(-1)?.title, `App ranked parser last title mismatch: ${appParsedRanking.at(-1)?.title}`);
 assert(platformMarkerLeaks.length === 0, `Platform emoji markers leaked into titles: ${platformMarkerLeaks.map((row) => row.title).join(", ")}`);
 assert(top10Matched >= SEED_TOP_10_MIN_MATCHED, `Seed top-10 coverage too low: ${top10Matched}/10`);
 assert(coverage >= SEED_TOTAL_MIN_COVERAGE, `Seed ranking coverage too low: ${matched.length}/${rows.length}`);
@@ -244,5 +333,11 @@ assert(
 assert(knownTop60Matched >= KNOWN_TOP_60_MIN_MATCHED, `Known-corpus top-60 coverage too low: ${knownTop60Matched}/60`);
 assert(knownCoverage >= KNOWN_TOTAL_MIN_COVERAGE, `Known-corpus ranking coverage too low: ${knownMatched.length}/${rows.length}`);
 assert((rows.at(-1)?.derivedRating || 0) >= BOTTOM_MIN_DERIVED_RATING, "Ranked-list tail must remain positive taste evidence");
+assert(importTopSignals.some((item) => item.signal === "story"), "Ranked import should learn story as a top signal from the founder ranking");
+assert(importTopSignals.every((item) => item.signal !== "sports"), "Ranked import should not learn sports as a top founder taste signal");
+assert(
+  top25ImportAverage >= bottom25ImportAverage + 8,
+  `Ranked import should score top favorites above tail favorites, got ${top25ImportAverage.toFixed(1)} vs ${bottom25ImportAverage.toFixed(1)}`,
+);
 assert(onboardingKnownTasteAnchors.length >= 2, `Onboarding probes should include at least two known taste anchors, got ${onboardingKnownTasteAnchors.join(", ")}`);
 assert(audit.onboarding.hasContrastProbe, "Onboarding probes should include at least one contrast game absent from the user's known ranking");

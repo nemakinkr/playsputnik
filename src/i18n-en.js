@@ -951,6 +951,7 @@
         skips: "You tend to skip {atoms}.",
         liked: "Liked:",
         enriched: { one: "Enriched with {count} imported rating.", other: "Enriched with {count} imported ratings." },
+        rankedBaseline: "Ranked-list baseline is active for {count} games, so personal rank forecasts can use your real order.",
         archetypeStory: "Story Explorer", archetypeAction: "Action Hunter",
         archetypeWorld: "World Builder", archetypeThrill: "Thrill Seeker",
         archetypePuzzle: "Puzzle Thinker", archetypeSystem: "System Master",
@@ -958,10 +959,12 @@
         archetypeSport: "Sport & Racing",
       },
       tasteImport: {
-        title: "Taste import", summary: "Manual profile", label: "Paste ratings",
-        placeholder: "Hades - 5/5\nElden Ring - 9/10\nStray - 4/5",
+        title: "Taste import", summary: "Manual profile", label: "Paste ratings or a ranked list",
+        placeholder: "Red Dead Redemption 2\nThe Witcher 3: Wild Hunt\nCyberpunk 2077\n\nor: Stray - 4/5",
         sample: "Use sample", analyze: "Analyze taste",
         analyzed: { one: "{count} rating analyzed", other: "{count} ratings analyzed" },
+        ratingResult: "Analyzed {count} explicit ratings.",
+        rankedResult: "Imported ranked taste list: {matched}/{total} games matched for forecast calibration.",
       },
       sessionStats: {
         title: "Session", now: "Now", total: "Total", sessions: "Sessions", average: "Avg",
