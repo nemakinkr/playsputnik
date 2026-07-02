@@ -1189,6 +1189,8 @@ function checkSelectors() {
   assert(/function searchMatch/.test(searchProviderSource), "Provider search should expose match kind scoring");
   assert(/function compareSearchResults/.test(searchProviderSource), "Provider search should use stable result comparison");
   assert(/function runProviderSearch/.test(appSource), "Provider-backed search runner is missing");
+  assert(/function scheduleProviderSearch/.test(appSource), "Provider-backed search should auto-run after typing");
+  assert(/providerSearchMatchesQuery/.test(appSource), "Provider status should be scoped to the current query");
   assert(/PROVIDER_SEARCH_ENDPOINT:\s*`\$\{apiOrigin\}\/api\/search`/.test(appConfigSource), "Provider search endpoint is missing");
   assert(/PlaySputnikRuntime\?\.apiOrigin/.test(appConfigSource) && /runtime-config\.js/.test(html), "Production API runtime config is not wired");
   assert(/runtime-config\.js/.test(swSource) && /networkFirstWithCache\(request, DATA_CACHE\)/.test(swSource), "Runtime API config should use a network-first service-worker path");

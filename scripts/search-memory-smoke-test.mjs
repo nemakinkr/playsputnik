@@ -113,8 +113,11 @@ try {
 
   await page.evaluate(() => document.querySelector('[data-app-view="discover"]')?.click());
   await page.locator("#game-search-input").fill(searchQuery);
-  if (injectRawg) await page.locator("#game-search-submit").click();
-  await page.waitForTimeout(500);
+  if (injectRawg) {
+    await page.waitForFunction(() => /cached|кеш/i.test(document.querySelector("#game-search-status")?.textContent || ""), null, { timeout: 5000 });
+  } else {
+    await page.waitForTimeout(500);
+  }
   await page.waitForFunction((title) => {
     const rows = Array.from(document.querySelectorAll(".game-search-row"));
     return rows.some((row) => (row.querySelector("strong")?.textContent || "").trim() === title);

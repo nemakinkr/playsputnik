@@ -1919,9 +1919,35 @@ function rememberProviderSearch(query, record) {
   state.providerSearchCache = Object.fromEntries(entries);
 }
 
-async function runProviderSearch() {
+const PROVIDER_SEARCH_AUTO_DELAY_MS = 650;
+const PROVIDER_SEARCH_AUTO_MIN_LENGTH = 3;
+let providerSearchAutoTimer = null;
+let providerSearchRequestSeq = 0;
+
+function providerSearchMatchesQuery(provider, query) {
+  return provider?.query && providerSearchCacheKey(provider.query) === providerSearchCacheKey(query);
+}
+
+function providerSearchSettledForQuery(query) {
+  const provider = state.providerSearch || {};
+  return providerSearchMatchesQuery(provider, query)
+    && ["loading", "live", "cached", "fallback", "offline"].includes(provider.status);
+}
+
+function scheduleProviderSearch() {
+  window.clearTimeout(providerSearchAutoTimer);
+  const query = (state.gameSearchQuery || "").trim();
+  if (query.length < PROVIDER_SEARCH_AUTO_MIN_LENGTH || providerSearchSettledForQuery(query)) return;
+  providerSearchAutoTimer = window.setTimeout(() => {
+    runProviderSearch({ force: false });
+  }, PROVIDER_SEARCH_AUTO_DELAY_MS);
+}
+
+async function runProviderSearch({ force = false } = {}) {
+  window.clearTimeout(providerSearchAutoTimer);
   const query = (els.gameSearchInput.value || state.gameSearchQuery || "").trim();
   state.gameSearchQuery = query;
+  const requestSeq = ++providerSearchRequestSeq;
   if (query.length < 2) {
     state.providerSearch = {
       query,
@@ -1941,7 +1967,7 @@ async function runProviderSearch() {
     return;
   }
 
-  const cached = providerSearchCacheRecord(query);
+  const cached = force ? null : providerSearchCacheRecord(query);
   if (cached) {
     state.providerSearch = cached;
     render();
@@ -1970,6 +1996,7 @@ async function runProviderSearch() {
     const response = await fetch(endpoint, { cache: "no-store" });
     if (!response.ok) throw new Error(`Provider search failed: ${response.status}`);
     const payload = await response.json();
+    if (requestSeq !== providerSearchRequestSeq || providerSearchCacheKey(state.gameSearchQuery) !== providerSearchCacheKey(query)) return;
     const nextProviderSearch = {
       query,
       status: payload.mode === "provider_live" ? "live" : "fallback",
@@ -1988,6 +2015,7 @@ async function runProviderSearch() {
     state.providerSearch = nextProviderSearch;
     rememberProviderSearch(query, nextProviderSearch);
   } catch (error) {
+    if (requestSeq !== providerSearchRequestSeq || providerSearchCacheKey(state.gameSearchQuery) !== providerSearchCacheKey(query)) return;
     state.providerSearch = {
       query,
       status: "offline",
@@ -4768,7 +4796,8 @@ function renderGameSearch() {
       : sourceCount
         ? t("discover.sourcesLoading", { count: sourceCount })
         : t("discover.localSourcesLoading");
-  const provider = state.providerSearch || {};
+  const currentProvider = state.providerSearch || {};
+  const provider = providerSearchMatchesQuery(currentProvider, query) ? currentProvider : {};
   const providerLabel = provider.status === "loading"
     ? t("discover.providerLoading")
     : provider.status === "cached"
@@ -6648,16 +6677,17 @@ els.notebookImport.addEventListener("input", () => {
 });
 els.gameSearchInput.addEventListener("input", () => {
   state.gameSearchQuery = els.gameSearchInput.value;
+  scheduleProviderSearch();
   render();
 });
 els.gameSearchSubmit.addEventListener("click", () => {
   state.gameSearchQuery = els.gameSearchInput.value;
-  runProviderSearch();
+  runProviderSearch({ force: true });
 });
 els.gameSearchInput.addEventListener("keydown", (event) => {
   if (event.key !== "Enter") return;
   event.preventDefault();
-  runProviderSearch();
+  runProviderSearch({ force: true });
 });
 els.comparisonRun?.addEventListener("click", () => {
   setComparisonGames(els.comparisonFirst.value, els.comparisonSecond.value);
