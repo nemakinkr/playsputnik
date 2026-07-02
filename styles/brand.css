@@ -984,6 +984,39 @@ textarea:focus-visible,
 }
 
 /* ── Taste import: make pasted rankings feel immediately understood ─────── */
+#taste-profile-section,
+#taste-import-section {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--ps-border);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--ps-blue) 5%, transparent), transparent 42%),
+    var(--card-bg);
+}
+
+#taste-profile-section::before,
+#taste-import-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--ps-blue);
+}
+
+#taste-profile-summary {
+  display: grid;
+  gap: 7px;
+}
+
+#taste-profile-badge,
+#taste-summary {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+  padding: 2px 6px;
+}
+
 .taste-import-preview {
   display: grid;
   gap: 10px;

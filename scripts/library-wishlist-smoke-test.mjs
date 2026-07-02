@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import { readFile } from "node:fs/promises";
 
 const DEFAULT_URL = "http://127.0.0.1:4190/?v=library-wishlist-smoke";
 const DEFAULT_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -193,6 +194,45 @@ async function markBoughtThroughAppMemory(page, title) {
   );
 }
 
+async function runFounderRankingScenario(page) {
+  const rankingText = await readFile(new URL("../test/fixtures/founder-ranking-ru.txt", import.meta.url), "utf8");
+  await clearStoredState(page);
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
+  await waitForAppReady(page);
+  await page.evaluate(() => document.querySelector('[data-app-view="taste"]')?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "taste", null, { timeout: 5000 });
+  await page.evaluate((text) => {
+    const input = document.querySelector("#rating-import");
+    if (!input) throw new Error("Rating import textarea missing");
+    input.value = text;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }, rankingText);
+  await page.waitForTimeout(500);
+
+  const preview = await page.evaluate(() => ({
+    text: document.querySelector("#taste-import-preview")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  await page.evaluate(() => document.querySelector("#analyze-ratings")?.click());
+  await page.waitForTimeout(800);
+  const taste = await page.evaluate(() => ({
+    summary: document.querySelector("#taste-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    profile: document.querySelector("#taste-profile-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    atoms: [...document.querySelectorAll("#taste-atoms .atom-pill")].map((node) => node.textContent?.replace(/\s+/g, " ").trim() || ""),
+  }));
+
+  await page.evaluate(() => document.querySelector('[data-app-view="wishlist"]')?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "wishlist", null, { timeout: 5000 });
+  await page.waitForFunction(() => document.querySelectorAll(".wishlist-row").length >= 3, null, { timeout: 10000 });
+  const wishlist = await page.evaluate(() => ({
+    rows: [...document.querySelectorAll(".wishlist-row > div:not(.wishlist-actions) > strong")].map((node) => node.textContent?.replace(/\s+/g, " ").trim() || "").slice(0, 10),
+    dashboard: document.querySelector("#wishlist-dashboard")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+
+  return { preview, taste, wishlist };
+}
+
 const { chromium } = await loadPlaywright();
 const browser = await chromium.launch({
   headless: true,
@@ -336,8 +376,9 @@ try {
   }));
 
   const afterBuy = await markBoughtThroughAppMemory(page, beforeBuyTitle);
+  const founderRanking = await runFounderRankingScenario(page);
 
-  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, libraryCommandFiltered, wishlistBefore, priceAlertTitle, wishlistTargetSet, wishlistTargetCleared, wishlistFiltered, afterBuy, errors };
+  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, libraryCommandFiltered, wishlistBefore, priceAlertTitle, wishlistTargetSet, wishlistTargetCleared, wishlistFiltered, afterBuy, founderRanking, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(library.activeView === "library", `Expected Library view, got ${library.activeView}`);
@@ -373,6 +414,14 @@ try {
   assert(wishlistBefore.actionButtons >= wishlistBefore.rows * 3, "Wishlist rows should expose quick state actions");
   assert(afterBuy.access === "owned_forever", `Expected ${afterBuy.title} to be saved as owned_forever, got ${afterBuy.access}`);
   assert(afterBuy.saved === false, "Bought games should leave the wishlist saved flag");
+  assert(/найдено (?:8\d|9\d|1\d\d)\/111|matched (?:8\d|9\d|1\d\d)\/111/i.test(founderRanking.preview.text), `Expected founder preview to recognize 80+ scoring matches, got: ${founderRanking.preview.text}`);
+  assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
+  assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
+  assert(founderRanking.taste.atoms.some((atom) => /сюжет|story/i.test(atom)), `Expected founder taste atoms to include story, got: ${founderRanking.taste.atoms.join(", ")}`);
+  assert(founderRanking.wishlist.rows.some((title) => ["Mafia: The Old Country", "007 First Light", "The Alters", "Dead Space", "Final Fantasy VII Rebirth"].includes(title)), `Expected founder wishlist to surface story-forward next candidates, got: ${founderRanking.wishlist.rows.join(" / ")}`);
+  assert(!founderRanking.wishlist.rows.includes("Alan Wake 2"), `Imported ranked games should teach taste, not reappear as next wishlist picks: ${founderRanking.wishlist.rows.join(" / ")}`);
+  assert(!founderRanking.wishlist.rows.slice(0, 8).includes("EA Sports FC 26"), `Sports service-loop game should not appear in founder wishlist top rows: ${founderRanking.wishlist.rows.join(" / ")}`);
+  assert(founderRanking.preview.overflow <= 1 && founderRanking.wishlist.overflow <= 1, "Founder ranking UI should not introduce horizontal overflow");
   assert(errors.length === 0, `Page errors: ${errors.join("; ")}`);
 } finally {
   await browser.close();

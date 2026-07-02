@@ -422,6 +422,7 @@ const {
   notebookWishlistWeight,
   notebookAccessKind,
   notebookCompletedSet,
+  notebookRankedSet,
   notebookTasteScore,
   scoreBreakdown,
   scoreGame,
@@ -540,6 +541,7 @@ const {
   RANK_EXCLUDED_STATES,
   LIBRARY_ACTIVE_STATES,
   notebookCompletedSet,
+  notebookRankedSet,
   scoreGame,
   notebookWishlistWeight,
   priceCanGuideBuy,
@@ -730,6 +732,7 @@ const {
   getBlocksPurchase: (game) => blocksPurchase(game),
   getPurchaseCandidates: (ranked) => purchaseCandidates(ranked),
   notebookWishlistWeight,
+  notebookRankedSet,
   scoreGame,
   effectiveGameState,
   effectiveUserGame,
@@ -1795,6 +1798,77 @@ function externalMemoryGames() {
   return externalUserGameRecords().map(externalGameFromUserGame);
 }
 
+function backboneTone(record) {
+  const lane = record.lane || "";
+  if (lane.includes("horror")) return "tense";
+  if (lane.includes("cozy")) return "warm";
+  if (lane.includes("sports")) return "funny";
+  if (lane.includes("cinematic")) return "dark";
+  if (lane.includes("systems") || lane.includes("strategy")) return "strange";
+  return "neutral";
+}
+
+function backboneContent(record) {
+  const atoms = new Set(record.atoms || []);
+  const lane = record.lane || "";
+  if (lane.includes("cozy") || lane.includes("sports")) return "family-safe";
+  if (atoms.has("crime") || atoms.has("shooter") || atoms.has("horror") || atoms.has("survival")) return "realistic-violence";
+  if (atoms.has("action") || atoms.has("combat")) return "stylized-violence";
+  return "low-violence";
+}
+
+function backboneTasteGameFromRecord(record) {
+  const session = record.session || "medium";
+  const commitment = record.commitment || (session === "long" ? "high" : "medium");
+  return {
+    title: record.title,
+    atoms: record.atoms || [],
+    vibe: record.reason || "Catalog backbone taste candidate",
+    session,
+    difficulty: "normal",
+    length: session === "long" ? "long" : "medium",
+    commitment,
+    tone: backboneTone(record),
+    content: backboneContent(record),
+    reviewBurden: record.atomStatus === "complete" ? "medium" : "high",
+    adultTimeFit: record.adultTimeFit || (session === "short" ? "weeknight" : session === "long" ? "vacation" : "weekend"),
+    backlog: false,
+    wishlist: record.lane === "upcoming_watch" || record.priceNeed === "hot",
+    externalCandidate: true,
+    catalogBackboneCandidate: true,
+    recommendationLane: "catalog",
+    color: "linear-gradient(135deg, #1d4ed8, #0f172a)",
+    prices: {},
+    discount: {},
+    priceMeta: {},
+    priceHistory: {},
+    psPlus: [],
+    subscriptionMeta: {},
+    coverMeta: {
+      title: record.title,
+      status: record.coverStatus || "fallback",
+      source: record.source || "catalog_backbone",
+      sourceUrl: "local://catalog-backbone",
+      checkedAt: catalogBackbone?.updatedAt || new Date().toISOString(),
+      licenseNote: "Catalog backbone candidate; cover and store facts need promotion before price use.",
+      url: "",
+    },
+    externalMeta: {
+      provider: "catalog_backbone",
+      source: record.source || "manual_backbone",
+      catalogStatus: record.status || "backbone",
+      platforms: record.platforms || [],
+      priceNeed: record.priceNeed || "missing",
+    },
+  };
+}
+
+function catalogBackboneTasteGames() {
+  return (catalogBackbone?.records || [])
+    .filter((record) => record?.title && !knownSeedGame(record.title))
+    .map(backboneTasteGameFromRecord);
+}
+
 function recommendationPool() {
   const byTitle = new Map();
   [...games, ...externalMemoryGames()].forEach((game) => {
@@ -1806,7 +1880,7 @@ function recommendationPool() {
 
 function sourceGames() {
   const byTitle = new Map();
-  [...profileGames, ...games, ...externalMemoryGames()].forEach((game) => byTitle.set(titleKey(game.title), game));
+  [...profileGames, ...games, ...catalogBackboneTasteGames(), ...externalMemoryGames()].forEach((game) => byTitle.set(titleKey(game.title), game));
   return [...byTitle.values()];
 }
 

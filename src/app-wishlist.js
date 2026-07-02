@@ -32,6 +32,7 @@
     getPurchaseCandidates,
     // from score module
     notebookWishlistWeight,
+    notebookRankedSet,
     scoreGame,
     // from recommend module
     effectiveGameState,
@@ -142,6 +143,7 @@
     function wishlistIntentRecords(ranked) {
       const state = getState();
       const region = state.activeRegion;
+      const rankedKnown = notebookRankedSet ? notebookRankedSet() : new Set();
       const byTitle = new Map();
       const add = (game, lane = "wishlist") => {
         if (!game) return;
@@ -154,6 +156,7 @@
       priceWatchRecords(ranked).forEach(({ game }) => add(game, "deal"));
       getRecommendationPool()
         .filter((game) => {
+          if (rankedKnown.has(titleKey(game.title))) return false;
           const memory = effectiveUserGame(game) || {};
           return memory.saved || game.wishlist || notebookWishlistWeight(game.title);
         })

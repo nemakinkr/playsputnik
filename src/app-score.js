@@ -585,6 +585,10 @@
       return notebookTitles(getState().notebook.completed);
     }
 
+    function notebookRankedSet() {
+      return notebookTitles(getState().notebook.ranked);
+    }
+
     function notebookTasteScore(game) {
       const state = getState();
       const matchedRank = state.notebook.ranked.find((entry) => titleMatches(entry.title, game.title));
@@ -766,6 +770,7 @@
       notebookWishlistWeight,
       notebookAccessKind,
       notebookCompletedSet,
+      notebookRankedSet,
       notebookTasteScore,
       scoreBreakdown,
       scoreGame,

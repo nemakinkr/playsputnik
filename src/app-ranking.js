@@ -20,6 +20,7 @@
     RANK_EXCLUDED_STATES,
     LIBRARY_ACTIVE_STATES,
     notebookCompletedSet,
+    notebookRankedSet,
     scoreGame,
     notebookWishlistWeight,
     priceCanGuideBuy,
@@ -42,11 +43,13 @@
       if (_rankedCache) return _rankedCache;
       const state = getState();
       const completed = notebookCompletedSet();
+      const rankedKnown = notebookRankedSet ? notebookRankedSet() : new Set();
       _rankedCache = getRecommendationPool()
         .filter((game) => !state.hidden.has(game.title))
         .filter((game) => !state.snoozed.has(game.title))
         .filter((game) => !RANK_EXCLUDED_STATES.includes(getGameUserState(game.title)))
         .filter((game) => !completed.has(titleKey(game.title)))
+        .filter((game) => !rankedKnown.has(titleKey(game.title)))
         .map((game) => ({ ...game, score: scoreGame(game) }))
         .sort((a, b) => b.score - a.score);
       return _rankedCache;

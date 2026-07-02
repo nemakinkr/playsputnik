@@ -92,12 +92,13 @@ function appTasteSignals(game) {
 function rankedImportWeights(rows) {
   const weights = {};
   rows.forEach((row) => {
-    if (!row.game) return;
+    const scoringGame = row.scoringGame || row.game;
+    if (!scoringGame) return;
     const rating = row.derivedRating / 10;
     const polarity = rating >= 7 ? 1 : rating <= 5 ? -1 : 0;
     const strength = polarity > 0 ? rating - 6 : polarity < 0 ? 6 - rating : 0;
     if (!strength) return;
-    appTasteSignals(row.game).forEach((signal) => {
+    appTasteSignals(scoringGame).forEach((signal) => {
       weights[signal] = (weights[signal] || 0) + polarity * strength;
     });
   });
@@ -199,6 +200,7 @@ const rows = ranking.map((entry) => {
     knownCorpus: known?.corpus || "",
     game,
     known,
+    scoringGame: game || known,
     matchKind: game ? (normalizeTitle(game.title) === normalizeTitle(entry.title) ? "title" : "alias") : "missing",
   };
 });
@@ -207,6 +209,7 @@ const matched = rows.filter((row) => row.game);
 const knownMatched = rows.filter((row) => row.known);
 const missing = rows.filter((row) => !row.game);
 const unknown = rows.filter((row) => !row.known);
+const scoringMatched = rows.filter((row) => row.scoringGame);
 const top10 = rows.slice(0, 10);
 const top30 = rows.slice(0, 30);
 const top60 = rows.slice(0, 60);
@@ -235,11 +238,11 @@ const importTopSignals = Object.entries(importWeights)
   .slice(0, 10)
   .map(([signal, weight]) => ({ signal, weight: Math.round(weight * 10) / 10 }));
 const top25ImportScores = top25
-  .filter((row) => row.game)
-  .map((row) => rankedImportScore(row.game, importWeights));
+  .filter((row) => row.scoringGame)
+  .map((row) => rankedImportScore(row.scoringGame, importWeights));
 const bottom25ImportScores = bottom25
-  .filter((row) => row.game)
-  .map((row) => rankedImportScore(row.game, importWeights));
+  .filter((row) => row.scoringGame)
+  .map((row) => rankedImportScore(row.scoringGame, importWeights));
 const top25ImportAverage = average(top25ImportScores);
 const bottom25ImportAverage = average(bottom25ImportScores);
 const rankedKeys = new Set(rows.map((row) => row.key));
@@ -293,7 +296,9 @@ const audit = {
     hasContrastProbe: onboardingProbeTitles.some((title) => !rows.some((row) => titleKey(row.title) === titleKey(title))),
   },
   rankedImport: {
-    matchedRatings: matched.length,
+    matchedRatings: scoringMatched.length,
+    seedMatchedRatings: matched.length,
+    knownMatchedRatings: knownMatched.length,
     topSignals: importTopSignals,
     top25Average: Number(top25ImportAverage.toFixed(1)),
     bottom25Average: Number(bottom25ImportAverage.toFixed(1)),
@@ -365,6 +370,10 @@ assert(
 );
 assert(knownTop60Matched >= KNOWN_TOP_60_MIN_MATCHED, `Known-corpus top-60 coverage too low: ${knownTop60Matched}/60`);
 assert(knownCoverage >= KNOWN_TOTAL_MIN_COVERAGE, `Known-corpus ranking coverage too low: ${knownMatched.length}/${rows.length}`);
+assert(
+  scoringMatched.length >= knownMatched.length,
+  `Ranked import scoring should use the known corpus, got ${scoringMatched.length}/${knownMatched.length}`,
+);
 assert((rows.at(-1)?.derivedRating || 0) >= BOTTOM_MIN_DERIVED_RATING, "Ranked-list tail must remain positive taste evidence");
 assert(importTopSignals.some((item) => item.signal === "story"), "Ranked import should learn story as a top signal from the founder ranking");
 assert(importTopSignals.every((item) => item.signal !== "sports"), "Ranked import should not learn sports as a top founder taste signal");
