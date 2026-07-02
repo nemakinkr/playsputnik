@@ -108,6 +108,18 @@ function rankedImportScore(game, weights) {
   return appTasteSignals(game).reduce((sum, signal) => sum + Math.max(0, weights[signal] || 0), 0);
 }
 
+function founderRecommendationScore(game, weights) {
+  const atoms = new Set(game.atoms || []);
+  const taste = rankedImportScore(game, weights);
+  const intent = game.wishlist ? 55 : 0;
+  const sessionFit = game.session === "medium" ? 8 : game.session === "long" ? -8 : 0;
+  const serviceFriction =
+    (atoms.has("sports") ? 60 : 0)
+    + (atoms.has("competitive") ? 20 : 0)
+    + (atoms.has("annual") ? 12 : 0);
+  return Math.round(taste + intent + sessionFit - serviceFriction);
+}
+
 function average(values) {
   return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
 }
@@ -230,6 +242,20 @@ const bottom25ImportScores = bottom25
   .map((row) => rankedImportScore(row.game, importWeights));
 const top25ImportAverage = average(top25ImportScores);
 const bottom25ImportAverage = average(bottom25ImportScores);
+const rankedKeys = new Set(rows.map((row) => row.key));
+const founderRecommendationPool = games
+  .filter((game) => !rankedKeys.has(titleKey(game.title)))
+  .map((game) => ({
+    title: game.title,
+    score: founderRecommendationScore(game, importWeights),
+    wishlist: Boolean(game.wishlist),
+    atoms: game.atoms || [],
+  }))
+  .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+const founderWishlistTop = founderRecommendationPool.filter((game) => game.wishlist).slice(0, 8);
+const founderPlayTop = founderRecommendationPool.slice(0, 8);
+const founderSportsCandidate = founderRecommendationPool.find((game) => game.atoms.includes("sports"));
+const founderMafiaCandidate = founderRecommendationPool.find((game) => game.title === "Mafia: The Old Country");
 
 const audit = {
   mode: "ranking-dogfood-audit",
@@ -273,6 +299,12 @@ const audit = {
     bottom25Average: Number(bottom25ImportAverage.toFixed(1)),
     topBeatsTail: top25ImportAverage > bottom25ImportAverage,
   },
+  founderRecommendations: {
+    playTop: founderPlayTop.map(({ title, score }) => ({ title, score })),
+    wishlistTop: founderWishlistTop.map(({ title, score }) => ({ title, score })),
+    sportsCandidate: founderSportsCandidate ? { title: founderSportsCandidate.title, score: founderSportsCandidate.score } : null,
+    mafiaCandidate: founderMafiaCandidate ? { title: founderMafiaCandidate.title, score: founderMafiaCandidate.score } : null,
+  },
   weakSpots: {
     topMissing: topMissing.map(({ rank, title }) => ({ rank, title })),
     topUnknown: topUnknown.map(({ rank, title }) => ({ rank, title })),
@@ -313,6 +345,7 @@ if (OUTPUT_JSON) {
   console.log(`✅ Ranking dogfood OK: ${audit.ranking.seedMatched}/${audit.ranking.total} seed, ${audit.ranking.knownMatched}/${audit.ranking.total} known, top10 seed ${audit.ranking.seedTop10Matched}/10, top30 known ${audit.ranking.knownTop30Matched}/30, top60 known ${audit.ranking.knownTop60Matched}/60`);
   console.log(`   Top taste shape: ${audit.tasteShape.top25Signals.slice(0, 5).map((item) => `${item.signal}:${item.count}`).join(", ")}`);
   console.log(`   Ranked import: top25 avg ${audit.rankedImport.top25Average}, bottom25 avg ${audit.rankedImport.bottom25Average}, signals ${audit.rankedImport.topSignals.slice(0, 5).map((item) => `${item.signal}:${item.weight}`).join(", ")}`);
+  console.log(`   Founder wishlist: ${audit.founderRecommendations.wishlistTop.slice(0, 5).map((item) => `${item.title}:${item.score}`).join(", ")}`);
   console.log(`   Promote next: ${promotion || "none"}`);
   console.log(`   Unknown top gaps: ${topUnknown || "none"}`);
   console.log(`   Unknown 31-60 gaps: ${nextUnknown || "none"}`);
@@ -338,6 +371,22 @@ assert(importTopSignals.every((item) => item.signal !== "sports"), "Ranked impor
 assert(
   top25ImportAverage >= bottom25ImportAverage + 8,
   `Ranked import should score top favorites above tail favorites, got ${top25ImportAverage.toFixed(1)} vs ${bottom25ImportAverage.toFixed(1)}`,
+);
+assert(
+  audit.founderRecommendations.wishlistTop.slice(0, 5).some((item) => item.title === "Mafia: The Old Country"),
+  "Founder recommendations should keep Mafia: The Old Country in the top wishlist candidates",
+);
+assert(
+  audit.founderRecommendations.wishlistTop.slice(0, 5).some((item) => item.title === "007 First Light"),
+  "Founder recommendations should keep 007 First Light in the top wishlist candidates",
+);
+assert(
+  audit.founderRecommendations.wishlistTop.slice(0, 6).some((item) => item.title === "The Alters"),
+  "Founder recommendations should keep The Alters near the top wishlist candidates",
+);
+assert(
+  (audit.founderRecommendations.mafiaCandidate?.score || 0) > (audit.founderRecommendations.sportsCandidate?.score || 0) + 150,
+  "Founder recommendations should not let sports/service-loop candidates outrank cinematic story candidates",
 );
 assert(onboardingKnownTasteAnchors.length >= 2, `Onboarding probes should include at least two known taste anchors, got ${onboardingKnownTasteAnchors.join(", ")}`);
 assert(audit.onboarding.hasContrastProbe, "Onboarding probes should include at least one contrast game absent from the user's known ranking");

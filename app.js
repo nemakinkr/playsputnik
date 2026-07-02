@@ -932,6 +932,7 @@ const els = {
   ratingImport: document.querySelector("#rating-import"),
   tasteSummary: document.querySelector("#taste-summary"),
   tasteAtoms: document.querySelector("#taste-atoms"),
+  tasteImportPreview: document.querySelector("#taste-import-preview"),
   tasteProfileSummary: document.querySelector("#taste-profile-summary"),
   tasteProfileBadge: document.querySelector("#taste-profile-badge"),
   sampleRatings: document.querySelector("#sample-ratings"),
@@ -2042,6 +2043,12 @@ function canMarkDeepTasteImport() {
   return !["demo", "psn", "quick"].includes(state.entryPath);
 }
 
+function knownImportRecord(rawTitle) {
+  return findRatedGame(rawTitle)
+    || (catalogBackbone?.records || []).find((record) => titleMatches(record.title, rawTitle))
+    || (globalSearchFixtures?.records || []).find((record) => titleMatches(record.title, rawTitle));
+}
+
 function analyzeRankedTasteImport(rankedEntries) {
   const weights = {};
   const matched = [];
@@ -2104,6 +2111,103 @@ function analyzeTasteImport() {
     state.entryPath = matched.length >= 8 ? "deep" : state.entryPath;
     state.entryResult = t("settings.tasteImport.ratingResult", { count: matched.length });
   }
+}
+
+function tasteImportPreview() {
+  const text = state.ratingImport || "";
+  const lines = text
+    .split(/\n|\\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const rankedEntries = parseRankedTasteLines(text);
+  const isRanked = rankedEntries.length >= 8 && rankedEntries.length >= lines.length * 0.6;
+  const explicitRatings = isRanked
+    ? []
+    : lines.map(parseRatingLine).filter(Boolean);
+  const entries = isRanked
+    ? rankedEntries
+    : explicitRatings.map((entry, index) => ({ ...entry, rank: index + 1 }));
+  const matched = entries
+    .map((entry) => ({ entry, game: findRatedGame(entry.title) }))
+    .filter((item) => item.game);
+  const known = entries.filter((entry) => knownImportRecord(entry.title));
+  const weights = {};
+  matched.forEach(({ entry, game }) => {
+    const rating = isRanked ? derivedRatingFromRank(entry.rank, entries.length) : entry.rating;
+    applyRatingWeight(weights, game, rating);
+  });
+  const topSignals = Object.entries(weights)
+    .filter(([, value]) => value > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([signal]) => signal);
+  const topMatched = matched.slice(0, 3).map(({ game }) => game.title);
+  const matchRatio = entries.length ? matched.length / entries.length : 0;
+  return {
+    empty: !lines.length,
+    mode: isRanked ? "ranked" : explicitRatings.length ? "ratings" : "unknown",
+    total: entries.length,
+    matched: matched.length,
+    known: known.length,
+    matchRatio,
+    ready: matched.length >= 3,
+    strong: isRanked ? matched.length >= 20 && matchRatio >= 0.5 : matched.length >= 8,
+    topSignals,
+    topMatched,
+  };
+}
+
+function renderTasteImportPreview() {
+  if (!els.tasteImportPreview) return;
+  const preview = tasteImportPreview();
+  if (preview.empty) {
+    els.tasteImportPreview.innerHTML = `
+      <div class="taste-import-preview-empty">
+        <strong>${t("settings.tasteImport.previewEmptyTitle")}</strong>
+        <span>${t("settings.tasteImport.previewEmptyDetail")}</span>
+      </div>
+    `;
+    return;
+  }
+
+  const modeLabel = preview.mode === "ranked"
+    ? t("settings.tasteImport.previewModeRanked")
+    : preview.mode === "ratings"
+      ? t("settings.tasteImport.previewModeRatings")
+      : t("settings.tasteImport.previewModeUnknown");
+  const confidence = preview.strong
+    ? t("settings.tasteImport.previewStrong")
+    : preview.ready
+      ? t("settings.tasteImport.previewReady")
+      : t("settings.tasteImport.previewNeedsMore");
+  const signals = preview.topSignals.length
+    ? labelAtoms(preview.topSignals, " / ")
+    : t("settings.tasteImport.previewNoSignals");
+  const examples = preview.topMatched.length
+    ? preview.topMatched.join(" / ")
+    : t("settings.tasteImport.previewNoMatches");
+
+  els.tasteImportPreview.innerHTML = `
+    <div class="taste-import-preview-head">
+      <span>${modeLabel}</span>
+      <strong>${t("settings.tasteImport.previewMatched", { matched: preview.matched, total: preview.total })}</strong>
+      <small>${t("settings.tasteImport.previewKnown", { known: preview.known, total: preview.total })} · ${confidence}</small>
+    </div>
+    <div class="taste-import-preview-grid">
+      <div>
+        <span>${t("settings.tasteImport.previewSignals")}</span>
+        <strong>${signals}</strong>
+      </div>
+      <div>
+        <span>${t("settings.tasteImport.previewExamples")}</span>
+        <strong>${examples}</strong>
+      </div>
+      <div>
+        <span>${t("settings.tasteImport.previewImpact")}</span>
+        <strong>${preview.mode === "ranked" ? t("settings.tasteImport.previewRankedImpact") : t("settings.tasteImport.previewRatingsImpact")}</strong>
+      </div>
+    </div>
+  `;
 }
 
 function applyQuickEntry() {
@@ -2547,6 +2651,7 @@ function renderTasteProfile() {
       return item;
     }),
   );
+  renderTasteImportPreview();
 
   // Rich profile summary
   if (!els.tasteProfileSummary) return;
@@ -6451,6 +6556,7 @@ els.budget.addEventListener("input", () => {
 els.ratingImport.addEventListener("input", () => {
   state.ratingImport = els.ratingImport.value;
   saveState();
+  renderTasteImportPreview();
 });
 els.sampleRatings.addEventListener("click", () => {
   state.ratingImport = QUICK_RATING_LINES.join("\n");

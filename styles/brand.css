@@ -983,6 +983,90 @@ textarea:focus-visible,
   border-style: dashed;
 }
 
+/* ── Taste import: make pasted rankings feel immediately understood ─────── */
+.taste-import-preview {
+  display: grid;
+  gap: 10px;
+  margin: -2px 0 12px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 8%, transparent), transparent 46%),
+    var(--card-bg);
+  padding: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.taste-import-preview-empty {
+  display: grid;
+  gap: 3px;
+}
+
+.taste-import-preview-empty strong,
+.taste-import-preview-head strong,
+.taste-import-preview-grid strong {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.taste-import-preview-empty span,
+.taste-import-preview-head span,
+.taste-import-preview-head small,
+.taste-import-preview-grid span {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 820;
+  line-height: 1.25;
+}
+
+.taste-import-preview-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  align-items: center;
+}
+
+.taste-import-preview-head span {
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.taste-import-preview-head small {
+  grid-column: 1 / -1;
+}
+
+.taste-import-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 8px;
+}
+
+.taste-import-preview-grid div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg-soft);
+  padding: 8px;
+}
+
+.taste-import-preview-grid strong {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .taste-import-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .taste-import-preview-head {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Library/Wishlist: stronger dashboard rhythm and row polish ─────────── */
 .my-games-panel,
 .price-watch,
