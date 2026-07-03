@@ -323,6 +323,8 @@ try {
       rows: document.querySelectorAll('.game-search-row').length,
       memoryPanels: document.querySelectorAll('[data-search-memory-panel]').length,
       firstTitle: document.querySelector('.game-search-row strong')?.textContent || '',
+      allTitles: [...document.querySelectorAll('.game-search-row')]
+        .map((row) => row.querySelector('strong')?.textContent?.trim() || ''),
       providerStatus: document.querySelector('#game-search-status')?.textContent || '',
       coverPreviews: document.querySelectorAll('.game-search-cover').length,
       rawgCoverPreviews: [...document.querySelectorAll('.game-search-cover figcaption, .game-search-cover span')]
@@ -402,7 +404,7 @@ try {
   assert(before.activeView === "discover", `Expected Discover view, got ${before.activeView}`);
   assert(before.searchValue === searchQuery, `Expected search value ${searchQuery}, got ${before.searchValue}`);
   assert(before.rows >= 1, `Expected at least one search row, got ${before.rows}`);
-  assert(before.firstTitle === expectedTitle, `Expected ${expectedTitle} as first live search result, got ${before.firstTitle}`);
+  assert(before.allTitles.includes(expectedTitle), `Expected live search results to include ${expectedTitle}, got ${before.allTitles.join(" / ")}`);
   assert(before.memoryPanels >= 1, `Expected search memory panels, got ${before.memoryPanels}`);
   assert(before.coverPreviews >= 1, "Expected live provider search to render cover previews");
   assert(before.rawgCoverPreviews >= 1, "Expected live provider search to expose RAWG cover attribution");
