@@ -979,8 +979,69 @@ textarea:focus-visible,
   background: var(--card-bg);
 }
 
+.game-search-main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+}
+
+.game-search-copy {
+  min-width: 0;
+}
+
+.game-search-cover {
+  position: relative;
+  width: 76px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-sm);
+}
+
+.game-search-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.game-search-cover figcaption,
+.game-search-cover span {
+  position: absolute;
+  inset: auto 5px 5px auto;
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--card-bg) 86%, transparent);
+  color: var(--text-strong);
+  padding: 2px 5px;
+  font-size: 0.56rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.game-search-cover.is-empty {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 14%, transparent), transparent),
+    var(--surface-2);
+}
+
 .game-search-row.source-manual-unverified {
   border-style: dashed;
+}
+
+@media (max-width: 620px) {
+  .game-search-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .game-search-cover {
+    width: 100%;
+    max-width: 180px;
+  }
 }
 
 /* ── Taste import: make pasted rankings feel immediately understood ─────── */

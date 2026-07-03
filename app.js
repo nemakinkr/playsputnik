@@ -1713,8 +1713,8 @@ function aiEnrichmentForGame(item) {
   };
 }
 
-function aiEnrichmentHtml(item, modifier = "") {
-  const enrichment = aiEnrichmentForGame(item);
+function aiEnrichmentHtml(item, modifier = "", precomputed = null) {
+  const enrichment = precomputed || aiEnrichmentForGame(item);
   const missingKeys = {
     platforms: "discover.missingPlatforms",
     cover: "discover.missingCover",
@@ -4870,8 +4870,20 @@ function renderGameSearch() {
   const rows = results.map((result) => {
       const row = document.createElement("div");
       row.className = `game-search-row source-${stateClassName(result.sourceId)}`;
-      const atoms = (result.atoms || []).slice(0, 4).map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`).join("");
+      const enrichmentModel = aiEnrichmentForGame(result);
+      const displayAtoms = uniqueCompact([...(result.atoms || []), ...enrichmentModel.atoms], 5);
+      const atoms = displayAtoms.slice(0, 5).map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`).join("");
       const platforms = (result.platforms || []).slice(0, 3).map((platform) => `<span class="fact access">${platform}</span>`).join("");
+      const providerCover = result.coverUrl
+        ? `
+          <figure class="game-search-cover">
+            <img src="${detailAttr(result.coverUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer" />
+            <figcaption>${result.provider === "rawg" ? "RAWG" : compactStatus(result.coverStatus)}</figcaption>
+          </figure>
+        `
+        : result.sourceId === "rawg_provider_hook"
+          ? `<div class="game-search-cover is-empty" aria-hidden="true"><span>RAWG</span></div>`
+          : "";
       const reconciliation = result.reconciliation?.status || result.duplicateSource || "";
       const reconciliationFact = reconciliation
         ? `<span class="fact ${reconciliation === "new_external" ? "warn" : "access"}">${compactStatus(reconciliation)}</span>`
@@ -4879,7 +4891,7 @@ function renderGameSearch() {
       const saved = resultAlreadySaved(result);
       const trust = searchResultTrust(result);
       const sourcePassport = sourcePassportHtml(searchResultSourcePassport(result), "compact");
-      const enrichment = result.sourceId === "seed_catalog" ? "" : aiEnrichmentHtml(result, "compact");
+      const enrichment = result.sourceId === "seed_catalog" ? "" : aiEnrichmentHtml(result, "compact", enrichmentModel);
       const owned = resultStateSelected(result, "owned");
       const subscription = resultStateSelected(result, "subscription");
       const memory = searchResultMemoryStatus(result);
@@ -4896,26 +4908,29 @@ function renderGameSearch() {
           : t("discover.actionWishlist");
       const followupDetail = remembered ? memory.detail : t("discover.memoryReadyDetail");
       row.innerHTML = `
-        <div>
-          <div class="game-search-title-line">
-            <strong>${result.title}</strong>
-            <span class="search-source-pill tone-${trust.tone}">${trust.label}</span>
-            ${remembered ? `<span class="search-memory-pill tone-${memory.tone}">${memory.label}</span>` : ""}
+        <div class="game-search-main">
+          ${providerCover}
+          <div class="game-search-copy">
+            <div class="game-search-title-line">
+              <strong>${result.title}</strong>
+              <span class="search-source-pill tone-${trust.tone}">${trust.label}</span>
+              ${remembered ? `<span class="search-memory-pill tone-${memory.tone}">${memory.label}</span>` : ""}
+            </div>
+            <span>${result.sourceLabel} / ${t("discover.confidence", { value: discoverConfidenceLabel(result.matchConfidence) })}</span>
+            <p>${result.reason}</p>
+            ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${detailAttr(ratingBadge.detail)}">${ratingBadge.label}</span>` : ""}
+            <div class="facts">
+              ${atoms}
+              ${platforms}
+              ${editionBadgeHtml(result)}
+              <span class="fact access">${t("discover.catalogFact", { value: discoverCatalogStatus(result.catalogStatus) })}</span>
+              ${reconciliationFact}
+              <span class="fact ${result.coverStatus === "missing" ? "warn" : "cover"}">${t("discover.coverFact", { value: discoverAssetStatus(result.coverStatus) })}</span>
+              <span class="fact ${result.priceStatus === "missing" ? "warn" : "price"}">${t("discover.priceFact", { value: discoverAssetStatus(result.priceStatus) })}</span>
+            </div>
+            ${sourcePassport}
+            ${enrichment}
           </div>
-          <span>${result.sourceLabel} / ${t("discover.confidence", { value: discoverConfidenceLabel(result.matchConfidence) })}</span>
-          <p>${result.reason}</p>
-          ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${detailAttr(ratingBadge.detail)}">${ratingBadge.label}</span>` : ""}
-          <div class="facts">
-            ${atoms}
-            ${platforms}
-            ${editionBadgeHtml(result)}
-            <span class="fact access">${t("discover.catalogFact", { value: discoverCatalogStatus(result.catalogStatus) })}</span>
-            ${reconciliationFact}
-            <span class="fact ${result.coverStatus === "missing" ? "warn" : "cover"}">${t("discover.coverFact", { value: discoverAssetStatus(result.coverStatus) })}</span>
-            <span class="fact ${result.priceStatus === "missing" ? "warn" : "price"}">${t("discover.priceFact", { value: discoverAssetStatus(result.priceStatus) })}</span>
-          </div>
-          ${sourcePassport}
-          ${enrichment}
         </div>
         <div class="game-search-actions">
           <div class="game-search-followup tone-${memory.tone}" data-search-followup>

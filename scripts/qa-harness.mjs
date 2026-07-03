@@ -1209,6 +1209,7 @@ function checkSelectors() {
   assert(/function searchResultMemoryStatus/.test(appSource), "Search results should expose memory confirmation status");
   assert(/function addSearchResultToWishlist/.test(appSearchMemorySource), "Search wishlist add handler is missing");
   assert(/data-search-memory-panel/.test(appSource), "Search results should show direct add confirmation panels");
+  assert(/game-search-cover/.test(appSource + css), "Search provider results should render an attributed cover preview");
   assert(/game-search-memory-checks/.test(appSource + css), "Search memory panel should show a result checklist");
   assert(/data-search-open-wishlist/.test(appSource), "Saved search results should expose a Wishlist next step");
   assert(/aria-pressed="\$\{saved\}"/.test(appSource), "Search Wishlist action should expose pressed state");
@@ -1242,6 +1243,7 @@ function checkSelectors() {
   assert(/source-passport/.test(appEnrichmentSource + appSource) && /source-passport/.test(html + appSource + appEnrichmentSource), "Source passport renderer is missing");
   assert(/enrichmentCheckFact/.test(appSource + i18nEnSource), "AI enrichment should show a missing-facts checklist");
   assert(/rawgSearch/.test(searchProviderSource), "RAWG provider adapter is missing");
+  assert(/story\.\?rich/.test(searchProviderSource) && /record\.genres \|\| \[\]\)\.flatMap/.test(searchProviderSource), "RAWG atom inference should use genre/tag names and slugs");
   assert(/loadLocalEnv/.test(searchProviderSource), "Search provider should read local env config");
   assert(/providerSearchPayload/.test(searchProviderSource), "Provider search payload builder is missing");
   assert(/fixtureSearch/.test(searchProviderSource), "Provider server fixture fallback is missing");

@@ -57,6 +57,8 @@
       const key = titleKey(title);
       const current = normalizeUserGameRecord(state.userGames[key], title) || normalizeUserGameRecord({ title });
       const enrichment = aiEnrichmentForGame(result);
+      const atoms = [...new Set([...(result.atoms || []), ...enrichment.atoms])].slice(0, 8);
+      const inferredAtoms = [...new Set([...(result.inferredAtoms || []), ...enrichment.atoms])].slice(0, 8);
       const sourcePassport = {
         sourceId: result.sourceId || "",
         sourceLabel: result.sourceLabel || "",
@@ -103,12 +105,8 @@
           ? "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed."
           : current.coverLicenseNote || "",
         platforms: result.platforms?.length ? result.platforms : current.platforms || [],
-        atoms: result.atoms?.length ? result.atoms : current.atoms || [],
-        inferredAtoms: result.inferredAtoms?.length
-          ? result.inferredAtoms
-          : result.atoms?.length
-            ? current.inferredAtoms || []
-            : enrichment.atoms,
+        atoms: atoms.length ? atoms : current.atoms || [],
+        inferredAtoms: inferredAtoms.length ? inferredAtoms : current.inferredAtoms || [],
         vibe: result.vibe || result.reason || "External wishlist candidate",
         enrichmentStatus: enrichment.status,
         enrichmentSummary: enrichment.summary,

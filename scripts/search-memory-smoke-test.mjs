@@ -132,6 +132,10 @@ try {
     firstTitle: document.querySelector(".game-search-row")?.firstElementChild?.querySelector("strong")?.textContent || "",
     allTitles: Array.from(document.querySelectorAll(".game-search-row"))
       .map((row) => row.firstElementChild?.querySelector("strong")?.textContent || ""),
+    coverPreviews: document.querySelectorAll(".game-search-cover").length,
+    rawgCoverPreviews: Array.from(document.querySelectorAll(".game-search-cover figcaption, .game-search-cover span"))
+      .filter((item) => /RAWG/i.test(item.textContent || "")).length,
+    firstRowFacts: document.querySelector(".game-search-row")?.querySelectorAll(".facts .fact").length || 0,
     detailButtons: document.querySelectorAll("[data-search-detail]").length,
     memoryPanels: document.querySelectorAll("[data-search-memory-panel]").length,
     savedButtons: document.querySelectorAll('[data-search-state="saved"]').length,
@@ -249,6 +253,11 @@ try {
   assert(before.firstTitle === expectedTitle, `Expected ${expectedTitle} as first result, got ${before.firstTitle}`);
   if (injectRawg) assert(/cached|кеш/i.test(before.searchStatus), `Expected cached provider status, got ${before.searchStatus}`);
   assert(before.detailButtons >= 1, "Expected search Details action");
+  if (injectRawg) {
+    assert(before.coverPreviews >= 1, "Expected RAWG search result to render a cover preview");
+    assert(before.rawgCoverPreviews >= 1, "Expected RAWG cover preview to expose RAWG attribution");
+    assert(before.firstRowFacts >= 7, `Expected richer RAWG facts in the first search row, got ${before.firstRowFacts}`);
+  }
   assert(before.memoryPanels >= 1, "Expected search memory confirmation panels");
   assert(before.savedButtons >= 1, "Expected search Wishlist action");
   assert(before.ownedButtons >= 1, "Expected search Owned action");
@@ -289,6 +298,7 @@ try {
     assert(after.record?.sourcePassport?.sourceId === "rawg_provider_hook", `Expected source passport rawg hook, got ${after.record?.sourcePassport?.sourceId}`);
     assert(after.record?.sourcePassport?.resultShapeVersion === "search-result-v2", "Expected provider result shape version to persist");
     assert(after.record?.coverUrl && after.record?.sourceUrl, "Expected RAWG cover/source URLs to persist");
+    assert(after.record.atoms >= 3, `Expected RAWG/imported candidate atoms to feed taste, got ${after.record.atoms}`);
     assert(dataProviderImports.activeView === "data", `Expected Data view for provider import review, got ${dataProviderImports.activeView}`);
     assert(dataProviderImports.rows >= 1, "Expected provider import review rows in Data");
     assert(dataProviderImports.hasGame, "Expected RAWG imported game in Data provider import review");

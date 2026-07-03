@@ -29,12 +29,16 @@ const seedIndex = new Map((games || []).map((game) => [titleKey(game.title), gam
 const backboneIndex = new Map((catalogBackbone.records || []).map((record) => [titleKey(record.title), record]));
 const genreAtomRules = [
   [/action|combat/i, ["action"]],
+  [/adrenaline|fast.?paced/i, ["adrenaline", "action"]],
   [/adventure/i, ["exploration", "story"]],
-  [/role.?playing|rpg/i, ["rpg", "choice"]],
+  [/story.?rich|narrative|choices.?matter/i, ["story", "choice"]],
+  [/role.?playing|rpg/i, ["rpg", "choice", "systems"]],
   [/shooter|fps/i, ["shooter", "action"]],
   [/strategy|tactical/i, ["strategy", "systems"]],
   [/puzzle/i, ["puzzle", "systems"]],
   [/horror/i, ["horror", "tension"]],
+  [/mystery|detective/i, ["mystery", "story"]],
+  [/crime/i, ["crime", "realistic"]],
   [/sports|racing|football|soccer/i, ["sports", "competitive"]],
   [/simulation|management/i, ["management", "systems"]],
   [/platform/i, ["platforming", "action"]],
@@ -42,6 +46,16 @@ const genreAtomRules = [
   [/multiplayer|co-op|coop/i, ["multiplayer", "co-op"]],
   [/survival/i, ["survival", "systems"]],
   [/open.?world/i, ["open-world", "exploration"]],
+  [/stealth/i, ["stealth", "tactical"]],
+  [/souls.?like|difficult|hard/i, ["souls-like", "challenge"]],
+  [/turn.?based/i, ["turn-based", "tactical"]],
+  [/rogue.?like|rogue.?lite/i, ["roguelike", "systems"]],
+  [/atmospheric/i, ["atmosphere"]],
+  [/sci.?fi|cyberpunk/i, ["sci-fi", "strange"]],
+  [/fantasy/i, ["fantasy", "mythic"]],
+  [/sandbox|crafting|creative/i, ["sandbox", "creative", "systems"]],
+  [/cozy|farming|fishing|relax/i, ["cozy", "slow"]],
+  [/music|rhythm/i, ["music"]],
 ];
 
 if (onceIndex >= 0) {
@@ -624,8 +638,8 @@ function withReconciliation(result) {
 
 function inferAtomsFromRawg(record) {
   const names = [
-    ...(record.genres || []).map((item) => item.name),
-    ...(record.tags || []).map((item) => item.name),
+    ...(record.genres || []).flatMap((item) => [item.name, item.slug]),
+    ...(record.tags || []).flatMap((item) => [item.name, item.slug]),
   ].filter(Boolean);
   const atoms = [];
   names.forEach((name) => {
