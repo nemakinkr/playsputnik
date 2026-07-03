@@ -911,6 +911,7 @@ const {
   cachedNarrative,
   fetchNarrative,
   narrativeAvailable,
+  localNarrative,
   cachedExplanation,
   fetchExplanation,
   clearExplanationCache,
@@ -1149,6 +1150,7 @@ const els = {
   priceStatus,
   effectiveGameState,
   notebookWishlistWeight,
+  onProviderImportAction: (title, action) => applyProviderImportAction(title, action),
   els,
 }));
 
@@ -1178,6 +1180,45 @@ function saveState() {
 
 function recordUserEvent(type, title, detail = {}) {
   recordUserEventForState(state, type, title, detail);
+}
+
+function applyProviderImportAction(title, action) {
+  const key = titleKey(title);
+  const current = normalizeUserGameRecord(state.userGames[key], title);
+  if (!current?.providerImport) return;
+  const now = new Date().toISOString();
+  const providerImport = {
+    ...current.providerImport,
+    reviewedAt: now,
+    reviewAction: action,
+  };
+  const next = {
+    ...current,
+    providerImport,
+    updatedAt: now,
+  };
+  if (action === "accept") {
+    providerImport.status = "accepted";
+    next.saved = true;
+    next.catalogStatus = next.catalogStatus || "external_memory";
+    state.saved.add(next.title);
+    state.hidden.delete(next.title);
+  } else if (action === "snooze") {
+    providerImport.status = "snoozed";
+    providerImport.snoozedUntil = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+  } else if (action === "hide") {
+    providerImport.status = "hidden";
+    providerImport.hiddenAt = now;
+  }
+  state.userGames[key] = next;
+  state.userStates[key] = { title: next.title, state: legacyStateFromUserGame(next), updatedAt: now };
+  recordUserEvent("provider_import_reviewed", next.title, {
+    action,
+    provider: providerImport.provider,
+    status: providerImport.status,
+  });
+  saveState();
+  render();
 }
 
 function setGameState(title, userState) {
@@ -5443,12 +5484,21 @@ function detailProviderImportHtml(game) {
   const sourceUrl = providerImport?.sourceUrl || meta.sourceUrl || game.coverMeta?.sourceUrl || "";
   const coverUrl = providerImport?.coverUrl || meta.coverUrl || game.coverMeta?.url || "";
   const importedAt = providerImport?.importedAt || meta.updatedAt || sourcePassport.checkedAt || "";
+  const reviewStatus = providerImport?.status || "candidate";
+  const reviewStatusKeys = {
+    candidate: "data.providerImportStatusLabel.candidate",
+    accepted: "data.providerImportStatusLabel.accepted",
+    snoozed: "data.providerImportStatusLabel.snoozed",
+    hidden: "data.providerImportStatusLabel.hidden",
+  };
+  const reviewStatusLabel = t(reviewStatusKeys[reviewStatus] || "data.providerImportStatusLabel.candidate");
   const missing = [
     (providerImport?.priceStatus || meta.priceStatus || "missing") === "missing" ? t("narrative.detail.rawgMissingPrice") : "",
     !(game.psPlus || []).length ? t("narrative.detail.rawgMissingPlus") : "",
     !knownSeedGame(game.title) ? t("narrative.detail.rawgNeedsPromotion") : "",
   ].filter(Boolean);
   const chips = [
+    reviewStatusLabel,
     t("narrative.detail.rawgCover", { state: localizedCoverReadiness(game) }),
     t("narrative.detail.rawgAtoms", { count: (game.atoms || []).length }),
     ...(meta.platforms?.length ? [t("narrative.detail.rawgPlatforms", { platforms: meta.platforms.slice(0, 3).join(" / ") })] : []),
@@ -5500,7 +5550,8 @@ function renderGameDetail(shouldFocus = false) {
     risk: watchout.detail,
     access: answerAccessLabel(game),
   };
-  const cachedAiExplanation = cachedExplanation(game.title, aiContext);
+  const cachedAiExplanation = cachedExplanation(game.title, aiContext)
+    || localNarrative("game_detail", game, aiContext);
 
   els.gameDetail.classList.remove("is-hidden");
   els.gameDetail.setAttribute("aria-hidden", "false");
@@ -5615,8 +5666,9 @@ function renderGameDetail(shouldFocus = false) {
       pending.textContent = t("narrative.ai.asking");
       aiBody.append(pending);
       try {
-        if (!await narrativeAvailable()) throw new Error("AI narrative provider unavailable");
-        const explanation = await fetchExplanation(game, aiContext);
+        const explanation = await narrativeAvailable()
+          ? await fetchExplanation(game, aiContext)
+          : localNarrative("game_detail", game, aiContext);
         aiBody.replaceChildren();
         const paragraph = document.createElement("p");
         paragraph.dataset.aiDetailCopy = "";

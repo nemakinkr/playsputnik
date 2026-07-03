@@ -1400,6 +1400,7 @@ function checkSelectors() {
   assert(dataHealth.issueTriage?.criticalIssueCount === 0, "Data health should expose zero critical issues for current catalog");
   assert(/Issue triage/.test(appDataPanelSource + i18nEnSource), "Data workbench should explain issue triage");
   assert(/provider-import-list/.test(html) && /renderProviderImports/.test(appDataPanelSource), "Data view should expose provider import review");
+  assert(/data-provider-import-action/.test(appDataPanelSource) && /applyProviderImportAction/.test(appSource), "Provider imports should have review actions wired to persisted memory");
   assert(!/kind: "alias_partial"/.test(appSearchSource + searchProviderSource), "Search scoring should not accept broad alias_partial matches");
   assert(/Price gaps/i.test(appDataPanelSource + i18nEnSource), "Data workbench should distinguish price gaps from critical issues");
   assert(/function libraryDashboardCards/.test(appLibrarySource), "Library dashboard cards are missing");
@@ -1509,6 +1510,7 @@ function checkSelectors() {
   assert(/function detailTasteFitHtml/.test(appSource), "Game detail taste fit renderer is missing");
   assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
   assert(/function detailProviderImportHtml/.test(appSource), "Game detail RAWG/provider import summary is missing");
+  assert(/localNarrative/.test(appAiSource) && /localDetail/.test(i18nEnSource), "AI narrative should expose a free localized fallback");
   assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
   assert(/function runDetailPrimaryAction/.test(appSource), "Game detail smart primary CTA action handler is missing");
   assert(/function applyDetailState/.test(appSource), "Game detail shared state applier is missing");

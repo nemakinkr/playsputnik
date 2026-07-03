@@ -100,6 +100,38 @@
       };
     }
 
+    function localizedAtomList(atoms) {
+      return (atoms || []).slice(0, 4).filter(Boolean).join(" / ");
+    }
+
+    function localNarrative(kind, game, context = {}) {
+      const t = window.PlaySputnikI18n?.t || ((key) => key);
+      const facts = gameFacts(game);
+      const taste = tasteContext();
+      const atoms = localizedAtomList(facts.atoms) || t("narrative.ai.localNoAtoms");
+      const liked = taste.likedTitles?.length
+        ? taste.likedTitles.slice(0, 3).join(", ")
+        : t("narrative.ai.localNoLikes");
+      const reason = context.personalReason || context.decision || context.evidence || facts.vibe || "";
+      const risk = context.risk || "";
+      if (kind === "companion") {
+        return t("narrative.ai.localCompanion", {
+          title: facts.title,
+          atoms,
+          reason,
+          risk,
+          liked,
+        });
+      }
+      return t("narrative.ai.localDetail", {
+        title: facts.title,
+        atoms,
+        reason,
+        risk,
+        liked,
+      });
+    }
+
     function requestDescriptor(kind, game, context = {}) {
       const locale = getLocale();
       const facts = gameFacts(game);
@@ -226,6 +258,7 @@
       cachedNarrative,
       fetchNarrative,
       narrativeAvailable,
+      localNarrative,
       cachedExplanation,
       fetchExplanation,
       clearExplanationCache,

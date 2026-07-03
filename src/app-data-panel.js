@@ -21,6 +21,7 @@
     priceStatus,
     effectiveGameState,
     notebookWishlistWeight,
+    onProviderImportAction,
     els,
   }) {
     function dataLabel(group, value, fallback = "") {
@@ -204,6 +205,7 @@
       const state = getState();
       return Object.values(state.userGames || {})
         .filter((record) => record?.providerImport?.provider === "rawg")
+        .filter((record) => record.providerImport?.status !== "hidden")
         .sort((a, b) => String(b.providerImport?.importedAt || b.updatedAt || "").localeCompare(String(a.providerImport?.importedAt || a.updatedAt || "")));
     }
 
@@ -396,6 +398,7 @@
           const row = document.createElement("div");
           row.className = "provider-import-row";
           const importedAt = record.providerImport?.importedAt || record.updatedAt || "";
+          const reviewStatus = record.providerImport?.status || "candidate";
           const coverUrl = record.providerImport?.coverUrl || record.coverUrl || "";
           const sourceUrl = record.providerImport?.sourceUrl || record.sourceUrl || "";
           const atoms = [...new Set([...(record.atoms || []), ...(record.inferredAtoms || [])])];
@@ -426,9 +429,20 @@
             <div class="provider-import-review">
               <span>${record.saved ? t("data.providerImportSaved") : t("data.providerImportReview")}</span>
               <strong>${record.providerImport?.attributionRequired ? t("data.providerImportAttribution") : t("data.providerImportNoCover")}</strong>
+              <span class="provider-import-status tone-${escapeHtml(reviewStatus)}">${dataLabel("providerImportStatusLabel", reviewStatus, reviewStatus)}</span>
               <small>${importedAt ? t("data.providerImportImportedAt", { date: importedAt.slice(0, 10) }) : t("data.providerImportReview")}</small>
+              <div class="provider-import-actions" aria-label="${t("data.providerImportActionsAria", { title: record.title })}">
+                <button data-provider-import-action="accept" data-provider-import-title="${escapeHtml(record.title)}" type="button">${t("data.providerImportAccept")}</button>
+                <button data-provider-import-action="snooze" data-provider-import-title="${escapeHtml(record.title)}" type="button">${t("data.providerImportSnooze")}</button>
+                <button data-provider-import-action="hide" data-provider-import-title="${escapeHtml(record.title)}" type="button">${t("data.providerImportHide")}</button>
+              </div>
             </div>
           `;
+          row.querySelectorAll("[data-provider-import-action]").forEach((button) => {
+            button.addEventListener("click", () => {
+              onProviderImportAction?.(button.dataset.providerImportTitle, button.dataset.providerImportAction);
+            });
+          });
           return row;
         }),
       );

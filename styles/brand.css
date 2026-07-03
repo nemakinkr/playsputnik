@@ -851,6 +851,14 @@ textarea:focus-visible,
   min-width: 0;
 }
 
+.provider-import-review {
+  justify-items: start;
+  border: 1px solid var(--ps-border-soft);
+  border-radius: var(--radius-md);
+  background: var(--card-bg-soft);
+  padding: 10px;
+}
+
 .provider-import-main strong,
 .provider-import-review strong {
   color: var(--text-strong);
@@ -874,6 +882,57 @@ textarea:focus-visible,
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+}
+
+.provider-import-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--ps-border);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  padding: 3px 8px;
+  color: var(--text-strong);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.provider-import-status.tone-accepted {
+  border-color: color-mix(in srgb, var(--green) 34%, var(--ps-border));
+  background: color-mix(in srgb, var(--green) 12%, var(--card-bg));
+}
+
+.provider-import-status.tone-snoozed {
+  border-color: color-mix(in srgb, var(--amber) 38%, var(--ps-border));
+  background: color-mix(in srgb, var(--amber) 13%, var(--card-bg));
+}
+
+.provider-import-status.tone-hidden {
+  opacity: 0.72;
+}
+
+.provider-import-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.provider-import-actions button {
+  min-height: 30px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  color: var(--text-strong);
+  padding: 5px 8px;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.provider-import-actions button:first-child {
+  border-color: color-mix(in srgb, var(--ps-blue) 42%, var(--ps-border));
+  background: var(--cta-gradient);
+  color: #fff;
 }
 
 .detail-provider-import {
@@ -932,6 +991,10 @@ textarea:focus-visible,
   .provider-import-cover {
     width: 100%;
     max-width: 180px;
+  }
+
+  .provider-import-review {
+    justify-items: stretch;
   }
 }
 

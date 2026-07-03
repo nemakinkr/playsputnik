@@ -246,12 +246,31 @@ try {
     rows: document.querySelectorAll("#provider-import-list .provider-import-row").length,
     covers: document.querySelectorAll("#provider-import-list .provider-import-cover").length,
     sourceLinks: document.querySelectorAll("#provider-import-list .provider-import-row a[href]").length,
+    actionButtons: document.querySelectorAll("#provider-import-list [data-provider-import-action]").length,
+    reviewStatus: document.querySelector("#provider-import-list .provider-import-status")?.textContent || "",
     gapText: document.querySelector("#provider-import-list .provider-import-row small")?.textContent || "",
     hasGame: Array.from(document.querySelectorAll("#provider-import-list .provider-import-row strong"))
       .some((item) => (item.textContent || "").trim() === expectedTitle),
   }), expectedTitle);
 
-  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, dataProviderImports, errors };
+  await page.evaluate((expectedTitle) => {
+    const row = Array.from(document.querySelectorAll("#provider-import-list .provider-import-row"))
+      .find((item) => Array.from(item.querySelectorAll("strong")).some((strong) => (strong.textContent || "").trim() === expectedTitle));
+    row?.querySelector('[data-provider-import-action="accept"]')?.click();
+  }, expectedTitle);
+  await page.waitForTimeout(300);
+  const providerReviewAction = await page.evaluate(({ key, expectedTitle }) => {
+    const stored = JSON.parse(localStorage.getItem(key) || "{}");
+    const record = Object.values(stored.userGames || {}).find((item) => item.title === expectedTitle);
+    return {
+      status: record?.providerImport?.status || "",
+      reviewAction: record?.providerImport?.reviewAction || "",
+      saved: Boolean(record?.saved),
+      userState: Object.values(stored.userStates || {}).find((item) => item.title === expectedTitle)?.state || "",
+    };
+  }, { key: STORAGE_KEY, expectedTitle });
+
+  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(before.rows >= 1, `Expected search rows, got ${before.rows}`);
@@ -312,8 +331,13 @@ try {
     assert(dataProviderImports.rows >= 1, "Expected provider import review rows in Data");
     assert(dataProviderImports.covers >= 1, "Expected provider import review to show cover previews");
     assert(dataProviderImports.sourceLinks >= 1, "Expected provider import review to expose source links");
+    assert(dataProviderImports.actionButtons >= 3, "Expected provider import review actions");
+    assert(/Candidate|Кандидат/i.test(dataProviderImports.reviewStatus), `Expected provider import candidate status, got ${dataProviderImports.reviewStatus}`);
     assert(/price|цена|Ready|Готово/i.test(dataProviderImports.gapText), `Expected provider import review gap/readiness copy, got ${dataProviderImports.gapText}`);
     assert(dataProviderImports.hasGame, "Expected RAWG imported game in Data provider import review");
+    assert(providerReviewAction.status === "accepted", `Expected provider import accept action to persist, got ${providerReviewAction.status}`);
+    assert(providerReviewAction.reviewAction === "accept", `Expected provider import review action, got ${providerReviewAction.reviewAction}`);
+    assert(providerReviewAction.saved, "Expected accepted provider import to remain saved");
   }
   assert(after.userState === targetState, `Expected ${targetState} userState, got ${after.userState}`);
   assert(after.activeState, `Expected ${targetState} action to become active`);
