@@ -21,6 +21,7 @@
         market,
         priceWatch,
         trustRows,
+        providerImport,
         facts,
         passport,
         cachedAiExplanation,
@@ -108,6 +109,7 @@
           <div class="facts">${facts.map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`).join("")}</div>
           ${passport}
         </section>
+        ${providerImport || ""}
         <section class="game-detail-section game-detail-ai" id="detail-ai-section" ${cachedAiExplanation ? "" : "hidden"}>
           <h3>${t("narrative.ai.detailTitle")}</h3>
           <div id="detail-ai-body" class="detail-ai-body" aria-live="polite">${cachedAiExplanation

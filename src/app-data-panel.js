@@ -49,6 +49,16 @@
       return dataLabel("manualReview", String(value || "").replaceAll(" ", "_"), value);
     }
 
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;",
+      }[char]));
+    }
+
     // ── Refresh Policy ──────────────────────────────────────────────────────
     function refreshBandForGame(game, rankIndex) {
       const state = getState();
@@ -384,18 +394,40 @@
       els.providerImportList.replaceChildren(
         ...records.slice(0, 12).map((record) => {
           const row = document.createElement("div");
-          row.className = "catalog-import-row provider-import-row";
+          row.className = "provider-import-row";
           const importedAt = record.providerImport?.importedAt || record.updatedAt || "";
+          const coverUrl = record.providerImport?.coverUrl || record.coverUrl || "";
+          const sourceUrl = record.providerImport?.sourceUrl || record.sourceUrl || "";
+          const atoms = [...new Set([...(record.atoms || []), ...(record.inferredAtoms || [])])];
+          const platforms = record.platforms || [];
+          const gaps = [
+            (record.providerImport?.priceStatus || record.priceStatus) === "missing" ? t("data.providerImportGapPrice") : "",
+            !platforms.length ? t("data.providerImportGapPlatforms") : "",
+            !atoms.length ? t("data.providerImportGapAtoms") : "",
+          ].filter(Boolean);
           row.innerHTML = `
-            <div>
-              <strong>${record.title}</strong>
-              <span>${record.sourceUrl || t("data.providerImportNoSource")}</span>
+            ${coverUrl ? `
+              <img class="provider-import-cover" src="${escapeHtml(coverUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">
+            ` : `<div class="provider-import-cover is-empty" aria-hidden="true">RAWG</div>`}
+            <div class="provider-import-main">
+              <div>
+                <strong>${escapeHtml(record.title)}</strong>
+                <span>${sourceUrl ? `<a href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener noreferrer">${t("data.providerImportOpenSource")}</a>` : t("data.providerImportNoSource")}</span>
+              </div>
+              <div class="provider-import-pills">
+                <span class="catalog-pill ${catalogStatusClass(record.providerImport?.matchConfidence || record.matchConfidence)}">${localizedDiagnosticStatus(record.providerImport?.matchConfidence || record.matchConfidence || "unknown")}</span>
+                <span class="catalog-pill ${catalogStatusClass(record.providerImport?.coverStatus || record.coverStatus)}">${localizedDiagnosticStatus(record.providerImport?.coverStatus || record.coverStatus || "missing")}</span>
+                <span class="catalog-pill ${catalogStatusClass(record.providerImport?.priceStatus || record.priceStatus)}">${localizedDiagnosticStatus(record.providerImport?.priceStatus || record.priceStatus || "missing")}</span>
+                <span class="catalog-pill">${t("data.providerImportAtoms", { count: atoms.length })}</span>
+                <span class="catalog-pill">${platforms.length ? platforms.slice(0, 3).join(" / ") : t("data.providerImportNoPlatforms")}</span>
+              </div>
+              <small>${gaps.length ? t("data.providerImportGaps", { gaps: gaps.join(" / ") }) : t("data.providerImportReady")}</small>
             </div>
-            <span class="catalog-pill ${catalogStatusClass(record.providerImport?.matchConfidence || record.matchConfidence)}">${localizedDiagnosticStatus(record.providerImport?.matchConfidence || record.matchConfidence || "unknown")}</span>
-            <span class="catalog-pill ${catalogStatusClass(record.providerImport?.coverStatus || record.coverStatus)}">${localizedDiagnosticStatus(record.providerImport?.coverStatus || record.coverStatus || "missing")}</span>
-            <span class="catalog-pill ${catalogStatusClass(record.providerImport?.priceStatus || record.priceStatus)}">${localizedDiagnosticStatus(record.providerImport?.priceStatus || record.priceStatus || "missing")}</span>
-            <span>${record.providerImport?.attributionRequired ? t("data.providerImportAttribution") : t("data.providerImportNoCover")}</span>
-            <span>${importedAt ? t("data.providerImportImportedAt", { date: importedAt.slice(0, 10) }) : t("data.providerImportReview")}</span>
+            <div class="provider-import-review">
+              <span>${record.saved ? t("data.providerImportSaved") : t("data.providerImportReview")}</span>
+              <strong>${record.providerImport?.attributionRequired ? t("data.providerImportAttribution") : t("data.providerImportNoCover")}</strong>
+              <small>${importedAt ? t("data.providerImportImportedAt", { date: importedAt.slice(0, 10) }) : t("data.providerImportReview")}</small>
+            </div>
           `;
           return row;
         }),

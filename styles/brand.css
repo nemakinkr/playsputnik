@@ -812,6 +812,106 @@ textarea:focus-visible,
   line-height: 1.05;
 }
 
+.provider-import-row {
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr) minmax(120px, auto);
+  gap: 11px;
+  align-items: stretch;
+  border-top: 1px solid var(--ps-border-soft);
+  padding: 11px 0;
+}
+
+.provider-import-row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.provider-import-cover {
+  width: 86px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  object-fit: cover;
+}
+
+.provider-import-cover.is-empty {
+  display: grid;
+  place-items: center;
+  color: var(--text-mid);
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.provider-import-main,
+.provider-import-review {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.provider-import-main strong,
+.provider-import-review strong {
+  color: var(--text-strong);
+}
+
+.provider-import-main span,
+.provider-import-main small,
+.provider-import-review span,
+.provider-import-review small {
+  color: var(--text-mid);
+  font-size: 0.76rem;
+  line-height: 1.32;
+}
+
+.provider-import-main a {
+  color: var(--ps-blue);
+  font-weight: 850;
+}
+
+.provider-import-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.detail-provider-import {
+  border-color: color-mix(in srgb, var(--ps-blue) 24%, var(--ps-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 7%, transparent), transparent 54%),
+    var(--card-bg);
+}
+
+.detail-provider-import-grid {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.detail-provider-import-grid img,
+.detail-provider-import-fallback {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  object-fit: cover;
+}
+
+.detail-provider-import-fallback {
+  display: grid;
+  place-items: center;
+  color: var(--text-mid);
+  font-weight: 950;
+}
+
+.detail-provider-import a {
+  color: var(--ps-blue);
+  font-weight: 900;
+}
+
 .refresh-panel,
 .source-panel,
 .dev-health-panel,
@@ -821,6 +921,18 @@ textarea:focus-visible,
 .catalog-workbench-panel,
 .debug-panel {
   padding: 13px;
+}
+
+@media (max-width: 620px) {
+  .provider-import-row,
+  .detail-provider-import-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .provider-import-cover {
+    width: 100%;
+    max-width: 180px;
+  }
 }
 
 .source-row,

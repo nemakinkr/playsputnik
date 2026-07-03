@@ -307,6 +307,14 @@ try {
     [...document.querySelectorAll('.game-search-row')]
       .some((item) => (item.querySelector('strong')?.textContent || '').trim() === '${expectedTitle}')
   `);
+  await waitForExpression(cdp, `
+    [...document.querySelectorAll('.game-search-row')]
+      .some((item) => (
+        (item.querySelector('strong')?.textContent || '').trim() === '${expectedTitle}' &&
+        item.querySelector('.game-search-cover') &&
+        /RAWG/i.test(item.textContent || '')
+      ))
+  `, 20000);
 
   const before = await evaluate(cdp, `
     (() => ({
@@ -315,6 +323,11 @@ try {
       rows: document.querySelectorAll('.game-search-row').length,
       memoryPanels: document.querySelectorAll('[data-search-memory-panel]').length,
       firstTitle: document.querySelector('.game-search-row strong')?.textContent || '',
+      providerStatus: document.querySelector('#game-search-status')?.textContent || '',
+      coverPreviews: document.querySelectorAll('.game-search-cover').length,
+      rawgCoverPreviews: [...document.querySelectorAll('.game-search-cover figcaption, .game-search-cover span')]
+        .filter((item) => /RAWG/i.test(item.textContent || '')).length,
+      sourceLinks: document.querySelectorAll('.game-search-row a[href]').length,
       visualCards: document.querySelectorAll('.visual-catalog-card').length,
       horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     }))()
@@ -351,6 +364,9 @@ try {
         title: row?.querySelector('strong')?.textContent?.trim() || '',
         activeSaved: row?.querySelector('[data-search-state="saved"]')?.classList.contains('is-selected') || false,
         memorySaved: state.userGames[titleKey('${expectedTitle}')]?.saved === true,
+        provider: state.userGames[titleKey('${expectedTitle}')]?.provider || '',
+        coverUrl: state.userGames[titleKey('${expectedTitle}')]?.coverUrl || '',
+        sourceUrl: state.userGames[titleKey('${expectedTitle}')]?.sourceUrl || '',
         memoryStatus: row?.querySelector('[data-search-memory-panel]')?.textContent?.replace(/\\s+/g, ' ').trim() || '',
       };
     })()
@@ -369,6 +385,8 @@ try {
       title: document.querySelector('#game-detail-title')?.textContent || '',
       primaryCta: document.querySelector('[data-detail-primary-action]')?.textContent?.replace(/\\s+/g, ' ').trim() || '',
       cockpit: Boolean(document.querySelector('[data-detail-cockpit]')),
+      providerImport: Boolean(document.querySelector('[data-detail-provider-import]')),
+      sourceLinks: document.querySelectorAll('[data-detail-provider-import] a[href]').length,
     }))()
   `);
 
@@ -386,14 +404,20 @@ try {
   assert(before.rows >= 1, `Expected at least one search row, got ${before.rows}`);
   assert(before.firstTitle === expectedTitle, `Expected ${expectedTitle} as first live search result, got ${before.firstTitle}`);
   assert(before.memoryPanels >= 1, `Expected search memory panels, got ${before.memoryPanels}`);
+  assert(before.coverPreviews >= 1, "Expected live provider search to render cover previews");
+  assert(before.rawgCoverPreviews >= 1, "Expected live provider search to expose RAWG cover attribution");
   assert(before.visualCards >= 6, `Expected visual catalog cards, got ${before.visualCards}`);
   assert(!before.horizontalOverflow, "Published page has horizontal overflow at desktop viewport");
   assert(afterSave.activeSaved, "Expected direct search Wishlist action to become active");
   assert(afterSave.memorySaved, "Expected direct search Wishlist action to persist in memory");
+  assert(afterSave.provider === "rawg", `Expected live saved search result to persist RAWG provider, got ${afterSave.provider}`);
+  assert(afterSave.coverUrl && afterSave.sourceUrl, "Expected live saved RAWG result to persist cover/source URLs");
   assert(afterSave.title === expectedTitle, `Expected saved row ${expectedTitle}, got ${afterSave.title}`);
   assert(detail.title === afterSave.title, `Expected ${afterSave.title} detail drawer, got ${detail.title}`);
   assert(detail.primaryCta, "Expected smart detail primary CTA on live site");
   assert(detail.cockpit, "Expected detail cockpit on live site");
+  assert(detail.providerImport, "Expected live RAWG detail drawer to expose provider import section");
+  assert(detail.sourceLinks >= 1, "Expected live RAWG detail drawer to link back to source");
   assert(pageErrors.length === 0, `Live page errors: ${pageErrors.join("; ")}`);
 
   console.log(JSON.stringify({

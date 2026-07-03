@@ -5434,6 +5434,42 @@ function detailSourceTrustRows(game) {
   ];
 }
 
+function detailProviderImportHtml(game) {
+  const meta = game.externalMeta || {};
+  const providerImport = meta.providerImport || null;
+  const sourcePassport = meta.sourcePassport || {};
+  const isRawg = providerImport?.provider === "rawg" || meta.provider === "rawg" || game.coverMeta?.source === "rawg";
+  if (!isRawg) return "";
+  const sourceUrl = providerImport?.sourceUrl || meta.sourceUrl || game.coverMeta?.sourceUrl || "";
+  const coverUrl = providerImport?.coverUrl || meta.coverUrl || game.coverMeta?.url || "";
+  const importedAt = providerImport?.importedAt || meta.updatedAt || sourcePassport.checkedAt || "";
+  const missing = [
+    (providerImport?.priceStatus || meta.priceStatus || "missing") === "missing" ? t("narrative.detail.rawgMissingPrice") : "",
+    !(game.psPlus || []).length ? t("narrative.detail.rawgMissingPlus") : "",
+    !knownSeedGame(game.title) ? t("narrative.detail.rawgNeedsPromotion") : "",
+  ].filter(Boolean);
+  const chips = [
+    t("narrative.detail.rawgCover", { state: localizedCoverReadiness(game) }),
+    t("narrative.detail.rawgAtoms", { count: (game.atoms || []).length }),
+    ...(meta.platforms?.length ? [t("narrative.detail.rawgPlatforms", { platforms: meta.platforms.slice(0, 3).join(" / ") })] : []),
+    ...(importedAt ? [t("narrative.detail.rawgImported", { date: importedAt.slice(0, 10) })] : []),
+  ];
+  return `
+    <section class="game-detail-section detail-provider-import" data-detail-provider-import>
+      <h3>${t("narrative.detail.rawgImportTitle")}</h3>
+      <p>${t("narrative.detail.rawgImportDetail")}</p>
+      <div class="detail-provider-import-grid">
+        ${coverUrl ? `<img src="${detailAttr(coverUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer" />` : `<div class="detail-provider-import-fallback" aria-hidden="true">RAWG</div>`}
+        <div>
+          <div class="facts">${chips.map((chip) => `<span class="fact access">${chip}</span>`).join("")}</div>
+          <p>${missing.length ? t("narrative.detail.rawgMissingFacts", { facts: missing.join(" / ") }) : t("narrative.detail.rawgReadyFacts")}</p>
+          ${sourceUrl ? `<a href="${detailAttr(sourceUrl)}" target="_blank" rel="noopener noreferrer">${t("narrative.detail.rawgOpenSource")}</a>` : ""}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 function renderGameDetail(shouldFocus = false) {
   const detailGame = detailGameForTitle(selectedGameTitle);
   if (!selectedGameTitle || !detailGame) {
@@ -5455,6 +5491,7 @@ function renderGameDetail(shouldFocus = false) {
   const facts = factList(game).slice(0, 6);
   const valueCard = gameValueCard(game);
   const trustRows = detailSourceTrustRows(game);
+  const providerImport = detailProviderImportHtml(game);
   const aiContext = {
     fallbackDescription: description,
     personalReason: rationale.detail,
@@ -5545,6 +5582,7 @@ function renderGameDetail(shouldFocus = false) {
     market,
     priceWatch,
     trustRows,
+    providerImport,
     facts,
     passport,
     cachedAiExplanation,

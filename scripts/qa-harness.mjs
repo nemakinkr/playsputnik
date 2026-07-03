@@ -1508,6 +1508,7 @@ function checkSelectors() {
   assert(/narrative\.detail\.whyNow/.test(appSource) && /narrative\.detail\.sameLogic/.test(appDetailViewSource), "Detail cockpit should reuse the shared decision rationale");
   assert(/function detailTasteFitHtml/.test(appSource), "Game detail taste fit renderer is missing");
   assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
+  assert(/function detailProviderImportHtml/.test(appSource), "Game detail RAWG/provider import summary is missing");
   assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
   assert(/function runDetailPrimaryAction/.test(appSource), "Game detail smart primary CTA action handler is missing");
   assert(/function applyDetailState/.test(appSource), "Game detail shared state applier is missing");
@@ -1516,6 +1517,7 @@ function checkSelectors() {
   assert(/data-primary-kind/.test(appSource), "Game detail primary CTA should expose its action kind");
   assert(/data-detail-taste-fit/.test(appSource), "Game detail taste fit slot is missing");
   assert(/data-detail-source-trust/.test(appDetailViewSource), "Game detail source trust slot is missing");
+  assert(/data-detail-provider-import/.test(appDetailViewSource + appSource), "Game detail provider import slot is missing");
   assert(/detail-atom-signal/.test(appSource + appDetailViewSource + css), "Game detail atom signal chips are missing");
   assert(/\["subscription", t\("narrative\.detail\.actionPlus"\)\]/.test(appSource), "Game detail should support subscription-state actions");
   assert(/\["owned_forever", t\("narrative\.detail\.actionBought"\)\]/.test(appSource), "Game detail should support bought-state actions");
@@ -1539,6 +1541,7 @@ function checkSelectors() {
   assert(/data-search-memory-panel/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify search memory confirmation");
   assert(/data-search-state="saved"/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify direct Wishlist from search");
   assert(/data-detail-state="subscription"/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify Plus persistence");
+  assert(/data-detail-provider-import/.test(searchMemorySmokeSource), "Search-to-memory smoke should verify RAWG provider detail");
   assert(/production-smoke/.test(productionSmokeSource), "Production smoke test is missing");
   assert(/data-search-memory-panel/.test(productionSmokeSource), "Production smoke should verify search memory UI");
   assert(/data-health\.json/.test(productionSmokeSource), "Production smoke should verify published data health");
@@ -1549,6 +1552,7 @@ function checkSelectors() {
   assert(/production-browser-smoke/.test(productionBrowserSmokeSource), "Production browser smoke test is missing");
   assert(/remote-debugging-port/.test(productionBrowserSmokeSource), "Production browser smoke should use a real headless browser");
   assert(/data-search-state="saved"/.test(productionBrowserSmokeSource), "Production browser smoke should verify direct search Wishlist");
+  assert(/rawgCoverPreviews/.test(productionBrowserSmokeSource) && /data-detail-provider-import/.test(productionBrowserSmokeSource), "Production browser smoke should verify live RAWG search/detail flow");
   assert(/data-detail-cockpit/.test(productionBrowserSmokeSource), "Production browser smoke should verify the detail cockpit");
   assert(/production-smoke-test\.mjs/.test(deployPagesWorkflowSource), "Pages deploy should run production smoke after deployment");
   assert(/production-browser-smoke-test\.mjs/.test(deployPagesWorkflowSource), "Pages deploy should run production browser smoke after deployment");

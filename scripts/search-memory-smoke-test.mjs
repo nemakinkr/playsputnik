@@ -190,6 +190,8 @@ try {
     actions: document.querySelectorAll("[data-detail-state]").length,
     plusAction: Boolean(document.querySelector('[data-detail-state="subscription"]')),
     passportChecks: document.querySelectorAll("#game-detail .source-check").length,
+    providerImportSections: document.querySelectorAll("[data-detail-provider-import]").length,
+    providerImportSourceLinks: document.querySelectorAll("[data-detail-provider-import] a[href]").length,
     source: document.querySelector(".game-detail-cover-source")?.textContent || "",
     missingFacts: Array.from(document.querySelectorAll("#game-detail .fact")).filter((item) => /missing|check/i.test(item.textContent || "")).length,
   }));
@@ -242,6 +244,9 @@ try {
     activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
     status: document.querySelector("#provider-import-status")?.textContent || "",
     rows: document.querySelectorAll("#provider-import-list .provider-import-row").length,
+    covers: document.querySelectorAll("#provider-import-list .provider-import-cover").length,
+    sourceLinks: document.querySelectorAll("#provider-import-list .provider-import-row a[href]").length,
+    gapText: document.querySelector("#provider-import-list .provider-import-row small")?.textContent || "",
     hasGame: Array.from(document.querySelectorAll("#provider-import-list .provider-import-row strong"))
       .some((item) => (item.textContent || "").trim() === expectedTitle),
   }), expectedTitle);
@@ -278,6 +283,10 @@ try {
   assert(detail.actions >= 7, `Expected detail actions including Plus, got ${detail.actions}`);
   assert(detail.plusAction, "Expected detail Plus action");
   assert(detail.passportChecks >= 5, `Expected detail source passport checks, got ${detail.passportChecks}`);
+  if (injectRawg) {
+    assert(detail.providerImportSections >= 1, "Expected RAWG detail drawer to expose provider import section");
+    assert(detail.providerImportSourceLinks >= 1, "Expected RAWG detail drawer to link back to source");
+  }
   if (targetState === "saved") {
     assert(after.record?.saved, "Expected saved target state to persist as Wishlist memory");
   } else {
@@ -301,6 +310,9 @@ try {
     assert(after.record.atoms >= 3, `Expected RAWG/imported candidate atoms to feed taste, got ${after.record.atoms}`);
     assert(dataProviderImports.activeView === "data", `Expected Data view for provider import review, got ${dataProviderImports.activeView}`);
     assert(dataProviderImports.rows >= 1, "Expected provider import review rows in Data");
+    assert(dataProviderImports.covers >= 1, "Expected provider import review to show cover previews");
+    assert(dataProviderImports.sourceLinks >= 1, "Expected provider import review to expose source links");
+    assert(/price|цена|Ready|Готово/i.test(dataProviderImports.gapText), `Expected provider import review gap/readiness copy, got ${dataProviderImports.gapText}`);
     assert(dataProviderImports.hasGame, "Expected RAWG imported game in Data provider import review");
   }
   assert(after.userState === targetState, `Expected ${targetState} userState, got ${after.userState}`);
