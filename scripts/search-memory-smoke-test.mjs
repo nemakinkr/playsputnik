@@ -247,6 +247,11 @@ try {
     covers: document.querySelectorAll("#provider-import-list .provider-import-cover").length,
     sourceLinks: document.querySelectorAll("#provider-import-list .provider-import-row a[href]").length,
     actionButtons: document.querySelectorAll("#provider-import-list [data-provider-import-action]").length,
+    filters: Array.from(document.querySelectorAll("#provider-import-list [data-provider-import-filter]")).map((button) => ({
+      id: button.dataset.providerImportFilter,
+      pressed: button.getAttribute("aria-pressed"),
+      text: button.textContent.trim(),
+    })),
     reviewStatus: document.querySelector("#provider-import-list .provider-import-status")?.textContent || "",
     gapText: document.querySelector("#provider-import-list .provider-import-row small")?.textContent || "",
     hasGame: Array.from(document.querySelectorAll("#provider-import-list .provider-import-row strong"))
@@ -270,7 +275,25 @@ try {
     };
   }, { key: STORAGE_KEY, expectedTitle });
 
-  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, errors };
+  await page.evaluate(() => document.querySelector('[data-provider-import-filter="accepted"]')?.click());
+  await page.waitForTimeout(300);
+  const acceptedProviderImports = await page.evaluate((expectedTitle) => ({
+    rows: document.querySelectorAll("#provider-import-list .provider-import-row").length,
+    reviewStatus: document.querySelector("#provider-import-list .provider-import-status")?.textContent || "",
+    hasOpenWishlist: Boolean(document.querySelector('[data-provider-import-action="open-wishlist"]')),
+    hasGame: Array.from(document.querySelectorAll("#provider-import-list .provider-import-row strong"))
+      .some((item) => (item.textContent || "").trim() === expectedTitle),
+  }), expectedTitle);
+
+  await page.evaluate(() => document.querySelector('[data-provider-import-action="open-wishlist"]')?.click());
+  await page.waitForTimeout(300);
+  const providerWishlistPath = await page.evaluate((expectedTitle) => ({
+    activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
+    hasGame: Array.from(document.querySelectorAll(".wishlist-row strong, #wishlist-dashboard strong, .wishlist-card strong"))
+      .some((item) => (item.textContent || "").trim() === expectedTitle),
+  }), expectedTitle);
+
+  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(before.rows >= 1, `Expected search rows, got ${before.rows}`);
@@ -332,12 +355,20 @@ try {
     assert(dataProviderImports.covers >= 1, "Expected provider import review to show cover previews");
     assert(dataProviderImports.sourceLinks >= 1, "Expected provider import review to expose source links");
     assert(dataProviderImports.actionButtons >= 3, "Expected provider import review actions");
+    assert(dataProviderImports.filters.length >= 4, "Expected provider import filter controls");
+    assert(dataProviderImports.filters.some((item) => item.id === "candidate" && item.pressed === "true"), "Expected candidate provider import filter to be active by default");
     assert(/Candidate|Кандидат/i.test(dataProviderImports.reviewStatus), `Expected provider import candidate status, got ${dataProviderImports.reviewStatus}`);
     assert(/price|цена|Ready|Готово/i.test(dataProviderImports.gapText), `Expected provider import review gap/readiness copy, got ${dataProviderImports.gapText}`);
     assert(dataProviderImports.hasGame, "Expected RAWG imported game in Data provider import review");
     assert(providerReviewAction.status === "accepted", `Expected provider import accept action to persist, got ${providerReviewAction.status}`);
     assert(providerReviewAction.reviewAction === "accept", `Expected provider import review action, got ${providerReviewAction.reviewAction}`);
     assert(providerReviewAction.saved, "Expected accepted provider import to remain saved");
+    assert(acceptedProviderImports.rows >= 1, "Expected accepted provider import filter to show accepted row");
+    assert(/Accepted|Принято/i.test(acceptedProviderImports.reviewStatus), `Expected accepted status copy, got ${acceptedProviderImports.reviewStatus}`);
+    assert(acceptedProviderImports.hasOpenWishlist, "Expected accepted provider import to expose Open Wishlist path");
+    assert(acceptedProviderImports.hasGame, "Expected accepted provider import row to retain game title");
+    assert(providerWishlistPath.activeView === "wishlist", `Expected provider import path to open Wishlist, got ${providerWishlistPath.activeView}`);
+    assert(providerWishlistPath.hasGame, "Expected accepted RAWG import to be visible in Wishlist path");
   }
   assert(after.userState === targetState, `Expected ${targetState} userState, got ${after.userState}`);
   assert(after.activeState, `Expected ${targetState} action to become active`);

@@ -1401,6 +1401,8 @@ function checkSelectors() {
   assert(/Issue triage/.test(appDataPanelSource + i18nEnSource), "Data workbench should explain issue triage");
   assert(/provider-import-list/.test(html) && /renderProviderImports/.test(appDataPanelSource), "Data view should expose provider import review");
   assert(/data-provider-import-action/.test(appDataPanelSource) && /applyProviderImportAction/.test(appSource), "Provider imports should have review actions wired to persisted memory");
+  assert(/providerImportFilter/.test(appDataPanelSource) && /providerImportFilterMatches/.test(appDataPanelSource), "Provider imports should expose working review filters");
+  assert(/open-wishlist/.test(appDataPanelSource + appSource) && /providerWishlistPath/.test(searchMemorySmokeSource), "Accepted provider imports should guide users into Wishlist");
   assert(!/kind: "alias_partial"/.test(appSearchSource + searchProviderSource), "Search scoring should not accept broad alias_partial matches");
   assert(/Price gaps/i.test(appDataPanelSource + i18nEnSource), "Data workbench should distinguish price gaps from critical issues");
   assert(/function libraryDashboardCards/.test(appLibrarySource), "Library dashboard cards are missing");
@@ -1525,6 +1527,7 @@ function checkSelectors() {
   assert(/\["owned_forever", t\("narrative\.detail\.actionBought"\)\]/.test(appSource), "Game detail should support bought-state actions");
   assert(/data-hero-detail/.test(appSource + appCardsSource) && /data-visual-detail/.test(appSource + appVisualSource), "Game detail entry points are missing");
   assert(/game-detail-drawer/.test(css), "Game detail drawer should be styled");
+  assert(/game-detail-header/.test(css) && /game-detail-ai/.test(css), "Game detail should keep the polished header and AI surface styled");
   assert(/styles\/foundation\.css/.test(html) && /styles\/themes\.css/.test(html), "HTML should load split CSS directly");
   assert(/@import url\("styles\/foundation\.css"\)/.test(cssCompatSource), "styles.css should remain a cached-shell compatibility entrypoint");
   assert(/visual-catalog-smoke/.test(visualCatalogSmokeSource), "Visual catalog smoke test is missing");

@@ -24,6 +24,8 @@
     onProviderImportAction,
     els,
   }) {
+    let providerImportFilter = "candidate";
+
     function dataLabel(group, value, fallback = "") {
       const key = `data.${group}.${value}`;
       const translated = t(key);
@@ -209,6 +211,48 @@
         .sort((a, b) => String(b.providerImport?.importedAt || b.updatedAt || "").localeCompare(String(a.providerImport?.importedAt || a.updatedAt || "")));
     }
 
+    function providerImportStatus(record) {
+      return record?.providerImport?.status || "candidate";
+    }
+
+    function providerImportFilterMatches(record, filter) {
+      const status = providerImportStatus(record);
+      if (filter === "all") return true;
+      return status === filter;
+    }
+
+    function providerImportFilterBar(records) {
+      const counts = records.reduce((acc, record) => {
+        const status = providerImportStatus(record);
+        acc[status] = (acc[status] || 0) + 1;
+        acc.all += 1;
+        return acc;
+      }, { all: 0, candidate: 0, accepted: 0, snoozed: 0 });
+      const filters = [
+        ["candidate", t("data.providerImportFilterCandidate", { count: counts.candidate })],
+        ["accepted", t("data.providerImportFilterAccepted", { count: counts.accepted })],
+        ["snoozed", t("data.providerImportFilterSnoozed", { count: counts.snoozed })],
+        ["all", t("data.providerImportFilterAll", { count: counts.all })],
+      ];
+      const bar = document.createElement("div");
+      bar.className = "provider-import-filters";
+      bar.setAttribute("aria-label", t("data.providerImportFilterAria"));
+      filters.forEach(([id, label]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.providerImportFilter = id;
+        button.className = id === providerImportFilter ? "is-active" : "";
+        button.setAttribute("aria-pressed", id === providerImportFilter ? "true" : "false");
+        button.textContent = label;
+        button.addEventListener("click", () => {
+          providerImportFilter = id;
+          renderProviderImports();
+        });
+        bar.appendChild(button);
+      });
+      return bar;
+    }
+
     function averagePriceCoverage(dataHealth) {
       const coverages = (dataHealth?.regions || [])
         .map((region) => dataHealth.regionCoverage?.[region]?.priceCoverage)
@@ -381,6 +425,7 @@
       const records = providerImportRecords();
       const missingPrice = records.filter((record) => (record.providerImport?.priceStatus || record.priceStatus) === "missing").length;
       els.providerImportStatus.textContent = t("data.providerImportStatus", { count: records.length, missing: missingPrice });
+      const controls = providerImportFilterBar(records);
       if (!records.length) {
         const empty = document.createElement("div");
         empty.className = "catalog-import-row is-empty";
@@ -390,11 +435,25 @@
             <span>${t("data.providerImportEmptyDetail")}</span>
           </div>
         `;
-        els.providerImportList.replaceChildren(empty);
+        els.providerImportList.replaceChildren(controls, empty);
+        return;
+      }
+      const filteredRecords = records.filter((record) => providerImportFilterMatches(record, providerImportFilter));
+      if (!filteredRecords.length) {
+        const empty = document.createElement("div");
+        empty.className = "catalog-import-row is-empty";
+        empty.innerHTML = `
+          <div>
+            <strong>${t("data.providerImportFilterEmptyTitle")}</strong>
+            <span>${t("data.providerImportFilterEmptyDetail")}</span>
+          </div>
+        `;
+        els.providerImportList.replaceChildren(controls, empty);
         return;
       }
       els.providerImportList.replaceChildren(
-        ...records.slice(0, 12).map((record) => {
+        controls,
+        ...filteredRecords.slice(0, 12).map((record) => {
           const row = document.createElement("div");
           row.className = "provider-import-row";
           const importedAt = record.providerImport?.importedAt || record.updatedAt || "";
@@ -435,6 +494,7 @@
                 <button data-provider-import-action="accept" data-provider-import-title="${escapeHtml(record.title)}" type="button">${t("data.providerImportAccept")}</button>
                 <button data-provider-import-action="snooze" data-provider-import-title="${escapeHtml(record.title)}" type="button">${t("data.providerImportSnooze")}</button>
                 <button data-provider-import-action="hide" data-provider-import-title="${escapeHtml(record.title)}" type="button">${t("data.providerImportHide")}</button>
+                ${reviewStatus === "accepted" ? `<button data-provider-import-action="open-wishlist" data-provider-import-title="${escapeHtml(record.title)}" type="button">${t("data.providerImportOpenWishlist")}</button>` : ""}
               </div>
             </div>
           `;

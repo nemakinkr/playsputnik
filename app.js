@@ -1183,6 +1183,12 @@ function recordUserEvent(type, title, detail = {}) {
 }
 
 function applyProviderImportAction(title, action) {
+  if (action === "open-wishlist") {
+    state.activeView = "wishlist";
+    saveState();
+    render();
+    return;
+  }
   const key = titleKey(title);
   const current = normalizeUserGameRecord(state.userGames[key], title);
   if (!current?.providerImport) return;

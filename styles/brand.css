@@ -821,6 +821,31 @@ textarea:focus-visible,
   padding: 11px 0;
 }
 
+.provider-import-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 2px 0 10px;
+}
+
+.provider-import-filters button {
+  min-height: 30px;
+  border: 1px solid var(--ps-border);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--text-mid);
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.provider-import-filters button.is-active {
+  border-color: color-mix(in srgb, var(--ps-blue) 46%, var(--ps-border));
+  background: var(--cta-gradient);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
 .provider-import-row:first-child {
   border-top: 0;
   padding-top: 0;
@@ -933,6 +958,104 @@ textarea:focus-visible,
   border-color: color-mix(in srgb, var(--ps-blue) 42%, var(--ps-border));
   background: var(--cta-gradient);
   color: #fff;
+}
+
+.provider-import-actions [data-provider-import-action="open-wishlist"] {
+  border-color: color-mix(in srgb, var(--green) 34%, var(--ps-border));
+  background: color-mix(in srgb, var(--green) 12%, var(--card-bg));
+  color: var(--text-strong);
+}
+
+.game-detail-drawer {
+  border-color: var(--ps-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--ps-blue) 5%, transparent), transparent 28%),
+    var(--card-bg);
+  box-shadow: 0 28px 78px rgba(15, 23, 42, 0.24);
+}
+
+.game-detail-header {
+  position: sticky;
+  top: -16px;
+  z-index: 3;
+  margin: -16px -16px 0;
+  border-bottom: 1px solid var(--ps-border-soft);
+  background: color-mix(in srgb, var(--card-bg) 94%, transparent);
+  padding: 13px 16px 11px;
+  backdrop-filter: blur(16px);
+}
+
+.game-detail-header h2 {
+  color: var(--text-strong);
+  font-size: 1.28rem;
+}
+
+.game-detail-header p:last-child,
+.game-detail-cover-source {
+  color: var(--text-mid);
+}
+
+.game-detail-close {
+  border-color: var(--ps-border);
+  background: var(--chip-bg);
+  color: var(--text-mid);
+}
+
+.game-detail-visual {
+  min-height: 304px;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 20%, var(--ps-border));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.game-detail-visual strong {
+  max-width: 92%;
+  font-size: 1.84rem;
+}
+
+.detail-hero-badges span {
+  min-height: 26px;
+}
+
+.game-detail-status {
+  gap: 9px;
+}
+
+.detail-status-card {
+  border-color: var(--ps-border);
+  background: var(--card-bg-soft);
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-status-card.tone-access,
+.detail-status-card.tone-progress,
+.detail-status-card.tone-price {
+  border-color: color-mix(in srgb, var(--green) 24%, var(--ps-border));
+  background: color-mix(in srgb, var(--green) 8%, var(--card-bg));
+}
+
+.detail-status-card.tone-wishlist,
+.detail-status-card.tone-rating,
+.detail-status-card.tone-imported {
+  border-color: color-mix(in srgb, var(--amber) 28%, var(--ps-border));
+  background: color-mix(in srgb, var(--amber) 9%, var(--card-bg));
+}
+
+.detail-status-card span,
+.detail-status-card small {
+  color: var(--text-mid);
+}
+
+.detail-status-card strong {
+  color: var(--text-strong);
+}
+
+.game-detail-ai {
+  border-color: color-mix(in srgb, var(--ps-blue) 18%, var(--ps-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 6%, transparent), transparent 58%),
+    var(--card-bg);
 }
 
 .detail-provider-import {
