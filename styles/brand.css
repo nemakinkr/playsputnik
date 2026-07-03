@@ -1569,6 +1569,96 @@ textarea:focus-visible,
   background: var(--card-bg);
 }
 
+.wishlist-source-note {
+  display: grid;
+  gap: 7px;
+  margin-top: 8px;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 18%, var(--ps-border));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 5%, transparent), transparent 62%),
+    var(--card-bg-soft);
+  padding: 9px;
+}
+
+.wishlist-source-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.wishlist-source-facts span {
+  min-height: 24px;
+  border: 1px solid var(--ps-border-soft);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--text-mid);
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.wishlist-source-note a {
+  width: fit-content;
+  color: var(--ps-blue);
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+/* ── Data view: source trust cockpit ─────────────────────────────────────── */
+.data-quality-panel {
+  border-color: color-mix(in srgb, var(--ps-blue) 22%, var(--ps-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 6%, transparent), transparent 48%),
+    var(--card-bg);
+}
+
+.data-quality-card {
+  min-height: 124px;
+  border-color: var(--ps-border);
+  background: var(--card-bg-soft);
+  box-shadow: var(--shadow-sm);
+}
+
+.data-quality-card strong {
+  font-size: 1.36rem;
+}
+
+.refresh-panel,
+.source-panel,
+.dev-health-panel,
+.workbench-panel,
+.provider-import-panel,
+.catalog-backbone-panel,
+.catalog-workbench-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.refresh-panel::before,
+.source-panel::before,
+.dev-health-panel::before,
+.workbench-panel::before,
+.provider-import-panel::before,
+.catalog-backbone-panel::before,
+.catalog-workbench-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: color-mix(in srgb, var(--ps-blue) 54%, var(--ps-border));
+}
+
+.source-row,
+.policy-row,
+.dev-health-row,
+.workbench-card,
+.backbone-row,
+.catalog-import-row {
+  border-color: var(--ps-border-soft);
+  background: var(--card-bg-soft);
+}
+
 @media (max-width: 900px) {
   .library-dashboard,
   .wishlist-dashboard,

@@ -6053,6 +6053,37 @@ function wishlistSourceStatus(region) {
   });
 }
 
+function wishlistExternalSourceHtml(game, region) {
+  const meta = game.externalMeta || {};
+  const providerImport = meta.providerImport || null;
+  const isExternal = game.externalCandidate || providerImport?.provider || meta.provider;
+  if (!isExternal) return "";
+  const source = providerImport?.provider === "rawg" || meta.provider === "rawg" ? "RAWG" : (meta.sourceLabel || meta.provider || t("wishlist.externalSourceFallback"));
+  const status = providerImport?.status || meta.catalogStatus || "candidate";
+  const statusKeys = {
+    candidate: "data.providerImportStatusLabel.candidate",
+    accepted: "data.providerImportStatusLabel.accepted",
+    snoozed: "data.providerImportStatusLabel.snoozed",
+    hidden: "data.providerImportStatusLabel.hidden",
+  };
+  const statusLabel = t(statusKeys[status] || "data.providerImportStatusLabel.candidate");
+  const facts = [
+    t("wishlist.externalSource", { source }),
+    t("wishlist.externalReview", { status: statusLabel }),
+    typeof game.prices?.[region] !== "number" ? t("wishlist.externalNoPrice") : "",
+    !(game.psPlus || []).includes(region) ? t("wishlist.externalNoPlus") : "",
+  ].filter(Boolean);
+  const sourceUrl = providerImport?.sourceUrl || meta.sourceUrl || game.coverMeta?.sourceUrl || "";
+  return `
+    <div class="wishlist-source-note" data-wishlist-source-note>
+      <div class="wishlist-source-facts">
+        ${facts.map((fact) => `<span>${fact}</span>`).join("")}
+      </div>
+      ${sourceUrl ? `<a href="${detailAttr(sourceUrl)}" target="_blank" rel="noopener noreferrer">${t("wishlist.externalOpenSource")}</a>` : ""}
+    </div>
+  `;
+}
+
 function hasUserWishlistMemory() {
   if (state.saved?.size) return true;
   return Object.values(state.userGames || {}).some((game) =>
@@ -6182,6 +6213,7 @@ function renderPriceWatch(ranked) {
       const guardLine = guard
         ? `<span class="anti-hype-guard guard-${guard.kind}"><strong>${guard.label}</strong> ${guard.detail}</span>`
         : "";
+      const sourceNote = wishlistExternalSourceHtml(game, region);
       row.innerHTML = `
         <span class="wishlist-decision">${decision.label}</span>
         <div>
@@ -6189,6 +6221,7 @@ function renderPriceWatch(ranked) {
           <span class="deal-price ${status.canConfirm ? "" : "needs-verify"}">${priceLine}</span>
           <span class="deal-reason">${decision.detail}${watchLine} / ${t("wishlist.lanesLine", { lanes })}</span>
           ${guardLine}
+          ${sourceNote}
           ${watch ? priceWatchControlHtml(game, { context: "row" }) : ""}
         </div>
         <div class="wishlist-actions">

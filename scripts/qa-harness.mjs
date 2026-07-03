@@ -40,6 +40,7 @@ const [
   componentsCss,
   polishCss,
   themesCss,
+  brandCss,
   swSource,
   catalog,
   priceSnapshots,
@@ -120,6 +121,7 @@ const [
   readFile(new URL("styles/components.css", ROOT), "utf8"),
   readFile(new URL("styles/polish.css", ROOT), "utf8"),
   readFile(new URL("styles/themes.css", ROOT), "utf8"),
+  readFile(new URL("styles/brand.css", ROOT), "utf8"),
   readFile(new URL("sw.js", ROOT), "utf8"),
   readJson("data/games.json"),
   readJson("data/price-snapshots.json"),
@@ -166,7 +168,7 @@ const [
 
 // User-facing copy moved into the i18n catalogs; checks below look here too.
 const i18nEnSource = await readFile(new URL("src/i18n-en.js", ROOT), "utf8");
-const css = `${foundationCss}\n${componentsCss}\n${polishCss}\n${themesCss}`;
+const css = `${foundationCss}\n${componentsCss}\n${polishCss}\n${themesCss}\n${brandCss}`;
 
 const appRuntimeSource = `${appStorageSource}\n${appConfigSource}\n${appStateMigrationsSource}\n${appStateSource}\n${appSessionSource}\n${appHltbSource}\n${appAiSource}\n${appCardsSource}\n${appDataPanelSource}\n${appImportSource}\n${appExportSource}\n${appSearchSource}\n${appEnrichmentSource}\n${appOnboardingSource}\n${appEntrySource}\n${appScoreSource}\n${appRadarSource}\n${appRecommendSource}\n${appRankingSource}\n${appAnswerSource}\n${appDecisionsSource}\n${appLibrarySource}\n${appVisualSource}\n${appSearchMemorySource}\n${appWishlistSource}\n${appDetailSource}\n${appDetailViewSource}\n${appCoverSource}\n${appDevSource}\n${appSource}`;
 const appLoadSource = `${html}\n${moduleManifestSource}`;
@@ -1426,6 +1428,7 @@ function checkSelectors() {
   assert(/function wishlistIntentRecords/.test(appWishlistSource), "Wishlist triage records are missing");
   assert(/function wishlistDecision/.test(appWishlistSource), "Wishlist decision labels are missing");
   assert(/function wishlistFilterMatches/.test(appWishlistSource), "Wishlist queue filter logic is missing");
+  assert(/function wishlistExternalSourceHtml/.test(appSource) && /data-wishlist-source-note/.test(appSource + searchMemorySmokeSource), "Wishlist should explain external RAWG source trust");
   assert(/data-wishlist-state="owned_forever"/.test(appSource), "Wishlist rows should support bought-state actions");
   assert(/function priceWatchRecord/.test(appWishlistSource), "Price watch record normalizer is missing");
   assert(/function priceWatchRecords/.test(appWishlistSource), "Price watch queue builder is missing");
@@ -1528,6 +1531,7 @@ function checkSelectors() {
   assert(/data-hero-detail/.test(appSource + appCardsSource) && /data-visual-detail/.test(appSource + appVisualSource), "Game detail entry points are missing");
   assert(/game-detail-drawer/.test(css), "Game detail drawer should be styled");
   assert(/game-detail-header/.test(css) && /game-detail-ai/.test(css), "Game detail should keep the polished header and AI surface styled");
+  assert(/data-quality-panel/.test(css) && /provider-import-filters/.test(css), "Data view should keep the source-trust cockpit styling");
   assert(/styles\/foundation\.css/.test(html) && /styles\/themes\.css/.test(html), "HTML should load split CSS directly");
   assert(/@import url\("styles\/foundation\.css"\)/.test(cssCompatSource), "styles.css should remain a cached-shell compatibility entrypoint");
   assert(/visual-catalog-smoke/.test(visualCatalogSmokeSource), "Visual catalog smoke test is missing");

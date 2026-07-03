@@ -291,6 +291,8 @@ try {
     activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
     hasGame: Array.from(document.querySelectorAll(".wishlist-row strong, #wishlist-dashboard strong, .wishlist-card strong"))
       .some((item) => (item.textContent || "").trim() === expectedTitle),
+    sourceNotes: document.querySelectorAll("[data-wishlist-source-note]").length,
+    sourceNoteText: document.querySelector("[data-wishlist-source-note]")?.textContent?.replace(/\s+/g, " ").trim() || "",
   }), expectedTitle);
 
   const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
@@ -369,6 +371,8 @@ try {
     assert(acceptedProviderImports.hasGame, "Expected accepted provider import row to retain game title");
     assert(providerWishlistPath.activeView === "wishlist", `Expected provider import path to open Wishlist, got ${providerWishlistPath.activeView}`);
     assert(providerWishlistPath.hasGame, "Expected accepted RAWG import to be visible in Wishlist path");
+    assert(providerWishlistPath.sourceNotes >= 1, "Expected Wishlist to expose source note for accepted RAWG import");
+    assert(/RAWG|цена|price|Plus/i.test(providerWishlistPath.sourceNoteText), `Expected Wishlist source note to explain RAWG/missing facts, got ${providerWishlistPath.sourceNoteText}`);
   }
   assert(after.userState === targetState, `Expected ${targetState} userState, got ${after.userState}`);
   assert(after.activeState, `Expected ${targetState} action to become active`);
