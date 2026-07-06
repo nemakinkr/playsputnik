@@ -942,6 +942,7 @@ function checkSelectors() {
   assert(/quick-swipe-proof/.test(appSource), "Swipe deck should show why the first signals already create value");
   assert(/data-quick-swipe-contract/.test(appSource), "Swipe deck should show the 30-second value contract");
   assert(/click.*to first pick/.test(appSource + i18nEnSource), "Swipe deck should tell users how close they are to the first pick");
+  assert(/data-onboarding-shortcut="ratings"/.test(html), "First screen should offer the fast ranked-list import path");
   assert(/quick-swipe-meters/.test(appSource), "Swipe deck should show progress meters");
   assert(/quick-swipe-track/.test(appSource), "Swipe deck should render progress tracks");
   assert(/quick-swipe-atom-row/.test(appSource), "Swipe deck atom row is missing");
@@ -1497,6 +1498,8 @@ function checkSelectors() {
   assert(/function notebookSection/.test(appRadarSource), "Notebook section detector is missing");
   assert(/function parseRatingLine/.test(appRadarSource), "Rating line parser is missing");
   assert(/function findRatedGame/.test(appRadarSource), "Rated game lookup is missing");
+  assert(/function rememberImportedRating/.test(appSource), "Rating imports should become persistent personal rating memory");
+  assert(/taste-import-rank-shape/.test(appSource + css), "Ranked-list import preview should show top/middle/tail shape");
   assert(/function sourceForLayer/.test(appRadarSource), "Source-for-layer helper is missing");
   assert(/function freshnessLabel/.test(appRadarSource), "Freshness label helper is missing");
   assert(/PlaySputnikRadar/.test(appRadarSource), "Radar module must export PlaySputnikRadar");
@@ -1518,6 +1521,7 @@ function checkSelectors() {
   assert(/function detailSourceTrustRows/.test(appSource), "Game detail source trust helper is missing");
   assert(/function detailProviderImportHtml/.test(appSource), "Game detail RAWG/provider import summary is missing");
   assert(/localNarrative/.test(appAiSource) && /localDetail/.test(i18nEnSource), "AI narrative should expose a free localized fallback");
+  assert(/localCompanionRanked/.test(appAiSource + i18nEnSource), "Local companion fallback should use imported rankings when available");
   assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
   assert(/function runDetailPrimaryAction/.test(appSource), "Game detail smart primary CTA action handler is missing");
   assert(/function applyDetailState/.test(appSource), "Game detail shared state applier is missing");

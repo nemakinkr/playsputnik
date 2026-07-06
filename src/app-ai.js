@@ -109,12 +109,25 @@
       const facts = gameFacts(game);
       const taste = tasteContext();
       const atoms = localizedAtomList(facts.atoms) || t("narrative.ai.localNoAtoms");
-      const liked = taste.likedTitles?.length
-        ? taste.likedTitles.slice(0, 3).join(", ")
+      const likedTitles = taste.importedRatings?.length
+        ? taste.importedRatings.slice(0, 3).map((item) => item.title)
+        : taste.likedTitles;
+      const liked = likedTitles?.length
+        ? likedTitles.slice(0, 3).join(", ")
         : t("narrative.ai.localNoLikes");
-      const reason = context.personalReason || context.decision || context.evidence || facts.vibe || "";
-      const risk = context.risk || "";
+      const reason = context.personalReason || context.decision || context.evidence || facts.vibe || t("narrative.ai.localReasonFallback", { title: facts.title });
+      const risk = context.risk || t("narrative.ai.localRiskFallback");
       if (kind === "companion") {
+        if ((taste.importedRatings || []).length >= 8) {
+          return t("narrative.ai.localCompanionRanked", {
+            title: facts.title,
+            atoms,
+            reason,
+            risk,
+            liked,
+            count: taste.importedRatings.length,
+          });
+        }
         return t("narrative.ai.localCompanion", {
           title: facts.title,
           atoms,

@@ -2188,6 +2188,22 @@ function applyRatingWeight(weights, game, parsedRating) {
   });
 }
 
+function rememberImportedRating(game, parsedRating) {
+  if (!game || !Number.isFinite(Number(parsedRating))) return null;
+  const key = titleKey(game.title);
+  const current = normalizeUserGameRecord(state.userGames[key], game.title)
+    || normalizeUserGameRecord({ title: game.title });
+  current.title = game.title;
+  current.rating = Math.max(0, Math.min(100, Math.round(Number(parsedRating) * 10)));
+  current.source = current.source && current.source !== "manual" ? current.source : "rating_import";
+  current.updatedAt = new Date().toISOString();
+  state.userGames[key] = current;
+  state.userStates[key] = { title: current.title, state: legacyStateFromUserGame(current), updatedAt: current.updatedAt };
+  delete state.calibrationSkips?.[key];
+  delete state.ratingQueue?.[key];
+  return current;
+}
+
 function canMarkDeepTasteImport() {
   return !["demo", "psn", "quick"].includes(state.entryPath);
 }
@@ -2212,6 +2228,7 @@ function analyzeRankedTasteImport(rankedEntries) {
     if (!game) return;
     const rating = derivedRatingFromRank(entry.rank, total);
     applyRatingWeight(weights, game, rating);
+    rememberImportedRating(game, rating);
     matched.push({ title: game.title, rating });
   });
 
@@ -2252,6 +2269,7 @@ function analyzeTasteImport() {
       const game = findRatedGame(parsed.title);
       if (!game) return;
       applyRatingWeight(weights, game, parsed.rating);
+      rememberImportedRating(game, parsed.rating);
       matched.push({ title: game.title, rating: parsed.rating });
     });
   state.atomWeights = weights;
@@ -2291,6 +2309,22 @@ function tasteImportPreview() {
     .slice(0, 4)
     .map(([signal]) => signal);
   const topMatched = matched.slice(0, 3).map(({ game }) => game.title);
+  const rankedShape = isRanked && matched.length
+    ? [
+        {
+          label: t("settings.tasteImport.previewRankTop"),
+          titles: matched.slice(0, 3).map(({ game }) => game.title),
+        },
+        {
+          label: t("settings.tasteImport.previewRankMid"),
+          titles: matched.slice(Math.max(0, Math.floor(matched.length / 2) - 1), Math.floor(matched.length / 2) + 2).map(({ game }) => game.title),
+        },
+        {
+          label: t("settings.tasteImport.previewRankTail"),
+          titles: matched.slice(-3).map(({ game }) => game.title),
+        },
+      ].filter((item) => item.titles.length)
+    : [];
   const matchRatio = entries.length ? matched.length / entries.length : 0;
   return {
     empty: !lines.length,
@@ -2303,6 +2337,7 @@ function tasteImportPreview() {
     strong: isRanked ? matched.length >= 20 && matchRatio >= 0.5 : matched.length >= 8,
     topSignals,
     topMatched,
+    rankedShape,
   };
 }
 
@@ -2356,6 +2391,16 @@ function renderTasteImportPreview() {
         <strong>${preview.mode === "ranked" ? t("settings.tasteImport.previewRankedImpact") : t("settings.tasteImport.previewRatingsImpact")}</strong>
       </div>
     </div>
+    ${preview.rankedShape?.length ? `
+      <div class="taste-import-rank-shape" aria-label="${t("settings.tasteImport.previewRankShape")}">
+        ${preview.rankedShape.map((item) => `
+          <div>
+            <span>${item.label}</span>
+            <strong>${item.titles.join(" / ")}</strong>
+          </div>
+        `).join("")}
+      </div>
+    ` : ""}
   `;
 }
 
@@ -3208,6 +3253,16 @@ function renderOnboardingHero() {
       });
 
   hero.dataset.answered = String(answered);
+  hero.querySelectorAll("[data-onboarding-shortcut]").forEach((button) => {
+    button.onclick = () => {
+      const action = button.dataset.onboardingShortcut;
+      if (action === "ratings") {
+        focusTasteImport();
+        return;
+      }
+      focusKnownGames();
+    };
+  });
 
   // One diagnostic question at a time keeps the first run focused while using
   // the same taste engine as the full quick-swipe deck in Settings.

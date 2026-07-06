@@ -689,6 +689,29 @@ body[data-app-view-current="library"] .library-panel { order: 10; }
   line-height: 1.1;
 }
 
+.onboarding-entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.onboarding-entry-actions button {
+  min-height: 38px;
+}
+
+.onboarding-entry-actions .secondary-action {
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+
+.onboarding-entry-actions .secondary-action:hover,
+.onboarding-entry-actions .secondary-action:focus-visible {
+  border-color: rgba(255,255,255,.42);
+  background: rgba(255,255,255,.16);
+}
+
 .onboarding-progress {
   display: flex;
   flex-direction: column;
