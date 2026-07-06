@@ -1031,6 +1031,8 @@ function checkSelectors() {
   assert(/PlaySputnikAi/.test(appSource), "app.js must reference PlaySputnikAi");
   assert(/fetchExplanation/.test(appSource), "app.js must wire fetchExplanation into detail drawer");
   assert(/fetchNarrative\("companion"/.test(appSource), "app.js must hydrate the main companion answer with AI narrative");
+  assert(/localNarrative\("companion"/.test(appSource), "Main companion answer must have a free localized narrative fallback");
+  assert(/data-ai-companion-copy/.test(appSource + css), "Main companion answer fallback should render through a stable narrative slot");
   assert(/textContent = explanation/.test(appSource), "AI detail output must be inserted as text, not trusted HTML");
   assert(/app-ai\.js/.test(appLoadSource), "app-ai.js must be in the load chain");
   assert(/ANTHROPIC_API_KEY/.test(searchProviderSource), "Search provider server must read ANTHROPIC_API_KEY");
@@ -1532,6 +1534,8 @@ function checkSelectors() {
   assert(/game-detail-drawer/.test(css), "Game detail drawer should be styled");
   assert(/game-detail-header/.test(css) && /game-detail-ai/.test(css), "Game detail should keep the polished header and AI surface styled");
   assert(/data-quality-panel/.test(css) && /provider-import-filters/.test(css), "Data view should keep the source-trust cockpit styling");
+  assert(/data-guide-panel/.test(html + css), "Data view should expose a priority guide panel");
+  assert(/data-guide-card/.test(html + css), "Data view priority guide cards should be styled");
   assert(/styles\/foundation\.css/.test(html) && /styles\/themes\.css/.test(html), "HTML should load split CSS directly");
   assert(/@import url\("styles\/foundation\.css"\)/.test(cssCompatSource), "styles.css should remain a cached-shell compatibility entrypoint");
   assert(/visual-catalog-smoke/.test(visualCatalogSmokeSource), "Visual catalog smoke test is missing");

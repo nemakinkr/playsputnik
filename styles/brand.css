@@ -737,6 +737,7 @@ textarea:focus-visible,
 .answer-panel,
 .plan-panel,
 .library-plan-panel,
+.data-guide-panel,
 .data-quality-panel,
 .refresh-panel,
 .source-panel,
@@ -761,6 +762,64 @@ textarea:focus-visible,
 .data-quality-panel {
   padding: 14px;
 }
+
+.data-guide-panel {
+  border-color: color-mix(in srgb, var(--ps-blue) 24%, var(--ps-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 7%, transparent), transparent 46%),
+    var(--card-bg);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.data-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.data-guide-card {
+  display: grid;
+  gap: 6px;
+  min-height: 118px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-md);
+  background: var(--card-bg-soft);
+  color: inherit;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.data-guide-card:hover,
+.data-guide-card:focus-visible {
+  border-color: color-mix(in srgb, var(--ps-blue) 48%, var(--ps-border));
+  box-shadow: var(--shadow-sm);
+}
+
+.data-guide-card span {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.data-guide-card strong {
+  color: var(--text-strong);
+  font-size: 0.98rem;
+  line-height: 1.18;
+}
+
+.data-guide-card small {
+  color: var(--text-mid);
+  font-size: 0.78rem;
+  line-height: 1.36;
+}
+
+.data-guide-card.tone-product { border-top: 3px solid var(--green); }
+.data-guide-card.tone-review { border-top: 3px solid var(--amber); }
+.data-guide-card.tone-trust { border-top: 3px solid var(--ps-blue); }
+.data-guide-card.tone-dev { border-top: 3px solid var(--text-soft); }
 
 .data-quality-grid {
   display: grid;
@@ -1058,6 +1117,15 @@ textarea:focus-visible,
     var(--card-bg);
 }
 
+.answer-narrative [data-ai-companion-copy] {
+  border-left: 3px solid color-mix(in srgb, var(--ps-blue) 54%, var(--ps-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 5%, transparent), transparent 64%),
+    var(--card-bg-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px 11px;
+}
+
 .detail-provider-import {
   border-color: color-mix(in srgb, var(--ps-blue) 24%, var(--ps-border));
   background:
@@ -1181,6 +1249,18 @@ textarea:focus-visible,
   .data-quality-card {
     min-height: 0;
     padding: 10px 11px;
+  }
+}
+
+@media (max-width: 900px) {
+  .data-guide-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .data-guide-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

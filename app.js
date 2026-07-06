@@ -3681,15 +3681,18 @@ function renderCompanionAnswer(ranked) {
     decision: answer.agenda?.[0]?.detail || "",
     session: state.session,
   } : null;
-  const aiNarrative = narrativeGame
+  const cachedCompanionNarrative = narrativeGame
     ? cachedNarrative("companion", narrativeGame, narrativeContext)
     : null;
+  const companionNarrative = cachedCompanionNarrative || (narrativeGame
+    ? localNarrative("companion", narrativeGame, narrativeContext)
+    : null);
   els.answerStatus.textContent = answer.status;
   els.answerCopy.innerHTML = `
     <div class="answer-main">
       <strong>${answer.title}</strong>
       <div class="answer-narrative" data-ai-companion-title="${detailAttr(answer.gameTitle || "")}" aria-live="polite">
-        ${aiNarrative
+        ${companionNarrative
           ? `<p data-ai-companion-copy></p>`
           : answer.paragraphs.slice(0, 2).map((item) => `<p>${item}</p>`).join("")}
       </div>
@@ -3730,10 +3733,11 @@ function renderCompanionAnswer(ranked) {
     ${renderUndoStrip("answer-undo")}
   `;
   hydrateComparisonCovers(els.answerCopy);
-  if (aiNarrative) {
+  if (companionNarrative) {
     const generated = els.answerCopy.querySelector("[data-ai-companion-copy]");
-    if (generated) generated.textContent = aiNarrative;
-  } else if (narrativeGame) {
+    if (generated) generated.textContent = companionNarrative;
+  }
+  if (narrativeGame && !cachedCompanionNarrative) {
     const requestedLocale = window.PlaySputnikI18n.getLocale();
     void (async () => {
       if (!await narrativeAvailable()) return;
