@@ -39,20 +39,30 @@
       return "";
     }
 
-    function parseRatingLine(line) {
-      const match = line.trim().match(/^(.*?)[\s,:-]+(\d+(?:\.\d+)?)\s*(?:\/\s*(5|10))?$/);
-      if (!match) return null;
-      const rawRating = Number(match[2]);
-      const divisor = match[3] ? Number(match[3]) : rawRating <= 5 ? 5 : 10;
-      const rating = Math.max(0, Math.min(10, (rawRating / divisor) * 10));
-      return { title: match[1].trim(), rating };
-    }
-
-    function stripRankingMarker(line) {
+    function cleanImportedTitle(line) {
       return stripNotebookMarker(line)
         .replace(/^(?:[0-9]\uFE0F?\u20E3)+\s*/u, "")
         .replace(/^\d+[.)]\s*/, "")
+        .replace(/^[•*\-–—]+\s*/, "")
+        .replace(/^[\p{Emoji_Presentation}\p{Extended_Pictographic}\s]+/u, "")
+        .replace(/\s*(?:[-–—]|,)?\s*(?:PS[45]|PS4|PS5|Xbox|Switch|PC)\s*$/i, "")
+        .replace(/\s*[-–—]\s*\d+(?:[,.]\d+)?\s*(?:€|eur|usd|\$|₽|руб\.?)\s*$/i, "")
+        .replace(/\s*[-–—]\s*\d{1,2}\s+(?:января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s*$/i, "")
         .trim();
+    }
+
+    function parseRatingLine(line) {
+      const match = line.trim().match(/^(.*?)[\s,:-]+(\d+(?:[,.]\d+)?)\s*(?:\/\s*(5|10))?$/);
+      if (!match) return null;
+      const rawRating = Number(match[2].replace(",", "."));
+      const divisor = match[3] ? Number(match[3]) : rawRating <= 5 ? 5 : 10;
+      const rating = Math.max(0, Math.min(10, (rawRating / divisor) * 10));
+      const title = cleanImportedTitle(match[1]);
+      return title ? { title, rating } : null;
+    }
+
+    function stripRankingMarker(line) {
+      return cleanImportedTitle(line);
     }
 
     function parseRankedTasteLines(textOrLines) {
@@ -65,12 +75,15 @@
         const match = line.match(/[,:-]\s*(\d+(?:\.\d+)?)\s*$/i);
         return match ? Number(match[1]) <= 10 : false;
       };
+      const looksLikeCommerceOrDate = (line) => /(?:€|eur|usd|\$|₽|руб\.?)\s*$/i.test(line)
+        || /\s+-\s+\d{1,2}\s+(?:января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s*$/i.test(line);
       lines
         .map((line) => String(line || "").trim())
         .filter(Boolean)
         .forEach((line) => {
           if (notebookSection(line) || /^_+$/.test(line)) return;
           if (looksLikeExplicitRating(line)) return;
+          if (looksLikeCommerceOrDate(line)) return;
           const title = stripRankingMarker(line);
           if (!title || title.length < 2 || title.length > 120) return;
           entries.push({ title, rank: entries.length + 1 });
@@ -135,6 +148,7 @@
       notebookSection,
       parseRatingLine,
       parseRankedTasteLines,
+      cleanImportedTitle,
       findRatedGame,
       importedTasteScore,
       radarScore,

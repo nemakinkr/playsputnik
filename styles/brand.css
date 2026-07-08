@@ -1368,6 +1368,14 @@ textarea:focus-visible,
   min-width: 0;
 }
 
+.search-trust-detail {
+  display: block;
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 780;
+  line-height: 1.35;
+}
+
 .game-search-cover {
   position: relative;
   width: 76px;
@@ -1553,6 +1561,29 @@ textarea:focus-visible,
 }
 
 .taste-import-rank-shape strong {
+  color: var(--text-strong);
+  font-size: 0.78rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.taste-import-misses {
+  display: grid;
+  gap: 4px;
+  border: 1px dashed color-mix(in srgb, var(--amber) 44%, var(--ps-border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--amber) 9%, var(--card-bg));
+  padding: 10px;
+}
+
+.taste-import-misses span,
+.taste-import-misses small {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 820;
+}
+
+.taste-import-misses strong {
   color: var(--text-strong);
   font-size: 0.78rem;
   line-height: 1.3;

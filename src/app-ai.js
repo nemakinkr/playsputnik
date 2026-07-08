@@ -119,7 +119,12 @@
       const risk = context.risk || t("narrative.ai.localRiskFallback");
       if (kind === "companion") {
         if ((taste.importedRatings || []).length >= 8) {
-          return t("narrative.ai.localCompanionRanked", {
+          const rankedKey = (facts.length === "long" || facts.commitment === "high" || facts.hltbHours >= 35)
+            ? "narrative.ai.localCompanionRankedLong"
+            : (facts.session === "short" || (facts.hltbHours && facts.hltbHours <= 12))
+              ? "narrative.ai.localCompanionRankedShort"
+              : "narrative.ai.localCompanionRanked";
+          return t(rankedKey, {
             title: facts.title,
             atoms,
             reason,

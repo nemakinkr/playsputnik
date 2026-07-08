@@ -450,6 +450,7 @@ const {
   notebookSection,
   parseRatingLine,
   parseRankedTasteLines,
+  cleanImportedTitle,
   findRatedGame,
   importedTasteScore,
   radarScore,
@@ -2209,9 +2210,12 @@ function canMarkDeepTasteImport() {
 }
 
 function knownImportRecord(rawTitle) {
-  return findRatedGame(rawTitle)
-    || (catalogBackbone?.records || []).find((record) => titleMatches(record.title, rawTitle))
-    || (globalSearchFixtures?.records || []).find((record) => titleMatches(record.title, rawTitle));
+  const cleanedTitle = cleanImportedTitle(rawTitle);
+  const alias = aliasEntryForTitle(cleanedTitle);
+  const title = alias?.title || cleanedTitle;
+  return findRatedGame(title)
+    || (catalogBackbone?.records || []).find((record) => titleMatches(record.title, title))
+    || (globalSearchFixtures?.records || []).find((record) => titleMatches(record.title, title));
 }
 
 function analyzeRankedTasteImport(rankedEntries) {
@@ -2298,6 +2302,10 @@ function tasteImportPreview() {
     .map((entry) => ({ entry, game: findRatedGame(entry.title) }))
     .filter((item) => item.game);
   const known = entries.filter((entry) => knownImportRecord(entry.title));
+  const unmatched = entries
+    .filter((entry) => !knownImportRecord(entry.title))
+    .slice(0, 5)
+    .map((entry) => entry.title);
   const weights = {};
   matched.forEach(({ entry, game }) => {
     const rating = isRanked ? derivedRatingFromRank(entry.rank, entries.length) : entry.rating;
@@ -2338,6 +2346,7 @@ function tasteImportPreview() {
     topSignals,
     topMatched,
     rankedShape,
+    unmatched,
   };
 }
 
@@ -2399,6 +2408,13 @@ function renderTasteImportPreview() {
             <strong>${item.titles.join(" / ")}</strong>
           </div>
         `).join("")}
+      </div>
+    ` : ""}
+    ${preview.unmatched?.length ? `
+      <div class="taste-import-misses">
+        <span>${t("settings.tasteImport.previewMisses")}</span>
+        <strong>${preview.unmatched.join(" / ")}</strong>
+        <small>${t("settings.tasteImport.previewMissesDetail")}</small>
       </div>
     ` : ""}
   `;
@@ -4831,11 +4847,11 @@ function editionNoteHtml(game) {
 }
 
 function searchResultTrust(result) {
-  if (result.sourceId === "seed_catalog") return { tone: "trusted", label: t("discover.trustSeed") };
-  if (result.sourceId === "catalog_backbone") return { tone: "review", label: t("discover.trustBackbone") };
-  if (result.sourceId === "rawg_provider_hook" || result.provider === "rawg") return { tone: "provider", label: t("discover.trustProvider") };
-  if (result.sourceId === "manual_unverified") return { tone: "manual", label: t("discover.trustManual") };
-  return { tone: "external", label: t("discover.trustExternal") };
+  if (result.sourceId === "seed_catalog") return { tone: "trusted", label: t("discover.trustSeed"), detail: t("discover.trustSeedDetail") };
+  if (result.sourceId === "catalog_backbone") return { tone: "review", label: t("discover.trustBackbone"), detail: t("discover.trustBackboneDetail") };
+  if (result.sourceId === "rawg_provider_hook" || result.provider === "rawg") return { tone: "provider", label: t("discover.trustProvider"), detail: t("discover.trustProviderDetail") };
+  if (result.sourceId === "manual_unverified") return { tone: "manual", label: t("discover.trustManual"), detail: t("discover.trustManualDetail") };
+  return { tone: "external", label: t("discover.trustExternal"), detail: t("discover.trustExternalDetail") };
 }
 
 function renderSearchTrustStrip(query, results, provider, localIndexReady) {
@@ -5023,6 +5039,7 @@ function renderGameSearch() {
               ${remembered ? `<span class="search-memory-pill tone-${memory.tone}">${memory.label}</span>` : ""}
             </div>
             <span>${result.sourceLabel} / ${t("discover.confidence", { value: discoverConfidenceLabel(result.matchConfidence) })}</span>
+            <small class="search-trust-detail">${trust.detail}</small>
             <p>${result.reason}</p>
             ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${detailAttr(ratingBadge.detail)}">${ratingBadge.label}</span>` : ""}
             <div class="facts">

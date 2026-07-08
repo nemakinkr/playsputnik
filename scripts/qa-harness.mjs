@@ -1317,6 +1317,7 @@ function checkSelectors() {
   assert(/comparePriceLabel/.test(appAnswerSource) && /compareTimeDetail/.test(appAnswerSource), "Game comparison should include price and time tradeoffs");
   assert(/data-comparison-cover/.test(appSource) && /data-rating-queue-cover/.test(appSource), "Comparison and rating queue should render cover visuals");
   assert(/data-search-compare/.test(appSource), "Search results should feed the manual comparison");
+  assert(/search-trust-detail/.test(appSource + css) && /trustSeedDetail/.test(i18nEnSource), "Search results should explain source trust per row");
   assert(/id="rating-queue-list"/.test(html) && /function renderRatingQueue/.test(appSource), "Taste should expose a separate rate-later queue");
   assert(/data-search-rate-later/.test(appSource), "Search results should feed the rate-later queue");
   assert(/ratingQueue/.test(appStateSource), "Rate-later queue should persist in profile state");
@@ -1497,9 +1498,11 @@ function checkSelectors() {
   assert(/function stripNotebookMarker/.test(appRadarSource), "Notebook marker stripper is missing");
   assert(/function notebookSection/.test(appRadarSource), "Notebook section detector is missing");
   assert(/function parseRatingLine/.test(appRadarSource), "Rating line parser is missing");
+  assert(/function cleanImportedTitle/.test(appRadarSource), "Taste import should clean noisy pasted rating lines");
   assert(/function findRatedGame/.test(appRadarSource), "Rated game lookup is missing");
   assert(/function rememberImportedRating/.test(appSource), "Rating imports should become persistent personal rating memory");
   assert(/taste-import-rank-shape/.test(appSource + css), "Ranked-list import preview should show top/middle/tail shape");
+  assert(/taste-import-misses/.test(appSource + css), "Taste import preview should explain unresolved titles");
   assert(/function sourceForLayer/.test(appRadarSource), "Source-for-layer helper is missing");
   assert(/function freshnessLabel/.test(appRadarSource), "Freshness label helper is missing");
   assert(/PlaySputnikRadar/.test(appRadarSource), "Radar module must export PlaySputnikRadar");
@@ -1522,6 +1525,7 @@ function checkSelectors() {
   assert(/function detailProviderImportHtml/.test(appSource), "Game detail RAWG/provider import summary is missing");
   assert(/localNarrative/.test(appAiSource) && /localDetail/.test(i18nEnSource), "AI narrative should expose a free localized fallback");
   assert(/localCompanionRanked/.test(appAiSource + i18nEnSource), "Local companion fallback should use imported rankings when available");
+  assert(/localCompanionRankedShort/.test(appAiSource + i18nEnSource) && /localCompanionRankedLong/.test(appAiSource + i18nEnSource), "Local companion fallback should vary wording by game commitment");
   assert(/function detailPrimaryCtaHtml/.test(appSource), "Game detail smart primary CTA renderer is missing");
   assert(/function runDetailPrimaryAction/.test(appSource), "Game detail smart primary CTA action handler is missing");
   assert(/function applyDetailState/.test(appSource), "Game detail shared state applier is missing");
