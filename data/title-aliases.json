@@ -523,5 +523,82 @@
       "Prince of Persia Lost Crown",
       "The Lost Crown"
     ]
+  },
+  {
+    "title": "Counter-Strike 2",
+    "aliases": [
+      "CS2",
+      "Counter Strike 2",
+      "Counter-Strike"
+    ]
+  },
+  {
+    "title": "League of Legends",
+    "aliases": [
+      "LoL",
+      "League",
+      "Лига Легенд"
+    ]
+  },
+  {
+    "title": "Dota 2",
+    "aliases": [
+      "DOTA",
+      "DOTA2",
+      "Дота 2"
+    ]
+  },
+  {
+    "title": "Valorant",
+    "aliases": [
+      "Valo"
+    ]
+  },
+  {
+    "title": "The Legend of Zelda: Breath of the Wild",
+    "aliases": [
+      "Zelda BOTW",
+      "BOTW",
+      "Breath of the Wild"
+    ]
+  },
+  {
+    "title": "The Legend of Zelda: Tears of the Kingdom",
+    "aliases": [
+      "Zelda TOTK",
+      "TOTK",
+      "Tears of the Kingdom"
+    ]
+  },
+  {
+    "title": "Tom Clancy’s Rainbow Six Siege",
+    "aliases": [
+      "Rainbow Six Siege",
+      "R6 Siege",
+      "R6S"
+    ]
+  },
+  {
+    "title": "The Sims 4",
+    "aliases": [
+      "Sims 4",
+      "Sims",
+      "Симс 4"
+    ]
+  },
+  {
+    "title": "Animal Crossing: New Horizons",
+    "aliases": [
+      "Animal Crossing",
+      "New Horizons",
+      "ACNH"
+    ]
+  },
+  {
+    "title": "Forza Horizon 5",
+    "aliases": [
+      "FH5",
+      "Forza 5"
+    ]
   }
 ]

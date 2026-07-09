@@ -204,6 +204,19 @@ const QUICK_RATING_LINES = [
   "Ghost of Tsushima - 8/10",
 ];
 
+const DEMO_RATING_LINES = [
+  "Red Dead Redemption 2",
+  "The Witcher 3: Wild Hunt",
+  "Cyberpunk 2077",
+  "God of War Ragnarok",
+  "Disco Elysium",
+  "Alan Wake 2",
+  "Fortnite",
+  "The Sims 4",
+  "The Legend of Zelda: Breath of the Wild",
+  "Factorio",
+];
+
 const DEEP_RATING_LINES = [
   ...QUICK_RATING_LINES,
   "Control Ultimate Edition - 9/10",
@@ -942,6 +955,7 @@ const els = {
   tasteProfileSummary: document.querySelector("#taste-profile-summary"),
   tasteProfileBadge: document.querySelector("#taste-profile-badge"),
   sampleRatings: document.querySelector("#sample-ratings"),
+  demoRatings: document.querySelector("#demo-ratings"),
   analyzeRatings: document.querySelector("#analyze-ratings"),
   notebookImport: document.querySelector("#notebook-import"),
   notebookSummary: document.querySelector("#notebook-summary"),
@@ -7159,6 +7173,11 @@ els.ratingImport.addEventListener("input", () => {
 });
 els.sampleRatings.addEventListener("click", () => {
   state.ratingImport = QUICK_RATING_LINES.join("\n");
+  analyzeTasteImport();
+  render();
+});
+els.demoRatings?.addEventListener("click", () => {
+  state.ratingImport = DEMO_RATING_LINES.join("\n");
   analyzeTasteImport();
   render();
 });

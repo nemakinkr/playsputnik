@@ -1036,7 +1036,7 @@
       tasteImport: {
         title: "Taste import", summary: "Manual profile", label: "Paste ratings or a ranked list",
         placeholder: "Red Dead Redemption 2\nThe Witcher 3: Wild Hunt\nCyberpunk 2077\n\nor: Stray - 4/5",
-        sample: "Use sample", analyze: "Analyze taste",
+        sample: "Use sample", demo: "Demo 10 games", analyze: "Analyze taste",
         analyzed: { one: "{count} rating analyzed", other: "{count} ratings analyzed" },
         ratingResult: "Analyzed {count} explicit ratings.",
         rankedResult: "Imported ranked taste list: {matched}/{total} games matched for forecast calibration.",
