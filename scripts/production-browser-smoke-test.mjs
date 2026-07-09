@@ -329,10 +329,30 @@ try {
       coverPreviews: document.querySelectorAll('.game-search-cover').length,
       rawgCoverPreviews: [...document.querySelectorAll('.game-search-cover figcaption, .game-search-cover span')]
         .filter((item) => /RAWG/i.test(item.textContent || '')).length,
+      focusCards: document.querySelectorAll('.game-search-focus').length,
+      focusTitle: document.querySelector('.game-search-focus strong')?.textContent?.trim() || '',
+      focusButtons: document.querySelectorAll('[data-focus-state]').length,
       sourceLinks: document.querySelectorAll('.game-search-row a[href]').length,
       visualCards: document.querySelectorAll('.visual-catalog-card').length,
       horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     }))()
+  `);
+
+  const focusClickResult = await evaluate(cdp, `
+    (() => {
+      const button = document.querySelector('[data-focus-state="saved"]');
+      button?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      return {
+        clicked: Boolean(button),
+        title: document.querySelector('.game-search-focus strong')?.textContent?.trim() || '',
+      };
+    })()
+  `);
+  assert(focusClickResult.clicked, "Expected to click the production focus-card Wishlist button");
+  await waitForExpression(cdp, `
+    document.querySelector('[data-focus-state="saved"]')?.classList.contains('is-selected') &&
+    document.querySelector('[data-focus-state="saved"]')?.getAttribute('aria-pressed') === 'true' &&
+    state.userGames[titleKey('${expectedTitle}')]?.saved === true
   `);
 
   const clickResult = await evaluate(cdp, `
@@ -408,6 +428,10 @@ try {
   assert(before.memoryPanels >= 1, `Expected search memory panels, got ${before.memoryPanels}`);
   assert(before.coverPreviews >= 1, "Expected live provider search to render cover previews");
   assert(before.rawgCoverPreviews >= 1, "Expected live provider search to expose RAWG cover attribution");
+  assert(before.focusCards >= 1, "Expected live best-match focus card");
+  assert(before.focusTitle === expectedTitle, `Expected live focus card for ${expectedTitle}, got ${before.focusTitle}`);
+  assert(before.focusButtons >= 3, `Expected live focus card state actions, got ${before.focusButtons}`);
+  assert(focusClickResult.title === expectedTitle, `Expected focus click on ${expectedTitle}, got ${focusClickResult.title}`);
   assert(before.visualCards >= 6, `Expected visual catalog cards, got ${before.visualCards}`);
   assert(!before.horizontalOverflow, "Published page has horizontal overflow at desktop viewport");
   assert(afterSave.activeSaved, "Expected direct search Wishlist action to become active");
