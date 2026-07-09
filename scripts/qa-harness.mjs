@@ -1518,6 +1518,7 @@ function checkSelectors() {
   assert(/taste-import-report-bars/.test(css + appSource), "Taste import report should render visual coverage bars");
   assert(/taste-import-preview-story/.test(css + appSource), "Taste import preview should explain the practical import payoff");
   assert(/id="demo-ratings"/.test(html) && /DEMO_RATING_LINES/.test(appSource), "Taste import should expose a 10-game demo profile path");
+  assert(/demoRatings\?\.[\s\S]*openAppView\("today"\)/.test(appSource), "Taste demo profile should land on Today after import");
   assert(/data-import-search-title/.test(appSource), "Taste import unresolved rows should offer one-click search");
   assert(/game-search-focus/.test(appSource + css), "Discover search should expose a best-match focus card");
   assert(/data-focus-state/.test(appSource), "Discover focus card should let users save the best match directly");
@@ -1619,6 +1620,7 @@ function checkSelectors() {
   assert(/fixture-sword-sea/.test(searchQualityMatrixSource) && /fixture-murdered/.test(searchQualityMatrixSource), "Search quality matrix should cover newly promoted founder lookup fixtures");
   assert(/fixture-fortnite/.test(searchQualityMatrixSource) && /fixture-factorio/.test(searchQualityMatrixSource), "Search quality matrix should cover mainstream diagnostic fixtures");
   assert(/alias-cs2/.test(searchQualityMatrixSource) && /alias-botw/.test(searchQualityMatrixSource), "Search quality matrix should cover short mainstream aliases");
+  assert(/alias-totk/.test(searchQualityMatrixSource) && /alias-jedi-fallen-order/.test(searchQualityMatrixSource), "Search quality matrix should cover demo-quality shorthand aliases");
   assert(/Fortnite/.test(searchFixtureMainstreamDiagnosticFixture) && /Factorio/.test(searchFixtureMainstreamDiagnosticFixture), "Mainstream diagnostic search fixture import source is missing");
   assert(/typo-balders/.test(searchQualityMatrixSource), "Search quality matrix should cover typo tolerance");
   assert(/alias_manual/.test(searchQualityMatrixSource), "Search quality matrix should cover alias manual fallback");

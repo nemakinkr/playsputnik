@@ -7179,7 +7179,7 @@ els.sampleRatings.addEventListener("click", () => {
 els.demoRatings?.addEventListener("click", () => {
   state.ratingImport = DEMO_RATING_LINES.join("\n");
   analyzeTasteImport();
-  render();
+  openAppView("today");
 });
 els.analyzeRatings.addEventListener("click", () => {
   state.ratingImport = els.ratingImport.value;
