@@ -40,8 +40,8 @@ const diagnosticOnboardingAtoms = extractConstArray(appSource, "DIAGNOSTIC_ONBOA
 const context = {
   window: {
     PlaySputnikConfig: {
-      QUICK_TASTE_FIRST_TARGET: 3,
-      QUICK_TASTE_USABLE_TARGET: 6,
+      QUICK_TASTE_FIRST_TARGET: 5,
+      QUICK_TASTE_USABLE_TARGET: 8,
       QUICK_TASTE_SHARP_TARGET: 10,
     },
     PlaySputnikSearch: {},

@@ -41,7 +41,7 @@ try {
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   await page.waitForTimeout(1000);
 
-  for (const reaction of ["loved", "loved", "not_for_me"]) {
+  for (const reaction of ["loved", "loved", "not_for_me", "loved", "not_for_me"]) {
     await page.evaluate((value) => {
       document.querySelector(`[data-swipe-reaction="${value}"]`)?.click();
     }, reaction);
@@ -67,7 +67,7 @@ try {
   assert(/First test|Первый тест/.test(before.title), `First-run title should frame the pick as a test, got ${before.title}`);
   assert(before.heroDecisionStrip, "Top-pick hero should show the decision strip");
   assert(/Check why|Проверить почему/.test(before.heroPrimary), `Top-pick hero should expose an early primary CTA, got ${before.heroPrimary}`);
-  assert(before.earlyHero, "Top-pick hero should mark the 3-signal pick as early");
+  assert(before.earlyHero, "Top-pick hero should mark the 5-signal pick as early");
   assert(before.steps.some((step) => step.action === "detail-pick" && step.title), "Journey is missing detail-pick");
   assert(before.steps.some((step) => ["save", "play"].includes(step.action) && step.title), "Journey is missing memory action");
   assert(before.steps.some((step) => step.action === "discover-pick" && step.title), "Journey is missing discover-pick");

@@ -3399,7 +3399,7 @@ function renderStats() {
 
 // ── Onboarding ────────────────────────────────────────────────────────────────
 
-const ONBOARDING_SIGNAL_TARGET = 3;
+const ONBOARDING_SIGNAL_TARGET = QUICK_TASTE_FIRST_TARGET;
 
 function renderOnboardingHero() {
   const hero = document.querySelector("#onboarding-hero");

@@ -31,7 +31,7 @@ vm.runInNewContext(stateSource, legacyContext, { filename: "src/app-state.js" })
 const tools = legacyContext.window.PlaySputnikState.createStateTools({
   config: {
     STORAGE_KEY: "legacy",
-    QUICK_TASTE_FIRST_TARGET: 3,
+    QUICK_TASTE_FIRST_TARGET: 5,
     ACCESS_STATES: [],
     COMPLETION_STATUS_STATES: [],
   },

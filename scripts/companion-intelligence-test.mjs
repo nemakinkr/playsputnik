@@ -80,7 +80,7 @@ const tools = context.window.PlaySputnikScore.createScoreTools({
   effectiveGameState: () => "",
   getSubscriptionStatus: () => ({ canConfirm: false }),
   getPriceStatus: () => ({ canConfirm: false }),
-  QUICK_TASTE_FIRST_TARGET: 3,
+  QUICK_TASTE_FIRST_TARGET: 5,
 });
 const calibration = tools.tasteCalibrationProfile();
 assert.equal(calibration.ready, true);
@@ -111,8 +111,8 @@ tools.invalidateTasteProfile();
 assert.equal(tools.calibrationQuestionGames(3).length, 0, "rated games must disappear from calibration questions");
 
 context.window.PlaySputnikConfig = {
-  QUICK_TASTE_FIRST_TARGET: 3,
-  QUICK_TASTE_USABLE_TARGET: 6,
+  QUICK_TASTE_FIRST_TARGET: 5,
+  QUICK_TASTE_USABLE_TARGET: 8,
   QUICK_TASTE_SHARP_TARGET: 20,
 };
 context.window.PlaySputnikRecommend = {};

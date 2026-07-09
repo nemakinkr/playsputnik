@@ -36,7 +36,7 @@ const storageWrites = [];
 const legacyTools = legacyContext.window.PlaySputnikState.createStateTools({
   config: {
     STORAGE_KEY: "test-state",
-    QUICK_TASTE_FIRST_TARGET: 3,
+    QUICK_TASTE_FIRST_TARGET: 5,
     ACCESS_STATES: ["owned"],
     COMPLETION_STATUS_STATES: ["playing", "completed"],
   },
