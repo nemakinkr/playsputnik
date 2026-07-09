@@ -2212,13 +2212,34 @@ function canMarkDeepTasteImport() {
   return !["demo", "psn", "quick"].includes(state.entryPath);
 }
 
-function knownImportRecord(rawTitle) {
+function importResolutionForTitle(rawTitle) {
   const cleanedTitle = cleanImportedTitle(rawTitle);
   const alias = aliasEntryForTitle(cleanedTitle);
   const title = alias?.title || cleanedTitle;
-  return findRatedGame(title)
-    || (catalogBackbone?.records || []).find((record) => titleMatches(record.title, title))
-    || (globalSearchFixtures?.records || []).find((record) => titleMatches(record.title, title));
+  const seed = findRatedGame(title);
+  if (seed) {
+    return { status: "anchor", title: seed.title, sourceId: "seed_catalog", record: seed };
+  }
+  const backbone = (catalogBackbone?.records || []).find((record) => titleMatches(record.title, title));
+  if (backbone) {
+    return { status: "known", title: backbone.title, sourceId: "catalog_backbone", record: backbone };
+  }
+  const fixture = (globalSearchFixtures?.records || []).find((record) => titleMatches(record.title, title));
+  if (fixture) {
+    return { status: "known", title: fixture.title, sourceId: "prototype_external_index", record: fixture };
+  }
+  return { status: "missing", title: cleanedTitle, sourceId: "", record: null };
+}
+
+function knownImportRecord(rawTitle) {
+  return importResolutionForTitle(rawTitle).record;
+}
+
+function importSourceLabel(sourceId) {
+  if (sourceId === "seed_catalog") return t("settings.tasteImport.previewSourceSeed");
+  if (sourceId === "catalog_backbone") return t("settings.tasteImport.previewSourceBackbone");
+  if (sourceId === "prototype_external_index") return t("settings.tasteImport.previewSourceExternal");
+  return t("settings.tasteImport.previewSourceManual");
 }
 
 function analyzeRankedTasteImport(rankedEntries) {
@@ -2301,14 +2322,23 @@ function tasteImportPreview() {
   const entries = isRanked
     ? rankedEntries
     : explicitRatings.map((entry, index) => ({ ...entry, rank: index + 1 }));
-  const matched = entries
-    .map((entry) => ({ entry, game: findRatedGame(entry.title) }))
-    .filter((item) => item.game);
-  const known = entries.filter((entry) => knownImportRecord(entry.title));
-  const unmatched = entries
-    .filter((entry) => !knownImportRecord(entry.title))
-    .slice(0, 5)
-    .map((entry) => entry.title);
+  const resolved = entries.map((entry) => ({ entry, resolution: importResolutionForTitle(entry.title) }));
+  const matched = resolved
+    .filter((item) => item.resolution.status === "anchor")
+    .map(({ entry, resolution }) => ({ entry, game: resolution.record, resolution }));
+  const known = resolved.filter((item) => item.resolution.status !== "missing");
+  const catalogFound = resolved
+    .filter((item) => item.resolution.status === "known")
+    .slice(0, 6)
+    .map(({ entry, resolution }) => ({
+      rawTitle: entry.title,
+      title: resolution.title,
+      sourceId: resolution.sourceId,
+    }));
+  const unmatched = resolved
+    .filter((item) => item.resolution.status === "missing")
+    .slice(0, 6)
+    .map(({ entry, resolution }) => resolution.title || entry.title);
   const weights = {};
   matched.forEach(({ entry, game }) => {
     const rating = isRanked ? derivedRatingFromRank(entry.rank, entries.length) : entry.rating;
@@ -2320,6 +2350,28 @@ function tasteImportPreview() {
     .slice(0, 4)
     .map(([signal]) => signal);
   const topMatched = matched.slice(0, 3).map(({ game }) => game.title);
+  const reviewGroups = [
+    {
+      kind: "anchor",
+      title: t("settings.tasteImport.previewAnchors"),
+      rows: matched.slice(0, 5).map(({ entry, game, resolution }) => ({
+        rawTitle: entry.title,
+        title: game.title,
+        sourceId: resolution.sourceId,
+        action: "anchor",
+      })),
+    },
+    {
+      kind: "known",
+      title: t("settings.tasteImport.previewCatalogFound"),
+      rows: catalogFound.map((item) => ({ ...item, action: "search" })),
+    },
+    {
+      kind: "missing",
+      title: t("settings.tasteImport.previewNeedsLookup"),
+      rows: unmatched.map((title) => ({ rawTitle: title, title, sourceId: "", action: "search" })),
+    },
+  ].filter((group) => group.rows.length);
   const rankedShape = isRanked && matched.length
     ? [
         {
@@ -2349,6 +2401,8 @@ function tasteImportPreview() {
     topSignals,
     topMatched,
     rankedShape,
+    reviewGroups,
+    catalogFound,
     unmatched,
   };
 }
@@ -2413,14 +2467,37 @@ function renderTasteImportPreview() {
         `).join("")}
       </div>
     ` : ""}
+    ${preview.reviewGroups?.length ? `
+      <div class="taste-import-resolution" aria-label="${t("settings.tasteImport.previewResolutionAria")}">
+        ${preview.reviewGroups.map((group) => `
+          <section class="taste-import-resolution-group tone-${group.kind}">
+            <span>${group.title}</span>
+            <div>
+              ${group.rows.map((row) => `
+                <article>
+                  <strong>${detailAttr(row.title)}</strong>
+                  <small>${row.sourceId ? importSourceLabel(row.sourceId) : t("settings.tasteImport.previewSourceManual")}</small>
+                  ${row.action === "search"
+                    ? `<button data-import-search-title="${detailAttr(row.rawTitle || row.title)}" type="button">${t("settings.tasteImport.previewSearch")}</button>`
+                    : `<em>${t("settings.tasteImport.previewAnchor")}</em>`}
+                </article>
+              `).join("")}
+            </div>
+          </section>
+        `).join("")}
+      </div>
+    ` : ""}
     ${preview.unmatched?.length ? `
       <div class="taste-import-misses">
         <span>${t("settings.tasteImport.previewMisses")}</span>
-        <strong>${preview.unmatched.join(" / ")}</strong>
+        <strong>${preview.unmatched.map(detailAttr).join(" / ")}</strong>
         <small>${t("settings.tasteImport.previewMissesDetail")}</small>
       </div>
     ` : ""}
   `;
+  els.tasteImportPreview.querySelectorAll("[data-import-search-title]").forEach((button) => {
+    button.addEventListener("click", () => openDiscoverForTitle(button.dataset.importSearchTitle || ""));
+  });
 }
 
 function applyQuickEntry() {

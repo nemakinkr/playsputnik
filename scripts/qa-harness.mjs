@@ -54,6 +54,7 @@ const [
   searchSources,
   catalogSources,
   globalSearchFixtures,
+  founderProviderCoverage,
   dataHealth,
   devHealth,
   catalogImporterSource,
@@ -135,6 +136,7 @@ const [
   readJson("data/search-sources.json"),
   readJson("data/catalog-sources.json"),
   readJson("data/global-search-fixtures.json"),
+  readJson("reports/founder-ranking-provider-coverage.json"),
   readJson("data/data-health.json"),
   readJson("data/dev-health.json"),
   readFile(new URL("scripts/import-catalog-backbone.mjs", ROOT), "utf8"),
@@ -1507,6 +1509,12 @@ function checkSelectors() {
   assert(/function rememberImportedRating/.test(appSource), "Rating imports should become persistent personal rating memory");
   assert(/taste-import-rank-shape/.test(appSource + css), "Ranked-list import preview should show top/middle/tail shape");
   assert(/taste-import-misses/.test(appSource + css), "Taste import preview should explain unresolved titles");
+  assert(/taste-import-resolution/.test(appSource + css), "Taste import preview should split anchors, known-source hits, and lookup misses");
+  assert(/data-import-search-title/.test(appSource), "Taste import unresolved rows should offer one-click search");
+  assert(founderProviderCoverage.mode === "founder-ranking-provider-coverage", "Founder provider coverage report is missing");
+  assert(founderProviderCoverage.summary?.total >= 100, "Founder provider coverage should use the full real ranking");
+  assert(founderProviderCoverage.summary?.manualFallback === 0, "Founder provider coverage should have zero manual fallback rows");
+  assert(founderProviderCoverage.summary?.rawgMatched === founderProviderCoverage.summary?.total, "Founder provider coverage should resolve every ranking row through RAWG when report is generated");
   assert(/function sourceForLayer/.test(appRadarSource), "Source-for-layer helper is missing");
   assert(/function freshnessLabel/.test(appRadarSource), "Freshness label helper is missing");
   assert(/PlaySputnikRadar/.test(appRadarSource), "Radar module must export PlaySputnikRadar");
