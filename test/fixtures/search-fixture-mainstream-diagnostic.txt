@@ -1,0 +1,36 @@
+Co-op / Service / Multiplayer
+Fortnite | platforms=PS5,PS4,PC,Xbox,Switch | atoms=multiplayer,competitive,shooter,service | priceNeed=none
+Apex Legends | platforms=PS5,PS4,PC,Xbox,Switch | atoms=multiplayer,competitive,shooter,service | priceNeed=none
+League of Legends | platforms=PC | atoms=multiplayer,competitive,strategy,service | priceNeed=none
+Counter-Strike 2 | platforms=PC | atoms=multiplayer,competitive,shooter,service | priceNeed=none
+Dota 2 | platforms=PC | atoms=multiplayer,competitive,strategy,service | priceNeed=none
+Valorant | platforms=PC,PS5,Xbox | atoms=multiplayer,competitive,shooter,tactical | priceNeed=none
+Overwatch 2 | platforms=PS5,PS4,PC,Xbox,Switch | atoms=multiplayer,competitive,shooter,service | priceNeed=none
+Roblox | platforms=PC,Xbox,iOS,Android | atoms=sandbox,creative,social,service | priceNeed=none
+Honkai: Star Rail | platforms=PS5,PC,iOS,Android | atoms=anime,rpg,turn-based,service | priceNeed=none
+
+Cozy / Short / Indie
+The Legend of Zelda: Breath of the Wild | platforms=Switch | atoms=open-world,exploration,fantasy,puzzle | priceNeed=warm
+The Legend of Zelda: Tears of the Kingdom | platforms=Switch | atoms=open-world,exploration,creative,puzzle | priceNeed=warm
+Super Mario Odyssey | platforms=Switch | atoms=platforming,playful,exploration,short | priceNeed=warm
+Mario Kart 8 Deluxe | platforms=Switch | atoms=racing,competitive,arcade,short | priceNeed=warm
+Super Smash Bros. Ultimate | platforms=Switch | atoms=competitive,arcade,multiplayer,short | priceNeed=warm
+Pokémon Legends: Arceus | platforms=Switch | atoms=rpg,exploration,fantasy,systems | priceNeed=warm
+Pokémon Scarlet and Violet | platforms=Switch | atoms=rpg,open-world,fantasy,systems | priceNeed=warm
+Animal Crossing: New Horizons | platforms=Switch | atoms=cozy,routine,social,creative | priceNeed=warm
+
+Cinematic / Story
+Persona 5 Royal | platforms=PS5,PS4,PC,Xbox,Switch | atoms=anime,rpg,story,social | priceNeed=warm
+The Sims 4 | platforms=PS4,PC,Xbox | atoms=simulation,creative,social,routine | priceNeed=none
+Star Wars Jedi: Fallen Order | platforms=PS5,PS4,PC,Xbox | atoms=action,story,soulslike,cinematic | priceNeed=warm
+Bloodborne | platforms=PS4 | atoms=soulslike,action,horror,challenge | priceNeed=warm
+Terraria | platforms=PS4,PC,Xbox,Switch | atoms=sandbox,survival,creative,co-op | priceNeed=warm
+Dead by Daylight | platforms=PS5,PS4,PC,Xbox,Switch | atoms=horror,multiplayer,service,tension | priceNeed=warm
+Tom Clancy’s Rainbow Six Siege | platforms=PS5,PS4,PC,Xbox | atoms=shooter,tactical,competitive,service | priceNeed=warm
+
+Strategy / Sports / Racing
+Forza Horizon 5 | platforms=PC,Xbox | atoms=racing,open-world,competitive,arcade | priceNeed=warm
+Microsoft Flight Simulator | platforms=PC,Xbox | atoms=simulation,realistic,systems,slow | priceNeed=warm
+Euro Truck Simulator 2 | platforms=PC | atoms=simulation,realistic,routine,slow | priceNeed=warm
+RimWorld | platforms=PC,PS4,Xbox | atoms=strategy,management,systems,survival | priceNeed=warm
+Factorio | platforms=PC,Switch | atoms=strategy,management,systems,creative | priceNeed=warm

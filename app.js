@@ -2445,12 +2445,21 @@ function renderTasteImportPreview() {
   const examples = preview.topMatched.length
     ? preview.topMatched.join(" / ")
     : t("settings.tasteImport.previewNoMatches");
+  const previewStory = preview.strong
+    ? t("settings.tasteImport.previewStoryStrong")
+    : preview.ready
+      ? t("settings.tasteImport.previewStoryReady")
+      : t("settings.tasteImport.previewStoryWeak");
 
   els.tasteImportPreview.innerHTML = `
     <div class="taste-import-preview-head">
       <span>${modeLabel}</span>
       <strong>${t("settings.tasteImport.previewMatched", { matched: preview.matched, total: preview.total })}</strong>
       <small>${t("settings.tasteImport.previewKnown", { known: preview.known, total: preview.total })} · ${confidence}</small>
+    </div>
+    <div class="taste-import-preview-story">
+      <strong>${t("settings.tasteImport.previewStoryTitle")}</strong>
+      <span>${previewStory}</span>
     </div>
     <div class="taste-import-preview-grid">
       <div>

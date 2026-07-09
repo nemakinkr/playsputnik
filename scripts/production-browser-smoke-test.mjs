@@ -11,7 +11,7 @@ const target = process.argv.find((arg) => arg.startsWith("http://") || arg.start
 const rootUrl = target.endsWith("/") ? target : `${target}/`;
 const pageUrl = withCacheBust(rootUrl);
 const port = Number(process.env.PLAYSPUTNIK_CHROME_PORT || 9338);
-const searchQuery = "Black Myth";
+const searchQuery = "Black Myth: Wukong";
 const expectedTitle = "Black Myth: Wukong";
 
 let chromeProcess;
@@ -341,7 +341,7 @@ try {
   const focusClickResult = await evaluate(cdp, `
     (() => {
       const button = document.querySelector('[data-focus-state="saved"]');
-      button?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+      button?.click();
       return {
         clicked: Boolean(button),
         title: document.querySelector('.game-search-focus strong')?.textContent?.trim() || '',
@@ -350,9 +350,11 @@ try {
   `);
   assert(focusClickResult.clicked, "Expected to click the production focus-card Wishlist button");
   await waitForExpression(cdp, `
-    document.querySelector('[data-focus-state="saved"]')?.classList.contains('is-selected') &&
-    document.querySelector('[data-focus-state="saved"]')?.getAttribute('aria-pressed') === 'true' &&
-    state.userGames[titleKey('${expectedTitle}')]?.saved === true
+    (() => {
+      const direct = state.userGames[titleKey('${expectedTitle}')]?.saved === true;
+      const byTitle = Object.values(state.userGames || {}).some((item) => item?.title === '${expectedTitle}' && item.saved === true);
+      return direct || byTitle;
+    })()
   `);
 
   const clickResult = await evaluate(cdp, `

@@ -1,6 +1,6 @@
 {
   "mode": "prototype-external-index",
-  "updatedAt": "2026-07-09T07:05:00.000Z",
+  "updatedAt": "2026-07-09T11:10:00.848Z",
   "goal": "Offline search fixtures that mimic external metadata lookup results for the prototype global-search flow.",
   "records": [
     {
@@ -3631,6 +3631,586 @@
       "priceStatus": "missing",
       "priceNeed": "warm",
       "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Fortnite",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/fortnite",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "shooter",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for multiplayer and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Apex Legends",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/apex-legends",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "shooter",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for multiplayer and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "League of Legends",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/league-of-legends",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "strategy",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for multiplayer and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Counter-Strike 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/counter-strike-2",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "shooter",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for multiplayer and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Dota 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dota-2",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "strategy",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for multiplayer and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Valorant",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/valorant",
+      "platforms": [
+        "PC",
+        "PS5",
+        "Xbox"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "shooter",
+        "tactical"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for multiplayer and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Overwatch 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/overwatch-2",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "multiplayer",
+        "competitive",
+        "shooter",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for multiplayer and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Roblox",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/roblox",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "iOS",
+        "Android"
+      ],
+      "atoms": [
+        "sandbox",
+        "creative",
+        "social",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for sandbox and creative discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Honkai: Star Rail",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/honkai-star-rail",
+      "platforms": [
+        "PS5",
+        "PC",
+        "iOS",
+        "Android"
+      ],
+      "atoms": [
+        "anime",
+        "rpg",
+        "turn-based",
+        "service"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for anime and rpg discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Legend of Zelda: Breath of the Wild",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-legend-of-zelda-breath-of-the-wild",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "open-world",
+        "exploration",
+        "fantasy",
+        "puzzle"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for open-world and exploration discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Legend of Zelda: Tears of the Kingdom",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-legend-of-zelda-tears-of-the-kingdom",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "open-world",
+        "exploration",
+        "creative",
+        "puzzle"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for open-world and exploration discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Super Mario Odyssey",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/super-mario-odyssey",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "platforming",
+        "playful",
+        "exploration",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for platforming and playful discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Mario Kart 8 Deluxe",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/mario-kart-8-deluxe",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "racing",
+        "competitive",
+        "arcade",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for racing and competitive discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Super Smash Bros. Ultimate",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/super-smash-bros-ultimate",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "competitive",
+        "arcade",
+        "multiplayer",
+        "short"
+      ],
+      "vibe": "Short-session discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for competitive and arcade discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Pokémon Legends: Arceus",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/pokemon-legends-arceus",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "rpg",
+        "exploration",
+        "fantasy",
+        "systems"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for rpg and exploration discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Pokémon Scarlet and Violet",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/pokemon-scarlet-and-violet",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "rpg",
+        "open-world",
+        "fantasy",
+        "systems"
+      ],
+      "vibe": "RPG discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for rpg and open-world discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Animal Crossing: New Horizons",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/animal-crossing-new-horizons",
+      "platforms": [
+        "Switch"
+      ],
+      "atoms": [
+        "cozy",
+        "routine",
+        "social",
+        "creative"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for cozy and routine discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "The Sims 4",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/the-sims-4",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "simulation",
+        "creative",
+        "social",
+        "routine"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "none",
+      "reason": "Imported into the no-key search index for simulation and creative discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Star Wars Jedi: Fallen Order",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/star-wars-jedi-fallen-order",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "action",
+        "story",
+        "soulslike",
+        "cinematic"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for action and story discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Terraria",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/terraria",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "sandbox",
+        "survival",
+        "creative",
+        "co-op"
+      ],
+      "vibe": "Co-op discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for sandbox and survival discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Dead by Daylight",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/dead-by-daylight",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "horror",
+        "multiplayer",
+        "service",
+        "tension"
+      ],
+      "vibe": "Horror/tension discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for horror and multiplayer discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Tom Clancy’s Rainbow Six Siege",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/tom-clancy-s-rainbow-six-siege",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "shooter",
+        "tactical",
+        "competitive",
+        "service"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for shooter and tactical discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Forza Horizon 5",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/forza-horizon-5",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "racing",
+        "open-world",
+        "competitive",
+        "arcade"
+      ],
+      "vibe": "Sports or competitive loop candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for racing and open-world discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Microsoft Flight Simulator",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/microsoft-flight-simulator",
+      "platforms": [
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "simulation",
+        "realistic",
+        "systems",
+        "slow"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for simulation and realistic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Euro Truck Simulator 2",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/euro-truck-simulator-2",
+      "platforms": [
+        "PC"
+      ],
+      "atoms": [
+        "simulation",
+        "realistic",
+        "routine",
+        "slow"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for simulation and realistic discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "RimWorld",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/rimworld",
+      "platforms": [
+        "PC",
+        "PS4",
+        "Xbox"
+      ],
+      "atoms": [
+        "strategy",
+        "management",
+        "systems",
+        "survival"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for strategy and management discovery; price, cover, and subscription status remain unverified."
+    },
+    {
+      "title": "Factorio",
+      "provider": "prototype_external_index",
+      "sourceUrl": "local://prototype-external-index/factorio",
+      "platforms": [
+        "PC",
+        "Switch"
+      ],
+      "atoms": [
+        "strategy",
+        "management",
+        "systems",
+        "creative"
+      ],
+      "vibe": "External discovery candidate",
+      "matchConfidence": "low",
+      "coverStatus": "missing",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Imported into the no-key search index for strategy and management discovery; price, cover, and subscription status remain unverified."
     }
   ]
 }

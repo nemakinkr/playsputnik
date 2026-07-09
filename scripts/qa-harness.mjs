@@ -84,6 +84,7 @@ const [
   catalogImportFixture,
   searchFixtureImportFixture,
   searchFixtureExpansionFixture,
+  searchFixtureMainstreamDiagnosticFixture,
 ] = await Promise.all([
   readFile(new URL("src/app-storage.js", ROOT), "utf8"),
   readFile(new URL("src/app-config.js", ROOT), "utf8"),
@@ -166,6 +167,7 @@ const [
   readFile(new URL("test/fixtures/catalog-import-note.txt", ROOT), "utf8"),
   readFile(new URL("test/fixtures/search-fixture-import.txt", ROOT), "utf8"),
   readFile(new URL("test/fixtures/search-fixture-expansion-80.txt", ROOT), "utf8"),
+  readFile(new URL("test/fixtures/search-fixture-mainstream-diagnostic.txt", ROOT), "utf8"),
 ]);
 
 // User-facing copy moved into the i18n catalogs; checks below look here too.
@@ -1514,6 +1516,7 @@ function checkSelectors() {
   assert(/function renderTasteImportReport/.test(appSource), "Taste import report renderer is missing");
   assert(/taste-import-report-metrics/.test(css), "Taste import report should style coverage metrics");
   assert(/taste-import-report-bars/.test(css + appSource), "Taste import report should render visual coverage bars");
+  assert(/taste-import-preview-story/.test(css + appSource), "Taste import preview should explain the practical import payoff");
   assert(/data-import-search-title/.test(appSource), "Taste import unresolved rows should offer one-click search");
   assert(/game-search-focus/.test(appSource + css), "Discover search should expose a best-match focus card");
   assert(/data-focus-state/.test(appSource), "Discover focus card should let users save the best match directly");
@@ -1613,6 +1616,8 @@ function checkSelectors() {
   assert(/ru-cyberpunk/.test(searchQualityMatrixSource) && /ru-metro-exodus/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian imported-rating aliases");
   assert(/fixture-firewatch/.test(searchQualityMatrixSource) && /fixture-man-of-medan/.test(searchQualityMatrixSource), "Search quality matrix should cover founder RAWG-promoted search fixtures");
   assert(/fixture-sword-sea/.test(searchQualityMatrixSource) && /fixture-murdered/.test(searchQualityMatrixSource), "Search quality matrix should cover newly promoted founder lookup fixtures");
+  assert(/fixture-fortnite/.test(searchQualityMatrixSource) && /fixture-factorio/.test(searchQualityMatrixSource), "Search quality matrix should cover mainstream diagnostic fixtures");
+  assert(/Fortnite/.test(searchFixtureMainstreamDiagnosticFixture) && /Factorio/.test(searchFixtureMainstreamDiagnosticFixture), "Mainstream diagnostic search fixture import source is missing");
   assert(/typo-balders/.test(searchQualityMatrixSource), "Search quality matrix should cover typo tolerance");
   assert(/alias_manual/.test(searchQualityMatrixSource), "Search quality matrix should cover alias manual fallback");
   assert(/id="taste-understood-panel"/.test(html), "Today should expose an imported-taste understood panel");

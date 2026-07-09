@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-09T07:08:26.788Z",
+  "generatedAt": "2026-07-09T11:12:47.472Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -20,7 +20,7 @@
     "catalogBackboneReadyCount": 0,
     "catalogBackbonePromotedCount": 29,
     "searchSourceCount": 5,
-    "globalSearchFixtureCount": 167,
+    "globalSearchFixtureCount": 194,
     "titleAliasCount": 185,
     "priceHistoryCount": 6787,
     "priceHistoryGameCount": 435,
@@ -177,10 +177,10 @@
     "mode": "prototype-global-search-p0",
     "sourceCount": 5,
     "fixtureMode": "prototype-external-index",
-    "fixtureCount": 167,
+    "fixtureCount": 194,
     "wishlistCapableSources": 5,
-    "externalFixtureCount": 167,
-    "missingPriceCount": 167
+    "externalFixtureCount": 194,
+    "missingPriceCount": 194
   },
   "refreshPolicy": {
     "mode": "intent-weighted-refresh-p0",

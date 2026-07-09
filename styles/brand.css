@@ -1718,6 +1718,27 @@ textarea:focus-visible,
   gap: 8px;
 }
 
+.taste-import-preview-story {
+  display: grid;
+  gap: 4px;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 22%, var(--ps-border));
+  border-radius: var(--radius-md);
+  background: var(--card-bg-soft);
+  padding: 10px;
+}
+
+.taste-import-preview-story strong {
+  color: var(--text-strong);
+  font-size: 0.82rem;
+}
+
+.taste-import-preview-story span {
+  color: var(--text-mid);
+  font-size: 0.76rem;
+  font-weight: 740;
+  line-height: 1.35;
+}
+
 .taste-import-resolution-group {
   display: grid;
   gap: 7px;
