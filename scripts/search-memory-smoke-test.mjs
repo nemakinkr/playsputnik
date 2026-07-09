@@ -142,8 +142,32 @@ try {
     ownedButtons: document.querySelectorAll('[data-search-state="owned"]').length,
     subscriptionButtons: document.querySelectorAll('[data-search-state="subscription"]').length,
     pressedButtons: document.querySelectorAll('[data-search-state][aria-pressed]').length,
+    focusCards: document.querySelectorAll(".game-search-focus").length,
+    focusTitle: document.querySelector(".game-search-focus strong")?.textContent?.trim() || "",
+    focusButtons: document.querySelectorAll("[data-focus-state]").length,
+    focusSavedPressed: document.querySelector('[data-focus-state="saved"]')?.getAttribute("aria-pressed") || "",
     passportChecks: document.querySelectorAll(".game-search-row .source-check").length,
   }));
+
+  await page.evaluate(() => document.querySelector('[data-focus-state="saved"]')?.click());
+  await page.waitForTimeout(500);
+
+  const afterFocusSave = await page.evaluate(({ key, expectedTitle }) => {
+    const stored = JSON.parse(localStorage.getItem(key) || "{}");
+    const record = Object.values(stored.userGames || {}).find((item) => item.title === expectedTitle);
+    const userState = Object.values(stored.userStates || {}).find((item) => item.title === expectedTitle);
+    return {
+      activeSaved: document.querySelector('[data-focus-state="saved"]')?.classList.contains("is-selected") || false,
+      pressedSaved: document.querySelector('[data-focus-state="saved"]')?.getAttribute("aria-pressed") || "",
+      record: record ? {
+        title: record.title,
+        access: record.access || "",
+        saved: Boolean(record.saved),
+        source: record.source || "",
+      } : null,
+      userState: userState?.state || "",
+    };
+  }, { key: STORAGE_KEY, expectedTitle });
 
   await page.evaluate((title) => {
     const row = Array.from(document.querySelectorAll(".game-search-row"))
@@ -295,7 +319,7 @@ try {
     sourceNoteText: document.querySelector("[data-wishlist-source-note]")?.textContent?.replace(/\s+/g, " ").trim() || "",
   }), expectedTitle);
 
-  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
+  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterFocusSave, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(before.rows >= 1, `Expected search rows, got ${before.rows}`);
@@ -312,6 +336,14 @@ try {
   assert(before.ownedButtons >= 1, "Expected search Owned action");
   assert(before.subscriptionButtons >= 1, "Expected search Plus action");
   assert(before.pressedButtons >= 3, "Expected search memory actions to expose pressed state");
+  assert(before.focusCards >= 1, "Expected best-match focus card");
+  assert(before.focusTitle === expectedTitle, `Expected focus card for ${expectedTitle}, got ${before.focusTitle}`);
+  assert(before.focusButtons >= 3, `Expected focus card state actions, got ${before.focusButtons}`);
+  assert(afterFocusSave.record?.saved, "Expected focus card Wishlist action to save the external game");
+  assert(afterFocusSave.record?.source?.startsWith("search_"), `Expected focus save source memory, got ${afterFocusSave.record?.source}`);
+  assert(afterFocusSave.activeSaved, "Expected focus Wishlist button to become selected");
+  assert(afterFocusSave.pressedSaved === "true", `Expected focus Wishlist aria-pressed=true, got ${afterFocusSave.pressedSaved}`);
+  assert(afterFocusSave.userState === "saved", `Expected saved userState after focus action, got ${afterFocusSave.userState}`);
   assert(before.passportChecks >= 5, `Expected search source passport checks, got ${before.passportChecks}`);
   assert(afterSearchSave.record?.saved, "Expected direct search Wishlist action to save the external game");
   assert(afterSearchSave.record?.source?.startsWith("search_"), `Expected direct search save source memory, got ${afterSearchSave.record?.source}`);

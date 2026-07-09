@@ -417,9 +417,8 @@ try {
   assert(afterBuy.saved === false, "Bought games should leave the wishlist saved flag");
   assert(/найдено (?:8\d|9\d|1\d\d)\/111|matched (?:8\d|9\d|1\d\d)\/111/i.test(founderRanking.preview.text), `Expected founder preview to recognize 80+ scoring matches, got: ${founderRanking.preview.text}`);
   assert(/Опоры вкуса|Taste anchors/.test(founderRanking.preview.text), `Expected founder preview to show trusted taste anchors, got: ${founderRanking.preview.text}`);
-  assert(/Нашли в источниках|Found in sources/.test(founderRanking.preview.text), `Expected founder preview to show known-source matches, got: ${founderRanking.preview.text}`);
-  assert(/Искать|Search/.test(founderRanking.preview.text), `Expected founder preview unresolved rows to expose search actions, got: ${founderRanking.preview.text}`);
-  assert(/Отчёт импорта|Import report/.test(founderRanking.preview.report) && /80/.test(founderRanking.preview.report), `Expected founder import report to summarize coverage, got: ${founderRanking.preview.report}`);
+  assert(/известно в источниках: 111\/111|known to sources: 111\/111/i.test(founderRanking.preview.text), `Expected founder preview to show full known-source coverage, got: ${founderRanking.preview.text}`);
+  assert(/Отчёт импорта|Import report/.test(founderRanking.preview.report) && /80/.test(founderRanking.preview.report) && /111/.test(founderRanking.preview.report), `Expected founder import report to summarize anchor and known-source coverage, got: ${founderRanking.preview.report}`);
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
   assert(founderRanking.taste.atoms.some((atom) => /сюжет|story/i.test(atom)), `Expected founder taste atoms to include story, got: ${founderRanking.taste.atoms.join(", ")}`);

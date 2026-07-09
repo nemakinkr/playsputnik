@@ -1862,6 +1862,41 @@ textarea:focus-visible,
   line-height: 1.2;
 }
 
+.taste-import-report-bars {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--ps-border-soft);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  padding: 10px;
+}
+
+.taste-import-report-bars div {
+  display: grid;
+  gap: 5px;
+}
+
+.taste-import-report-bars span {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.taste-import-report-bars strong {
+  display: block;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--chip-bg);
+}
+
+.taste-import-report-bars i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ps-blue), color-mix(in srgb, var(--teal) 65%, var(--ps-blue)));
+}
+
 .taste-import-report-next {
   display: grid;
   gap: 8px;

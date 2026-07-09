@@ -1,6 +1,6 @@
 {
   "mode": "prototype-external-index",
-  "updatedAt": "2026-07-09T06:45:00.000Z",
+  "updatedAt": "2026-07-09T07:05:00.000Z",
   "goal": "Offline search fixtures that mimic external metadata lookup results for the prototype global-search flow.",
   "records": [
     {
@@ -3087,6 +3087,550 @@
       "priceStatus": "missing",
       "priceNeed": "warm",
       "reason": "Promoted from founder ranking provider coverage as a known source hit, without inventing store price or subscription status."
+    },
+    {
+      "title": "Sword of the Sea",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/sword-of-the-sea",
+      "platforms": [
+        "PC",
+        "PS5"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Jusant",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/jusant",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS5"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "platforming",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Killer Frequency",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/killer-frequency",
+      "platforms": [
+        "PC",
+        "PS5",
+        "PS4"
+      ],
+      "atoms": [
+        "exploration",
+        "story",
+        "horror",
+        "tension",
+        "management",
+        "systems"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: exploration, story, horror",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Tails Noir",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/backbone",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "Mac",
+        "Linux",
+        "PS4"
+      ],
+      "atoms": [
+        "exploration",
+        "story",
+        "rpg",
+        "choice",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: exploration, story, rpg",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "LEGO Horizon Adventures",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/lego-horizon-adventures",
+      "platforms": [
+        "PC",
+        "PS5",
+        "Switch"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "puzzle",
+        "systems",
+        "platforming"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Infamous: First Light",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/infamous-first-light",
+      "platforms": [
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Late shift",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/late-shift",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "Mac",
+        "PS4",
+        "Switch"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "horror",
+        "tension",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "1979 Revolution: Black Friday",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/1979-revolution-black-friday",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "Android",
+        "Mac",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Sherlock Holmes: The Devil's Daughter",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/sherlock-holmes-the-devils-daughter",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS4",
+        "Switch"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "horror",
+        "tension",
+        "open-world"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Call of Duty: WWII",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/call-of-duty-wwii",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "shooter",
+        "horror",
+        "tension",
+        "multiplayer",
+        "co-op"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, shooter, horror",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Mafia III",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/mafia-iii-definitive-edition",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "The Casting of Frank Stone",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/the-casting-of-frank-stone",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS5"
+      ],
+      "atoms": [
+        "exploration",
+        "story",
+        "horror",
+        "tension",
+        "multiplayer",
+        "co-op"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: exploration, story, horror",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "11-11: Memories Retold",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/11-11-memories-retold",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS4"
+      ],
+      "atoms": [
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: exploration, story, indie",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Crime Boss: Rockay City",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/crime-boss-rockay-city",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS5"
+      ],
+      "atoms": [
+        "action",
+        "shooter",
+        "strategy",
+        "systems",
+        "multiplayer",
+        "co-op"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, shooter, strategy",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Police Simulator: Patrol Officers",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/police-simulator-patrol-officers",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS5",
+        "PS4"
+      ],
+      "atoms": [
+        "management",
+        "systems",
+        "multiplayer",
+        "co-op",
+        "open-world",
+        "exploration"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: management, systems, multiplayer",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Battlefield V",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/battlefield-v",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "shooter",
+        "multiplayer",
+        "co-op"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Twelve Minutes",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/12-minutes-2",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "iOS",
+        "PS5",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Neva",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/neva-2",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "Mac",
+        "PS5",
+        "PS4"
+      ],
+      "atoms": [
+        "exploration",
+        "story",
+        "puzzle",
+        "systems",
+        "platforming",
+        "action"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: exploration, story, puzzle",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Röki",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/roki",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "Mac",
+        "PS5",
+        "PS4"
+      ],
+      "atoms": [
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: exploration, story, indie",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "The Plucky Squire",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/the-plucky-squire",
+      "platforms": [
+        "PC",
+        "PS5",
+        "Switch"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "puzzle",
+        "systems",
+        "platforming"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Erica",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/erica",
+      "platforms": [
+        "PC",
+        "iOS",
+        "Android",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "horror",
+        "tension",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "The Occupation",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/the-occupation",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "indie"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
+    },
+    {
+      "title": "Murdered: Soul Suspect",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/murdered-soul-suspect",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "PS4"
+      ],
+      "atoms": [
+        "action",
+        "exploration",
+        "story",
+        "rpg",
+        "choice",
+        "horror"
+      ],
+      "vibe": "Known founder-ranking candidate resolved by RAWG: action, exploration, story",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so local search and import review can use it as a known source hit without inventing price or subscription data."
     }
   ]
 }

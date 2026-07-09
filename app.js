@@ -2185,11 +2185,11 @@ function ratingStrength(parsedRating) {
   return { polarity, strength };
 }
 
-function applyRatingWeight(weights, game, parsedRating) {
+function applyRatingWeight(weights, game, parsedRating, multiplier = 1) {
   const { polarity, strength } = ratingStrength(parsedRating);
   if (strength === 0) return;
   gameSignals(game).forEach((signal) => {
-    weights[signal] = (weights[signal] || 0) + polarity * strength;
+    weights[signal] = (weights[signal] || 0) + polarity * strength * multiplier;
   });
 }
 
@@ -2253,12 +2253,14 @@ function analyzeRankedTasteImport(rankedEntries) {
   }));
 
   ranked.forEach((entry) => {
-    const game = findRatedGame(entry.title);
+    const resolution = importResolutionForTitle(entry.title);
+    const game = resolution.record;
     if (!game) return;
     const rating = derivedRatingFromRank(entry.rank, total);
-    applyRatingWeight(weights, game, rating);
-    rememberImportedRating(game, rating);
-    matched.push({ title: game.title, rating });
+    const isAnchor = resolution.status === "anchor";
+    applyRatingWeight(weights, game, rating, isAnchor ? 1 : 0.55);
+    if (isAnchor) rememberImportedRating(game, rating);
+    matched.push({ title: resolution.title || game.title, rating, sourceId: resolution.sourceId, trusted: isAnchor });
   });
 
   state.atomWeights = weights;
@@ -2295,11 +2297,13 @@ function analyzeTasteImport() {
   lines.forEach((line) => {
       const parsed = parseRatingLine(line);
       if (!parsed) return;
-      const game = findRatedGame(parsed.title);
+      const resolution = importResolutionForTitle(parsed.title);
+      const game = resolution.record;
       if (!game) return;
-      applyRatingWeight(weights, game, parsed.rating);
-      rememberImportedRating(game, parsed.rating);
-      matched.push({ title: game.title, rating: parsed.rating });
+      const isAnchor = resolution.status === "anchor";
+      applyRatingWeight(weights, game, parsed.rating, isAnchor ? 1 : 0.55);
+      if (isAnchor) rememberImportedRating(game, parsed.rating);
+      matched.push({ title: resolution.title || game.title, rating: parsed.rating, sourceId: resolution.sourceId, trusted: isAnchor });
     });
   state.atomWeights = weights;
   state.importedRatings = matched;
@@ -2341,9 +2345,11 @@ function tasteImportPreview() {
     .slice(0, 6)
     .map(({ entry, resolution }) => resolution.title || entry.title);
   const weights = {};
-  matched.forEach(({ entry, game }) => {
+  known.forEach(({ entry, resolution }) => {
+    const game = resolution.record;
+    if (!game) return;
     const rating = isRanked ? derivedRatingFromRank(entry.rank, entries.length) : entry.rating;
-    applyRatingWeight(weights, game, rating);
+    applyRatingWeight(weights, game, rating, resolution.status === "anchor" ? 1 : 0.55);
   });
   const topSignals = Object.entries(weights)
     .filter(([, value]) => value > 0)
@@ -2390,6 +2396,7 @@ function tasteImportPreview() {
       ].filter((item) => item.titles.length)
     : [];
   const matchRatio = entries.length ? matched.length / entries.length : 0;
+  const knownRatio = entries.length ? known.length / entries.length : 0;
   return {
     empty: !lines.length,
     mode: isRanked ? "ranked" : explicitRatings.length ? "ratings" : "unknown",
@@ -2397,8 +2404,8 @@ function tasteImportPreview() {
     matched: matched.length,
     known: known.length,
     matchRatio,
-    ready: matched.length >= 3,
-    strong: isRanked ? matched.length >= 20 && matchRatio >= 0.5 : matched.length >= 8,
+    ready: matched.length >= 3 || known.length >= 3,
+    strong: isRanked ? (matched.length >= 20 && matchRatio >= 0.5) || (known.length >= 30 && knownRatio >= 0.75) : matched.length >= 8 || known.length >= 8,
     topSignals,
     topMatched,
     rankedShape,
@@ -2519,6 +2526,8 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
       ? t("settings.tasteImport.reportConfidenceReady")
       : t("settings.tasteImport.reportConfidenceWeak");
   const queue = [...sourceHits, ...misses].slice(0, 8);
+  const anchorPct = preview.total ? Math.round((preview.matched / preview.total) * 100) : 0;
+  const knownPct = preview.total ? Math.round((preview.known / preview.total) * 100) : 0;
   els.tasteImportReport.hidden = false;
   els.tasteImportReport.innerHTML = `
     <div class="taste-import-report-head">
@@ -2535,6 +2544,16 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
       <div><span>${t("settings.tasteImport.reportMetricKnown")}</span><strong>${preview.known}</strong></div>
       <div><span>${t("settings.tasteImport.reportMetricLookup")}</span><strong>${Math.max(0, preview.total - preview.known)}</strong></div>
       <div><span>${t("settings.tasteImport.reportMetricConfidence")}</span><strong>${confidence}</strong></div>
+    </div>
+    <div class="taste-import-report-bars" aria-label="${t("settings.tasteImport.reportCoverageAria")}">
+      <div>
+        <span>${t("settings.tasteImport.reportCoverageAnchors")} ${anchorPct}%</span>
+        <strong><i style="width:${anchorPct}%"></i></strong>
+      </div>
+      <div>
+        <span>${t("settings.tasteImport.reportCoverageKnown")} ${knownPct}%</span>
+        <strong><i style="width:${knownPct}%"></i></strong>
+      </div>
     </div>
     <div class="taste-import-report-next">
       <span>${t("settings.tasteImport.reportQueueTitle")}</span>
