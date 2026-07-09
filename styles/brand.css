@@ -727,11 +727,157 @@ textarea:focus-visible,
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--accent-bg) 42%, transparent), transparent 44%),
     var(--card-bg);
+  box-shadow: var(--shadow-md);
+}
+
+.hero-visual,
+.poster,
+.game-detail-visual {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-visual::before,
+.poster::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--ink) 72%, transparent) 100%),
+    linear-gradient(90deg, color-mix(in srgb, var(--ink) 46%, transparent), transparent 62%);
+  content: "";
+}
+
+.hero-visual > *,
+.poster > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-visual span,
+.poster-kind {
+  border: 1px solid color-mix(in srgb, var(--card-bg) 26%, transparent);
+  background: color-mix(in srgb, var(--ink) 58%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.hero-body {
+  align-content: start;
+}
+
+.hero-body h3 {
+  color: var(--text-strong);
+  line-height: 1.02;
+}
+
+.game-card {
+  border-color: var(--ps-border);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-bg) 18%, transparent), transparent 28%),
+    var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.game-card:hover,
+.game-card:focus-within {
+  border-color: color-mix(in srgb, var(--ps-blue) 34%, var(--ps-border));
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.game-card .poster {
+  min-height: 126px;
+}
+
+.card-body {
+  gap: 9px;
+}
+
+.card-head h3 {
+  color: var(--text-strong);
+  font-size: 1rem;
+  line-height: 1.16;
+}
+
+.score {
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 18%, var(--ps-border));
+  background: var(--accent-bg);
+  color: var(--primary-strong);
+}
+
+.description,
+.reason,
+.watchout,
+.evidence-row p {
+  color: var(--text-mid);
+}
+
+.card-evidence {
+  border-color: color-mix(in srgb, var(--ps-blue) 18%, var(--ps-border));
+  background: var(--card-bg-soft);
+}
+
+.watchout {
+  border-left-color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 7%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 8px 9px 8px 10px;
 }
 
 .hero-decision-strip div {
   border-color: var(--ps-border);
   background: var(--card-bg-soft);
+}
+
+.game-detail-drawer {
+  border-color: var(--ps-border);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent-bg) 18%, transparent), transparent 30%),
+    var(--card-bg);
+  box-shadow: var(--shadow-lg);
+}
+
+.game-detail-header {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg-soft);
+  padding: 12px;
+}
+
+.game-detail-header h2 {
+  color: var(--text-strong);
+}
+
+.game-detail-visual {
+  border: 1px solid color-mix(in srgb, var(--card-bg) 14%, transparent);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.game-detail-cover-source {
+  color: var(--text-mid);
+}
+
+.game-detail-status {
+  gap: 8px;
+}
+
+.detail-status-card,
+.detail-cockpit,
+.game-detail-section {
+  border-color: var(--ps-border);
+  background: var(--card-bg-soft);
+}
+
+.detail-cockpit {
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-cockpit-head strong,
+.game-detail-section h3 {
+  color: var(--text-strong);
 }
 
 .answer-panel,

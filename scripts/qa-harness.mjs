@@ -1054,6 +1054,7 @@ function checkSelectors() {
   assert(/data\/editorial-ru\.json/.test(appSource), "App must load the Russian editorial overlay");
   assert(/getEditorialEntry\?\.\(game\)/.test(appRecommendSource), "Recommendation copy must use locale editorial entries");
   assert(/gameTagline\(game\)/.test(appCardsSource), "Cards must render localized editorial taglines");
+  assert(/\.game-card:hover/.test(css) && /\.score/.test(css), "Recommendation cards should keep the premium visual polish layer");
   assert(/PlaySputnikCards/.test(appCardsSource), "Cards module must export PlaySputnikCards");
   assert(/PlaySputnikCards/.test(appSource), "app.js must reference PlaySputnikCards");
   assert(!/^function renderCard/.test(appSource), "renderCard must not remain as top-level function in app.js");
@@ -1284,6 +1285,9 @@ function checkSelectors() {
   assert(titleAliases.some((entry) => entry.title === "Baldur's Gate 3" && entry.aliases.includes("Baldur's Gate III")), "Title aliases should cover BG3 roman numeral provider names");
   assert(titleAliases.some((entry) => entry.title === "Sid Meier's Civilization VII" && entry.aliases.includes("Civ 7")), "Title aliases should cover Civ 7 shorthand");
   assert(titleAliases.some((entry) => entry.title === "OD" && entry.aliases.includes("Kojima horror")), "Title aliases should cover descriptive OD search");
+  assert(titleAliases.some((entry) => entry.title === "Red Dead Redemption 2" && entry.aliases.includes("RDR2")), "Title aliases should cover RDR2 shorthand");
+  assert(titleAliases.some((entry) => entry.title === "The Outer Worlds" && entry.aliases.includes("Внешние миры")), "Title aliases should cover Russian Outer Worlds");
+  assert(titleAliases.some((entry) => entry.title === "L.A. Noire" && entry.aliases.includes("L. A. Noire")), "Title aliases should cover spaced L.A. Noire spelling");
   assert(/import-global-search-fixtures/.test(searchFixtureImporterSource) || /global-search-fixture-import-preview/.test(searchFixtureImporterSource), "Global search fixture importer is missing preview mode");
   assert(/writeMode/.test(searchFixtureImporterSource), "Global search fixture importer should support write mode");
   assert(/function makeRecord/.test(searchFixtureImporterSource), "Global search fixture importer record builder is missing");
@@ -1541,6 +1545,7 @@ function checkSelectors() {
   assert(/data-hero-detail/.test(appSource + appCardsSource) && /data-visual-detail/.test(appSource + appVisualSource), "Game detail entry points are missing");
   assert(/game-detail-drawer/.test(css), "Game detail drawer should be styled");
   assert(/game-detail-header/.test(css) && /game-detail-ai/.test(css), "Game detail should keep the polished header and AI surface styled");
+  assert(/\.game-detail-drawer/.test(css) && /var\(--shadow-lg\)/.test(css), "Game detail drawer should keep the premium shell polish");
   assert(/data-quality-panel/.test(css) && /provider-import-filters/.test(css), "Data view should keep the source-trust cockpit styling");
   assert(/data-guide-panel/.test(html + css), "Data view should expose a priority guide panel");
   assert(/data-guide-card/.test(html + css), "Data view priority guide cards should be styled");
@@ -1589,6 +1594,7 @@ function checkSelectors() {
   assert(/search-quality-matrix/.test(searchQualityMatrixSource), "Search quality matrix is missing");
   assert(/alias-gta-6/.test(searchQualityMatrixSource), "Search quality matrix should cover GTA aliases");
   assert(/ru-tsushima/.test(searchQualityMatrixSource) && /ru-last-of-us/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian aliases");
+  assert(/ru-rdr2-short/.test(searchQualityMatrixSource) && /ru-outer-worlds/.test(searchQualityMatrixSource), "Search quality matrix should cover founder Russian/shorthand aliases");
   assert(/typo-balders/.test(searchQualityMatrixSource), "Search quality matrix should cover typo tolerance");
   assert(/alias_manual/.test(searchQualityMatrixSource), "Search quality matrix should cover alias manual fallback");
   assert(/library-wishlist-smoke/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke test is missing");

@@ -21,7 +21,9 @@
     "aliases": [
       "God of War Ragnar\u00f6k",
       "GOW Ragnarok",
-      "GOW Ragnar\u00f6k"
+      "GOW Ragnar\u00f6k",
+      "God of War: Ragnar\u00f6k",
+      "Год оф Вар Рагнарек"
     ]
   },
   {
@@ -147,6 +149,38 @@
     ]
   },
   {
+    "title": "Red Dead Redemption 2",
+    "aliases": [
+      "RDR2",
+      "Red Dead 2",
+      "Red Dead Redemption II",
+      "РДР 2"
+    ]
+  },
+  {
+    "title": "God of War",
+    "aliases": [
+      "God of War 2018",
+      "God of War (2018)",
+      "Год оф Вар"
+    ]
+  },
+  {
+    "title": "Control Ultimate Edition",
+    "aliases": [
+      "Control",
+      "Контрол"
+    ]
+  },
+  {
+    "title": "The Outer Worlds",
+    "aliases": [
+      "Outer Worlds",
+      "TOW",
+      "Внешние миры"
+    ]
+  },
+  {
     "title": "Black Myth: Wukong",
     "aliases": [
       "Black Myth Wukong",
@@ -233,6 +267,49 @@
       "\u0414\u0435\u0442\u0440\u043e\u0439\u0442: \u0421\u0442\u0430\u0442\u044c \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u043e\u043c",
       "Detroit: \u0421\u0442\u0430\u0442\u044c \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u043e\u043c",
       "Detroit Become Human"
+    ]
+  },
+  {
+    "title": "Heavy Rain",
+    "aliases": [
+      "Хеви Рейн",
+      "Heavy Rain PS4"
+    ]
+  },
+  {
+    "title": "L.A. Noire",
+    "aliases": [
+      "LA Noire",
+      "L A Noire",
+      "L. A. Noire"
+    ]
+  },
+  {
+    "title": "This Is the Police",
+    "aliases": [
+      "This is the Police",
+      "This Is Police"
+    ]
+  },
+  {
+    "title": "Life is Strange: True Colors",
+    "aliases": [
+      "Life Is Strange True Colors",
+      "Life is Strange True Colors",
+      "True Colors"
+    ]
+  },
+  {
+    "title": "What Remains of Edith Finch",
+    "aliases": [
+      "Edith Finch",
+      "What Remains"
+    ]
+  },
+  {
+    "title": "A Way Out",
+    "aliases": [
+      "Way Out"
     ]
   },
   {
