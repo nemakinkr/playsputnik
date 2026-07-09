@@ -5225,7 +5225,7 @@ function renderGameSearch() {
       ? t("discover.localFailed")
       : t("discover.localLoading");
   els.gameSearchStatus.textContent = query.length >= 2
-    ? `${t("discover.results", { count: results.length })} / ${providerLabel} / ${localIndexCopy}`
+    ? t("discover.searchStatusWithResults", { count: results.length })
     : t("discover.searchReady");
   els.gameSearchSubmit.textContent = provider.status === "loading" ? t("discover.searching") : t("discover.searchButton");
   const providerDetail = window.PlaySputnikI18n.getLocale() === "en" && provider.sourceHealthDetail

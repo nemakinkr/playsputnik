@@ -20,9 +20,11 @@
  * --chip-bg/--surface-2/--accent-bg/--panel/--surface) for backgrounds — never
  * a hardcoded light hex. See CLAUDE.md "Dark mode rules".
  */
-import { APP_READY, evaluate, isMain, rootUrlFromArgv, runStandalone, waitFor } from "./lib/cdp.mjs";
+import { evaluate, isMain, rootUrlFromArgv, runStandalone, waitFor } from "./lib/cdp.mjs";
 
 const LUM_THRESHOLD = 225;
+const CONTRAST_READY =
+  "window.__playsputnikBoot && window.__playsputnikBoot.coreRenderedAt && document.querySelector('#top-pick')";
 
 // Runs in the page: seed a profile, set theme, scan all views.
 function scanInPage(LUM, mode) {
@@ -118,12 +120,12 @@ export const gate = {
     // pass first, then reload under light emulation for the light pass.
     await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
     await cdp.send("Page.navigate", { url: pageUrl });
-    await waitFor(cdp, APP_READY);
+    await waitFor(cdp, CONTRAST_READY);
     const darkRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "dark")`);
 
     await cdp.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "light" }] });
     await cdp.send("Page.reload", { ignoreCache: true });
-    await waitFor(cdp, APP_READY);
+    await waitFor(cdp, CONTRAST_READY);
     const lightRaw = await evaluate(cdp, `(${scanInPage.toString()})(${LUM_THRESHOLD}, "light")`);
 
     return [...JSON.parse(darkRaw || "[]"), ...JSON.parse(lightRaw || "[]")];
