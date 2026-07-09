@@ -1510,7 +1510,12 @@ function checkSelectors() {
   assert(/taste-import-rank-shape/.test(appSource + css), "Ranked-list import preview should show top/middle/tail shape");
   assert(/taste-import-misses/.test(appSource + css), "Taste import preview should explain unresolved titles");
   assert(/taste-import-resolution/.test(appSource + css), "Taste import preview should split anchors, known-source hits, and lookup misses");
+  assert(/id="taste-import-report"/.test(html), "Taste import should expose a separate post-import report panel");
+  assert(/function renderTasteImportReport/.test(appSource), "Taste import report renderer is missing");
+  assert(/taste-import-report-metrics/.test(css), "Taste import report should style coverage metrics");
   assert(/data-import-search-title/.test(appSource), "Taste import unresolved rows should offer one-click search");
+  assert(/game-search-focus/.test(appSource + css), "Discover search should expose a best-match focus card");
+  assert(/data-focus-state/.test(appSource), "Discover focus card should let users save the best match directly");
   assert(founderProviderCoverage.mode === "founder-ranking-provider-coverage", "Founder provider coverage report is missing");
   assert(founderProviderCoverage.summary?.total >= 100, "Founder provider coverage should use the full real ranking");
   assert(founderProviderCoverage.summary?.manualFallback === 0, "Founder provider coverage should have zero manual fallback rows");
@@ -1605,6 +1610,7 @@ function checkSelectors() {
   assert(/ru-rdr2-short/.test(searchQualityMatrixSource) && /ru-outer-worlds/.test(searchQualityMatrixSource), "Search quality matrix should cover founder Russian/shorthand aliases");
   assert(/alias-kcd1/.test(searchQualityMatrixSource) && /alias-abzu/.test(searchQualityMatrixSource), "Search quality matrix should cover imported-rating shorthand aliases");
   assert(/ru-cyberpunk/.test(searchQualityMatrixSource) && /ru-metro-exodus/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian imported-rating aliases");
+  assert(/fixture-firewatch/.test(searchQualityMatrixSource) && /fixture-man-of-medan/.test(searchQualityMatrixSource), "Search quality matrix should cover founder RAWG-promoted search fixtures");
   assert(/typo-balders/.test(searchQualityMatrixSource), "Search quality matrix should cover typo tolerance");
   assert(/alias_manual/.test(searchQualityMatrixSource), "Search quality matrix should cover alias manual fallback");
   assert(/id="taste-understood-panel"/.test(html), "Today should expose an imported-taste understood panel");

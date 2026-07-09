@@ -211,6 +211,7 @@ async function runFounderRankingScenario(page) {
 
   const preview = await page.evaluate(() => ({
     text: document.querySelector("#taste-import-preview")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    report: document.querySelector("#taste-import-report")?.textContent?.replace(/\s+/g, " ").trim() || "",
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
   await page.evaluate(() => document.querySelector("#analyze-ratings")?.click());
@@ -418,6 +419,7 @@ try {
   assert(/Опоры вкуса|Taste anchors/.test(founderRanking.preview.text), `Expected founder preview to show trusted taste anchors, got: ${founderRanking.preview.text}`);
   assert(/Нашли в источниках|Found in sources/.test(founderRanking.preview.text), `Expected founder preview to show known-source matches, got: ${founderRanking.preview.text}`);
   assert(/Искать|Search/.test(founderRanking.preview.text), `Expected founder preview unresolved rows to expose search actions, got: ${founderRanking.preview.text}`);
+  assert(/Отчёт импорта|Import report/.test(founderRanking.preview.report) && /80/.test(founderRanking.preview.report), `Expected founder import report to summarize coverage, got: ${founderRanking.preview.report}`);
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
   assert(founderRanking.taste.atoms.some((atom) => /сюжет|story/i.test(atom)), `Expected founder taste atoms to include story, got: ${founderRanking.taste.atoms.join(", ")}`);

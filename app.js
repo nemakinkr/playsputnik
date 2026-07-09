@@ -938,6 +938,7 @@ const els = {
   tasteSummary: document.querySelector("#taste-summary"),
   tasteAtoms: document.querySelector("#taste-atoms"),
   tasteImportPreview: document.querySelector("#taste-import-preview"),
+  tasteImportReport: document.querySelector("#taste-import-report"),
   tasteProfileSummary: document.querySelector("#taste-profile-summary"),
   tasteProfileBadge: document.querySelector("#taste-profile-badge"),
   sampleRatings: document.querySelector("#sample-ratings"),
@@ -2410,6 +2411,7 @@ function tasteImportPreview() {
 function renderTasteImportPreview() {
   if (!els.tasteImportPreview) return;
   const preview = tasteImportPreview();
+  renderTasteImportReport(preview);
   if (preview.empty) {
     els.tasteImportPreview.innerHTML = `
       <div class="taste-import-preview-empty">
@@ -2497,6 +2499,59 @@ function renderTasteImportPreview() {
   `;
   els.tasteImportPreview.querySelectorAll("[data-import-search-title]").forEach((button) => {
     button.addEventListener("click", () => openDiscoverForTitle(button.dataset.importSearchTitle || ""));
+  });
+}
+
+function renderTasteImportReport(preview = tasteImportPreview()) {
+  if (!els.tasteImportReport) return;
+  const shouldShow = !preview.empty && preview.total >= 8;
+  if (!shouldShow) {
+    els.tasteImportReport.hidden = true;
+    els.tasteImportReport.replaceChildren();
+    return;
+  }
+
+  const sourceHits = preview.reviewGroups?.find((group) => group.kind === "known")?.rows || [];
+  const misses = preview.reviewGroups?.find((group) => group.kind === "missing")?.rows || [];
+  const confidence = preview.strong
+    ? t("settings.tasteImport.reportConfidenceStrong")
+    : preview.ready
+      ? t("settings.tasteImport.reportConfidenceReady")
+      : t("settings.tasteImport.reportConfidenceWeak");
+  const queue = [...sourceHits, ...misses].slice(0, 8);
+  els.tasteImportReport.hidden = false;
+  els.tasteImportReport.innerHTML = `
+    <div class="taste-import-report-head">
+      <span>${t("settings.tasteImport.reportEyebrow")}</span>
+      <strong>${t("settings.tasteImport.reportTitle")}</strong>
+      <p>${t("settings.tasteImport.reportDetail", {
+        anchors: preview.matched,
+        known: preview.known,
+        total: preview.total,
+      })}</p>
+    </div>
+    <div class="taste-import-report-metrics">
+      <div><span>${t("settings.tasteImport.reportMetricAnchors")}</span><strong>${preview.matched}</strong></div>
+      <div><span>${t("settings.tasteImport.reportMetricKnown")}</span><strong>${preview.known}</strong></div>
+      <div><span>${t("settings.tasteImport.reportMetricLookup")}</span><strong>${Math.max(0, preview.total - preview.known)}</strong></div>
+      <div><span>${t("settings.tasteImport.reportMetricConfidence")}</span><strong>${confidence}</strong></div>
+    </div>
+    <div class="taste-import-report-next">
+      <span>${t("settings.tasteImport.reportQueueTitle")}</span>
+      ${queue.length ? `
+        <div>
+          ${queue.map((row) => `
+            <button data-import-report-search="${detailAttr(row.rawTitle || row.title)}" type="button">
+              <strong>${detailAttr(row.title)}</strong>
+              <small>${row.sourceId ? importSourceLabel(row.sourceId) : t("settings.tasteImport.previewSourceManual")}</small>
+            </button>
+          `).join("")}
+        </div>
+      ` : `<p>${t("settings.tasteImport.reportQueueEmpty")}</p>`}
+    </div>
+  `;
+  els.tasteImportReport.querySelectorAll("[data-import-report-search]").forEach((button) => {
+    button.addEventListener("click", () => openDiscoverForTitle(button.dataset.importReportSearch || ""));
   });
 }
 
@@ -5060,6 +5115,43 @@ function renderSearchTrustStrip(query, results, provider, localIndexReady) {
   );
 }
 
+function renderSearchFocusCard(query, result) {
+  if (!result) return null;
+  const card = document.createElement("section");
+  const trust = searchResultTrust(result);
+  const saved = resultAlreadySaved(result);
+  const owned = resultStateSelected(result, "owned");
+  const subscription = resultStateSelected(result, "subscription");
+  const ratingBadge = personalRatingBadge(canonicalSearchResultSeed(result) || result);
+  const atoms = (result.atoms || []).slice(0, 4).map((atom) => `<span>${labelAtom(atom)}</span>`).join("");
+  card.className = `game-search-focus tone-${trust.tone}`;
+  card.innerHTML = `
+    <div>
+      <span>${t("discover.focusEyebrow")}</span>
+      <strong>${detailAttr(result.title)}</strong>
+      <p>${t("discover.focusDetail", { query: detailAttr(query), source: trust.label })}</p>
+      <div class="game-search-focus-facts">
+        ${ratingBadge ? `<span>${ratingBadge.label}</span>` : ""}
+        ${atoms}
+      </div>
+    </div>
+    <div class="game-search-focus-actions">
+      <button class="primary-action ${saved ? "is-selected" : ""}" data-focus-state="saved" aria-pressed="${saved}" type="button">${saved ? t("discover.actionSaved") : t("discover.actionWishlist")}</button>
+      <button class="secondary-action ${owned ? "is-selected" : ""}" data-focus-state="owned" aria-pressed="${owned}" type="button">${t("discover.actionLibrary")}</button>
+      <button class="secondary-action ${subscription ? "is-selected" : ""}" data-focus-state="subscription" aria-pressed="${subscription}" type="button">${t("discover.actionPlus")}</button>
+      <button class="secondary-action" data-focus-detail type="button">${t("discover.actionDetails")}</button>
+    </div>
+  `;
+  card.querySelector("[data-focus-detail]")?.addEventListener("click", () => openGameDetail(result.title));
+  card.querySelectorAll("[data-focus-state]").forEach((button) => {
+    button.addEventListener("click", () => {
+      applySearchResultState(result, button.dataset.focusState);
+      render();
+    });
+  });
+  return card;
+}
+
 function renderGameSearch() {
   const query = (state.gameSearchQuery || "").trim();
   const results = globalSearchResults();
@@ -5251,7 +5343,8 @@ function renderGameSearch() {
       return row;
     });
 
-  els.gameSearchList.replaceChildren(...notices, ...rows);
+  const focusCard = renderSearchFocusCard(query, results[0]);
+  els.gameSearchList.replaceChildren(...notices, ...(focusCard ? [focusCard] : []), ...rows);
 }
 
 function renderGameComparison(ranked) {

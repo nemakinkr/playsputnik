@@ -1,6 +1,6 @@
 {
   "mode": "prototype-external-index",
-  "updatedAt": "2026-06-03T16:04:44.346Z",
+  "updatedAt": "2026-07-09T06:45:00.000Z",
   "goal": "Offline search fixtures that mimic external metadata lookup results for the prototype global-search flow.",
   "records": [
     {
@@ -2948,6 +2948,145 @@
       "priceStatus": "missing",
       "priceNeed": "warm",
       "reason": "Added from the founder ranking dogfood 31-60 gaps so search can retain an action-horror favorite without pretending to know price or Plus status."
+    },
+    {
+      "title": "The Council",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/the-council",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "choice",
+        "rpg",
+        "mystery"
+      ],
+      "vibe": "Episodic choice-led mystery and political intrigue signal",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so search can resolve a known narrative favorite while seed pricing and full catalog data remain pending."
+    },
+    {
+      "title": "Valiant Hearts: The Great War",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/valiant-hearts-the-great-war",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "puzzle",
+        "indie",
+        "choice"
+      ],
+      "vibe": "Emotional historical adventure with light puzzle structure",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so import previews can classify it as a known source hit before seed promotion."
+    },
+    {
+      "title": "Bramble: The Mountain King",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/bramble-the-mountain-king",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "horror",
+        "story",
+        "dark",
+        "puzzle"
+      ],
+      "vibe": "Dark fairy-tale adventure and compact horror-story signal",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage to keep a known atmospheric favorite visible in local search."
+    },
+    {
+      "title": "Firewatch",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/firewatch",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "story",
+        "exploration",
+        "indie",
+        "mystery"
+      ],
+      "vibe": "Short first-person narrative exploration and atmosphere signal",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so search and import review do not treat this known narrative favorite as invisible."
+    },
+    {
+      "title": "The Dark Pictures Anthology: Man of Medan",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/man-of-medan",
+      "platforms": [
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "horror",
+        "choice",
+        "cinematic",
+        "tension"
+      ],
+      "vibe": "Compact interactive horror and Supermassive branch coverage",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage so Man of Medan searches resolve locally before full seed enrichment."
+    },
+    {
+      "title": "Cult of the Lamb",
+      "provider": "prototype_external_index",
+      "sourceUrl": "https://rawg.io/games/cult-of-the-lamb",
+      "platforms": [
+        "PS5",
+        "PS4",
+        "PC",
+        "Xbox",
+        "Switch"
+      ],
+      "atoms": [
+        "roguelike",
+        "systems",
+        "indie",
+        "dark"
+      ],
+      "vibe": "Darkly funny cult-management roguelike and systems taste signal",
+      "matchConfidence": "medium",
+      "coverStatus": "candidate",
+      "priceStatus": "missing",
+      "priceNeed": "warm",
+      "reason": "Promoted from founder ranking provider coverage as a known source hit, without inventing store price or subscription status."
     }
   ]
 }
