@@ -1595,8 +1595,13 @@ function checkSelectors() {
   assert(/alias-gta-6/.test(searchQualityMatrixSource), "Search quality matrix should cover GTA aliases");
   assert(/ru-tsushima/.test(searchQualityMatrixSource) && /ru-last-of-us/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian aliases");
   assert(/ru-rdr2-short/.test(searchQualityMatrixSource) && /ru-outer-worlds/.test(searchQualityMatrixSource), "Search quality matrix should cover founder Russian/shorthand aliases");
+  assert(/alias-kcd1/.test(searchQualityMatrixSource) && /alias-abzu/.test(searchQualityMatrixSource), "Search quality matrix should cover imported-rating shorthand aliases");
+  assert(/ru-cyberpunk/.test(searchQualityMatrixSource) && /ru-metro-exodus/.test(searchQualityMatrixSource), "Search quality matrix should cover Russian imported-rating aliases");
   assert(/typo-balders/.test(searchQualityMatrixSource), "Search quality matrix should cover typo tolerance");
   assert(/alias_manual/.test(searchQualityMatrixSource), "Search quality matrix should cover alias manual fallback");
+  assert(/id="taste-understood-panel"/.test(html), "Today should expose an imported-taste understood panel");
+  assert(/function renderTasteUnderstoodPanel/.test(appSource), "Imported taste understood panel should be rendered from real taste state");
+  assert(/taste-understood-panel/.test(css), "Imported taste understood panel should be styled");
   assert(/library-wishlist-smoke/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke test is missing");
   assert(/markBoughtThroughAppMemory/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke should verify bought persistence");
   assert(/actionButtons/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke should verify quick action buttons");

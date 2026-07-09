@@ -968,6 +968,9 @@ const els = {
   demoContinuityDetail: document.querySelector("#demo-continuity-detail"),
   demoContinuityMetrics: document.querySelector("#demo-continuity-metrics"),
   demoContinuityActions: document.querySelector("#demo-continuity-actions"),
+  tasteUnderstoodPanel: document.querySelector("#taste-understood-panel"),
+  tasteUnderstoodStatus: document.querySelector("#taste-understood-status"),
+  tasteUnderstoodBody: document.querySelector("#taste-understood-body"),
   firstRunStatus: document.querySelector("#first-run-status"),
   firstRunGrid: document.querySelector("#first-run-grid"),
   firstRunBridge: document.querySelector("#first-run-bridge"),
@@ -3325,6 +3328,80 @@ function renderValueStats(ranked) {
   els.libraryCount.textContent = t("today.metrics.states", { count: stateCount() });
   els.guardedCount.textContent = t("today.metrics.skips", { count: guardedCount });
 }
+
+function renderTasteUnderstoodPanel(ranked) {
+  if (!els.tasteUnderstoodPanel || !els.tasteUnderstoodBody) return;
+  const imported = state.importedRatings || [];
+  const rankedCount = state.notebook?.ranked?.length || 0;
+  if (!imported.length && rankedCount < 5) {
+    els.tasteUnderstoodPanel.hidden = true;
+    return;
+  }
+
+  els.tasteUnderstoodPanel.hidden = false;
+  const profile = tasteEngineProfile();
+  const records = personalRatingRecords();
+  const positiveAtoms = Object.entries(profile.positiveWeights || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([atom]) => atom);
+  const cautionAtoms = Object.entries(profile.negativeWeights || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([atom]) => atom);
+  const anchors = [...new Set(imported.map((item) => item.title).filter(Boolean))].slice(0, 3);
+  const primary = primaryDecisionGame(ranked);
+  const statusCount = Math.max(imported.length, rankedCount);
+  if (els.tasteUnderstoodStatus) {
+    els.tasteUnderstoodStatus.textContent = t("today.tasteUnderstood.status", { count: statusCount });
+  }
+
+  const signalCopy = positiveAtoms.length
+    ? labelAtoms(positiveAtoms, " / ")
+    : t("today.tasteUnderstood.signalFallback");
+  const cautionCopy = cautionAtoms.length
+    ? labelAtoms(cautionAtoms, " / ")
+    : t("today.tasteUnderstood.cautionFallback");
+  const anchorCopy = anchors.length
+    ? anchors.map((title) => `<span>${detailAttr(title)}</span>`).join("")
+    : `<span>${t("today.tasteUnderstood.anchorFallback")}</span>`;
+  const forecastCopy = primary
+    ? detailAttr(primary.title)
+    : t("today.tasteUnderstood.forecastFallback");
+
+  els.tasteUnderstoodBody.innerHTML = `
+    <p class="taste-understood-lead">${t("today.tasteUnderstood.lead", { count: statusCount })}</p>
+    <div class="taste-understood-grid">
+      <div class="taste-understood-card">
+        <span>${t("today.tasteUnderstood.signalsLabel")}</span>
+        <strong>${signalCopy}</strong>
+      </div>
+      <div class="taste-understood-card">
+        <span>${t("today.tasteUnderstood.anchorsLabel")}</span>
+        <strong class="taste-understood-anchors">${anchorCopy}</strong>
+      </div>
+      <div class="taste-understood-card">
+        <span>${t("today.tasteUnderstood.forecastLabel")}</span>
+        <strong>${forecastCopy}</strong>
+      </div>
+      <div class="taste-understood-card">
+        <span>${t("today.tasteUnderstood.cautionLabel")}</span>
+        <strong>${cautionCopy}</strong>
+      </div>
+    </div>
+    <div class="taste-understood-actions">
+      <button class="primary-action" data-taste-understood-action="answer" type="button">${t("today.tasteUnderstood.actionAnswer")}</button>
+      <button class="secondary-action" data-taste-understood-action="import" type="button">${t("today.tasteUnderstood.actionImport")}</button>
+      <span>${t("today.tasteUnderstood.recordCount", { count: records.length })}</span>
+    </div>
+  `;
+  els.tasteUnderstoodBody.querySelector("[data-taste-understood-action='answer']")?.addEventListener("click", () => {
+    openAppView("today");
+    requestAnimationFrame(() => els.topPick?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  });
+  els.tasteUnderstoodBody.querySelector("[data-taste-understood-action='import']")?.addEventListener("click", focusTasteImport);
+}
+
 function firstRunFlow(ranked) {
   const topGame = primaryDecisionGame(ranked);
   const reactions = quickReactionSummary();
@@ -6658,6 +6735,7 @@ function render() {
   const inView = (...views) => views.includes(state.activeView);
 
   if (inView("today", "discover")) renderDemoContinuity(ranked);
+  if (inView("today", "taste")) renderTasteUnderstoodPanel(ranked);
   if (inView("today", "taste")) renderFirstRunFlow(ranked);
   if (inView("today")) renderTonightTime();
   if (inView("today")) renderCompanionAnswer(ranked);

@@ -1950,10 +1950,136 @@ textarea:focus-visible,
   background: var(--card-bg-soft);
 }
 
+/* ── Today: first value and imported taste proof ─────────────────────────── */
+.onboarding-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 32%, var(--ps-border));
+  background:
+    radial-gradient(circle at 82% 8%, color-mix(in srgb, var(--ps-blue) 38%, transparent), transparent 34%),
+    linear-gradient(135deg, var(--ps-ink) 0%, color-mix(in srgb, var(--ps-blue) 42%, var(--ps-ink)) 100%);
+  box-shadow: var(--shadow-md);
+}
+
+.onboarding-hero::before {
+  content: "";
+  position: absolute;
+  inset: 14px 18px auto auto;
+  width: 86px;
+  height: 86px;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 42%, transparent);
+  border-radius: 999px;
+  opacity: 0.55;
+  transform: rotate(-18deg);
+}
+
+.onboarding-hero-text,
+.onboarding-progress,
+.onboarding-featured {
+  position: relative;
+  z-index: 1;
+}
+
+.onboarding-entry-actions .primary-action,
+.onboarding-entry-actions .secondary-action {
+  box-shadow: none;
+}
+
+.onboarding-game-tile--hero {
+  border-color: color-mix(in srgb, var(--ps-blue) 24%, transparent);
+  background: color-mix(in srgb, var(--surface) 9%, transparent);
+}
+
+.taste-understood-panel {
+  display: grid;
+  gap: 14px;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 24%, var(--card-border));
+  border-radius: var(--radius-2);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 8%, transparent), transparent 54%),
+    var(--card-bg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.taste-understood-panel[hidden] {
+  display: none;
+}
+
+.taste-understood-lead {
+  max-width: 760px;
+  margin: 0 0 12px;
+  color: var(--text-mid);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.taste-understood-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.taste-understood-card {
+  min-height: 92px;
+  border: 1px solid var(--ps-border-soft);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg-soft);
+  padding: 12px;
+}
+
+.taste-understood-card span {
+  display: block;
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.taste-understood-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-strong);
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.taste-understood-anchors span {
+  color: var(--text-strong);
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.taste-understood-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.taste-understood-actions > span {
+  color: var(--text-mid);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 @media (max-width: 900px) {
   .library-dashboard,
   .wishlist-dashboard,
   .game-search-trust {
     grid-template-columns: 1fr;
+  }
+
+  .taste-understood-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .taste-understood-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .taste-understood-panel {
+    padding: 14px;
   }
 }
