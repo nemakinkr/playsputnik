@@ -3507,7 +3507,9 @@ function renderTasteUnderstoodPanel(ranked) {
   if (!els.tasteUnderstoodPanel || !els.tasteUnderstoodBody) return;
   const imported = state.importedRatings || [];
   const rankedCount = state.notebook?.ranked?.length || 0;
-  if (!imported.length && rankedCount < 5) {
+  const quickSignals = quickTasteSignalCount();
+  const hasQuickStart = quickSignals >= QUICK_TASTE_FIRST_TARGET;
+  if (!imported.length && rankedCount < 5 && !hasQuickStart) {
     els.tasteUnderstoodPanel.hidden = true;
     return;
   }
@@ -3523,12 +3525,22 @@ function renderTasteUnderstoodPanel(ranked) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 2)
     .map(([atom]) => atom);
-  const anchors = [...new Set(imported.map((item) => item.title).filter(Boolean))].slice(0, 3);
+  const quickAnchors = Object.values(state.quickReactions || {})
+    .filter((item) => item?.reaction === "loved")
+    .map((item) => item?.title)
+    .filter(Boolean);
+  const anchors = [...new Set(imported.map((item) => item.title).filter(Boolean))]
+    .concat(quickAnchors)
+    .filter(Boolean)
+    .slice(0, 3);
   const primary = primaryDecisionGame(ranked);
-  const statusCount = Math.max(imported.length, rankedCount);
+  const statusCount = Math.max(imported.length, rankedCount, quickSignals);
   if (els.tasteUnderstoodStatus) {
     els.tasteUnderstoodStatus.textContent = t("today.tasteUnderstood.status", { count: statusCount });
   }
+  const leadKey = hasQuickStart && !imported.length && rankedCount < 5
+    ? "today.tasteUnderstood.quickLead"
+    : "today.tasteUnderstood.lead";
 
   const signalCopy = positiveAtoms.length
     ? labelAtoms(positiveAtoms, " / ")
@@ -3544,7 +3556,7 @@ function renderTasteUnderstoodPanel(ranked) {
     : t("today.tasteUnderstood.forecastFallback");
 
   els.tasteUnderstoodBody.innerHTML = `
-    <p class="taste-understood-lead">${t("today.tasteUnderstood.lead", { count: statusCount })}</p>
+    <p class="taste-understood-lead">${t(leadKey, { count: statusCount })}</p>
     <div class="taste-understood-grid">
       <div class="taste-understood-card">
         <span>${t("today.tasteUnderstood.signalsLabel")}</span>
@@ -5143,7 +5155,19 @@ function renderSearchTrustStrip(query, results, provider, localIndexReady) {
       detail: t("discover.searchTrustManualDetail"),
     },
   ];
-  els.gameSearchTrust.replaceChildren(
+  const summary = document.createElement("details");
+  summary.className = "search-source-summary";
+  const compactValue = hasQuery
+    ? t("discover.searchTrustCompact", { local: localCount, external: providerCount })
+    : t("discover.searchTrustReady");
+  summary.innerHTML = `
+    <summary>
+      <span>${t("discover.searchTrustSummaryTitle")}</span>
+      <strong>${compactValue}</strong>
+    </summary>
+    <div class="game-search-trust-cards"></div>
+  `;
+  summary.querySelector(".game-search-trust-cards")?.replaceChildren(
     ...cards.map((card) => {
       const item = document.createElement("div");
       item.className = `search-trust-card tone-${card.tone}`;
@@ -5155,6 +5179,7 @@ function renderSearchTrustStrip(query, results, provider, localIndexReady) {
       return item;
     }),
   );
+  els.gameSearchTrust.replaceChildren(summary);
 }
 
 function renderSearchFocusCard(query, result) {

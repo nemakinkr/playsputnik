@@ -1418,10 +1418,73 @@ textarea:focus-visible,
 }
 
 .game-search-trust {
+  display: block;
+  margin: 10px 0 12px;
+}
+
+.search-source-summary {
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg-soft);
+  overflow: hidden;
+}
+
+.search-source-summary summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 42px;
+  padding: 10px 12px;
+  color: var(--text-mid);
+  cursor: pointer;
+  list-style: none;
+}
+
+.search-source-summary summary::-webkit-details-marker {
+  display: none;
+}
+
+.search-source-summary summary::after {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-pill);
+  background: var(--chip-bg);
+  color: var(--ps-blue);
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.search-source-summary[open] summary::after {
+  content: "-";
+}
+
+.search-source-summary summary span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.search-source-summary summary strong {
+  color: var(--text-strong);
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.game-search-trust-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin: 10px 0 12px;
+  padding: 0 10px 10px;
 }
 
 .search-trust-card {
@@ -2370,7 +2433,7 @@ textarea:focus-visible,
 @media (max-width: 900px) {
   .library-dashboard,
   .wishlist-dashboard,
-  .game-search-trust {
+  .game-search-trust-cards {
     grid-template-columns: 1fr;
   }
 

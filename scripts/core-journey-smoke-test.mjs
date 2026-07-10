@@ -54,6 +54,9 @@ try {
     heroDecisionStrip: Boolean(document.querySelector(".hero-decision-strip")),
     heroPrimary: document.querySelector("[data-hero-primary]")?.textContent.trim() || "",
     earlyHero: Boolean(document.querySelector(".hero-card.is-early-pick")),
+    understood: Boolean(document.querySelector("#taste-understood-panel:not([hidden])")),
+    understoodTitle: document.querySelector("#taste-understood-title")?.textContent.trim() || "",
+    understoodText: document.querySelector("#taste-understood-body")?.textContent.replace(/\s+/g, " ").trim() || "",
     steps: Array.from(document.querySelectorAll(".first-run-journey-step")).map((element) => ({
       action: element.dataset.firstRunAction,
       title: element.dataset.firstRunTitle,
@@ -68,6 +71,9 @@ try {
   assert(before.heroDecisionStrip, "Top-pick hero should show the decision strip");
   assert(/Check why|Проверить почему/.test(before.heroPrimary), `Top-pick hero should expose an early primary CTA, got ${before.heroPrimary}`);
   assert(before.earlyHero, "Top-pick hero should mark the 5-signal pick as early");
+  assert(before.understood, "Taste-understood panel did not render after 5 quick signals");
+  assert(/understand|поняли/i.test(before.understoodTitle), `Taste-understood title should explain learned taste, got ${before.understoodTitle}`);
+  assert(/Five quick|Пяти быстрых/.test(before.understoodText), "Taste-understood panel should explain the 5-signal quick start");
   assert(before.steps.some((step) => step.action === "detail-pick" && step.title), "Journey is missing detail-pick");
   assert(before.steps.some((step) => ["save", "play"].includes(step.action) && step.title), "Journey is missing memory action");
   assert(before.steps.some((step) => step.action === "discover-pick" && step.title), "Journey is missing discover-pick");
