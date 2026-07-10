@@ -352,6 +352,8 @@
       searchTitle: "Поиск игр", searchLocal: "Локально", searchPlaceholder: "Найти игру",
       searchAria: "Поиск игр", searchButton: "Искать", searching: "Ищу",
       searchSourceInitial: "Каталог и внешний поиск",
+      searchSuggestionsAria: "Быстрые поисковые примеры",
+      searchSuggestionsLabel: "Попробовать",
       searchReady: "Готово", results: { one: "{count} результат", few: "{count} результата", many: "{count} результатов" },
       searchStatusWithResults: { one: "Найдено: {count} совпадение", few: "Найдено: {count} совпадения", many: "Найдено: {count} совпадений" },
       sources: { one: "{count} источник", few: "{count} источника", many: "{count} источников" },

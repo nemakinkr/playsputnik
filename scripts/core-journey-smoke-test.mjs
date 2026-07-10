@@ -32,7 +32,7 @@ try {
   page.on("console", (message) => {
     if (message.type() !== "error") return;
     const text = message.text();
-    if (/ERR_CONNECTION_REFUSED/.test(text)) return;
+    if (/ERR_CONNECTION_REFUSED|ERR_INTERNET_DISCONNECTED/.test(text)) return;
     errors.push(text);
   });
 

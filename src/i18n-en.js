@@ -353,6 +353,8 @@
       searchTitle: "Game search", searchLocal: "Local", searchPlaceholder: "Search a game",
       searchAria: "Search games", searchButton: "Search", searching: "Searching",
       searchSourceInitial: "Catalog and external lookup",
+      searchSuggestionsAria: "Quick game searches",
+      searchSuggestionsLabel: "Try",
       searchReady: "Ready", results: { one: "{count} result", other: "{count} results" },
       searchStatusWithResults: { one: "{count} match found", other: "{count} matches found" },
       sources: { one: "{count} source", other: "{count} sources" },

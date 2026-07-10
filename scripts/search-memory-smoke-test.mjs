@@ -112,6 +112,17 @@ try {
   await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
 
   await page.evaluate(() => document.querySelector('[data-app-view="discover"]')?.click());
+  let suggestion = { value: "", rows: 0, suggestions: 0, skipped: true };
+  if (!injectRawg) {
+    await page.locator('[data-search-suggestion="Stray"]').click();
+    await page.waitForTimeout(300);
+    suggestion = await page.evaluate(() => ({
+      value: document.querySelector("#game-search-input")?.value || "",
+      rows: document.querySelectorAll(".game-search-row").length,
+      suggestions: document.querySelectorAll("[data-search-suggestion]").length,
+      skipped: false,
+    }));
+  }
   await page.locator("#game-search-input").fill(searchQuery);
   if (injectRawg) {
     await page.waitForFunction((title) => {
@@ -151,6 +162,7 @@ try {
     focusSavedPressed: document.querySelector('[data-focus-state="saved"]')?.getAttribute("aria-pressed") || "",
     passportChecks: document.querySelectorAll(".game-search-row .source-check").length,
   }));
+  before.suggestion = suggestion;
 
   await page.evaluate(() => document.querySelector('[data-focus-state="saved"]')?.click());
   await page.waitForTimeout(500);
@@ -326,6 +338,11 @@ try {
   const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterFocusSave, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
   console.log(JSON.stringify(result, null, 2));
 
+  if (!injectRawg) {
+    assert(before.suggestion.suggestions >= 4, `Expected quick search suggestions, got ${before.suggestion.suggestions}`);
+    assert(before.suggestion.value === "Stray", `Expected suggestion click to set Stray search, got ${before.suggestion.value}`);
+    assert(before.suggestion.rows >= 1, `Expected suggestion click to render at least one search row, got ${before.suggestion.rows}`);
+  }
   assert(before.rows >= 1, `Expected search rows, got ${before.rows}`);
   assert(before.firstTitle === expectedTitle, `Expected ${expectedTitle} as first result, got ${before.firstTitle}`);
   if (injectRawg) assert(/match|Найдено|result|совпад/i.test(before.searchStatus), `Expected user-facing search result status, got ${before.searchStatus}`);

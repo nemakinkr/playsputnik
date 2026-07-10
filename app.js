@@ -7399,6 +7399,14 @@ els.gameSearchInput.addEventListener("keydown", (event) => {
   event.preventDefault();
   runProviderSearch({ force: true });
 });
+document.querySelectorAll("[data-search-suggestion]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const query = button.dataset.searchSuggestion || "";
+    state.gameSearchQuery = query;
+    els.gameSearchInput.value = query;
+    runProviderSearch({ force: true });
+  });
+});
 els.comparisonRun?.addEventListener("click", () => {
   setComparisonGames(els.comparisonFirst.value, els.comparisonSecond.value);
   render();

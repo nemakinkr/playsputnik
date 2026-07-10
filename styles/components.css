@@ -622,6 +622,32 @@ body[data-app-view-current="library"] .tabs { order: 8; }
 body[data-app-view-current="library"] .cluster-grid { order: 9; }
 body[data-app-view-current="library"] .library-panel { order: 10; }
 
+body[data-app-view-current="today"] .app-view-nav { order: 1; }
+body[data-app-view-current="today"] .app-view-copy { order: 2; }
+body[data-app-view-current="today"] .onboarding-hero { order: 3; }
+body[data-app-view-current="today"] .demo-continuity-panel { order: 4; }
+body[data-app-view-current="today"] .top-pick { order: 5; }
+body[data-app-view-current="today"] .value-strip { order: 6; }
+body[data-app-view-current="today"] .tonight-time { order: 7; }
+body[data-app-view-current="today"] .taste-understood-panel { order: 8; }
+body[data-app-view-current="today"] .answer-panel { order: 9; }
+body[data-app-view-current="today"] .plan-panel { order: 10; }
+body[data-app-view-current="today"] .library-plan-panel { order: 11; }
+body[data-app-view-current="today"] .visual-catalog-panel { order: 12; }
+body[data-app-view-current="today"] .tabs { order: 13; }
+body[data-app-view-current="today"] .cluster-grid { order: 14; }
+
+body[data-app-view-current="discover"] .app-view-nav { order: 1; }
+body[data-app-view-current="discover"] .app-view-copy { order: 2; }
+body[data-app-view-current="discover"] .game-search-panel { order: 3; }
+body[data-app-view-current="discover"] .visual-catalog-panel { order: 4; }
+body[data-app-view-current="discover"] .game-comparison-panel { order: 5; }
+body[data-app-view-current="discover"] .radar-panel { order: 6; }
+body[data-app-view-current="discover"] .drop-panel { order: 7; }
+body[data-app-view-current="discover"] .value-strip { order: 8; }
+body[data-app-view-current="discover"] .tabs { order: 9; }
+body[data-app-view-current="discover"] .cluster-grid { order: 10; }
+
 .is-view-hidden {
   display: none !important;
 }

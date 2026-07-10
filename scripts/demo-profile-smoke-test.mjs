@@ -34,7 +34,10 @@ try {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
-    if (message.type() === "error") errors.push(message.text());
+    if (message.type() !== "error") return;
+    const text = message.text();
+    if (/ERR_CONNECTION_REFUSED|ERR_INTERNET_DISCONNECTED/.test(text)) return;
+    errors.push(text);
   });
 
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });

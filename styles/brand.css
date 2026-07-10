@@ -730,6 +730,78 @@ textarea:focus-visible,
   box-shadow: var(--shadow-md);
 }
 
+body[data-app-view-current="today"] .app-view-copy {
+  max-width: 760px;
+}
+
+body[data-app-view-current="today"] .top-pick {
+  min-height: 328px;
+}
+
+body[data-app-view-current="today"] .hero-card {
+  grid-template-columns: minmax(260px, 38%) 1fr;
+  min-height: 328px;
+  border-color: color-mix(in srgb, var(--ps-blue) 38%, var(--ps-border));
+  box-shadow: 0 24px 60px color-mix(in srgb, var(--ps-blue) 13%, transparent);
+}
+
+body[data-app-view-current="today"] .hero-visual {
+  min-height: 328px;
+}
+
+body[data-app-view-current="today"] .hero-body {
+  padding: 28px;
+}
+
+body[data-app-view-current="today"] .hero-body h3 {
+  font-size: 2.35rem;
+}
+
+body[data-app-view-current="today"] .hero-primary-cta {
+  display: grid;
+  grid-template-columns: minmax(160px, auto) minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 24%, var(--ps-border));
+  border-radius: var(--radius-md);
+  background: var(--accent-bg);
+  padding: 8px;
+}
+
+body[data-app-view-current="today"] .hero-primary-cta small {
+  color: var(--text-mid);
+  font-weight: 780;
+  line-height: 1.35;
+}
+
+@media (max-width: 700px) {
+  body[data-app-view-current="today"] .top-pick,
+  body[data-app-view-current="today"] .hero-card {
+    min-height: 0;
+  }
+
+  body[data-app-view-current="today"] .hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-app-view-current="today"] .hero-visual {
+    min-height: 170px;
+  }
+
+  body[data-app-view-current="today"] .hero-body {
+    padding: 16px;
+  }
+
+  body[data-app-view-current="today"] .hero-body h3 {
+    font-size: 1.45rem;
+  }
+
+  body[data-app-view-current="today"] .hero-primary-cta,
+  .game-search-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
 .hero-visual,
 .poster,
 .game-detail-visual {
@@ -1414,7 +1486,74 @@ textarea:focus-visible,
 .game-search-panel {
   border: 1px solid var(--ps-border);
   border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 9%, transparent), transparent 42%),
+    var(--card-bg);
+  box-shadow: var(--shadow-md);
+}
+
+.game-search-panel .section-heading {
+  align-items: end;
+}
+
+.game-search-panel .section-heading h2 {
+  color: var(--text-strong);
+  font-size: 1.18rem;
+}
+
+.game-search-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-md);
   background: var(--card-bg);
+  padding: 6px;
+}
+
+.game-search-controls input {
+  min-height: 42px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 0.96rem;
+}
+
+.game-search-controls input:focus {
+  outline: none;
+}
+
+.game-search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 8px 0 0;
+}
+
+.game-search-suggestions span {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.game-search-suggestions button {
+  min-height: 30px;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-pill);
+  background: var(--chip-bg);
+  color: var(--text-strong);
+  padding: 0 10px;
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.game-search-suggestions button:hover,
+.game-search-suggestions button:focus-visible {
+  border-color: color-mix(in srgb, var(--ps-blue) 46%, var(--ps-border));
+  background: var(--accent-bg);
 }
 
 .game-search-trust {
@@ -1563,7 +1702,15 @@ textarea:focus-visible,
 
 .game-search-row {
   border-color: var(--ps-border);
-  background: var(--card-bg);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent-bg) 34%, transparent), transparent 38%),
+    var(--card-bg);
+}
+
+.game-search-row:hover,
+.game-search-row:focus-within {
+  border-color: color-mix(in srgb, var(--ps-blue) 34%, var(--ps-border));
+  box-shadow: var(--shadow-md);
 }
 
 .game-search-main {
@@ -1587,8 +1734,8 @@ textarea:focus-visible,
 
 .game-search-cover {
   position: relative;
-  width: 76px;
-  aspect-ratio: 16 / 10;
+  width: 92px;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   border: 1px solid var(--ps-border);
   border-radius: var(--radius-sm);
@@ -1635,7 +1782,7 @@ textarea:focus-visible,
 
   .game-search-cover {
     width: 100%;
-    max-width: 180px;
+    max-width: 160px;
   }
 }
 
