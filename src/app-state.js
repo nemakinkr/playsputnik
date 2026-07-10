@@ -69,6 +69,7 @@
         notebookImport: "",
         notebook: emptyNotebook(),
         gameSearchQuery: "",
+        importLookupQueue: [],
         catalogSearch: "",
         catalogAtomFilter: "",
         catalogLengthFilter: "",

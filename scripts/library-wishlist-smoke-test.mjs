@@ -212,6 +212,7 @@ async function runFounderRankingScenario(page) {
   const preview = await page.evaluate(() => ({
     text: document.querySelector("#taste-import-preview")?.textContent?.replace(/\s+/g, " ").trim() || "",
     report: document.querySelector("#taste-import-report")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    batch: Boolean(document.querySelector("[data-import-report-batch]")),
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
   await page.evaluate(() => document.querySelector("#analyze-ratings")?.click());
@@ -219,6 +220,7 @@ async function runFounderRankingScenario(page) {
   const taste = await page.evaluate(() => ({
     summary: document.querySelector("#taste-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
     profile: document.querySelector("#taste-profile-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    screen: document.querySelector("#taste-profile-screen")?.textContent?.replace(/\s+/g, " ").trim() || "",
     atoms: [...document.querySelectorAll("#taste-atoms .atom-pill")].map((node) => node.textContent?.replace(/\s+/g, " ").trim() || ""),
   }));
 
@@ -419,8 +421,10 @@ try {
   assert(/Опоры вкуса|Taste anchors/.test(founderRanking.preview.text), `Expected founder preview to show trusted taste anchors, got: ${founderRanking.preview.text}`);
   assert(/известно в источниках: 111\/111|known to sources: 111\/111/i.test(founderRanking.preview.text), `Expected founder preview to show full known-source coverage, got: ${founderRanking.preview.text}`);
   assert(/Отчёт импорта|Import report/.test(founderRanking.preview.report) && /80/.test(founderRanking.preview.report) && /111/.test(founderRanking.preview.report), `Expected founder import report to summarize anchor and known-source coverage, got: ${founderRanking.preview.report}`);
+  assert(founderRanking.preview.batch, "Expected founder import report to expose a batch Discover lookup action");
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
+  assert(/Taste profile|Профиль вкуса|gaming fingerprint|игровой отпечаток/i.test(founderRanking.taste.screen), `Expected founder taste profile screen to render, got: ${founderRanking.taste.screen}`);
   assert(founderRanking.taste.atoms.some((atom) => /сюжет|story/i.test(atom)), `Expected founder taste atoms to include story, got: ${founderRanking.taste.atoms.join(", ")}`);
   assert(founderRanking.wishlist.rows.some((title) => ["Mafia: The Old Country", "007 First Light", "The Alters", "Dead Space", "Final Fantasy VII Rebirth"].includes(title)), `Expected founder wishlist to surface story-forward next candidates, got: ${founderRanking.wishlist.rows.join(" / ")}`);
   assert(!founderRanking.wishlist.rows.includes("Alan Wake 2"), `Imported ranked games should teach taste, not reappear as next wishlist picks: ${founderRanking.wishlist.rows.join(" / ")}`);

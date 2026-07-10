@@ -954,6 +954,8 @@ const els = {
   tasteImportReport: document.querySelector("#taste-import-report"),
   tasteProfileSummary: document.querySelector("#taste-profile-summary"),
   tasteProfileBadge: document.querySelector("#taste-profile-badge"),
+  tasteProfileScreen: document.querySelector("#taste-profile-screen"),
+  tasteProfileScreenStatus: document.querySelector("#taste-profile-screen-status"),
   sampleRatings: document.querySelector("#sample-ratings"),
   demoRatings: document.querySelector("#demo-ratings"),
   analyzeRatings: document.querySelector("#analyze-ratings"),
@@ -2570,6 +2572,7 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
 
   const sourceHits = preview.reviewGroups?.find((group) => group.kind === "known")?.rows || [];
   const misses = preview.reviewGroups?.find((group) => group.kind === "missing")?.rows || [];
+  const lookupTitles = [...sourceHits, ...misses].map((row) => row.rawTitle || row.title).filter(Boolean).slice(0, 8);
   const confidence = preview.strong
     ? t("settings.tasteImport.reportConfidenceStrong")
     : preview.ready
@@ -2607,6 +2610,11 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
     </div>
     <div class="taste-import-report-next">
       <span>${t("settings.tasteImport.reportQueueTitle")}</span>
+      ${lookupTitles.length ? `
+        <button class="taste-import-report-batch primary-action" data-import-report-batch type="button">
+          ${t("settings.tasteImport.reportBatchSearch", { count: lookupTitles.length })}
+        </button>
+      ` : ""}
       ${queue.length ? `
         <div>
           ${queue.map((row) => `
@@ -2621,6 +2629,9 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
   `;
   els.tasteImportReport.querySelectorAll("[data-import-report-search]").forEach((button) => {
     button.addEventListener("click", () => openDiscoverForTitle(button.dataset.importReportSearch || ""));
+  });
+  els.tasteImportReport.querySelector("[data-import-report-batch]")?.addEventListener("click", () => {
+    openDiscoverForImportQueue(lookupTitles);
   });
 }
 
@@ -3050,6 +3061,83 @@ function buildTasteProfileText() {
   };
 }
 
+function renderTasteProfileScreen(profile) {
+  if (!els.tasteProfileScreen) return;
+  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, avoided, rankedCount } = profile;
+  const strengthLabel = totalSignals === 0
+    ? t("taste.profileWaiting")
+    : strength === "strong"
+      ? t("settings.tasteProfileDynamic.strong")
+      : strength === "moderate"
+        ? t("settings.tasteProfileDynamic.moderate")
+        : t("taste.profileEarly");
+  if (els.tasteProfileScreenStatus) {
+    els.tasteProfileScreenStatus.textContent = totalSignals
+      ? t("taste.profileStatus", { count: totalSignals, strength: strengthLabel })
+      : t("taste.profileWaiting");
+  }
+
+  if (!totalSignals) {
+    els.tasteProfileScreen.innerHTML = `
+      <div class="taste-profile-screen-empty">
+        <strong>${t("taste.profileEmptyTitle")}</strong>
+        <p>${t("taste.profileEmptyDetail")}</p>
+        <div>
+          <button class="primary-action" data-profile-action="swipe" type="button">${t("taste.profileActionSwipe")}</button>
+          <button class="secondary-action" data-profile-action="import" type="button">${t("taste.profileActionImport")}</button>
+        </div>
+      </div>
+    `;
+  } else {
+    const pull = allPositive.length ? labelAtoms(allPositive.slice(0, 5), " / ") : t("settings.tasteProfileDynamic.noSignals");
+    const caution = negativeAtoms.length ? labelAtoms(negativeAtoms.slice(0, 3), " / ") : t("taste.profileNoCaution");
+    const anchors = lovedSample.length
+      ? lovedSample.map((title) => `<span>${detailAttr(title)}</span>`).join("")
+      : `<span>${t("taste.profileNoAnchors")}</span>`;
+    const avoidedCopy = avoided?.length
+      ? avoided.slice(0, 3).map((title) => `<span>${detailAttr(title)}</span>`).join("")
+      : `<span>${t("taste.profileNoSkips")}</span>`;
+    const importedCount = state.importedRatings?.length || 0;
+    els.tasteProfileScreen.innerHTML = `
+      <div class="taste-profile-hero">
+        <span>${t("taste.profileEyebrow")}</span>
+        <strong>${archetype || t("taste.profileArchetypeFallback")}</strong>
+        <p>${t("taste.profileHeroDetail", { count: totalSignals, strength: strengthLabel })}</p>
+      </div>
+      <div class="taste-profile-lens">
+        <div>
+          <span>${t("taste.profilePull")}</span>
+          <strong>${pull}</strong>
+        </div>
+        <div>
+          <span>${t("taste.profileCaution")}</span>
+          <strong>${caution}</strong>
+        </div>
+        <div>
+          <span>${t("taste.profileAnchors")}</span>
+          <strong class="taste-profile-anchor-list">${anchors}</strong>
+        </div>
+        <div>
+          <span>${t("taste.profileSkips")}</span>
+          <strong class="taste-profile-anchor-list">${avoidedCopy}</strong>
+        </div>
+      </div>
+      <div class="taste-profile-proof">
+        <div><span>${t("taste.profileSignals")}</span><strong>${totalSignals}</strong></div>
+        <div><span>${t("taste.profileImported")}</span><strong>${importedCount}</strong></div>
+        <div><span>${t("taste.profileRanked")}</span><strong>${rankedCount}</strong></div>
+      </div>
+      <div class="taste-profile-actions">
+        <button class="primary-action" data-profile-action="import" type="button">${t("taste.profileActionImport")}</button>
+        <button class="secondary-action" data-profile-action="swipe" type="button">${t("taste.profileActionSwipe")}</button>
+      </div>
+    `;
+  }
+
+  els.tasteProfileScreen.querySelector("[data-profile-action='swipe']")?.addEventListener("click", focusKnownGames);
+  els.tasteProfileScreen.querySelector("[data-profile-action='import']")?.addEventListener("click", focusTasteImport);
+}
+
 function renderTasteProfile() {
   const sorted = Object.entries(state.atomWeights)
     .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
@@ -3069,7 +3157,9 @@ function renderTasteProfile() {
 
   // Rich profile summary
   if (!els.tasteProfileSummary) return;
-  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, rankedCount } = buildTasteProfileText();
+  const profileText = buildTasteProfileText();
+  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, rankedCount } = profileText;
+  renderTasteProfileScreen(profileText);
 
   if (els.tasteProfileBadge) {
     els.tasteProfileBadge.textContent = totalSignals === 0
@@ -3720,6 +3810,13 @@ function openDiscoverForTitle(title) {
   }, 0);
 }
 
+function openDiscoverForImportQueue(titles) {
+  const queue = [...new Set((titles || []).map((title) => String(title || "").trim()).filter(Boolean))].slice(0, 8);
+  if (!queue.length) return;
+  state.importLookupQueue = queue;
+  openDiscoverForTitle(queue[0]);
+}
+
 function runFirstRunAction(action, title) {
   if (action === "quick-entry") {
     applyQuickEntry();
@@ -3845,6 +3942,7 @@ function renderDemoContinuity(ranked) {
       return button;
     }),
   );
+  els.demoContinuityPanel.hidden = state.activeView === "today" && !isDemo;
 }
 
 function renderFirstRunFlow(ranked) {
@@ -5252,6 +5350,38 @@ function renderSearchFocusCard(query, result) {
   return card;
 }
 
+function renderImportLookupQueue(query) {
+  const queue = (state.importLookupQueue || []).filter(Boolean);
+  if (!queue.length) return null;
+  const card = document.createElement("div");
+  card.className = "import-lookup-queue";
+  card.innerHTML = `
+    <div>
+      <span>${t("discover.importLookupEyebrow")}</span>
+      <strong>${t("discover.importLookupTitle", { count: queue.length })}</strong>
+      <small>${t("discover.importLookupDetail")}</small>
+    </div>
+    <div class="import-lookup-chips">
+      ${queue.map((title) => `
+        <button class="${titleMatches(title, query) ? "is-active" : ""}" data-import-lookup-title="${detailAttr(title)}" type="button">${detailAttr(title)}</button>
+      `).join("")}
+      <button data-import-lookup-clear type="button">${t("discover.importLookupClear")}</button>
+    </div>
+  `;
+  card.querySelectorAll("[data-import-lookup-title]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.gameSearchQuery = button.dataset.importLookupTitle || "";
+      render();
+      window.setTimeout(() => els.gameSearchInput?.focus({ preventScroll: true }), 0);
+    });
+  });
+  card.querySelector("[data-import-lookup-clear]")?.addEventListener("click", () => {
+    state.importLookupQueue = [];
+    render();
+  });
+  return card;
+}
+
 function renderGameSearch() {
   const query = (state.gameSearchQuery || "").trim();
   const results = globalSearchResults();
@@ -5449,8 +5579,9 @@ function renderGameSearch() {
       return row;
     });
 
+  const lookupQueue = renderImportLookupQueue(query);
   const focusCard = renderSearchFocusCard(query, results[0]);
-  els.gameSearchList.replaceChildren(...notices, ...(focusCard ? [focusCard] : []), ...rows);
+  els.gameSearchList.replaceChildren(...notices, ...(lookupQueue ? [lookupQueue] : []), ...(focusCard ? [focusCard] : []), ...rows);
 }
 
 function renderGameComparison(ranked) {
