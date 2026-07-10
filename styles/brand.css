@@ -1726,6 +1726,59 @@ textarea:focus-visible,
   grid-column: 1 / -1;
 }
 
+.taste-import-verdict {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.taste-import-verdict div,
+.taste-import-next-step {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid var(--ps-border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg-soft);
+  padding: 9px;
+}
+
+.taste-import-verdict .tone-anchor {
+  border-color: color-mix(in srgb, var(--teal) 36%, var(--ps-border));
+}
+
+.taste-import-verdict .tone-known {
+  border-color: color-mix(in srgb, var(--ps-blue) 28%, var(--ps-border));
+}
+
+.taste-import-verdict .tone-missing {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--amber) 44%, var(--ps-border));
+}
+
+.taste-import-verdict span,
+.taste-import-next-step span {
+  color: var(--text-mid);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.taste-import-verdict strong,
+.taste-import-next-step strong {
+  color: var(--text-strong);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.taste-import-verdict small {
+  color: var(--text-mid);
+  font-size: 0.68rem;
+  font-weight: 760;
+  line-height: 1.25;
+}
+
 .taste-import-preview-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
@@ -2086,6 +2139,10 @@ textarea:focus-visible,
 
 @media (max-width: 720px) {
   .taste-import-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .taste-import-verdict {
     grid-template-columns: 1fr;
   }
 

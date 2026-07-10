@@ -52,6 +52,7 @@ try {
   const before = await page.evaluate(() => ({
     journey: Boolean(document.querySelector("[data-first-run-journey]")),
     heroDecisionStrip: Boolean(document.querySelector(".hero-decision-strip")),
+    heroPayoff: document.querySelector("[data-hero-payoff]")?.textContent.replace(/\s+/g, " ").trim() || "",
     heroPrimary: document.querySelector("[data-hero-primary]")?.textContent.trim() || "",
     earlyHero: Boolean(document.querySelector(".hero-card.is-early-pick")),
     understood: Boolean(document.querySelector("#taste-understood-panel:not([hidden])")),
@@ -69,6 +70,7 @@ try {
   assert(before.journey, "First-run journey rail did not render");
   assert(/First test|Первый тест/.test(before.title), `First-run title should frame the pick as a test, got ${before.title}`);
   assert(before.heroDecisionStrip, "Top-pick hero should show the decision strip");
+  assert(/test pick|тестовый выбор/i.test(before.heroPayoff), `Top-pick hero should show onboarding payoff, got ${before.heroPayoff}`);
   assert(/Check why|Проверить почему/.test(before.heroPrimary), `Top-pick hero should expose an early primary CTA, got ${before.heroPrimary}`);
   assert(before.earlyHero, "Top-pick hero should mark the 5-signal pick as early");
   assert(before.understood, "Taste-understood panel did not render after 5 quick signals");

@@ -193,6 +193,7 @@ try {
         text: item.textContent.trim(),
         done: item.classList.contains("is-done"),
       })),
+      confirmation: row?.querySelector("[data-search-saved-confirmation]")?.textContent?.replace(/\s+/g, " ").trim() || "",
       memoryStatus: row?.querySelector("[data-search-memory-panel]")?.textContent?.replace(/\s+/g, " ").trim() || "",
       record: record ? {
         title: record.title,
@@ -352,6 +353,7 @@ try {
   assert(afterSearchSave.activeSaved, "Expected direct Wishlist button to become selected");
   assert(afterSearchSave.pressedSaved === "true", `Expected Wishlist aria-pressed=true, got ${afterSearchSave.pressedSaved}`);
   assert(afterSearchSave.openWishlistButtons >= 1, "Expected saved search result to expose an Open Wishlist next step");
+  assert(/Wishlist|Желаемое/i.test(afterSearchSave.confirmation), `Expected saved search result confirmation, got ${afterSearchSave.confirmation}`);
   assert(afterSearchSave.checklist.length >= 3, "Expected search memory confirmation checklist");
   assert(afterSearchSave.checklist.filter((item) => item.done).length >= 2, "Expected checklist to mark remembered/source steps as done");
   assert(/Saved to Wishlist|Добавлено в Желаемое/i.test(afterSearchSave.memoryStatus), `Expected search memory confirmation, got ${afterSearchSave.memoryStatus}`);

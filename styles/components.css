@@ -1728,6 +1728,51 @@ body[data-app-view-current="library"] .library-panel { order: 10; }
   font-size: 1.8rem;
 }
 
+.hero-payoff-banner {
+  display: grid;
+  gap: 4px;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 32%, var(--card-border));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 12%, transparent), transparent 56%),
+    var(--card-bg-soft);
+  padding: 12px;
+}
+
+.hero-payoff-banner span {
+  color: var(--ps-blue);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.hero-payoff-banner strong {
+  color: var(--text-strong);
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.hero-payoff-banner small,
+.hero-payoff-note {
+  color: var(--text-mid);
+  font-size: 0.78rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.hero-payoff-note {
+  margin: -2px 0 0;
+}
+
+.hero-card.is-early-pick .hero-body {
+  align-content: start;
+}
+
+.hero-card.is-early-pick .description,
+.hero-card.is-early-pick .reason {
+  font-size: 0.9rem;
+}
+
 .reason {
   margin-bottom: 0;
   color: #334155;
@@ -5607,6 +5652,41 @@ body[data-app-view-current="library"] .library-panel { order: 10; }
 .game-search-memory.tone-access {
   border-color: #bbf7d0;
   background: #f0fdf4;
+}
+
+.search-save-confirmation,
+.game-search-focus-saved {
+  border: 1px solid color-mix(in srgb, var(--green) 32%, var(--card-border));
+  border-radius: 8px;
+  background: var(--accent-bg);
+  padding: 8px;
+}
+
+.search-save-confirmation {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 3px;
+}
+
+.game-search-focus-saved {
+  display: grid;
+  gap: 3px;
+  margin: 8px 0 0;
+}
+
+.search-save-confirmation strong,
+.game-search-focus-saved strong {
+  color: var(--text-strong);
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+.search-save-confirmation span,
+.game-search-focus-saved span {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 760;
+  line-height: 1.3;
 }
 
 .search-primary-action {

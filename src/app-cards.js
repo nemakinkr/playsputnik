@@ -88,7 +88,7 @@
       const evidence = personalEvidence(game);
       const ratingBadge = personalRatingBadge(game);
       const signalCount = quickTasteSignalCountFromState();
-      const isEarlyPick = signalCount >= 3 && signalCount < 6;
+      const isEarlyPick = signalCount >= 5 && signalCount < 8;
       const currentState = gameUserState(game.title);
       const playableStates = new Set(["owned", "owned_forever", "subscription", "playing", "paused", "want_to_finish"]);
       const primaryMove = isEarlyPick
@@ -118,7 +118,7 @@
         primaryMove.state === "completed" ? null : { kind: "state", state: "completed", label: t("today.hero.done") },
       ].filter(Boolean);
       const facts = factList(game)
-        .slice(0, 5)
+        .slice(0, isEarlyPick ? 3 : 5)
         .map((fact) => `<span class="fact ${fact.type}">${fact.label}</span>`)
         .join("");
       const decisionStrip = [
@@ -154,6 +154,13 @@
             <strong class="hero-visual-title">${game.title}</strong>
           </div>
           <div class="hero-body">
+            ${isEarlyPick ? `
+              <div class="hero-payoff-banner" data-hero-payoff>
+                <span>${t("today.hero.payoffEyebrow")}</span>
+                <strong>${t("today.hero.payoffTitle")}</strong>
+                <small>${t("today.hero.payoffDetail", { count: signalCount })}</small>
+              </div>
+            ` : ""}
             <div>
               <p class="eyebrow">${t("today.hero.top")}</p>
               <h3>${game.title}</h3>
@@ -171,11 +178,13 @@
                 </div>
               `).join("")}
             </div>
-            <div class="personal-evidence hero-evidence">
+            ${isEarlyPick ? `<p class="hero-payoff-note">${t("today.hero.payoffNote")}</p>` : `
+              <div class="personal-evidence hero-evidence">
               ${renderEvidenceRows(evidence, 3)}
-            </div>
-            <p class="watchout"><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
-            ${guard ? `<span class="deal-guard guard-${guard.kind}" title="${String(guard.detail).replace(/"/g, "&quot;")}">${guard.label}</span>` : ""}
+              </div>
+              <p class="watchout"><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
+              ${guard ? `<span class="deal-guard guard-${guard.kind}" title="${String(guard.detail).replace(/"/g, "&quot;")}">${guard.label}</span>` : ""}
+            `}
             <div class="facts">${facts}</div>
             <p class="cover-source hero-cover-source"></p>
             <div class="hero-primary-cta">

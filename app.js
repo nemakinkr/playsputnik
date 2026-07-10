@@ -2464,12 +2464,39 @@ function renderTasteImportPreview() {
     : preview.ready
       ? t("settings.tasteImport.previewStoryReady")
       : t("settings.tasteImport.previewStoryWeak");
+  const lookupCount = Math.max(0, preview.total - preview.known);
+  const nextStep = preview.strong
+    ? t("settings.tasteImport.verdictNextStrong")
+    : preview.ready
+      ? t("settings.tasteImport.verdictNextReady")
+      : t("settings.tasteImport.verdictNextWeak");
 
   els.tasteImportPreview.innerHTML = `
     <div class="taste-import-preview-head">
       <span>${modeLabel}</span>
       <strong>${t("settings.tasteImport.previewMatched", { matched: preview.matched, total: preview.total })}</strong>
       <small>${t("settings.tasteImport.previewKnown", { known: preview.known, total: preview.total })} · ${confidence}</small>
+    </div>
+    <div class="taste-import-verdict" aria-label="${t("settings.tasteImport.verdictAria")}">
+      <div class="tone-anchor">
+        <span>${t("settings.tasteImport.verdictAccepted")}</span>
+        <strong>${preview.matched}</strong>
+        <small>${t("settings.tasteImport.verdictAcceptedDetail")}</small>
+      </div>
+      <div class="tone-known">
+        <span>${t("settings.tasteImport.verdictReview")}</span>
+        <strong>${Math.max(0, preview.known - preview.matched)}</strong>
+        <small>${t("settings.tasteImport.verdictReviewDetail")}</small>
+      </div>
+      <div class="tone-missing">
+        <span>${t("settings.tasteImport.verdictLookup")}</span>
+        <strong>${lookupCount}</strong>
+        <small>${t("settings.tasteImport.verdictLookupDetail")}</small>
+      </div>
+    </div>
+    <div class="taste-import-next-step">
+      <span>${t("settings.tasteImport.verdictNext")}</span>
+      <strong>${nextStep}</strong>
     </div>
     <div class="taste-import-preview-story">
       <strong>${t("settings.tasteImport.previewStoryTitle")}</strong>
@@ -5197,6 +5224,12 @@ function renderSearchFocusCard(query, result) {
       <span>${t("discover.focusEyebrow")}</span>
       <strong>${detailAttr(result.title)}</strong>
       <p>${t("discover.focusDetail", { query: detailAttr(query), source: trust.label })}</p>
+      ${saved ? `
+        <p class="game-search-focus-saved" data-search-saved-confirmation>
+          <strong>${t("discover.saveConfirmationTitle")}</strong>
+          <span>${t("discover.saveConfirmationDetail")}</span>
+        </p>
+      ` : ""}
       <div class="game-search-focus-facts">
         ${ratingBadge ? `<span>${ratingBadge.label}</span>` : ""}
         ${atoms}
@@ -5369,6 +5402,12 @@ function renderGameSearch() {
           </div>
         </div>
         <div class="game-search-actions">
+          ${saved ? `
+            <div class="search-save-confirmation" data-search-saved-confirmation>
+              <strong>${t("discover.saveConfirmationTitle")}</strong>
+              <span>${t("discover.saveConfirmationDetail")}</span>
+            </div>
+          ` : ""}
           <div class="game-search-followup tone-${memory.tone}" data-search-followup>
             <span>${t("discover.memoryCheckNext")}</span>
             <strong>${followupLabel}</strong>
