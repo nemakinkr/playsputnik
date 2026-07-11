@@ -186,6 +186,18 @@ try {
     };
   }, { key: STORAGE_KEY, expectedTitle });
 
+  await page.evaluate(() => document.querySelector("[data-focus-open-wishlist]")?.click());
+  await page.waitForTimeout(500);
+  const focusedWishlistFromSearch = await page.evaluate((expectedTitle) => ({
+    activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
+    hasFocusedRow: Array.from(document.querySelectorAll(".wishlist-row.is-focused-memory"))
+      .some((item) => (item.querySelector("strong")?.textContent || "").trim() === expectedTitle),
+    banner: document.querySelector(".focused-memory-banner")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    pill: document.querySelector(".wishlist-row.is-focused-memory .focused-memory-pill")?.textContent?.trim() || "",
+  }), expectedTitle);
+  await page.evaluate(() => document.querySelector('[data-app-view="discover"]')?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "discover", null, { timeout: 5000 });
+
   await page.evaluate((title) => {
     const row = Array.from(document.querySelectorAll(".game-search-row"))
       .find((item) => (item.querySelector("strong")?.textContent || "").trim() === title);
@@ -333,11 +345,14 @@ try {
     activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
     hasGame: Array.from(document.querySelectorAll(".wishlist-row strong, #wishlist-dashboard strong, .wishlist-card strong"))
       .some((item) => (item.textContent || "").trim() === expectedTitle),
+    hasFocusedRow: Array.from(document.querySelectorAll(".wishlist-row.is-focused-memory"))
+      .some((item) => (item.querySelector("strong")?.textContent || "").trim() === expectedTitle),
+    focusBanner: document.querySelector(".focused-memory-banner")?.textContent?.replace(/\s+/g, " ").trim() || "",
     sourceNotes: document.querySelectorAll("[data-wishlist-source-note]").length,
     sourceNoteText: document.querySelector("[data-wishlist-source-note]")?.textContent?.replace(/\s+/g, " ").trim() || "",
   }), expectedTitle);
 
-  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterFocusSave, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
+  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterFocusSave, focusedWishlistFromSearch, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
   console.log(JSON.stringify(result, null, 2));
 
   if (!injectRawg) {
@@ -368,6 +383,10 @@ try {
   assert(afterFocusSave.userState === "saved", `Expected saved userState after focus action, got ${afterFocusSave.userState}`);
   assert(/Wishlist|Желаемое|контур|loop/i.test(afterFocusSave.nextSteps), `Expected focus next-step handoff after save, got ${afterFocusSave.nextSteps}`);
   assert(afterFocusSave.nextStepButtons >= 2, `Expected focus next-step buttons after save, got ${afterFocusSave.nextStepButtons}`);
+  assert(focusedWishlistFromSearch.activeView === "wishlist", `Expected focus next step to open Wishlist, got ${focusedWishlistFromSearch.activeView}`);
+  assert(focusedWishlistFromSearch.hasFocusedRow, "Expected Wishlist next step to focus the saved game row");
+  assert(/Wishlist|Желаем|saved|сохранили|добавили/i.test(focusedWishlistFromSearch.banner), `Expected Wishlist focus banner, got ${focusedWishlistFromSearch.banner}`);
+  assert(/search|поиск/i.test(focusedWishlistFromSearch.pill), `Expected focused Wishlist row to show source pill, got ${focusedWishlistFromSearch.pill}`);
   assert(before.passportChecks >= 5, `Expected search source passport checks, got ${before.passportChecks}`);
   assert(afterSearchSave.record?.saved, "Expected direct search Wishlist action to save the external game");
   assert(afterSearchSave.record?.source?.startsWith("search_"), `Expected direct search save source memory, got ${afterSearchSave.record?.source}`);
@@ -428,6 +447,8 @@ try {
     assert(acceptedProviderImports.hasGame, "Expected accepted provider import row to retain game title");
     assert(providerWishlistPath.activeView === "wishlist", `Expected provider import path to open Wishlist, got ${providerWishlistPath.activeView}`);
     assert(providerWishlistPath.hasGame, "Expected accepted RAWG import to be visible in Wishlist path");
+    assert(providerWishlistPath.hasFocusedRow, "Expected provider import Open Wishlist path to focus the accepted game row");
+    assert(/RAWG|Wishlist|Желаем|сохранили|добавили/i.test(providerWishlistPath.focusBanner), `Expected provider import focus banner, got ${providerWishlistPath.focusBanner}`);
     assert(providerWishlistPath.sourceNotes >= 1, "Expected Wishlist to expose source note for accepted RAWG import");
     assert(/RAWG|цена|price|Plus/i.test(providerWishlistPath.sourceNoteText), `Expected Wishlist source note to explain RAWG/missing facts, got ${providerWishlistPath.sourceNoteText}`);
   }

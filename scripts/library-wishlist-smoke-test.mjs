@@ -213,6 +213,8 @@ async function runFounderRankingScenario(page) {
     text: document.querySelector("#taste-import-preview")?.textContent?.replace(/\s+/g, " ").trim() || "",
     report: document.querySelector("#taste-import-report")?.textContent?.replace(/\s+/g, " ").trim() || "",
     batch: Boolean(document.querySelector("[data-import-report-batch]")),
+    gapBrief: Boolean(document.querySelector("[data-import-gap-brief]")),
+    gapText: document.querySelector("[data-import-gap-brief]")?.textContent?.replace(/\s+/g, " ").trim() || "",
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
   await page.evaluate(() => document.querySelector("#analyze-ratings")?.click());
@@ -422,6 +424,8 @@ try {
   assert(/известно в источниках: 111\/111|known to sources: 111\/111/i.test(founderRanking.preview.text), `Expected founder preview to show full known-source coverage, got: ${founderRanking.preview.text}`);
   assert(/Отчёт импорта|Import report/.test(founderRanking.preview.report) && /80/.test(founderRanking.preview.report) && /111/.test(founderRanking.preview.report), `Expected founder import report to summarize anchor and known-source coverage, got: ${founderRanking.preview.report}`);
   assert(founderRanking.preview.batch, "Expected founder import report to expose a batch Discover lookup action");
+  assert(founderRanking.preview.gapBrief, "Expected founder import report to expose a coverage/gap brief");
+  assert(/покрыт|пробел|coverage|gap|source/i.test(founderRanking.preview.gapText), `Expected import report gap brief copy, got: ${founderRanking.preview.gapText}`);
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
   assert(/Taste profile|Профиль вкуса|gaming fingerprint|игровой отпечаток/i.test(founderRanking.taste.screen), `Expected founder taste profile screen to render, got: ${founderRanking.taste.screen}`);

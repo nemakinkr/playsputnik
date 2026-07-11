@@ -70,6 +70,8 @@
         notebook: emptyNotebook(),
         gameSearchQuery: "",
         importLookupQueue: [],
+        focusedMemoryTitle: "",
+        focusedMemorySurface: "",
         catalogSearch: "",
         catalogAtomFilter: "",
         catalogLengthFilter: "",

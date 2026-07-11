@@ -182,7 +182,7 @@
           };
         })
         .filter((record) => !getBlocksPurchase(record.game))
-        .sort((a, b) => b.score - a.score)
+        .sort((a, b) => Number(b.saved) - Number(a.saved) || b.score - a.score)
         .slice(0, 8);
     }
 

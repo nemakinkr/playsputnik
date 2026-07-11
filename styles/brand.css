@@ -495,6 +495,7 @@ textarea:focus-visible,
   .value-strip div,
   .library-dashboard-card,
   .wishlist-dashboard-card,
+  .focused-memory-banner,
   .library-command-focus,
   .library-command-lanes button,
   .my-game-row,
@@ -502,6 +503,14 @@ textarea:focus-visible,
   .buy-decision-row,
   .game-search-row {
     padding: 11px;
+  }
+
+  .focused-memory-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .focused-memory-banner button {
+    justify-self: start;
   }
 }
 
@@ -2339,6 +2348,52 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   background: linear-gradient(90deg, var(--ps-blue), color-mix(in srgb, var(--teal) 65%, var(--ps-blue)));
 }
 
+.taste-import-gap-brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--amber) 26%, var(--ps-border));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--amber) 9%, transparent), transparent 58%),
+    var(--card-bg);
+  padding: 10px;
+}
+
+.taste-import-gap-brief > div {
+  display: grid;
+  gap: 3px;
+}
+
+.taste-import-gap-brief span,
+.focused-memory-banner span {
+  color: var(--ps-blue);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.taste-import-gap-brief strong,
+.focused-memory-banner strong {
+  color: var(--text-strong);
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.taste-import-gap-brief small,
+.focused-memory-banner small {
+  color: var(--text-mid);
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.taste-import-gap-brief button {
+  min-height: 34px;
+  white-space: nowrap;
+}
+
 .taste-import-report-next {
   display: grid;
   gap: 8px;
@@ -2523,8 +2578,13 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   }
 
   .taste-import-report-metrics,
+  .taste-import-gap-brief,
   .taste-import-report-next > div {
     grid-template-columns: 1fr;
+  }
+
+  .taste-import-gap-brief button {
+    justify-self: start;
   }
 }
 
@@ -2649,6 +2709,54 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 
 .wishlist-row {
   border-left-width: 4px;
+}
+
+.focused-memory-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 30%, var(--ps-border));
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--ps-blue) 8%, transparent), transparent 60%),
+    var(--accent-bg);
+  padding: 11px 12px;
+}
+
+.focused-memory-banner > div {
+  display: grid;
+  gap: 3px;
+}
+
+.my-game-row.is-focused-memory,
+.wishlist-row.is-focused-memory {
+  border-color: color-mix(in srgb, var(--ps-blue) 56%, var(--ps-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ps-blue) 13%, transparent), var(--shadow-soft);
+}
+
+.focused-memory-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 24%, var(--ps-border));
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--ps-blue);
+  padding: 3px 7px;
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+@media (max-width: 700px) {
+  .focused-memory-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .focused-memory-banner button {
+    justify-self: start;
+  }
 }
 
 .wishlist-actions button,

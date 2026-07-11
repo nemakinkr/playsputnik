@@ -1205,9 +1205,7 @@ function recordUserEvent(type, title, detail = {}) {
 
 function applyProviderImportAction(title, action) {
   if (action === "open-wishlist") {
-    state.activeView = "wishlist";
-    saveState();
-    render();
+    openFocusedMemoryTitle(title, "wishlist");
     return;
   }
   const key = titleKey(title);
@@ -2581,6 +2579,7 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
   const queue = [...sourceHits, ...misses].slice(0, 8);
   const anchorPct = preview.total ? Math.round((preview.matched / preview.total) * 100) : 0;
   const knownPct = preview.total ? Math.round((preview.known / preview.total) * 100) : 0;
+  const gapCount = Math.max(0, preview.total - preview.known);
   els.tasteImportReport.hidden = false;
   els.tasteImportReport.innerHTML = `
     <div class="taste-import-report-head">
@@ -2608,6 +2607,14 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
         <strong><i style="width:${knownPct}%"></i></strong>
       </div>
     </div>
+    <div class="taste-import-gap-brief" data-import-gap-brief>
+      <div>
+        <span>${gapCount ? t("settings.tasteImport.reportGapEyebrow") : t("settings.tasteImport.reportGapClearEyebrow")}</span>
+        <strong>${t(gapCount ? "settings.tasteImport.reportGapTitle" : "settings.tasteImport.reportGapClearTitle", { count: gapCount })}</strong>
+        <small>${t(gapCount ? "settings.tasteImport.reportGapDetail" : "settings.tasteImport.reportGapClearDetail", { count: lookupTitles.length })}</small>
+      </div>
+      ${lookupTitles.length ? `<button class="secondary-action" data-import-gap-action type="button">${t("settings.tasteImport.reportGapAction", { count: lookupTitles.length })}</button>` : ""}
+    </div>
     <div class="taste-import-report-next">
       <span>${t("settings.tasteImport.reportQueueTitle")}</span>
       ${lookupTitles.length ? `
@@ -2631,6 +2638,9 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
     button.addEventListener("click", () => openDiscoverForTitle(button.dataset.importReportSearch || ""));
   });
   els.tasteImportReport.querySelector("[data-import-report-batch]")?.addEventListener("click", () => {
+    openDiscoverForImportQueue(lookupTitles);
+  });
+  els.tasteImportReport.querySelector("[data-import-gap-action]")?.addEventListener("click", () => {
     openDiscoverForImportQueue(lookupTitles);
   });
 }
@@ -4815,6 +4825,60 @@ function focusAfterRender(selector, focusSelector = selector) {
   }, 0);
 }
 
+function memoryFocusSelector(title) {
+  return `[data-memory-focus-key="${detailAttr(titleKey(title))}"]`;
+}
+
+function isFocusedMemoryTitle(title, surface) {
+  return Boolean(
+    state.focusedMemoryTitle
+    && state.focusedMemorySurface === surface
+    && titleMatches(state.focusedMemoryTitle, title),
+  );
+}
+
+function openFocusedMemoryTitle(title, surface) {
+  if (!title) {
+    openAppView(surface);
+    return;
+  }
+  state.focusedMemoryTitle = title;
+  state.focusedMemorySurface = surface;
+  if (surface === "wishlist") state.wishlistFilter = "all";
+  if (surface === "library") state.libraryFilter = "all";
+  openAppView(surface);
+  focusAfterRender(memoryFocusSelector(title));
+}
+
+function openFocusedSearchMemory(result, surface) {
+  openFocusedMemoryTitle(canonicalSearchResultTitle(result), surface);
+}
+
+function focusedMemoryBadgeHtml(isFocused) {
+  return isFocused ? `<span class="focused-memory-pill">${t("memoryFocus.fromSearch")}</span>` : "";
+}
+
+function createFocusedMemoryBanner(surface) {
+  if (!state.focusedMemoryTitle || state.focusedMemorySurface !== surface) return null;
+  const isWishlist = surface === "wishlist";
+  const banner = document.createElement("div");
+  banner.className = `focused-memory-banner tone-${surface}`;
+  banner.innerHTML = `
+    <div>
+      <span>${t("memoryFocus.eyebrow")}</span>
+      <strong>${t(isWishlist ? "memoryFocus.wishlistTitle" : "memoryFocus.libraryTitle", { title: state.focusedMemoryTitle })}</strong>
+      <small>${t(isWishlist ? "memoryFocus.wishlistDetail" : "memoryFocus.libraryDetail")}</small>
+    </div>
+    <button class="secondary-action" data-clear-focused-memory type="button">${t("memoryFocus.clear")}</button>
+  `;
+  banner.querySelector("[data-clear-focused-memory]")?.addEventListener("click", () => {
+    state.focusedMemoryTitle = "";
+    state.focusedMemorySurface = "";
+    render();
+  });
+  return banner;
+}
+
 function runFirstTimeAction(action) {
   if (action === "search") {
     openAppView("wishlist");
@@ -4996,7 +5060,8 @@ function renderMyGames(ranked) {
   const rows = visibleRows.length
     ? visibleRows.map((item) => (item.type === "queued" ? renderQueuedGame(item.item, item.lane) : renderMyGameRow(item.game, item.index, item.lane)))
     : [createQueueEmpty(t("library.emptyLaneTitle"), t("library.emptyLaneDetail"))];
-  els.myGamesList.replaceChildren(...rows);
+  const focusBanner = createFocusedMemoryBanner("library");
+  els.myGamesList.replaceChildren(...(focusBanner ? [focusBanner] : []), ...rows);
 }
 
 function libraryQuickActions(game, userGame, lane) {
@@ -5029,13 +5094,16 @@ function renderMyGameRow(game, index, lane = "suggested") {
       const userGame = effectiveUserGame(game) || {};
       const nextStep = libraryNextStep(game);
       const quickActions = libraryQuickActions(game, userGame, lane);
+      const isFocused = isFocusedMemoryTitle(game.title, "library");
       const facets = memoryFacets(game).map((facet) => `
         <span class="my-game-facet tone-${facet.tone}">
           <small>${facet.label}</small>
           <strong>${facet.value}</strong>
         </span>
       `).join("");
-      row.className = "my-game-row";
+      row.className = `my-game-row ${isFocused ? "is-focused-memory" : ""}`.trim();
+      row.dataset.memoryFocusKey = titleKey(game.title);
+      if (isFocused) row.tabIndex = -1;
       const atoms = game.atoms
         .slice(0, 3)
         .map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`)
@@ -5066,6 +5134,7 @@ function renderMyGameRow(game, index, lane = "suggested") {
         <div>
           <div class="my-game-title-line">
             <strong>${game.title}</strong>
+            ${focusedMemoryBadgeHtml(isFocused)}
             <span class="queue-lane tone-${lane}">${queueLaneLabel(lane)}</span>
             <button class="queue-detail-button" data-memory-detail type="button">${t("library.details")}</button>
           </div>
@@ -5365,8 +5434,8 @@ function renderSearchFocusCard(query, result) {
     ${searchFocusNextStepsHtml(result, { saved, owned, subscription })}
   `;
   card.querySelector("[data-focus-detail]")?.addEventListener("click", () => openGameDetail(result.title));
-  card.querySelector("[data-focus-open-wishlist]")?.addEventListener("click", () => openAppView("wishlist"));
-  card.querySelector("[data-focus-open-library]")?.addEventListener("click", () => openAppView("library"));
+  card.querySelector("[data-focus-open-wishlist]")?.addEventListener("click", () => openFocusedSearchMemory(result, "wishlist"));
+  card.querySelector("[data-focus-open-library]")?.addEventListener("click", () => openFocusedSearchMemory(result, "library"));
   card.querySelector("[data-focus-rate-later]")?.addEventListener("click", () => {
     toggleSearchResultRatingQueue(result);
     render();
@@ -5597,7 +5666,7 @@ function renderGameSearch() {
           render();
         });
       });
-      row.querySelector("[data-search-open-wishlist]")?.addEventListener("click", () => openAppView("wishlist"));
+      row.querySelector("[data-search-open-wishlist]")?.addEventListener("click", () => openFocusedSearchMemory(result, "wishlist"));
       row.querySelector("[data-search-compare]").addEventListener("click", () => {
         selectSearchResultForComparison(result);
         render();
@@ -6791,7 +6860,10 @@ function renderPriceWatch(ranked) {
       const decision = wishlistDecision(record);
       const status = record.status;
       const currency = game.priceMeta?.[region]?.currency || "USD";
-      row.className = `deal-row wishlist-row tone-${decision.tone}`;
+      const isFocused = isFocusedMemoryTitle(game.title, "wishlist");
+      row.className = `deal-row wishlist-row tone-${decision.tone} ${isFocused ? "is-focused-memory" : ""}`.trim();
+      row.dataset.memoryFocusKey = titleKey(game.title);
+      if (isFocused) row.tabIndex = -1;
       const priceLine = record.hasPrice
         ? `${region} ${formatPrice(game, region)} / ${game.discount[region] || 0}% ${t(status.canConfirm ? "wishlist.priceOff" : "wishlist.priceSignal")}`
         : t("wishlist.priceMissing");
@@ -6808,6 +6880,7 @@ function renderPriceWatch(ranked) {
         <span class="wishlist-decision">${decision.label}</span>
         <div>
           <strong>${game.title}</strong>
+          ${focusedMemoryBadgeHtml(isFocused)}
           <span class="deal-price ${status.canConfirm ? "" : "needs-verify"}">${priceLine}</span>
           <span class="deal-reason">${decision.detail}${watchLine} / ${t("wishlist.lanesLine", { lanes })}</span>
           ${guardLine}
@@ -6833,7 +6906,8 @@ function renderPriceWatch(ranked) {
     }) : [
       createQueueEmpty(t("wishlist.emptyTitle"), t("wishlist.emptyDetail")),
     ];
-  els.priceWatchList.replaceChildren(...priceWatchRows);
+  const focusBanner = createFocusedMemoryBanner("wishlist");
+  els.priceWatchList.replaceChildren(...(focusBanner ? [focusBanner] : []), ...priceWatchRows);
 }
 
 function renderBuyDecision(ranked) {
