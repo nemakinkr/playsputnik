@@ -70,6 +70,7 @@
         notebook: emptyNotebook(),
         gameSearchQuery: "",
         importLookupQueue: [],
+        importLookupResolved: {},
         focusedMemoryTitle: "",
         focusedMemorySurface: "",
         catalogSearch: "",

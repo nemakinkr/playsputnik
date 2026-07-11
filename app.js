@@ -635,6 +635,21 @@ const {
 });
 
 const {
+  providerImportFromSearchResult,
+  providerCoverLicenseNote,
+  applyProviderImportAction,
+} = window.PlaySputnikProviderImport.createProviderImportTools({
+  getState: () => state,
+  titleKey,
+  normalizeUserGameRecord,
+  legacyStateFromUserGame,
+  recordUserEvent: (type, title, detail) => recordUserEvent(type, title, detail),
+  saveState: () => saveState(),
+  render: () => render(),
+  openWishlist: (title) => openFocusedMemoryTitle(title, "wishlist"),
+});
+
+const {
   canonicalSearchResultSeed,
   canonicalSearchResultTitle,
   searchResultUserGame,
@@ -661,6 +676,8 @@ const {
   selectTitleForComparison,
   toggleRatingQueueTitle,
   aiEnrichmentForGame: (item) => aiEnrichmentForGame(item),
+  providerImportFromSearchResult,
+  providerCoverLicenseNote,
 });
 
 const {
@@ -1219,49 +1236,6 @@ function saveState() {
 
 function recordUserEvent(type, title, detail = {}) {
   recordUserEventForState(state, type, title, detail);
-}
-
-function applyProviderImportAction(title, action) {
-  if (action === "open-wishlist") {
-    openFocusedMemoryTitle(title, "wishlist");
-    return;
-  }
-  const key = titleKey(title);
-  const current = normalizeUserGameRecord(state.userGames[key], title);
-  if (!current?.providerImport) return;
-  const now = new Date().toISOString();
-  const providerImport = {
-    ...current.providerImport,
-    reviewedAt: now,
-    reviewAction: action,
-  };
-  const next = {
-    ...current,
-    providerImport,
-    updatedAt: now,
-  };
-  if (action === "accept") {
-    providerImport.status = "accepted";
-    next.saved = true;
-    next.catalogStatus = next.catalogStatus || "external_memory";
-    state.saved.add(next.title);
-    state.hidden.delete(next.title);
-  } else if (action === "snooze") {
-    providerImport.status = "snoozed";
-    providerImport.snoozedUntil = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-  } else if (action === "hide") {
-    providerImport.status = "hidden";
-    providerImport.hiddenAt = now;
-  }
-  state.userGames[key] = next;
-  state.userStates[key] = { title: next.title, state: legacyStateFromUserGame(next), updatedAt: now };
-  recordUserEvent("provider_import_reviewed", next.title, {
-    action,
-    provider: providerImport.provider,
-    status: providerImport.status,
-  });
-  saveState();
-  render();
 }
 
 function setGameState(title, userState) {
@@ -3842,7 +3816,42 @@ function openDiscoverForImportQueue(titles) {
   const queue = [...new Set((titles || []).map((title) => String(title || "").trim()).filter(Boolean))].slice(0, 8);
   if (!queue.length) return;
   state.importLookupQueue = queue;
+  state.importLookupResolved = Object.fromEntries(queue.map((title) => [
+    titleKey(title),
+    Boolean(state.importLookupResolved?.[titleKey(title)]),
+  ]));
   openDiscoverForTitle(queue[0]);
+}
+
+function activeImportLookupTitle(query = state.gameSearchQuery || "") {
+  const queue = (state.importLookupQueue || []).filter(Boolean);
+  return queue.find((title) => titleMatches(title, query)) || queue.find((title) => !state.importLookupResolved?.[titleKey(title)]) || queue[0] || "";
+}
+
+function nextImportLookupTitle(currentTitle = activeImportLookupTitle()) {
+  const queue = (state.importLookupQueue || []).filter(Boolean);
+  if (!queue.length) return "";
+  const currentIndex = Math.max(0, queue.findIndex((title) => titleMatches(title, currentTitle)));
+  const ordered = [...queue.slice(currentIndex + 1), ...queue.slice(0, currentIndex + 1)];
+  return ordered.find((title) => !state.importLookupResolved?.[titleKey(title)]) || "";
+}
+
+function importLookupProgress() {
+  const queue = (state.importLookupQueue || []).filter(Boolean);
+  const done = queue.filter((title) => state.importLookupResolved?.[titleKey(title)]).length;
+  return { total: queue.length, done, remaining: Math.max(0, queue.length - done) };
+}
+
+function markImportLookupResolvedForTitle(title) {
+  const queue = (state.importLookupQueue || []).filter(Boolean);
+  if (!queue.length || !title) return false;
+  const matched = queue.find((item) => titleMatches(item, title));
+  if (!matched) return false;
+  state.importLookupResolved = {
+    ...(state.importLookupResolved || {}),
+    [titleKey(matched)]: true,
+  };
+  return true;
 }
 
 function runFirstRunAction(action, title) {
@@ -5407,6 +5416,7 @@ function renderSearchFocusCard(query, result) {
   card.querySelectorAll("[data-focus-state]").forEach((button) => {
     button.addEventListener("click", () => {
       applySearchResultState(result, button.dataset.focusState);
+      markImportLookupResolvedForTitle(canonicalSearchResultTitle(result));
       render();
     });
   });
@@ -5416,17 +5426,35 @@ function renderSearchFocusCard(query, result) {
 function renderImportLookupQueue(query) {
   const queue = (state.importLookupQueue || []).filter(Boolean);
   if (!queue.length) return null;
+  const progress = importLookupProgress();
+  const activeTitle = activeImportLookupTitle(query);
+  const nextTitle = nextImportLookupTitle(activeTitle);
+  const activeDone = Boolean(state.importLookupResolved?.[titleKey(activeTitle)]);
+  const progressPct = progress.total ? Math.round((progress.done / progress.total) * 100) : 0;
   const card = document.createElement("div");
   card.className = "import-lookup-queue";
   card.innerHTML = `
     <div>
       <span>${t("discover.importLookupEyebrow")}</span>
       <strong>${t("discover.importLookupTitle", { count: queue.length })}</strong>
-      <small>${t("discover.importLookupDetail")}</small>
+      <small>${t("discover.importLookupDetail", { done: progress.done, total: progress.total, remaining: progress.remaining })}</small>
+    </div>
+    <div class="import-lookup-progress" aria-label="${t("discover.importLookupProgressAria", { done: progress.done, total: progress.total })}">
+      <span>${t("discover.importLookupProgress", { done: progress.done, total: progress.total })}</span>
+      <strong><i style="width:${progressPct}%"></i></strong>
+    </div>
+    <div class="import-lookup-active">
+      <span>${activeDone ? t("discover.importLookupActiveDone") : t("discover.importLookupActive")}</span>
+      <strong>${detailAttr(activeTitle)}</strong>
+      <small>${nextTitle ? t("discover.importLookupNext", { title: nextTitle }) : t("discover.importLookupAllDone")}</small>
+      <div>
+        <button data-import-lookup-resolve type="button">${activeDone ? t("discover.importLookupResolved") : t("discover.importLookupResolve")}</button>
+        ${nextTitle ? `<button data-import-lookup-next type="button">${t("discover.importLookupNextAction")}</button>` : ""}
+      </div>
     </div>
     <div class="import-lookup-chips">
       ${queue.map((title) => `
-        <button class="${titleMatches(title, query) ? "is-active" : ""}" data-import-lookup-title="${detailAttr(title)}" type="button">${detailAttr(title)}</button>
+        <button class="${titleMatches(title, query) ? "is-active" : ""} ${state.importLookupResolved?.[titleKey(title)] ? "is-done" : ""}" data-import-lookup-title="${detailAttr(title)}" type="button">${detailAttr(title)}</button>
       `).join("")}
       <button data-import-lookup-clear type="button">${t("discover.importLookupClear")}</button>
     </div>
@@ -5440,7 +5468,20 @@ function renderImportLookupQueue(query) {
   });
   card.querySelector("[data-import-lookup-clear]")?.addEventListener("click", () => {
     state.importLookupQueue = [];
+    state.importLookupResolved = {};
     render();
+  });
+  card.querySelector("[data-import-lookup-resolve]")?.addEventListener("click", () => {
+    markImportLookupResolvedForTitle(activeTitle);
+    const next = nextImportLookupTitle(activeTitle);
+    if (next) state.gameSearchQuery = next;
+    render();
+    window.setTimeout(() => els.gameSearchInput?.focus({ preventScroll: true }), 0);
+  });
+  card.querySelector("[data-import-lookup-next]")?.addEventListener("click", () => {
+    if (nextTitle) state.gameSearchQuery = nextTitle;
+    render();
+    window.setTimeout(() => els.gameSearchInput?.focus({ preventScroll: true }), 0);
   });
   return card;
 }
@@ -5627,6 +5668,7 @@ function renderGameSearch() {
       row.querySelectorAll("[data-search-state]").forEach((button) => {
         button.addEventListener("click", () => {
           applySearchResultState(result, button.dataset.searchState);
+          markImportLookupResolvedForTitle(canonicalSearchResultTitle(result));
           render();
         });
       });
@@ -6328,6 +6370,7 @@ function renderGameDetail(shouldFocus = false) {
   els.gameDetail.querySelectorAll("[data-detail-state]").forEach((button) => {
     button.addEventListener("click", () => {
       applyDetailState(game, button.dataset.detailState);
+      markImportLookupResolvedForTitle(game.title);
       render();
     });
   });

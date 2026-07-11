@@ -19,6 +19,8 @@
     selectTitleForComparison,
     toggleRatingQueueTitle,
     aiEnrichmentForGame,
+    providerImportFromSearchResult,
+    providerCoverLicenseNote,
   }) {
     function canonicalSearchResultSeed(result) {
       if (!result?.title) return null;
@@ -74,21 +76,10 @@
         sourceHealthDetail: state.providerSearch?.sourceHealthDetail || "",
         checkedAt: state.providerSearch?.checkedAt || "",
       };
-      const providerImport = result.sourceId === "rawg_provider_hook" || result.provider === "rawg"
-        ? {
-            provider: "rawg",
-            status: "candidate",
-            importedAt: new Date().toISOString(),
-            query: state.gameSearchQuery || result.title,
-            sourceUrl: result.sourceUrl || "",
-            coverUrl: result.coverUrl || "",
-            coverStatus: result.coverStatus || (result.coverUrl ? "candidate" : "missing"),
-            priceStatus: result.priceStatus || "missing",
-            matchConfidence: result.matchConfidence || "",
-            matchKind: result.matchKind || "",
-            attributionRequired: Boolean(result.coverUrl),
-          }
-        : current.providerImport || null;
+      const providerImport = providerImportFromSearchResult(result, {
+        query: state.gameSearchQuery || result.title,
+        current,
+      });
       return {
         ...current,
         title,
@@ -101,9 +92,7 @@
         provider: result.provider || result.sourceId,
         sourceUrl: result.sourceUrl || "",
         coverUrl: result.coverUrl || "",
-        coverLicenseNote: result.coverUrl && result.provider === "rawg"
-          ? "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed."
-          : current.coverLicenseNote || "",
+        coverLicenseNote: providerCoverLicenseNote(result, current),
         platforms: result.platforms?.length ? result.platforms : current.platforms || [],
         atoms: atoms.length ? atoms : current.atoms || [],
         inferredAtoms: inferredAtoms.length ? inferredAtoms : current.inferredAtoms || [],

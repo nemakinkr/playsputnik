@@ -2713,7 +2713,7 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 
 .focused-memory-banner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 4px minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
   border: 1px solid color-mix(in srgb, var(--ps-blue) 30%, var(--ps-border));
@@ -2724,6 +2724,13 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   padding: 11px 12px;
 }
 
+.focused-memory-banner::before {
+  content: "";
+  align-self: stretch;
+  border-radius: 999px;
+  background: var(--cta-gradient);
+}
+
 .focused-memory-banner > div {
   display: grid;
   gap: 3px;
@@ -2732,7 +2739,9 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 .my-game-row.is-focused-memory,
 .wishlist-row.is-focused-memory {
   border-color: color-mix(in srgb, var(--ps-blue) 56%, var(--ps-border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ps-blue) 13%, transparent), var(--shadow-soft);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--ps-blue) 13%, transparent),
+    var(--shadow-soft);
 }
 
 .focused-memory-pill {
@@ -2747,14 +2756,16 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   font-size: 0.68rem;
   font-weight: 950;
   text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--card-bg) 70%, transparent);
 }
 
 @media (max-width: 700px) {
   .focused-memory-banner {
-    grid-template-columns: 1fr;
+    grid-template-columns: 4px minmax(0, 1fr);
   }
 
   .focused-memory-banner button {
+    grid-column: 2;
     justify-self: start;
   }
 }

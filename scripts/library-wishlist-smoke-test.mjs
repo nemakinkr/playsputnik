@@ -217,6 +217,26 @@ async function runFounderRankingScenario(page) {
     gapText: document.querySelector("[data-import-gap-brief]")?.textContent?.replace(/\s+/g, " ").trim() || "",
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
+  await page.evaluate(() => document.querySelector("[data-import-gap-action]")?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "discover", null, { timeout: 5000 });
+  await page.waitForFunction(() => document.querySelector(".import-lookup-queue"), null, { timeout: 5000 });
+  const lookupBefore = await page.evaluate(() => ({
+    activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
+    text: document.querySelector(".import-lookup-queue")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    chips: document.querySelectorAll("[data-import-lookup-title]").length,
+    done: document.querySelectorAll("[data-import-lookup-title].is-done").length,
+    resolve: Boolean(document.querySelector("[data-import-lookup-resolve]")),
+    next: Boolean(document.querySelector("[data-import-lookup-next]")),
+  }));
+  await page.evaluate(() => document.querySelector(".game-search-row [data-search-state='saved']")?.click());
+  await page.waitForTimeout(500);
+  const lookupAfterSave = await page.evaluate(() => ({
+    text: document.querySelector(".import-lookup-queue")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    done: document.querySelectorAll("[data-import-lookup-title].is-done").length,
+    progress: document.querySelector(".import-lookup-progress")?.textContent?.replace(/\s+/g, " ").trim() || "",
+  }));
+  await page.evaluate(() => document.querySelector('[data-app-view="taste"]')?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "taste", null, { timeout: 5000 });
   await page.evaluate(() => document.querySelector("#analyze-ratings")?.click());
   await page.waitForTimeout(800);
   const taste = await page.evaluate(() => ({
@@ -235,7 +255,7 @@ async function runFounderRankingScenario(page) {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
 
-  return { preview, taste, wishlist };
+  return { preview, lookupBefore, lookupAfterSave, taste, wishlist };
 }
 
 const { chromium } = await loadPlaywright();
@@ -426,6 +446,11 @@ try {
   assert(founderRanking.preview.batch, "Expected founder import report to expose a batch Discover lookup action");
   assert(founderRanking.preview.gapBrief, "Expected founder import report to expose a coverage/gap brief");
   assert(/покрыт|пробел|coverage|gap|source/i.test(founderRanking.preview.gapText), `Expected import report gap brief copy, got: ${founderRanking.preview.gapText}`);
+  assert(founderRanking.lookupBefore.activeView === "discover", `Expected import gap action to open Discover, got: ${founderRanking.lookupBefore.activeView}`);
+  assert(founderRanking.lookupBefore.chips >= 3, `Expected import lookup queue chips, got: ${founderRanking.lookupBefore.chips}`);
+  assert(founderRanking.lookupBefore.resolve && founderRanking.lookupBefore.next, `Expected import lookup resolve/next controls, got: ${founderRanking.lookupBefore.text}`);
+  assert(founderRanking.lookupAfterSave.done >= 1, `Expected saving a lookup result to mark queue progress, got: ${founderRanking.lookupAfterSave.text}`);
+  assert(/1\/|1 of|1 из|Уточнено 1/.test(founderRanking.lookupAfterSave.progress), `Expected import lookup progress after save, got: ${founderRanking.lookupAfterSave.progress}`);
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
   assert(/Taste profile|Профиль вкуса|gaming fingerprint|игровой отпечаток/i.test(founderRanking.taste.screen), `Expected founder taste profile screen to render, got: ${founderRanking.taste.screen}`);

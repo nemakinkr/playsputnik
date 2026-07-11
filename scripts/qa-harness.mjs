@@ -17,6 +17,7 @@ const [
   appDecisionsSource,
   appLibrarySource,
   appVisualSource,
+  appProviderImportSource,
   appSearchMemorySource,
   appWishlistSource,
   appDetailSource,
@@ -100,6 +101,7 @@ const [
   readFile(new URL("src/app-decisions.js", ROOT), "utf8"),
   readFile(new URL("src/app-library.js", ROOT), "utf8"),
   readFile(new URL("src/app-visual.js", ROOT), "utf8"),
+  readFile(new URL("src/app-provider-import.js", ROOT), "utf8"),
   readFile(new URL("src/app-search-memory.js", ROOT), "utf8"),
   readFile(new URL("src/app-wishlist.js", ROOT), "utf8"),
   readFile(new URL("src/app-detail.js", ROOT), "utf8"),
@@ -1228,9 +1230,9 @@ function checkSelectors() {
   assert(/data-search-state="subscription"/.test(appSource), "Search results should support subscription memory actions");
   assert(/function searchResultDetailGame/.test(appDetailSource), "Search results should open as rich detail drawer games");
   assert(/coverUrl: result\.coverUrl/.test(appSearchMemorySource), "Search wishlist memory should persist provider coverUrl");
-  assert(/coverLicenseNote/.test(appSearchMemorySource), "Search wishlist memory should persist provider cover license notes");
-  assert(/Attribute RAWG/.test(appSearchMemorySource), "RAWG wishlist covers should preserve attribution notes");
-  assert(/providerImport/.test(appSearchMemorySource + appStateSource), "RAWG search imports should persist provider import metadata");
+  assert(/coverLicenseNote/.test(appSearchMemorySource + appProviderImportSource), "Search wishlist memory should persist provider cover license notes");
+  assert(/Attribute RAWG/.test(appProviderImportSource), "RAWG wishlist covers should preserve attribution notes");
+  assert(/providerImport/.test(appSearchMemorySource + appProviderImportSource + appStateSource), "RAWG search imports should persist provider import metadata");
   assert(/sourcePassport/.test(appSearchMemorySource + appStateSource), "Search imports should persist source passport metadata");
   assert(/--inject-rawg/.test(searchMemorySmokeSource), "Search-to-memory smoke should cover RAWG-shaped provider imports");
   assert(/licenseNote: record\.coverLicenseNote/.test(appSource), "External memory games should expose persisted cover license notes");
