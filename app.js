@@ -1135,6 +1135,7 @@ const els = {
   topAtoms: document.querySelector("#top-atoms"),
   dataQualityStatus: document.querySelector("#data-quality-status"),
   dataQualitySummary: document.querySelector("#data-quality-summary"),
+  dataReadinessRail: document.querySelector("#data-readiness-rail"),
   dataQualityList: document.querySelector("#data-quality-list"),
   providerImportStatus: document.querySelector("#provider-import-status"),
   providerImportList: document.querySelector("#provider-import-list"),
@@ -5351,6 +5352,7 @@ function renderSearchTrustStrip(query, results, provider, localIndexReady) {
       label: t("discover.searchTrustLocalTitle"),
       value: hasQuery ? t("discover.searchTrustLocalValue", { count: localCount }) : t("discover.searchTrustReady"),
       detail: t("discover.searchTrustLocalDetail"),
+      meta: localIndexReady ? t("discover.searchTrustLocalMeta") : t("discover.searchTrustLoadingMeta"),
     },
     {
       tone: providerTone,
@@ -5363,23 +5365,40 @@ function renderSearchTrustStrip(query, results, provider, localIndexReady) {
             ? t("discover.searchTrustProviderCached")
             : t("discover.searchTrustProviderReady"),
       detail: t("discover.searchTrustProviderDetail"),
+      meta: provider.status === "cached"
+        ? t("discover.searchTrustProviderCached")
+        : provider.status === "offline"
+          ? t("discover.searchTrustProviderOffline")
+          : providerCount
+            ? t("discover.searchTrustProviderMeta")
+            : t("discover.searchTrustProviderReady"),
     },
     {
       tone: manualAvailable ? "info" : "neutral",
       label: t("discover.searchTrustManualTitle"),
       value: manualAvailable ? t("discover.searchTrustManualValue") : t("discover.searchTrustManualReady"),
       detail: t("discover.searchTrustManualDetail"),
+      meta: t("discover.searchTrustManualMeta"),
     },
   ];
   const summary = document.createElement("details");
   summary.className = "search-source-summary";
+  if (hasQuery) summary.open = true;
   const compactValue = hasQuery
     ? t("discover.searchTrustCompact", { local: localCount, external: providerCount })
     : t("discover.searchTrustReady");
+  const verdict = !hasQuery
+    ? t("discover.searchTrustVerdictReady")
+    : localCount
+      ? t("discover.searchTrustVerdictLocal", { count: localCount })
+      : providerCount
+        ? t("discover.searchTrustVerdictProvider")
+        : t("discover.searchTrustVerdictManual");
   summary.innerHTML = `
     <summary>
       <span>${t("discover.searchTrustSummaryTitle")}</span>
       <strong>${compactValue}</strong>
+      <small>${verdict}</small>
     </summary>
     <div class="game-search-trust-cards"></div>
   `;
@@ -5390,6 +5409,7 @@ function renderSearchTrustStrip(query, results, provider, localIndexReady) {
       item.innerHTML = `
         <span>${card.label}</span>
         <strong>${card.value}</strong>
+        <em>${card.meta}</em>
         <small>${card.detail}</small>
       `;
       return item;

@@ -329,6 +329,52 @@
         critical,
         priceIssues: triage.priceGapIssueCount ?? dataHealth.issueCount ?? 0,
       });
+      if (els.dataReadinessRail) {
+        const digest = dataHealth.refreshDigest || {};
+        const hasProviderPriceGaps = providerImports.some((record) => (record.providerImport?.priceStatus || record.priceStatus) === "missing");
+        const nextAction = critical
+          ? t("data.readinessNextCritical", { count: critical })
+          : hasProviderPriceGaps
+            ? t("data.readinessNextProvider")
+            : t("data.readinessNextRefresh");
+        const railCards = [
+          {
+            tone: critical ? "warn" : "good",
+            label: t("data.readinessProductLabel"),
+            value: critical ? t("data.readinessProductAttention") : t("data.readinessProductReady"),
+            sub: t("data.readinessProductSub", { issues: dataHealth.issueCount || 0 }),
+          },
+          {
+            tone: "info",
+            label: t("data.readinessCatalogLabel"),
+            value: t("data.readinessCatalogValue", { games: dataHealth.gameCount || 0 }),
+            sub: t("data.readinessCatalogSub", {
+              covers: dataHealth.coverCoverage?.coverage || 0,
+              prices: priceCoverage,
+            }),
+          },
+          {
+            tone: freshSources ? "good" : "warn",
+            label: t("data.readinessFreshnessLabel"),
+            value: digest.latestPriceCheckedAt ? digest.latestPriceCheckedAt.slice(0, 10) : t("data.refreshDigestNoDate"),
+            sub: t("data.readinessFreshnessSub", {
+              plus: digest.latestSubscriptionCheckedAt ? digest.latestSubscriptionCheckedAt.slice(0, 10) : t("data.refreshDigestNoDate"),
+            }),
+          },
+          {
+            tone: "neutral",
+            label: t("data.readinessNextLabel"),
+            value: nextAction,
+            sub: t("data.readinessNextSub"),
+          },
+        ];
+        els.dataReadinessRail.replaceChildren(...railCards.map((card) => {
+          const item = document.createElement("div");
+          item.className = `data-readiness-card tone-${card.tone}`;
+          item.innerHTML = `<span>${card.label}</span><strong>${card.value}</strong><small>${card.sub}</small>`;
+          return item;
+        }));
+      }
       const cards = [
         {
           tone: critical ? "warn" : "good",
