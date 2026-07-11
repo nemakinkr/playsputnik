@@ -1123,6 +1123,7 @@ const els = {
   dealsFilterBtns: document.querySelectorAll("[data-deals-filter]"),
   refreshPolicyStatus: document.querySelector("#refresh-policy-status"),
   refreshPolicySummary: document.querySelector("#refresh-policy-summary"),
+  refreshDigestList: document.querySelector("#refresh-digest-list"),
   refreshPolicyList: document.querySelector("#refresh-policy-list"),
   sourceMode: document.querySelector("#source-mode"),
   sourceList: document.querySelector("#source-list"),
@@ -3854,6 +3855,54 @@ function markImportLookupResolvedForTitle(title) {
   return true;
 }
 
+function globalSearchResultsForTitle(title) {
+  const previousQuery = state.gameSearchQuery || "";
+  state.gameSearchQuery = title;
+  try {
+    return globalSearchResults();
+  } finally {
+    state.gameSearchQuery = previousQuery;
+  }
+}
+
+function bestKnownImportLookupResult(title) {
+  return globalSearchResultsForTitle(title).find((result) => {
+    if (!result || result.sourceId === "manual_unverified") return false;
+    const knownSource = ["seed_catalog", "catalog_backbone", "prototype_external_index", "rawg_provider_hook"].includes(result.sourceId);
+    const confident = ["high", "medium"].includes(result.matchConfidence);
+    const strongMatch = titleMatches(result.title, title) || ["exact", "alias", "prefix"].includes(result.matchKind);
+    return knownSource && confident && strongMatch;
+  }) || null;
+}
+
+function saveKnownImportLookupMatches() {
+  const queue = (state.importLookupQueue || []).filter(Boolean);
+  if (!queue.length) return { total: 0, saved: 0, remaining: 0 };
+  let saved = 0;
+  queue.forEach((title) => {
+    const key = titleKey(title);
+    if (state.importLookupResolved?.[key]) return;
+    const result = bestKnownImportLookupResult(title);
+    if (!result) return;
+    applySearchResultState(result, "saved");
+    state.importLookupResolved = {
+      ...(state.importLookupResolved || {}),
+      [key]: true,
+    };
+    saved += 1;
+  });
+  const progress = importLookupProgress();
+  state.importLookupBatchSummary = {
+    saved,
+    total: queue.length,
+    remaining: progress.remaining,
+    updatedAt: new Date().toISOString(),
+  };
+  const next = nextImportLookupTitle(activeImportLookupTitle());
+  if (next) state.gameSearchQuery = next;
+  return state.importLookupBatchSummary;
+}
+
 function runFirstRunAction(action, title) {
   if (action === "quick-entry") {
     applyQuickEntry();
@@ -5431,6 +5480,7 @@ function renderImportLookupQueue(query) {
   const nextTitle = nextImportLookupTitle(activeTitle);
   const activeDone = Boolean(state.importLookupResolved?.[titleKey(activeTitle)]);
   const progressPct = progress.total ? Math.round((progress.done / progress.total) * 100) : 0;
+  const batchSummary = state.importLookupBatchSummary || null;
   const card = document.createElement("div");
   card.className = "import-lookup-queue";
   card.innerHTML = `
@@ -5448,9 +5498,11 @@ function renderImportLookupQueue(query) {
       <strong>${detailAttr(activeTitle)}</strong>
       <small>${nextTitle ? t("discover.importLookupNext", { title: nextTitle }) : t("discover.importLookupAllDone")}</small>
       <div>
+        <button data-import-lookup-save-matches type="button">${t("discover.importLookupSaveMatches")}</button>
         <button data-import-lookup-resolve type="button">${activeDone ? t("discover.importLookupResolved") : t("discover.importLookupResolve")}</button>
         ${nextTitle ? `<button data-import-lookup-next type="button">${t("discover.importLookupNextAction")}</button>` : ""}
       </div>
+      ${batchSummary ? `<small class="import-lookup-batch-summary">${t("discover.importLookupBatchSaved", batchSummary)}</small>` : ""}
     </div>
     <div class="import-lookup-chips">
       ${queue.map((title) => `
@@ -5469,7 +5521,13 @@ function renderImportLookupQueue(query) {
   card.querySelector("[data-import-lookup-clear]")?.addEventListener("click", () => {
     state.importLookupQueue = [];
     state.importLookupResolved = {};
+    state.importLookupBatchSummary = null;
     render();
+  });
+  card.querySelector("[data-import-lookup-save-matches]")?.addEventListener("click", () => {
+    saveKnownImportLookupMatches();
+    render();
+    window.setTimeout(() => els.gameSearchInput?.focus({ preventScroll: true }), 0);
   });
   card.querySelector("[data-import-lookup-resolve]")?.addEventListener("click", () => {
     markImportLookupResolvedForTitle(activeTitle);

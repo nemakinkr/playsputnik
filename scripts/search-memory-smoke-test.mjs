@@ -198,6 +198,44 @@ try {
   await page.evaluate(() => document.querySelector('[data-app-view="discover"]')?.click());
   await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "discover", null, { timeout: 5000 });
 
+  let afterFocusOwned = null;
+  let focusedLibraryFromSearch = null;
+  if (!injectRawg) {
+    await page.evaluate(() => document.querySelector('[data-focus-state="owned"]')?.click());
+    await page.waitForTimeout(500);
+
+    afterFocusOwned = await page.evaluate(({ key, expectedTitle }) => {
+      const stored = JSON.parse(localStorage.getItem(key) || "{}");
+      const record = Object.values(stored.userGames || {}).find((item) => item.title === expectedTitle);
+      const userState = Object.values(stored.userStates || {}).find((item) => item.title === expectedTitle);
+      return {
+        activeOwned: document.querySelector('[data-focus-state="owned"]')?.classList.contains("is-selected") || false,
+        pressedOwned: document.querySelector('[data-focus-state="owned"]')?.getAttribute("aria-pressed") || "",
+        nextSteps: document.querySelector("[data-focus-next-steps]")?.textContent?.replace(/\s+/g, " ").trim() || "",
+        openLibraryButtons: document.querySelectorAll("[data-focus-open-library]").length,
+        record: record ? {
+          title: record.title,
+          access: record.access || "",
+          saved: Boolean(record.saved),
+          source: record.source || "",
+        } : null,
+        userState: userState?.state || "",
+      };
+    }, { key: STORAGE_KEY, expectedTitle });
+
+    await page.evaluate(() => document.querySelector("[data-focus-open-library]")?.click());
+    await page.waitForTimeout(500);
+    focusedLibraryFromSearch = await page.evaluate((expectedTitle) => ({
+      activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
+      hasFocusedRow: Array.from(document.querySelectorAll(".my-game-row.is-focused-memory"))
+        .some((item) => (item.querySelector("strong")?.textContent || "").trim() === expectedTitle),
+      banner: document.querySelector(".focused-memory-banner")?.textContent?.replace(/\s+/g, " ").trim() || "",
+      pill: document.querySelector(".my-game-row.is-focused-memory .focused-memory-pill")?.textContent?.trim() || "",
+    }), expectedTitle);
+    await page.evaluate(() => document.querySelector('[data-app-view="discover"]')?.click());
+    await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "discover", null, { timeout: 5000 });
+  }
+
   await page.evaluate((title) => {
     const row = Array.from(document.querySelectorAll(".game-search-row"))
       .find((item) => (item.querySelector("strong")?.textContent || "").trim() === title);
@@ -352,7 +390,7 @@ try {
     sourceNoteText: document.querySelector("[data-wishlist-source-note]")?.textContent?.replace(/\s+/g, " ").trim() || "",
   }), expectedTitle);
 
-  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterFocusSave, focusedWishlistFromSearch, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
+  const result = { mode: "search-memory-smoke", url: targetUrl, searchQuery, expectedTitle, targetState, before, afterFocusOwned, focusedLibraryFromSearch, afterFocusSave, focusedWishlistFromSearch, afterSearchSave, detail, after, library, dataProviderImports, providerReviewAction, acceptedProviderImports, providerWishlistPath, errors };
   console.log(JSON.stringify(result, null, 2));
 
   if (!injectRawg) {
@@ -376,11 +414,22 @@ try {
   assert(before.focusCards >= 1, "Expected best-match focus card");
   assert(before.focusTitle === expectedTitle, `Expected focus card for ${expectedTitle}, got ${before.focusTitle}`);
   assert(before.focusButtons >= 3, `Expected focus card state actions, got ${before.focusButtons}`);
+  if (!injectRawg) {
+    assert(afterFocusOwned?.record?.access === "owned", `Expected focus Library action to save owned access, got ${afterFocusOwned?.record?.access}`);
+    assert(afterFocusOwned.activeOwned, "Expected focus Library button to become selected");
+    assert(afterFocusOwned.pressedOwned === "true", `Expected focus Library aria-pressed=true, got ${afterFocusOwned.pressedOwned}`);
+    assert(afterFocusOwned.userState === "owned", `Expected owned userState after focus action, got ${afterFocusOwned.userState}`);
+    assert(afterFocusOwned.openLibraryButtons >= 1, `Expected focus Library next-step action, got ${afterFocusOwned.openLibraryButtons}`);
+    assert(focusedLibraryFromSearch?.activeView === "library", `Expected focus next step to open Library, got ${focusedLibraryFromSearch?.activeView}`);
+    assert(focusedLibraryFromSearch.hasFocusedRow, "Expected Library next step to focus the owned game row");
+    assert(/Library|Библиотек|available|доступ/i.test(focusedLibraryFromSearch.banner), `Expected Library focus banner, got ${focusedLibraryFromSearch.banner}`);
+    assert(/search|поиск/i.test(focusedLibraryFromSearch.pill), `Expected focused Library row to show source pill, got ${focusedLibraryFromSearch.pill}`);
+  }
   assert(afterFocusSave.record?.saved, "Expected focus card Wishlist action to save the external game");
   assert(afterFocusSave.record?.source?.startsWith("search_"), `Expected focus save source memory, got ${afterFocusSave.record?.source}`);
   assert(afterFocusSave.activeSaved, "Expected focus Wishlist button to become selected");
   assert(afterFocusSave.pressedSaved === "true", `Expected focus Wishlist aria-pressed=true, got ${afterFocusSave.pressedSaved}`);
-  assert(afterFocusSave.userState === "saved", `Expected saved userState after focus action, got ${afterFocusSave.userState}`);
+  assert(["saved", "owned"].includes(afterFocusSave.userState), `Expected saved/owned userState after focus action, got ${afterFocusSave.userState}`);
   assert(/Wishlist|Желаемое|контур|loop/i.test(afterFocusSave.nextSteps), `Expected focus next-step handoff after save, got ${afterFocusSave.nextSteps}`);
   assert(afterFocusSave.nextStepButtons >= 2, `Expected focus next-step buttons after save, got ${afterFocusSave.nextStepButtons}`);
   assert(focusedWishlistFromSearch.activeView === "wishlist", `Expected focus next step to open Wishlist, got ${focusedWishlistFromSearch.activeView}`);
@@ -396,8 +445,8 @@ try {
   assert(/Wishlist|Желаемое/i.test(afterSearchSave.confirmation), `Expected saved search result confirmation, got ${afterSearchSave.confirmation}`);
   assert(afterSearchSave.checklist.length >= 3, "Expected search memory confirmation checklist");
   assert(afterSearchSave.checklist.filter((item) => item.done).length >= 2, "Expected checklist to mark remembered/source steps as done");
-  assert(/Saved to Wishlist|Добавлено в Желаемое/i.test(afterSearchSave.memoryStatus), `Expected search memory confirmation, got ${afterSearchSave.memoryStatus}`);
-  assert(afterSearchSave.userState === "saved", `Expected saved userState after direct search action, got ${afterSearchSave.userState}`);
+  assert(/Saved to Wishlist|Added to Library|Добавлено в Желаемое|Добавлено в Библиотеку/i.test(afterSearchSave.memoryStatus), `Expected search memory confirmation, got ${afterSearchSave.memoryStatus}`);
+  assert(["saved", "owned"].includes(afterSearchSave.userState), `Expected saved/owned userState after direct search action, got ${afterSearchSave.userState}`);
   assert(detail.title === expectedTitle, `Expected ${expectedTitle} detail drawer, got ${detail.title}`);
   assert(/fit|совпадение/i.test(detail.meta), `Expected detail fit metadata, got ${detail.meta}`);
   assert(detail.actions >= 7, `Expected detail actions including Plus, got ${detail.actions}`);

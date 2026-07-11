@@ -4838,6 +4838,46 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
   gap: 8px;
 }
 
+.refresh-digest-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.refresh-digest-card {
+  min-width: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--card-bg-soft);
+  padding: 12px;
+  color: var(--text-mid);
+}
+
+.refresh-digest-card span,
+.refresh-digest-card small {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 820;
+  line-height: 1.35;
+}
+
+.refresh-digest-card strong {
+  display: block;
+  margin: 4px 0;
+  color: var(--text-strong);
+  font-size: 1.02rem;
+  line-height: 1.2;
+}
+
+.refresh-digest-card.tone-good {
+  border-color: color-mix(in srgb, var(--green) 34%, var(--card-border));
+}
+
+.refresh-digest-card.tone-warn {
+  border-color: color-mix(in srgb, var(--amber) 42%, var(--card-border));
+}
+
 .policy-row {
   display: grid;
   grid-template-columns: minmax(160px, 1.6fr) minmax(72px, auto) minmax(72px, auto) minmax(78px, auto) minmax(78px, auto) minmax(90px, 0.8fr);
@@ -5761,6 +5801,10 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.import-lookup-batch-summary {
+  color: var(--ps-blue);
 }
 
 .import-lookup-chips button {

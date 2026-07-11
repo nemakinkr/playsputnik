@@ -71,6 +71,7 @@
         gameSearchQuery: "",
         importLookupQueue: [],
         importLookupResolved: {},
+        importLookupBatchSummary: null,
         focusedMemoryTitle: "",
         focusedMemorySurface: "",
         catalogSearch: "",

@@ -42,6 +42,14 @@ function unique(values) {
   return [...new Set(values)].sort();
 }
 
+function latestTimestamp(records) {
+  return records
+    .map((record) => record?.checkedAt || "")
+    .filter(Boolean)
+    .sort()
+    .at(-1) || "";
+}
+
 function normalizeTitle(title) {
   return String(title || "")
     .normalize("NFKD")
@@ -600,6 +608,25 @@ const coverCoverage = {
   verifiedCount: coverSnapshots.filter((record) => record.status === "verified").length,
 };
 
+const refreshDigest = {
+  generatedAt: new Date().toISOString(),
+  priceSnapshotCount: priceSnapshots.length,
+  subscriptionRecordCount: subscriptionAvailability.length,
+  latestPriceCheckedAt: latestTimestamp(priceSnapshots),
+  latestSubscriptionCheckedAt: latestTimestamp(subscriptionAvailability),
+  priceSourceCount: unique(priceSnapshots.map((snapshot) => snapshot.source).filter(Boolean)).length,
+  subscriptionSourceCount: unique(subscriptionAvailability.map((record) => record.source).filter(Boolean)).length,
+  regionCount: regions.length,
+  regions: regions.map((region) => ({
+    region,
+    priceCount: priceSnapshots.filter((snapshot) => snapshot.region === region).length,
+    discountCount: priceSnapshots.filter((snapshot) => snapshot.region === region && Number(snapshot.discount || 0) > 0).length,
+    subscriptionCount: subscriptionAvailability.filter((record) => record.region === region).length,
+    latestPriceCheckedAt: latestTimestamp(priceSnapshots.filter((snapshot) => snapshot.region === region)),
+    latestSubscriptionCheckedAt: latestTimestamp(subscriptionAvailability.filter((record) => record.region === region)),
+  })),
+};
+
 const health = {
   generatedAt: new Date().toISOString(),
   mode: sourceStatus.mode,
@@ -683,6 +710,7 @@ const health = {
       cadence: band.cadence,
     })),
   },
+  refreshDigest,
   regionCoverage,
   coverCoverage,
   adultSignals,

@@ -227,6 +227,7 @@ async function runFounderRankingScenario(page) {
     done: document.querySelectorAll("[data-import-lookup-title].is-done").length,
     resolve: Boolean(document.querySelector("[data-import-lookup-resolve]")),
     next: Boolean(document.querySelector("[data-import-lookup-next]")),
+    batch: Boolean(document.querySelector("[data-import-lookup-save-matches]")),
   }));
   await page.evaluate(() => document.querySelector(".game-search-row [data-search-state='saved']")?.click());
   await page.waitForTimeout(500);
@@ -234,6 +235,14 @@ async function runFounderRankingScenario(page) {
     text: document.querySelector(".import-lookup-queue")?.textContent?.replace(/\s+/g, " ").trim() || "",
     done: document.querySelectorAll("[data-import-lookup-title].is-done").length,
     progress: document.querySelector(".import-lookup-progress")?.textContent?.replace(/\s+/g, " ").trim() || "",
+  }));
+  await page.evaluate(() => document.querySelector("[data-import-lookup-save-matches]")?.click());
+  await page.waitForTimeout(500);
+  const lookupAfterBatch = await page.evaluate(() => ({
+    text: document.querySelector(".import-lookup-queue")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    done: document.querySelectorAll("[data-import-lookup-title].is-done").length,
+    progress: document.querySelector(".import-lookup-progress")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    summary: document.querySelector(".import-lookup-batch-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
   }));
   await page.evaluate(() => document.querySelector('[data-app-view="taste"]')?.click());
   await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "taste", null, { timeout: 5000 });
@@ -255,7 +264,7 @@ async function runFounderRankingScenario(page) {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
 
-  return { preview, lookupBefore, lookupAfterSave, taste, wishlist };
+  return { preview, lookupBefore, lookupAfterSave, lookupAfterBatch, taste, wishlist };
 }
 
 const { chromium } = await loadPlaywright();
@@ -449,8 +458,11 @@ try {
   assert(founderRanking.lookupBefore.activeView === "discover", `Expected import gap action to open Discover, got: ${founderRanking.lookupBefore.activeView}`);
   assert(founderRanking.lookupBefore.chips >= 3, `Expected import lookup queue chips, got: ${founderRanking.lookupBefore.chips}`);
   assert(founderRanking.lookupBefore.resolve && founderRanking.lookupBefore.next, `Expected import lookup resolve/next controls, got: ${founderRanking.lookupBefore.text}`);
+  assert(founderRanking.lookupBefore.batch, "Expected import lookup to expose a save-known-matches action");
   assert(founderRanking.lookupAfterSave.done >= 1, `Expected saving a lookup result to mark queue progress, got: ${founderRanking.lookupAfterSave.text}`);
   assert(/1\/|1 of|1 из|Уточнено 1/.test(founderRanking.lookupAfterSave.progress), `Expected import lookup progress after save, got: ${founderRanking.lookupAfterSave.progress}`);
+  assert(founderRanking.lookupAfterBatch.done >= founderRanking.lookupAfterSave.done, `Expected batch lookup not to lose progress, got: ${founderRanking.lookupAfterBatch.text}`);
+  assert(/known sources|источников|manual lookup|вручную/i.test(founderRanking.lookupAfterBatch.summary), `Expected batch lookup summary, got: ${founderRanking.lookupAfterBatch.summary}`);
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
   assert(/Taste profile|Профиль вкуса|gaming fingerprint|игровой отпечаток/i.test(founderRanking.taste.screen), `Expected founder taste profile screen to render, got: ${founderRanking.taste.screen}`);

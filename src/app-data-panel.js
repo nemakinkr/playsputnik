@@ -94,6 +94,7 @@
     function renderRefreshPolicy(ranked) {
       const refreshPolicy = getRefreshPolicy();
       if (!refreshPolicy) return;
+      const dataHealth = getDataHealth();
       const queue = refreshQueue(ranked);
       const hot = queue.find((band) => band.id === "hot");
       const state = getState();
@@ -122,6 +123,48 @@
           return row;
         }),
       );
+      if (els.refreshDigestList && dataHealth?.refreshDigest) {
+        const digest = dataHealth.refreshDigest;
+        const priceCoverage = averagePriceCoverage(dataHealth);
+        const cards = [
+          {
+            tone: "info",
+            label: t("data.refreshDigestPricesLabel"),
+            value: t("data.refreshDigestPricesValue", { count: digest.priceSnapshotCount || 0 }),
+            sub: t("data.refreshDigestPricesSub", {
+              sources: digest.priceSourceCount || 0,
+              date: digest.latestPriceCheckedAt || t("data.refreshDigestNoDate"),
+            }),
+          },
+          {
+            tone: "info",
+            label: t("data.refreshDigestPlusLabel"),
+            value: t("data.refreshDigestPlusValue", { count: digest.subscriptionRecordCount || 0 }),
+            sub: t("data.refreshDigestPlusSub", {
+              sources: digest.subscriptionSourceCount || 0,
+              date: digest.latestSubscriptionCheckedAt || t("data.refreshDigestNoDate"),
+            }),
+          },
+          {
+            tone: priceCoverage >= 95 ? "good" : "warn",
+            label: t("data.refreshDigestCoverageLabel"),
+            value: `${priceCoverage}%`,
+            sub: t("data.refreshDigestCoverageSub", { regions: digest.regionCount || 0 }),
+          },
+          {
+            tone: "neutral",
+            label: t("data.refreshDigestGeneratedLabel"),
+            value: digest.generatedAt ? digest.generatedAt.slice(0, 10) : t("data.refreshDigestNoDate"),
+            sub: t("data.refreshDigestGeneratedSub"),
+          },
+        ];
+        els.refreshDigestList.replaceChildren(...cards.map((card) => {
+          const item = document.createElement("div");
+          item.className = `refresh-digest-card tone-${card.tone}`;
+          item.innerHTML = `<span>${card.label}</span><strong>${card.value}</strong><small>${card.sub}</small>`;
+          return item;
+        }));
+      }
     }
 
     // ── Source Health ───────────────────────────────────────────────────────
