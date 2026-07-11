@@ -193,6 +193,13 @@
                 </div>
               `).join("")}
             </div>
+            <div class="hero-emotional-proof" data-hero-emotional-proof>
+              <span>${t("today.hero.emotionalEyebrow")}</span>
+              <strong>${isEarlyPick ? t("today.hero.emotionalTitleEarly") : t("today.hero.emotionalTitleMature")}</strong>
+              <small>${isEarlyPick
+                ? t("today.hero.emotionalDetailEarly", { count: signalCount })
+                : t("today.hero.emotionalDetailMature")}</small>
+            </div>
             <p class="description">${gameDescription(game)}</p>
             <p class="reason">${reason}</p>
             <div class="hero-decision-strip" aria-label="${t("today.hero.top")}">

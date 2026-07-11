@@ -3587,7 +3587,10 @@ function renderOnboardingHero() {
   const title = detailAttr(game.title);
   featured.innerHTML = `
     <article class="onboarding-game-tile onboarding-game-tile--hero" data-onboarding-title="${title}">
-      <div class="onboarding-tile-poster"><span>${title}</span></div>
+      <div class="onboarding-tile-poster">
+        <small>${t("today.onboarding.posterHint")}</small>
+        <span>${title}</span>
+      </div>
       <div class="onboarding-tile-body">
         <span>${labelAtoms((game.atoms || []).slice(0, 2), " · ") || t("settings.quickSwipe.tasteSignal")}</span>
         <strong>${title}</strong>
@@ -3678,6 +3681,16 @@ function renderTasteUnderstoodPanel(ranked) {
 
   els.tasteUnderstoodBody.innerHTML = `
     <p class="taste-understood-lead">${t(leadKey, { count: statusCount })}</p>
+    <div class="taste-understood-demo" data-taste-micro-demo>
+      <span>${t("today.tasteUnderstood.demoEyebrow")}</span>
+      <strong>${t("today.tasteUnderstood.demoTitle", { title: forecastCopy })}</strong>
+      <small>${t("today.tasteUnderstood.demoDetail")}</small>
+      <div class="taste-understood-demo-steps" aria-label="${t("today.tasteUnderstood.demoStepsAria")}">
+        <b>${t("today.tasteUnderstood.demoStepTaste")}</b>
+        <b>${t("today.tasteUnderstood.demoStepPick")}</b>
+        <b>${t("today.tasteUnderstood.demoStepNext")}</b>
+      </div>
+    </div>
     <div class="taste-understood-grid">
       <div class="taste-understood-card">
         <span>${t("today.tasteUnderstood.signalsLabel")}</span>

@@ -790,7 +790,8 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
 .onboarding-tile-poster {
   position: relative;
   display: grid;
-  align-items: end;
+  align-content: end;
+  gap: 5px;
   overflow: hidden;
   min-height: 100%;
   width: 100%;
@@ -812,13 +813,29 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
   position: relative;
   z-index: 1;
   display: block;
-  padding: 8px;
+  padding: 0 8px 8px;
   color: #fff;
   font-size: 0.64rem;
   font-weight: 950;
   line-height: 1.08;
   overflow-wrap: anywhere;
   text-shadow: 0 1px 8px rgba(0,0,0,.44);
+}
+
+.onboarding-tile-poster small {
+  position: relative;
+  z-index: 1;
+  justify-self: start;
+  margin: 8px 8px 0;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px;
+  background: rgba(5,12,28,.54);
+  color: #fff;
+  font-size: 0.54rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 4px 6px;
+  text-transform: uppercase;
 }
 
 .onboarding-tile-body {
@@ -1788,6 +1805,37 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
 
 .hero-payoff-note {
   margin: -2px 0 0;
+}
+
+.hero-emotional-proof {
+  display: grid;
+  gap: 4px;
+  border: 1px solid color-mix(in srgb, var(--success) 30%, var(--card-border));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--success) 10%, transparent), transparent 58%),
+    var(--card-bg-soft);
+  padding: 12px;
+}
+
+.hero-emotional-proof span {
+  color: var(--success);
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.hero-emotional-proof strong {
+  color: var(--text-strong);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.hero-emotional-proof small {
+  color: var(--text-mid);
+  font-size: 0.78rem;
+  font-weight: 760;
+  line-height: 1.35;
 }
 
 .hero-card.is-early-pick .hero-body {

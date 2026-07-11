@@ -1629,6 +1629,10 @@ function checkSelectors() {
   assert(/id="taste-understood-panel"/.test(html), "Today should expose an imported-taste understood panel");
   assert(/function renderTasteUnderstoodPanel/.test(appSource), "Imported taste understood panel should be rendered from real taste state");
   assert(/taste-understood-panel/.test(css), "Imported taste understood panel should be styled");
+  assert(/data-taste-micro-demo/.test(appSource), "Taste understood panel should show a first-value micro demo");
+  assert(/taste-understood-demo/.test(css), "Taste micro demo should be styled");
+  assert(/data-hero-emotional-proof/.test(appCardsSource), "Top pick should include an emotional proof block");
+  assert(/hero-emotional-proof/.test(css), "Top pick emotional proof block should be styled");
   assert(/library-wishlist-smoke/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke test is missing");
   assert(/markBoughtThroughAppMemory/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke should verify bought persistence");
   assert(/actionButtons/.test(libraryWishlistSmokeSource), "Library/Wishlist smoke should verify quick action buttons");
