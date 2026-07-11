@@ -5307,6 +5307,29 @@ function renderSearchTrustStrip(query, results, provider, localIndexReady) {
   els.gameSearchTrust.replaceChildren(summary);
 }
 
+function searchFocusNextStepsHtml(result, { saved, owned, subscription }) {
+  const remembered = saved || owned || subscription;
+  if (!remembered) return "";
+  const canonicalTitle = canonicalSearchResultTitle(result);
+  const queuedForRating = isTitleQueued(canonicalTitle);
+  const primaryKey = saved ? "discover.focusNextWishlist" : "discover.focusNextLibrary";
+  const detailKey = saved ? "discover.focusNextWishlistDetail" : "discover.focusNextLibraryDetail";
+  return `
+    <div class="game-search-next-steps" data-focus-next-steps>
+      <div>
+        <span>${t("discover.focusNextEyebrow")}</span>
+        <strong>${t(primaryKey)}</strong>
+        <small>${t(detailKey)}</small>
+      </div>
+      <div>
+        ${saved ? `<button class="secondary-action" data-focus-open-wishlist type="button">${t("discover.actionOpenWishlist")}</button>` : ""}
+        ${(owned || subscription) ? `<button class="secondary-action" data-focus-open-library type="button">${t("library.actionOpen")}</button>` : ""}
+        <button class="secondary-action ${queuedForRating ? "is-selected" : ""}" data-focus-rate-later type="button">${queuedForRating ? t("discover.actionRateQueued") : t("discover.actionRateLater")}</button>
+      </div>
+    </div>
+  `;
+}
+
 function renderSearchFocusCard(query, result) {
   if (!result) return null;
   const card = document.createElement("section");
@@ -5339,8 +5362,15 @@ function renderSearchFocusCard(query, result) {
       <button class="secondary-action ${subscription ? "is-selected" : ""}" data-focus-state="subscription" aria-pressed="${subscription}" type="button">${t("discover.actionPlus")}</button>
       <button class="secondary-action" data-focus-detail type="button">${t("discover.actionDetails")}</button>
     </div>
+    ${searchFocusNextStepsHtml(result, { saved, owned, subscription })}
   `;
   card.querySelector("[data-focus-detail]")?.addEventListener("click", () => openGameDetail(result.title));
+  card.querySelector("[data-focus-open-wishlist]")?.addEventListener("click", () => openAppView("wishlist"));
+  card.querySelector("[data-focus-open-library]")?.addEventListener("click", () => openAppView("library"));
+  card.querySelector("[data-focus-rate-later]")?.addEventListener("click", () => {
+    toggleSearchResultRatingQueue(result);
+    render();
+  });
   card.querySelectorAll("[data-focus-state]").forEach((button) => {
     button.addEventListener("click", () => {
       applySearchResultState(result, button.dataset.focusState);

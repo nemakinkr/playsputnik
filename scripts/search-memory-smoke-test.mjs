@@ -174,6 +174,8 @@ try {
     return {
       activeSaved: document.querySelector('[data-focus-state="saved"]')?.classList.contains("is-selected") || false,
       pressedSaved: document.querySelector('[data-focus-state="saved"]')?.getAttribute("aria-pressed") || "",
+      nextSteps: document.querySelector("[data-focus-next-steps]")?.textContent?.replace(/\s+/g, " ").trim() || "",
+      nextStepButtons: document.querySelectorAll("[data-focus-open-wishlist], [data-focus-open-library], [data-focus-rate-later]").length,
       record: record ? {
         title: record.title,
         access: record.access || "",
@@ -364,6 +366,8 @@ try {
   assert(afterFocusSave.activeSaved, "Expected focus Wishlist button to become selected");
   assert(afterFocusSave.pressedSaved === "true", `Expected focus Wishlist aria-pressed=true, got ${afterFocusSave.pressedSaved}`);
   assert(afterFocusSave.userState === "saved", `Expected saved userState after focus action, got ${afterFocusSave.userState}`);
+  assert(/Wishlist|Желаемое|контур|loop/i.test(afterFocusSave.nextSteps), `Expected focus next-step handoff after save, got ${afterFocusSave.nextSteps}`);
+  assert(afterFocusSave.nextStepButtons >= 2, `Expected focus next-step buttons after save, got ${afterFocusSave.nextStepButtons}`);
   assert(before.passportChecks >= 5, `Expected search source passport checks, got ${before.passportChecks}`);
   assert(afterSearchSave.record?.saved, "Expected direct search Wishlist action to save the external game");
   assert(afterSearchSave.record?.source?.startsWith("search_"), `Expected direct search save source memory, got ${afterSearchSave.record?.source}`);

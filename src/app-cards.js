@@ -146,6 +146,23 @@
             : t("today.hero.nextMature"),
         },
       ];
+      const outcomeItems = [
+        {
+          label: t("today.hero.outcomePick"),
+          value: primaryMove.label,
+          detail: t(playableStates.has(currentState) ? "today.hero.outcomePlayDetail" : "today.hero.outcomeSaveDetail"),
+        },
+        {
+          label: t("today.hero.outcomeProof"),
+          value: confidence,
+          detail: isEarlyPick ? t("today.hero.outcomeEarlyDetail") : t("today.hero.outcomeMatureDetail"),
+        },
+        {
+          label: t("today.hero.outcomeGuard"),
+          value: watchout.label,
+          detail: t("today.hero.outcomeGuardDetail"),
+        },
+      ];
 
       topPickEl.innerHTML = `
         <article class="hero-card ${isEarlyPick ? "is-early-pick" : ""}">
@@ -166,6 +183,15 @@
               <h3>${game.title}</h3>
               <p class="meta">${gameTagline(game)}</p>
               ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${ratingBadge.detail}">${ratingBadge.label}</span>` : ""}
+            </div>
+            <div class="hero-outcome-bar" data-hero-outcome>
+              ${outcomeItems.map((item) => `
+                <div>
+                  <span>${item.label}</span>
+                  <strong>${item.value}</strong>
+                  <small>${item.detail}</small>
+                </div>
+              `).join("")}
             </div>
             <p class="description">${gameDescription(game)}</p>
             <p class="reason">${reason}</p>
