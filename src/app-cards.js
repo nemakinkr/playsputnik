@@ -260,6 +260,7 @@
       const { reason, confidence } = explain(game, game.score);
       const evidence = personalEvidence(game);
       const ratingBadge = personalRatingBadge(game);
+      const factsList = factList(game);
       applyCoverVisual(card.querySelector(".poster"), game);
       card.querySelector(".poster-kind").textContent = labelAtoms((game.atoms || []).slice(0, 2));
       card.querySelector(".poster-title").textContent = game.title;
@@ -289,11 +290,23 @@
       });
 
       const facts = card.querySelector(".facts");
-      factList(game).forEach((fact) => {
+      factsList.forEach((fact) => {
         const item = document.createElement("span");
         item.className = `fact ${fact.type}`;
         item.textContent = fact.label;
         facts.appendChild(item);
+      });
+      const trustStrip = card.querySelector(".card-trust-strip");
+      const priceFact = factsList.find((fact) => fact.type === "price" || fact.type === "warn");
+      const accessFact = factsList.find((fact) => fact.type === "plus" || fact.type === "access");
+      [
+        { label: t("discover.trustCover"), value: coverSourceLabel(game) },
+        { label: t("discover.trustPrice"), value: priceFact?.label || t("narrative.detail.priceMissing") },
+        { label: t("discover.trustAccess"), value: accessFact?.label || t("narrative.detail.plusUnknown") },
+      ].forEach((item) => {
+        const node = document.createElement("span");
+        node.innerHTML = `<b>${item.label}</b>${item.value}`;
+        trustStrip.append(node);
       });
       renderCoverSourceInto(card.querySelector(".card-cover-source"), game);
       card.querySelector('[data-action="detail"]').textContent = t("discover.actionDetails");

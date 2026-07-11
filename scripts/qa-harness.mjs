@@ -1519,6 +1519,8 @@ function checkSelectors() {
   assert(/taste-import-report-metrics/.test(css), "Taste import report should style coverage metrics");
   assert(/taste-import-report-bars/.test(css + appSource), "Taste import report should render visual coverage bars");
   assert(/taste-import-preview-story/.test(css + appSource), "Taste import preview should explain the practical import payoff");
+  assert(/data-taste-import-readout/.test(appSource), "Taste import should expose a human-readable taste readout");
+  assert(/taste-import-readout/.test(css), "Taste import readout should be styled");
   assert(/id="demo-ratings"/.test(html) && /DEMO_RATING_LINES/.test(appSource), "Taste import should expose a 10-game demo profile path");
   assert(/demoRatings\?\.[\s\S]*openAppView\("today"\)/.test(appSource), "Taste demo profile should land on Today after import");
   assert(/data-import-search-title/.test(appSource), "Taste import unresolved rows should offer one-click search");
@@ -1644,6 +1646,7 @@ function checkSelectors() {
   assert(/hero-cover-source/.test(appSource + appCardsSource + css), "Hero cover candidates should have source attribution");
   assert(/data-hero-primary/.test(appCardsSource) && /hero-primary-cta/.test(appCardsSource + css), "Top-pick hero should expose one primary CTA");
   assert(/card-cover-source/.test(html + appSource + appCardsSource + css), "Recommendation cards should have source attribution");
+  assert(/card-trust-strip/.test(html + appCardsSource + css), "Recommendation cards should expose compact source trust facts");
   assert((/target = "_blank"/.test(appSource) || /target = "_blank"/.test(appCardsSource)) && (/sourceUrl/.test(appSource) || /sourceUrl/.test(appCardsSource)), "RAWG source attribution should link to sourceUrl");
   assert(/narrative\.detail\.sourceNamed/.test(appCoverSource) && /RAWG/.test(appCoverSource), "RAWG cover candidates should be visibly attributed in localized UI copy");
   assert(catalogSources.coverPolicy.selectedPath.some((step) => step.id === "rawg_cover_candidate"), "Catalog source policy should select RAWG as the early cover candidate path");

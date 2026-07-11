@@ -2265,6 +2265,48 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   line-height: 1.35;
 }
 
+.taste-import-readout {
+  display: grid;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--teal) 26%, var(--ps-border));
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--teal) 9%, transparent), transparent 54%),
+    var(--card-bg-soft);
+  padding: 10px;
+}
+
+.taste-import-readout > span {
+  color: var(--teal);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.taste-import-readout > strong {
+  color: var(--text-strong);
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+
+.taste-import-readout div {
+  display: grid;
+  gap: 5px;
+}
+
+.taste-import-readout p {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: 0.76rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.taste-import-readout b {
+  color: var(--text-strong);
+  font-weight: 900;
+}
+
 .taste-import-resolution-group {
   display: grid;
   gap: 7px;
@@ -2968,7 +3010,9 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--ps-blue) 32%, var(--ps-border));
   background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 12%, transparent), transparent 18%),
     radial-gradient(circle at 82% 8%, color-mix(in srgb, var(--ps-blue) 38%, transparent), transparent 34%),
+    radial-gradient(circle at 12% 86%, color-mix(in srgb, var(--teal) 20%, transparent), transparent 30%),
     linear-gradient(135deg, var(--ps-ink) 0%, color-mix(in srgb, var(--ps-blue) 42%, var(--ps-ink)) 100%);
   box-shadow: var(--shadow-md);
 }
@@ -2983,6 +3027,18 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   border-radius: 999px;
   opacity: 0.55;
   transform: rotate(-18deg);
+}
+
+.onboarding-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 18px 18px auto;
+  width: 138px;
+  height: 42px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 13%, transparent);
+  filter: blur(10px);
+  opacity: 0.72;
 }
 
 .onboarding-hero-text,
@@ -3046,7 +3102,16 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 
 .onboarding-game-tile--hero {
   border-color: color-mix(in srgb, var(--ps-blue) 24%, transparent);
-  background: color-mix(in srgb, var(--surface) 9%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface) 13%, transparent), transparent 64%),
+    color-mix(in srgb, var(--surface) 9%, transparent);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.2);
+}
+
+.onboarding-game-tile--hero .onboarding-tile-poster {
+  box-shadow:
+    inset -1px 0 0 color-mix(in srgb, var(--surface) 16%, transparent),
+    12px 0 28px rgba(0, 0, 0, 0.16);
 }
 
 .taste-understood-panel {

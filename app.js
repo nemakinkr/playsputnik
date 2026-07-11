@@ -2453,6 +2453,12 @@ function renderTasteImportPreview() {
   const examples = preview.topMatched.length
     ? preview.topMatched.join(" / ")
     : t("settings.tasteImport.previewNoMatches");
+  const readoutSignals = preview.topSignals.length
+    ? labelAtoms(preview.topSignals.slice(0, 3), " + ")
+    : t("settings.tasteImport.readoutSignalsFallback");
+  const readoutAnchors = preview.topMatched.length
+    ? preview.topMatched.slice(0, 3).join(" / ")
+    : t("settings.tasteImport.readoutAnchorsFallback");
   const previewStory = preview.strong
     ? t("settings.tasteImport.previewStoryStrong")
     : preview.ready
@@ -2495,6 +2501,15 @@ function renderTasteImportPreview() {
     <div class="taste-import-preview-story">
       <strong>${t("settings.tasteImport.previewStoryTitle")}</strong>
       <span>${previewStory}</span>
+    </div>
+    <div class="taste-import-readout" data-taste-import-readout aria-label="${t("settings.tasteImport.readoutAria")}">
+      <span>${t("settings.tasteImport.readoutEyebrow")}</span>
+      <strong>${t("settings.tasteImport.readoutTitle")}</strong>
+      <div>
+        <p><b>${t("settings.tasteImport.readoutPull")}</b>${readoutSignals}</p>
+        <p><b>${t("settings.tasteImport.readoutAnchors")}</b>${readoutAnchors}</p>
+        <p><b>${t("settings.tasteImport.readoutNext")}</b>${nextStep}</p>
+      </div>
     </div>
     <div class="taste-import-preview-grid">
       <div>

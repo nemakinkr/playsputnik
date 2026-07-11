@@ -5518,6 +5518,34 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
   line-height: 1.25;
 }
 
+.card-trust-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.card-trust-strip span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  border: 1px solid var(--ps-border-soft);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg-soft);
+  color: var(--text-mid);
+  font-size: 0.66rem;
+  font-weight: 780;
+  line-height: 1.18;
+  padding: 7px;
+  overflow-wrap: anywhere;
+}
+
+.card-trust-strip b {
+  color: var(--text-strong);
+  font-size: 0.62rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
 .cover-source a,
 .card-cover-source a,
 .visual-catalog-source a {
