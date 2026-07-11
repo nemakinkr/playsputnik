@@ -124,6 +124,13 @@
       onboarding: {
         aria: "Welcome", title: "Rate 5 games. Get tonight's pick.",
         detail: "Five honest reactions are enough for the first useful recommendation. No account or long setup required.",
+        pathAria: "First value path",
+        pathTaste: "Taste",
+        pathTasteDetail: "5 honest reactions",
+        pathPick: "Pick",
+        pathPickDetail: "Tonight's first answer",
+        pathMemory: "Memory",
+        pathMemoryDetail: "Wishlist, library, prices",
         actionsAria: "Choose how PlaySputnik learns your taste",
         actionSwipe: "Rate 5 games",
         actionImport: "Paste my rating",

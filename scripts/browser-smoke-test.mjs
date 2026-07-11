@@ -85,7 +85,8 @@ try {
     onboardingHero: (() => {
       const hero = document.querySelector("#onboarding-hero");
       const buttons = [...document.querySelectorAll("#onboarding-featured [data-onboard-react]")];
-      if (!hero) return { visible: false, top: 9999, buttons: 0, visibleButtons: 0 };
+      const valuePath = document.querySelector(".onboarding-value-path");
+      if (!hero) return { visible: false, top: 9999, buttons: 0, visibleButtons: 0, valuePathItems: 0, valuePathText: "" };
       const rect = hero.getBoundingClientRect();
       return {
         visible: rect.width > 0 && rect.height > 0 && !hero.classList.contains("is-hidden"),
@@ -95,6 +96,8 @@ try {
           const buttonRect = button.getBoundingClientRect();
           return buttonRect.width > 0 && buttonRect.height > 0;
         }).length,
+        valuePathItems: valuePath?.querySelectorAll("span").length || 0,
+        valuePathText: valuePath?.textContent?.replace(/\s+/g, " ").trim() || "",
       };
     })(),
     booting: document.body.classList.contains("is-app-booting"),
@@ -135,6 +138,9 @@ try {
   if (before.onboardingHero.top > 900) throw new Error(`Expected onboarding hero in first viewport, got top ${before.onboardingHero.top}`);
   if (before.onboardingHero.buttons !== 3 || before.onboardingHero.visibleButtons !== 3) {
     throw new Error(`Expected 3 visible onboarding reaction buttons, got ${JSON.stringify(before.onboardingHero)}`);
+  }
+  if (before.onboardingHero.valuePathItems !== 3 || !/Taste|Вкус/.test(before.onboardingHero.valuePathText)) {
+    throw new Error(`Expected onboarding value path to explain first payoff, got ${JSON.stringify(before.onboardingHero)}`);
   }
   if (before.booting || !before.bootOverlayHidden) throw new Error("App should unlock only after runtime handlers are ready");
   if (before.likedCount !== "0/30") throw new Error(`Expected clean onboarding 0/30, got ${before.likedCount}`);

@@ -1594,6 +1594,14 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 }
 
 @media (max-width: 620px) {
+  .onboarding-value-path {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .onboarding-value-path > span + span::before {
+    display: none;
+  }
+
   .data-guide-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -2987,6 +2995,53 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 .onboarding-entry-actions .primary-action,
 .onboarding-entry-actions .secondary-action {
   box-shadow: none;
+}
+
+.onboarding-value-path {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 12px 0 0;
+}
+
+.onboarding-value-path > span {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 28%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface) 10%, transparent);
+  padding: 9px;
+}
+
+.onboarding-value-path > span + span::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -9px;
+  width: 9px;
+  height: 1px;
+  background: color-mix(in srgb, var(--surface) 42%, transparent);
+}
+
+.onboarding-value-path strong,
+.onboarding-value-path small {
+  display: block;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.onboarding-value-path strong {
+  color: var(--surface);
+  font-size: 0.8rem;
+  font-weight: 950;
+}
+
+.onboarding-value-path small {
+  color: color-mix(in srgb, var(--surface) 72%, transparent);
+  font-size: 0.68rem;
+  font-weight: 760;
 }
 
 .onboarding-game-tile--hero {
