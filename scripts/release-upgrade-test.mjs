@@ -25,6 +25,17 @@ assert(
   "detail module must load after its library dependency",
 );
 assert(/Promise\.all\(phase\.map/.test(html), "HTML boot should parallelize modules inside each dependency phase");
+const manifestLoadIndex = html.indexOf('await loadScript("src/module-manifest.js")');
+const phaseLoadIndex = html.indexOf("for (const phase of window.PlaySputnikModulePhases)");
+assert(manifestLoadIndex >= 0, "HTML boot must cache-bust the runtime manifest");
+assert(
+  manifestLoadIndex < phaseLoadIndex,
+  "cache-busted runtime manifest must load before dependency phases are read",
+);
+assert(
+  !/<script\s+src=["']src\/module-manifest\.js["']/.test(html),
+  "runtime manifest must not use an unversioned static script tag",
+);
 
 const legacyContext = { window: {}, Date, Map, Set };
 vm.runInNewContext(stateSource, legacyContext, { filename: "src/app-state.js" });
@@ -49,6 +60,14 @@ assert.equal(tools.loadState().stateVersion, 0, "cached shells must boot without
 
 assert(/request\.mode === "navigate"[\s\S]*networkFirstWithCache/.test(swSource), "navigations must be network-first");
 assert(!/request\.mode === "navigate"\s*\|\|/.test(swSource), "navigations must not fall through to cache-first assets");
+assert(
+  /pathname\.includes\("\/src\/"\)[\s\S]*networkFirstWithCache\(request, STATIC_CACHE\)/.test(swSource),
+  "runtime modules must be network-first to prevent mixed cached releases",
+);
+assert(
+  /caches\.match\(request, \{ ignoreSearch: true \}\)/.test(swSource),
+  "offline fallback must match precached assets behind cache-busting query strings",
+);
 assert(/class="is-app-booting"/.test(html), "HTML should block interaction until app.js is ready");
 assert(/id="app-boot-overlay"/.test(html), "HTML should show an explicit boot surface");
 assert(/styles\/foundation\.css/.test(html) && /styles\/themes\.css/.test(html), "fresh HTML should load split styles");

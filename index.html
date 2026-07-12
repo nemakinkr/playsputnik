@@ -12,13 +12,12 @@
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="stylesheet" href="styles/foundation.css" />
-    <link rel="stylesheet" href="styles/components.css" />
-    <link rel="stylesheet" href="styles/polish.css" />
-    <link rel="stylesheet" href="styles/themes.css" />
-    <link rel="stylesheet" href="styles/brand.css" />
+    <link rel="stylesheet" href="styles/foundation.css?v=v131" />
+    <link rel="stylesheet" href="styles/components.css?v=v131" />
+    <link rel="stylesheet" href="styles/polish.css?v=v131" />
+    <link rel="stylesheet" href="styles/themes.css?v=v131" />
+    <link rel="stylesheet" href="styles/brand.css?v=v131" />
     <script src="runtime-config.js"></script>
-    <script src="src/module-manifest.js"></script>
     <script>
       // Apply theme before first paint to avoid flash-of-light
       (function () {
@@ -991,6 +990,10 @@
       async function bootPlaySputnik() {
         try {
           window.__playsputnikBoot = { phase: "loading-modules" };
+          // Load the manifest through the same cache-busted path as every
+          // runtime module. An older active Service Worker must never pair a
+          // stale module list with a freshly deployed app.js.
+          await loadScript("src/module-manifest.js");
           for (const phase of window.PlaySputnikModulePhases) {
             await Promise.all(phase.map(({ path }) => loadScript(path)));
           }

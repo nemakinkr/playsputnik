@@ -65,7 +65,7 @@ for (const path of modulePaths) {
 }
 assert(!missingFiles.length, `Manifest points at missing module file(s): ${missingFiles.join(", ")}`);
 
-assert(/<script\s+src=["']src\/module-manifest\.js["']/.test(html), "HTML must load src/module-manifest.js before dynamic runtime boot");
+assert(/await loadScript\(["']src\/module-manifest\.js["']\)/.test(html), "HTML must cache-bust src/module-manifest.js before dynamic runtime boot");
 assert(/for \(const phase of window\.PlaySputnikModulePhases\)/.test(html), "HTML boot must iterate manifest dependency phases");
 assert(/Promise\.all\(phase\.map\(\(\{ path \}\) => loadScript\(path\)\)\)/.test(html), "HTML boot must load each manifest phase in parallel");
 assert(/await loadScript\(["']app\.js["']\)/.test(html), "HTML boot must load app.js after manifest modules");
@@ -95,7 +95,7 @@ const missingShellAssets = requiredShellAssets.filter((path) => !swAssets.includ
 assert(!missingShellAssets.length, `Service Worker STATIC_ASSETS is missing shell asset(s): ${missingShellAssets.join(", ")}`);
 
 const htmlStyles = [...html.matchAll(/<link\s+[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/g)]
-  .map((item) => item[1].replace(/^\.\//, ""));
+  .map((item) => item[1].replace(/^\.\//, "").split("?")[0]);
 const missingStyleCache = htmlStyles.filter((path) => !swAssets.includes(path));
 assert(!missingStyleCache.length, `HTML stylesheet(s) are not explicitly precached: ${missingStyleCache.join(", ")}`);
 

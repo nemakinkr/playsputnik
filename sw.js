@@ -3,7 +3,7 @@
 
 importScripts("./src/module-manifest.js");
 
-const CACHE_VERSION = "v130";
+const CACHE_VERSION = "v131";
 const STATIC_CACHE = `playsputnik-static-${CACHE_VERSION}`;
 const DATA_CACHE = `playsputnik-data-${CACHE_VERSION}`;
 
@@ -112,17 +112,25 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets — cache-first, network fallback (and update cache)
+  // Executable shell assets are network-first. This prevents a returning
+  // client from pairing a freshly navigated HTML shell with an older cached
+  // manifest/module/style while the new worker is taking control.
   if (
     pathname.includes("/src/") ||
-    pathname.includes("/icons/") ||
-    pathname.endsWith("/") ||
     pathname.endsWith(".js") ||
     pathname.endsWith(".css") ||
     pathname.endsWith(".html") ||
-    pathname.endsWith(".svg") ||
-    pathname.endsWith(".png") ||
     pathname.endsWith("manifest.json")
+  ) {
+    event.respondWith(networkFirstWithCache(request, STATIC_CACHE));
+    return;
+  }
+
+  // Images remain cache-first; they cannot break runtime compatibility.
+  if (
+    pathname.includes("/icons/") ||
+    pathname.endsWith(".svg") ||
+    pathname.endsWith(".png")
   ) {
     event.respondWith(cacheFirstWithNetworkFallback(request, STATIC_CACHE));
     return;
@@ -134,7 +142,7 @@ self.addEventListener("fetch", (event) => {
 // ── Strategies ───────────────────────────────────────────────────────────────
 
 async function cacheFirstWithNetworkFallback(request, cacheName) {
-  const cached = await caches.match(request);
+  const cached = await caches.match(request) || await caches.match(request, { ignoreSearch: true });
   if (cached) return cached;
   try {
     const response = await fetch(request);
@@ -162,7 +170,7 @@ async function networkFirstWithCache(request, cacheName) {
     }
     return response;
   } catch {
-    const cached = await caches.match(request);
+    const cached = await caches.match(request) || await caches.match(request, { ignoreSearch: true });
     if (cached) return cached;
     return new Response(JSON.stringify({ error: "offline", cached: false }), {
       status: 503,

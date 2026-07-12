@@ -281,7 +281,6 @@ try {
   await cdp.send("Runtime.enable");
   await cdp.send("Log.enable");
   await cdp.send("Network.enable");
-  await cdp.send("Network.setBypassServiceWorker", { bypass: true });
   await cdp.send("Emulation.setDeviceMetricsOverride", {
     width: 1280,
     height: 900,
@@ -293,6 +292,15 @@ try {
   await cdp.send("Page.navigate", { url: pageUrl });
   await loaded;
   await waitForExpression(cdp, "Boolean(window.__playsputnikBoot?.coreRenderedAt && document.querySelector('#game-search-input'))");
+
+  // The first navigation installs the worker. Reload under its control so the
+  // production smoke exercises the same path as a returning user instead of
+  // silently bypassing the cache layer where mixed releases can occur.
+  await waitForExpression(cdp, "navigator.serviceWorker?.ready.then(() => true).catch(() => false)");
+  const reloaded = cdp.waitForEvent("Page.loadEventFired");
+  await cdp.send("Page.reload");
+  await reloaded;
+  await waitForExpression(cdp, "Boolean(navigator.serviceWorker?.controller && window.__playsputnikBoot?.coreRenderedAt && window.PlaySputnikDetailView)");
 
   await evaluate(cdp, "document.querySelector('[data-app-view=\"discover\"]')?.click()");
   await waitForExpression(cdp, "document.querySelector('[data-app-view=\"discover\"]')?.classList.contains('is-active')");
