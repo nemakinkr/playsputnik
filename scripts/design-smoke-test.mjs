@@ -87,6 +87,9 @@ try {
         firstRun: rectFrom(".first-run-panel"),
         visualCards: document.querySelectorAll(".visual-catalog-card").length,
         appNavButtons: document.querySelectorAll(".app-view-nav [data-app-view]").length,
+        primaryNavButtons: document.querySelectorAll(".app-view-nav > [data-app-view]").length,
+        secondaryNavMenu: Boolean(document.querySelector("#app-view-more .app-view-more-menu")),
+        quickProof: rectFrom(".hero-quick-proof"),
         appNavOverflow: (() => {
           const nav = document.querySelector(".app-view-nav");
           return nav ? nav.scrollWidth > nav.clientWidth + 1 : true;
@@ -106,6 +109,12 @@ try {
     }
     if (!metrics.appNav || metrics.appNavButtons < 8) {
       throw new Error(`${viewport.name} app navigation is missing tabs`);
+    }
+    if (metrics.primaryNavButtons !== 5 || !metrics.secondaryNavMenu) {
+      throw new Error(`${viewport.name} navigation must expose five primary areas plus the secondary menu`);
+    }
+    if (!metrics.quickProof || metrics.quickProof.height < 40) {
+      throw new Error(`${viewport.name} top recommendation is missing the compact decision proof`);
     }
     if (metrics.appNavOverflow) {
       throw new Error(`${viewport.name} app navigation has horizontal overflow`);

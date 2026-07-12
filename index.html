@@ -12,11 +12,11 @@
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
-    <link rel="stylesheet" href="styles/foundation.css?v=v131" />
-    <link rel="stylesheet" href="styles/components.css?v=v131" />
-    <link rel="stylesheet" href="styles/polish.css?v=v131" />
-    <link rel="stylesheet" href="styles/themes.css?v=v131" />
-    <link rel="stylesheet" href="styles/brand.css?v=v131" />
+    <link rel="stylesheet" href="styles/foundation.css?v=v132" />
+    <link rel="stylesheet" href="styles/components.css?v=v132" />
+    <link rel="stylesheet" href="styles/polish.css?v=v132" />
+    <link rel="stylesheet" href="styles/themes.css?v=v132" />
+    <link rel="stylesheet" href="styles/brand.css?v=v132" />
     <script src="runtime-config.js"></script>
     <script>
       // Apply theme before first paint to avoid flash-of-light
@@ -267,18 +267,27 @@
             <strong data-i18n="nav.tasteTitle">Taste</strong>
             <span data-i18n="nav.tasteSub">Profile</span>
           </button>
-          <button class="app-view-tab" data-app-view="deals" type="button">
-            <strong data-i18n="nav.dealsTitle">Deals</strong>
-            <span data-i18n="nav.dealsSub">On sale</span>
-          </button>
-          <button class="app-view-tab" data-app-view="data" type="button">
-            <strong data-i18n="nav.dataTitle">Data</strong>
-            <span data-i18n="nav.dataSub">Sources</span>
-          </button>
-          <button class="app-view-tab" data-app-view="stats" type="button">
-            <strong data-i18n="nav.statsTitle">Stats</strong>
-            <span data-i18n="nav.statsSub">My library</span>
-          </button>
+          <details class="app-view-more" id="app-view-more">
+            <summary data-i18n-attr="aria-label:nav.moreAria">
+              <b aria-hidden="true">•••</b>
+              <strong data-i18n="nav.moreTitle">More</strong>
+              <span data-i18n="nav.moreSub">3 sections</span>
+            </summary>
+            <div class="app-view-more-menu">
+              <button class="app-view-tab app-view-tab--secondary" data-app-view="deals" type="button">
+                <strong data-i18n="nav.dealsTitle">Deals</strong>
+                <span data-i18n="nav.dealsSub">On sale</span>
+              </button>
+              <button class="app-view-tab app-view-tab--secondary" data-app-view="stats" type="button">
+                <strong data-i18n="nav.statsTitle">Stats</strong>
+                <span data-i18n="nav.statsSub">My library</span>
+              </button>
+              <button class="app-view-tab app-view-tab--secondary" data-app-view="data" type="button">
+                <strong data-i18n="nav.dataTitle">Data</strong>
+                <span data-i18n="nav.dataSub">Sources</span>
+              </button>
+            </div>
+          </details>
         </nav>
         <p class="app-view-copy" id="app-view-status" data-i18n="views.today.summary">Tonight pick, first value proof, and the short plan.</p>
 

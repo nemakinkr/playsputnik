@@ -61,6 +61,7 @@
       discoverTitle: "Обзор", discoverSub: "Найти игры",
       wishlistTitle: "Желаемое", wishlistSub: "Покупать умнее",
       tasteTitle: "Вкус", tasteSub: "Профиль",
+      moreTitle: "Ещё", moreSub: "3 раздела", moreAria: "Дополнительные разделы",
       dealsTitle: "Скидки", dealsSub: "Распродажа",
       dataTitle: "Данные", dataSub: "Источники",
       statsTitle: "Статистика", statsSub: "Моя коллекция",

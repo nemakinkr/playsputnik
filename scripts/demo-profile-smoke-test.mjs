@@ -1,4 +1,6 @@
 import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const DEFAULT_URL = "http://127.0.0.1:4190/?v=demo-profile-smoke";
 const DEFAULT_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -63,6 +65,12 @@ try {
   await page.waitForTimeout(1200);
   const loaded = await page.evaluate(() => {
     const stored = JSON.parse(localStorage.getItem("playsputnik.prototype.state.v2") || "{}");
+    const rect = (selector) => {
+      const node = document.querySelector(selector);
+      if (!node) return null;
+      const bounds = node.getBoundingClientRect();
+      return { top: Math.round(bounds.top), width: Math.round(bounds.width), height: Math.round(bounds.height) };
+    };
     return {
       activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
       entryStatus: document.querySelector("#entry-status")?.textContent || "",
@@ -78,6 +86,13 @@ try {
       ratings: Object.values(stored.userGames || {}).filter((game) => typeof game.rating === "number").length,
       priceTargets: Object.values(stored.userGames || {}).filter((game) => game.priceWatch?.targets?.US).length,
       searchQuery: stored.gameSearchQuery || "",
+      hero: rect("#top-pick"),
+      tastePanel: rect("#taste-understood-panel"),
+      quickProof: rect(".hero-quick-proof"),
+      primaryCta: rect(".hero-primary-cta"),
+      proofDetails: Boolean(document.querySelector(".hero-proof-details")),
+      primaryNavButtons: document.querySelectorAll(".app-view-nav > [data-app-view]").length,
+      secondaryNavMenu: Boolean(document.querySelector("#app-view-more .app-view-more-menu")),
       overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     };
   });
@@ -88,7 +103,37 @@ try {
   assert(loaded.ratings >= 8, `Demo should seed ratings, got ${loaded.ratings}`);
   assert(loaded.priceTargets >= 3, `Demo should seed price targets, got ${loaded.priceTargets}`);
   assert(loaded.continuityActions.some((item) => item.action === "discover" && item.title), "Demo should expose a Discover continuation");
+  assert(loaded.hero?.height >= 300, "Demo Today should show a substantial top recommendation");
+  assert(loaded.quickProof?.height >= 40 && loaded.primaryCta?.height >= 40, "Demo Today should expose decision proof and a primary action");
+  assert(!loaded.tastePanel || loaded.hero.top < loaded.tastePanel.top, "Top recommendation must appear before taste diagnostics");
+  assert(loaded.proofDetails, "Top recommendation should keep deeper evidence in progressive disclosure");
+  assert(loaded.primaryNavButtons === 5 && loaded.secondaryNavMenu, "Product navigation should expose five primary areas plus More");
   assert(!loaded.overflow, "Loaded demo profile creates horizontal overflow");
+
+  const todayScreenshot = join(tmpdir(), "playsputnik-demo-today-mobile.png");
+  await page.screenshot({ path: todayScreenshot, fullPage: false, timeout: 20000 });
+
+  await page.locator("#app-view-more > summary").click();
+  const moreMenuVisible = await page.locator("#app-view-more .app-view-more-menu").isVisible();
+  assert(moreMenuVisible, "More navigation menu should open on mobile");
+  await page.locator("#app-view-more > summary").click();
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.waitForTimeout(150);
+  const desktopToday = await page.evaluate(() => {
+    const hero = document.querySelector("#top-pick")?.getBoundingClientRect();
+    const nav = document.querySelector(".app-view-nav")?.getBoundingClientRect();
+    return {
+      hero: hero ? { top: Math.round(hero.top), width: Math.round(hero.width), height: Math.round(hero.height) } : null,
+      nav: nav ? { top: Math.round(nav.top), width: Math.round(nav.width), height: Math.round(nav.height) } : null,
+      overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    };
+  });
+  assert(desktopToday.hero?.width >= 700 && desktopToday.hero.height >= 300, "Desktop Today should give the recommendation visual priority");
+  assert(!desktopToday.overflow, "Desktop Today creates horizontal overflow");
+  const desktopTodayScreenshot = join(tmpdir(), "playsputnik-demo-today-desktop.png");
+  await page.screenshot({ path: desktopTodayScreenshot, fullPage: false, timeout: 20000 });
+  await page.setViewportSize({ width: 390, height: 900 });
 
   await page.evaluate(() => document.querySelector('[data-continuity-action="discover"]')?.click());
   await page.waitForTimeout(900);
@@ -125,6 +170,10 @@ try {
     url: targetUrl,
     empty,
     loaded,
+    todayScreenshot,
+    desktopToday,
+    desktopTodayScreenshot,
+    moreMenuVisible,
     discover,
     back,
     errors,

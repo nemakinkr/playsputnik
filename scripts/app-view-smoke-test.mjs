@@ -73,6 +73,7 @@ try {
   await page.waitForFunction(() => document.querySelector('[data-app-view="wishlist"]')?.classList.contains("is-active"), null, { timeout: 5000 });
   const wishlist = await snapshot();
 
+  await page.click("#app-view-more > summary");
   await page.click('[data-app-view="data"]');
   await page.waitForFunction(() => document.querySelector('[data-app-view="data"]')?.classList.contains("is-active"), null, { timeout: 5000 });
   const data = await snapshot();

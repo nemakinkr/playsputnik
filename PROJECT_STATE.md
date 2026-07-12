@@ -50,6 +50,8 @@ reviews, catalogs, sale pages, and announcements.
   `release-upgrade-test.mjs` protects mixed old-shell/new-code releases, while
   Service Worker navigations are network-first to avoid stale HTML shells.
 - Product areas: Today, Library, Discover, Wishlist, Taste, Deals, Data, Stats.
+  The consumer navigation now keeps Today, Library, Discover, Wishlist, and
+  Taste primary; Deals, Stats, and Data live in a compact secondary menu.
 - Localization: EN/RU engine, complete settings sidebar, Today metrics/sample/
   time controls, and the main "what to play tonight" answer shell with
   locale-aware status, actions, alternatives, buy guardrails, personal
@@ -167,6 +169,9 @@ reviews, catalogs, sale pages, and announcements.
   Play/Wishlist CTAs. It can also surface explicit "do not buy now" guardrail
   commands and backlog-amnesty "let go" commands when those decisions are
   healthier than another purchase.
+  The first populated viewport is decision-first: the game cover, concise
+  why/risk proof, and one primary action precede metrics and taste diagnostics;
+  deeper evidence stays available through progressive disclosure.
 - Demo/review mode: a top product-path panel can load a stable filled profile
   with taste reactions, library/wishlist memory, ratings, price targets, and
   search context; the same panel connects Today, Discover, Wishlist, and the

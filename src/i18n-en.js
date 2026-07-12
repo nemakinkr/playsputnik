@@ -62,6 +62,7 @@
       discoverTitle: "Discover", discoverSub: "Find games",
       wishlistTitle: "Wishlist", wishlistSub: "Buy smarter",
       tasteTitle: "Taste", tasteSub: "Profile",
+      moreTitle: "More", moreSub: "3 sections", moreAria: "More product areas",
       dealsTitle: "Deals", dealsSub: "On sale",
       dataTitle: "Data", dataSub: "Sources",
       statsTitle: "Stats", statsSub: "My library",

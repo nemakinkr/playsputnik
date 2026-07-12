@@ -184,42 +184,19 @@
               <p class="meta">${gameTagline(game)}</p>
               ${ratingBadge ? `<span class="personal-rating-badge ${ratingBadge.known ? "is-known" : ""}" title="${ratingBadge.detail}">${ratingBadge.label}</span>` : ""}
             </div>
-            <div class="hero-outcome-bar" data-hero-outcome>
-              ${outcomeItems.map((item) => `
-                <div>
-                  <span>${item.label}</span>
-                  <strong>${item.value}</strong>
-                  <small>${item.detail}</small>
-                </div>
-              `).join("")}
-            </div>
-            <div class="hero-emotional-proof" data-hero-emotional-proof>
-              <span>${t("today.hero.emotionalEyebrow")}</span>
-              <strong>${isEarlyPick ? t("today.hero.emotionalTitleEarly") : t("today.hero.emotionalTitleMature")}</strong>
-              <small>${isEarlyPick
-                ? t("today.hero.emotionalDetailEarly", { count: signalCount })
-                : t("today.hero.emotionalDetailMature")}</small>
-            </div>
-            <p class="description">${gameDescription(game)}</p>
-            <p class="reason">${reason}</p>
-            <div class="hero-decision-strip" aria-label="${t("today.hero.top")}">
-              ${decisionStrip.map((item) => `
-                <div>
-                  <span>${item.label}</span>
-                  <strong>${item.value}</strong>
-                  <small>${item.detail}</small>
-                </div>
-              `).join("")}
-            </div>
-            ${isEarlyPick ? `<p class="hero-payoff-note">${t("today.hero.payoffNote")}</p>` : `
-              <div class="personal-evidence hero-evidence">
-              ${renderEvidenceRows(evidence, 3)}
+            <p class="description hero-description">${gameDescription(game)}</p>
+            <div class="hero-quick-proof" data-hero-quick-proof>
+              <div>
+                <span>${t("today.hero.whyLabel")}</span>
+                <strong>${decisionStrip[0].value}</strong>
+                <small>${reason}</small>
               </div>
-              <p class="watchout"><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
-              ${guard ? `<span class="deal-guard guard-${guard.kind}" title="${String(guard.detail).replace(/"/g, "&quot;")}">${guard.label}</span>` : ""}
-            `}
-            <div class="facts">${facts}</div>
-            <p class="cover-source hero-cover-source"></p>
+              <div>
+                <span>${t("today.hero.riskLabel")}</span>
+                <strong>${watchout.label}</strong>
+                <small>${watchout.detail}</small>
+              </div>
+            </div>
             <div class="hero-primary-cta">
               <button class="primary-action" data-hero-primary data-hero-primary-kind="${primaryMove.kind}" ${primaryMove.state ? `data-hero-primary-state="${primaryMove.state}"` : ""} type="button">${primaryMove.label}</button>
               <small>${primaryMove.hint}</small>
@@ -230,6 +207,45 @@
                 : `<button class="secondary-action" data-hero-state="${action.state}" type="button">${action.label}</button>`
               ).join("")}
             </div>
+            <details class="hero-proof-details">
+              <summary>${t("narrative.detail.whyPick")}</summary>
+              <div class="hero-proof-details-body">
+                <div class="hero-outcome-bar" data-hero-outcome>
+                  ${outcomeItems.map((item) => `
+                <div>
+                  <span>${item.label}</span>
+                  <strong>${item.value}</strong>
+                  <small>${item.detail}</small>
+                </div>
+                  `).join("")}
+                </div>
+                <div class="hero-emotional-proof" data-hero-emotional-proof>
+                  <span>${t("today.hero.emotionalEyebrow")}</span>
+                  <strong>${isEarlyPick ? t("today.hero.emotionalTitleEarly") : t("today.hero.emotionalTitleMature")}</strong>
+                  <small>${isEarlyPick
+                    ? t("today.hero.emotionalDetailEarly", { count: signalCount })
+                    : t("today.hero.emotionalDetailMature")}</small>
+                </div>
+                <div class="hero-decision-strip" aria-label="${t("today.hero.top")}">
+                  ${decisionStrip.map((item) => `
+                    <div>
+                      <span>${item.label}</span>
+                      <strong>${item.value}</strong>
+                      <small>${item.detail}</small>
+                    </div>
+                  `).join("")}
+                </div>
+                ${isEarlyPick ? `<p class="hero-payoff-note">${t("today.hero.payoffNote")}</p>` : `
+                  <div class="personal-evidence hero-evidence">
+                    ${renderEvidenceRows(evidence, 3)}
+                  </div>
+                  <p class="watchout"><strong>${watchout.label}:</strong> ${watchout.detail}.</p>
+                  ${guard ? `<span class="deal-guard guard-${guard.kind}" title="${String(guard.detail).replace(/"/g, "&quot;")}">${guard.label}</span>` : ""}
+                `}
+                <div class="facts">${facts}</div>
+                <p class="cover-source hero-cover-source"></p>
+              </div>
+            </details>
           </div>
         </article>
       `;

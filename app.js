@@ -1006,6 +1006,7 @@ const els = {
   budget: document.querySelector("#budget"),
   budgetLabel: document.querySelector("#budget-label"),
   appViewTabs: document.querySelectorAll("[data-app-view]"),
+  appViewMore: document.querySelector("#app-view-more"),
   appViewStatus: document.querySelector("#app-view-status"),
   viewSections: document.querySelectorAll("[data-view-section]"),
   activeRegion: document.querySelector("#active-region"),
@@ -7301,6 +7302,8 @@ function renderAppViewShell() {
     button.setAttribute("aria-pressed", String(isActive));
     button.toggleAttribute("aria-current", isActive);
   });
+  const secondaryViewActive = Boolean(els.appViewMore?.querySelector(`[data-app-view="${activeView}"]`));
+  els.appViewMore?.classList.toggle("is-active", secondaryViewActive);
   els.viewSections.forEach((section) => {
     const isVisible = sectionVisibleInAppView(section, activeView);
     section.classList.toggle("is-view-hidden", !isVisible);
@@ -7388,6 +7391,7 @@ function render() {
 
 els.appViewTabs.forEach((button) => {
   button.addEventListener("click", () => {
+    button.closest("details")?.removeAttribute("open");
     openAppView(button.dataset.appView);
   });
 });
