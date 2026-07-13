@@ -199,6 +199,7 @@ async function runFounderRankingScenario(page) {
   await clearStoredState(page);
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   await waitForAppReady(page);
+  await page.evaluate(() => window.PlaySputnikI18n?.setLocale("en"));
   await page.evaluate(() => document.querySelector('[data-app-view="taste"]')?.click());
   await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "taste", null, { timeout: 5000 });
   await page.evaluate((text) => {
@@ -421,7 +422,7 @@ try {
   assert(afterBuy.saved === false, "Bought games should leave the wishlist saved flag");
   assert(/найдено (?:8\d|9\d|1\d\d)\/111|matched (?:8\d|9\d|1\d\d)\/111/i.test(founderRanking.preview.text), `Expected founder preview to recognize 80+ scoring matches, got: ${founderRanking.preview.text}`);
   assert(/Опоры вкуса|Taste anchors/.test(founderRanking.preview.text), `Expected founder preview to show trusted taste anchors, got: ${founderRanking.preview.text}`);
-  assert(/известно в источниках: 111\/111|known to sources: 111\/111/i.test(founderRanking.preview.text), `Expected founder preview to show full known-source coverage, got: ${founderRanking.preview.text}`);
+  assert(/известно в источниках: 111\/111|known (?:in|to) sources: 111\/111|111\/111 known in sources/i.test(founderRanking.preview.text), `Expected founder preview to show full known-source coverage, got: ${founderRanking.preview.text}`);
   assert(/Отчёт импорта|Import report/.test(founderRanking.preview.report) && /80/.test(founderRanking.preview.report) && /111/.test(founderRanking.preview.report), `Expected founder import report to summarize anchor and known-source coverage, got: ${founderRanking.preview.report}`);
   assert(!founderRanking.preview.batch, "A fully covered founder ranking should not create a redundant provider queue");
   assert(founderRanking.preview.gapBrief, "Expected founder import report to expose a coverage/gap brief");
