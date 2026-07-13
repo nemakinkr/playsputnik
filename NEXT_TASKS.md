@@ -317,7 +317,17 @@ explicitly imported backbone/search wishlist title becomes a recommendation
 candidate without making the whole auxiliary corpus visible. The atom-quality
 gate protects corrected high-impact metadata for Battlefield 1, Monster
 Hunter: World, Destiny 2, Knockout City, Assassin's Creed Brotherhood, and
-Rise of the Tomb Raider. New aliases were added for
+Rise of the Tomb Raider. A separate synthetic benchmark now protects against
+founder-only overfitting: three deterministic fictional personas (systems,
+competitive, cozy) rate disjoint training games and rank the same 13 unseen
+candidates. Current aggregate is NDCG@6 0.93, high-fit precision@3 0.78, zero
+avoid intrusions in any top 3, three distinct top choices, and mean top-3
+overlap 0.17. The gate also rejects training/candidate title leakage. Its
+initial failure revealed that imported weights saturated both pull and caution
+caps; `tasteEngineScore()` now normalizes by evidence volume and downweights
+auxiliary tone/content/time/commitment signals relative to core atoms. Keep the
+fixture labelled as synthetic: it catches collapse and regressions but cannot
+replace real-user validation. New aliases were added for
 high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of

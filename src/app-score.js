@@ -273,8 +273,35 @@
 
     function tasteEngineScore(game, profile = tasteEngineProfile()) {
       const signals = tasteEngineGameSignals(game, profile);
-      const pullRaw = signals.positive.reduce((sum, signal) => sum + profile.positiveWeights[signal], 0);
-      const cautionRaw = signals.negative.reduce((sum, signal) => sum + profile.negativeWeights[signal], 0);
+      // Core atoms describe what the player does; tone/content/time metadata
+      // are useful qualifiers, but must not outweigh genre and mechanics.
+      // Imported profiles also accumulate larger raw weights than a five-card
+      // onboarding, so normalize by evidence volume before applying caps.
+      const atomSet = new Set(game.atoms || []);
+      const signalImportance = (signal) => {
+        if (atomSet.has(signal)) return 1;
+        if (signal === game.tone) return 0.35;
+        if (signal === game.content) return 0.3;
+        if (signal === game.adultTimeFit) return 0.4;
+        if (signal === game.commitment) return 0.35;
+        return 0.5;
+      };
+      const learningEvidence = Math.max(
+        1,
+        (profile.sources?.quick || 0)
+          + (profile.sources?.imported || 0)
+          + (profile.sources?.feedback || 0)
+          + (profile.sources?.legacyLikes || 0),
+      );
+      const evidenceScale = Math.max(1, Math.sqrt(learningEvidence / QUICK_TASTE_FIRST_TARGET));
+      const pullRaw = signals.positive.reduce(
+        (sum, signal) => sum + profile.positiveWeights[signal] * signalImportance(signal),
+        0,
+      ) / evidenceScale;
+      const cautionRaw = signals.negative.reduce(
+        (sum, signal) => sum + profile.negativeWeights[signal] * signalImportance(signal),
+        0,
+      ) / evidenceScale;
       const pull = Math.min(70, Math.round(pullRaw * 6));
       const caution = -Math.min(55, Math.round(cautionRaw * 7));
       const mixedPenalty = signals.mixed.length ? Math.min(12, signals.mixed.length * 4) : 0;

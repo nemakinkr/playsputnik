@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v134 (cache-first static assets / network-first navigation and
+- Service worker v138 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -171,6 +171,17 @@ reviews, catalogs, sale pages, and announcements.
   are verified. The atom-quality gate fixed and now protects six high-impact
   records; removing Battlefield 1's false open-world signal eliminated the
   only bottom-quartile intrusion from the forecast top 10.
+  A second recommendation gate now runs three deterministic fictional personas
+  against the same 13 unseen candidates. The systems, competitive, and cozy
+  profiles currently achieve mean NDCG@6 0.93, high-fit precision@3 0.78, zero
+  avoid-title intrusions in any top 3, three distinct top choices, and mean
+  top-3 overlap 0.17. The fixture explicitly forbids training/candidate title
+  leakage. Its first run exposed score saturation from large imported profiles;
+  taste scoring now normalizes by learning evidence and treats mechanics/genre
+  atoms as stronger evidence than tone, content, time-fit, and commitment.
+  Founder wishlist metrics remain unchanged after that correction. These
+  personas are anti-overfitting hypotheses, not substitutes for future
+  validation with independent real users.
   The first follow-up closed the top-30 unknown search gaps by
   adding honest external-index records for Kingdom Come: Deliverance II, Days
   Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,

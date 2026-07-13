@@ -29,6 +29,7 @@ jobs:
           node scripts/onboarding-diagnostic-test.mjs
           node scripts/ranking-dogfood-audit.mjs
           node scripts/founder-recommendation-evaluation.mjs
+          node scripts/synthetic-profile-evaluation.mjs
           node scripts/decision-workflow-test.mjs
           node scripts/detail-view-test.mjs
           node scripts/state-migrations-test.mjs

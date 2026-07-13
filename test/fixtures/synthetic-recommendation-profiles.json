@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "method": "Deterministic fictional personas invented for product testing. Ratings and candidate labels are synthetic hypotheses, not claims about real users.",
+  "candidatePool": [
+    "Crusader Kings III",
+    "Into the Breach",
+    "Two Point Hospital",
+    "DOOM Eternal",
+    "EA Sports FC 26",
+    "Diablo IV",
+    "Animal Crossing: New Horizons",
+    "Overcooked! 2",
+    "Journey",
+    "Resident Evil Village",
+    "Pentiment",
+    "Monster Hunter: World",
+    "Hades"
+  ],
+  "profiles": [
+    {
+      "id": "systems_architect",
+      "name": "Systems architect",
+      "hypothesis": "Prefers strategic planning, simulation and difficult systems; avoids reflex-first action and annual sports loops.",
+      "ratings": [
+        { "title": "Civilization VI", "rating": 10 },
+        { "title": "XCOM 2", "rating": 9.5 },
+        { "title": "Frostpunk", "rating": 9 },
+        { "title": "Slay the Spire", "rating": 8.5 },
+        { "title": "Cities: Skylines", "rating": 8.5 },
+        { "title": "Baldur's Gate 3", "rating": 8 },
+        { "title": "Doom (2016)", "rating": 3 },
+        { "title": "Call of Duty: Black Ops 4", "rating": 2.5 },
+        { "title": "FIFA 17", "rating": 2 },
+        { "title": "Resident Evil 7: Biohazard", "rating": 4.5 }
+      ],
+      "labels": {
+        "Crusader Kings III": "ideal",
+        "Into the Breach": "ideal",
+        "Two Point Hospital": "strong",
+        "DOOM Eternal": "avoid",
+        "EA Sports FC 26": "avoid",
+        "Diablo IV": "stretch",
+        "Animal Crossing: New Horizons": "stretch",
+        "Overcooked! 2": "avoid",
+        "Journey": "stretch",
+        "Resident Evil Village": "avoid",
+        "Pentiment": "stretch",
+        "Monster Hunter: World": "stretch",
+        "Hades": "stretch"
+      }
+    },
+    {
+      "id": "competitive_regular",
+      "name": "Competitive regular",
+      "hypothesis": "Prefers fast action, mastery and repeatable multiplayer; avoids reading-heavy and slow management games.",
+      "ratings": [
+        { "title": "Helldivers 2", "rating": 10 },
+        { "title": "Rocket League", "rating": 9.5 },
+        { "title": "Sifu", "rating": 9 },
+        { "title": "Doom (2016)", "rating": 9 },
+        { "title": "Call of Duty: Black Ops 4", "rating": 8.5 },
+        { "title": "Destiny 2", "rating": 8 },
+        { "title": "Disco Elysium", "rating": 2.5 },
+        { "title": "Cities: Skylines", "rating": 3 },
+        { "title": "Unpacking", "rating": 3.5 },
+        { "title": "Life is Strange", "rating": 4 }
+      ],
+      "labels": {
+        "Crusader Kings III": "avoid",
+        "Into the Breach": "avoid",
+        "Two Point Hospital": "avoid",
+        "DOOM Eternal": "ideal",
+        "EA Sports FC 26": "strong",
+        "Diablo IV": "strong",
+        "Animal Crossing: New Horizons": "avoid",
+        "Overcooked! 2": "strong",
+        "Journey": "stretch",
+        "Resident Evil Village": "stretch",
+        "Pentiment": "avoid",
+        "Monster Hunter: World": "strong",
+        "Hades": "strong"
+      }
+    },
+    {
+      "id": "cozy_social",
+      "name": "Cozy social player",
+      "hypothesis": "Prefers warm low-pressure play, creativity and approachable co-op; avoids horror, punishing challenge and graphic action.",
+      "ratings": [
+        { "title": "Stardew Valley", "rating": 10 },
+        { "title": "Unpacking", "rating": 9.5 },
+        { "title": "Spiritfarer", "rating": 9 },
+        { "title": "A Short Hike", "rating": 9 },
+        { "title": "Untitled Goose Game", "rating": 8.5 },
+        { "title": "It Takes Two", "rating": 8.5 },
+        { "title": "Resident Evil 7: Biohazard", "rating": 2 },
+        { "title": "Elden Ring", "rating": 2.5 },
+        { "title": "Dark Souls III", "rating": 3 },
+        { "title": "Doom (2016)", "rating": 3.5 }
+      ],
+      "labels": {
+        "Crusader Kings III": "stretch",
+        "Into the Breach": "stretch",
+        "Two Point Hospital": "strong",
+        "DOOM Eternal": "avoid",
+        "EA Sports FC 26": "stretch",
+        "Diablo IV": "avoid",
+        "Animal Crossing: New Horizons": "ideal",
+        "Overcooked! 2": "strong",
+        "Journey": "strong",
+        "Resident Evil Village": "avoid",
+        "Pentiment": "stretch",
+        "Monster Hunter: World": "avoid",
+        "Hades": "stretch"
+      }
+    }
+  ]
+}
