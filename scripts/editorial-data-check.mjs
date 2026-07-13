@@ -5,6 +5,7 @@ const catalog = JSON.parse(await readFile(new URL("data/games.json", ROOT), "utf
 const editorial = JSON.parse(await readFile(new URL("data/editorial-ru.json", ROOT), "utf8"));
 const catalogTitles = new Set(catalog.map((game) => game.title));
 const records = editorial.records || {};
+const priorityTitles = catalog.slice(0, 100).map((game) => game.title);
 const requiredAnchors = [
   "Alan Wake 2",
   "Baldur's Gate 3",
@@ -37,6 +38,9 @@ Object.entries(records).forEach(([title, entry]) => {
 requiredAnchors.forEach((title) => {
   if (!records[title]) issues.push(`missing required editorial anchor: ${title}`);
 });
+priorityTitles.forEach((title) => {
+  if (!records[title]) issues.push(`missing priority-100 editorial record: ${title}`);
+});
 
 if (issues.length) {
   console.error(`Editorial data check failed (${issues.length}):`);
@@ -44,4 +48,4 @@ if (issues.length) {
   process.exit(1);
 }
 
-console.log(`Editorial data: ${Object.keys(records).length} Russian records, all linked to catalog titles.`);
+console.log(`Editorial data: ${Object.keys(records).length} Russian records, including the priority 100 catalog games.`);

@@ -49,6 +49,11 @@ const exactResult = first.data.results.find((result) => result.title === "Stray"
 assert(exactResult, "search results do not contain the exact Stray title");
 assert(exactResult.coverUrl, "exact Stray result has no cover candidate");
 assert(first.data.results.every((result) => result.priceStatus === "missing"), "provider search invented a price status");
+assert(first.data.resultShapeVersion === "search-result-v3", `unexpected search shape ${first.data.resultShapeVersion || "missing"}`);
+assert(exactResult.inferenceProfile?.version === "rawg-inference-v1", "exact Stray result has no structured inference passport");
+assert(Array.isArray(exactResult.inferenceProfile?.fields?.atoms?.value), "exact Stray result has no inferred atom field");
+assert(!("prices" in exactResult), "provider search invented store prices");
+assert(!("psPlus" in exactResult), "provider search invented subscription status");
 
 let cacheHeader = "";
 for (let attempt = 0; attempt < 5 && cacheHeader !== "HIT"; attempt += 1) {

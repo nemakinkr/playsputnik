@@ -37,6 +37,7 @@ echo "── 2/7 i18n catalogs + usage ─────────────�
 "$NODE" scripts/architecture-map.mjs --check
 "$NODE" scripts/ai-narrative-test.mjs
 "$NODE" scripts/backend-worker-test.mjs
+"$NODE" scripts/rawg-enrichment-test.mjs
 
 echo "── 3/7 qa-harness ─────────────────────────────"
 "$NODE" scripts/qa-harness.mjs

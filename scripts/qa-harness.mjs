@@ -62,6 +62,7 @@ const [
   catalogPromoterSource,
   catalogRefinerSource,
   searchProviderSource,
+  rawgNormalizerSource,
   coverResolverSource,
   visualCatalogSmokeSource,
   designSmokeSource,
@@ -146,6 +147,7 @@ const [
   readFile(new URL("scripts/promote-catalog-candidates.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/refine-seed-catalog.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/search-provider-server.mjs", ROOT), "utf8"),
+  readFile(new URL("backend/rawg-normalize.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/resolve-cover-candidates.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/visual-catalog-smoke-test.mjs", ROOT), "utf8"),
   readFile(new URL("scripts/design-smoke-test.mjs", ROOT), "utf8"),
@@ -1234,6 +1236,7 @@ function checkSelectors() {
   assert(/Attribute RAWG/.test(appProviderImportSource), "RAWG wishlist covers should preserve attribution notes");
   assert(/providerImport/.test(appSearchMemorySource + appProviderImportSource + appStateSource), "RAWG search imports should persist provider import metadata");
   assert(/sourcePassport/.test(appSearchMemorySource + appStateSource), "Search imports should persist source passport metadata");
+  assert(/inferenceProfile: record\.inferenceProfile/.test(appSearchSource), "Provider search normalization must preserve structured inference");
   assert(/--inject-rawg/.test(searchMemorySmokeSource), "Search-to-memory smoke should cover RAWG-shaped provider imports");
   assert(/licenseNote: record\.coverLicenseNote/.test(appSource), "External memory games should expose persisted cover license notes");
   assert(/manualSearchResult/.test(appSearchSource), "Manual unverified search fallback is missing");
@@ -1255,7 +1258,8 @@ function checkSelectors() {
   assert(/source-passport/.test(appEnrichmentSource + appSource) && /source-passport/.test(html + appSource + appEnrichmentSource), "Source passport renderer is missing");
   assert(/enrichmentCheckFact/.test(appSource + i18nEnSource), "AI enrichment should show a missing-facts checklist");
   assert(/rawgSearch/.test(searchProviderSource), "RAWG provider adapter is missing");
-  assert(/story\.\?rich/.test(searchProviderSource) && /record\.genres \|\| \[\]\)\.flatMap/.test(searchProviderSource), "RAWG atom inference should use genre/tag names and slugs");
+  assert(/story rich/.test(rawgNormalizerSource) && /record\.genres \|\| \[\]\)\.flatMap/.test(rawgNormalizerSource), "RAWG atom inference should use genre/tag names and slugs");
+  assert(/rawg-inference-v1/.test(rawgNormalizerSource) && /price_requires_store_source/.test(rawgNormalizerSource), "RAWG enrichment should expose provenance and store-data limitations");
   assert(/loadLocalEnv/.test(searchProviderSource), "Search provider should read local env config");
   assert(/providerSearchPayload/.test(searchProviderSource), "Provider search payload builder is missing");
   assert(/fixtureSearch/.test(searchProviderSource), "Provider server fixture fallback is missing");
@@ -1398,7 +1402,7 @@ function checkSelectors() {
   assert(/userGames/.test(appSource), "Normalized user-game memory store is missing");
   assert(/function effectiveUserGame/.test(appSource), "Effective user-game resolver is missing");
   assert(/src\/app-state\.js/.test(appLoadSource) && /PlaySputnikState/.test(appSource), "State module is not wired into app.js");
-  assert(/CURRENT_STATE_VERSION = 4/.test(appStateMigrationsSource), "Persisted state schema version is missing");
+  assert(/CURRENT_STATE_VERSION = [1-9]\d*/.test(appStateMigrationsSource), "Persisted state schema version is missing");
   assert(/function migrateState/.test(appStateMigrationsSource), "Persisted state migration pipeline is missing");
   assert(/const migrations = stateMigrations \|\|/.test(appStateSource), "State hydration should tolerate a cached pre-migration HTML shell");
   assert(/migrations\.migrateState/.test(appStateSource), "State hydration must pass through schema migrations");

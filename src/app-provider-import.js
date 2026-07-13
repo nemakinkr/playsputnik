@@ -28,6 +28,8 @@
         priceStatus: result.priceStatus || "missing",
         matchConfidence: result.matchConfidence || "",
         matchKind: result.matchKind || "",
+        inferenceVersion: result.inferenceProfile?.version || "",
+        inferenceConfidence: result.inferenceProfile?.confidence || "",
         attributionRequired: Boolean(result.coverUrl),
       };
     }

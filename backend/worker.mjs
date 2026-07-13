@@ -1,5 +1,6 @@
-const API_VERSION = "playsputnik-api-v1";
-const SEARCH_RESULT_VERSION = "search-result-v2";
+import { SEARCH_RESULT_VERSION, normalizeRawgResult, normalizeSearchTitle } from "./rawg-normalize.mjs";
+
+const API_VERSION = "playsputnik-api-v2";
 const DEFAULT_ORIGINS = [
   "https://nemakinkr.github.io",
   "http://localhost:4190",
@@ -173,69 +174,6 @@ async function narrative(request, env, allowedOrigin) {
   }, 200, allowedOrigin, { "Cache-Control": "no-store" });
 }
 
-function normalizeRawgResult(record, query) {
-  if (!record?.name) return null;
-  const genres = (record.genres || []).map((item) => item.name).filter(Boolean);
-  const platforms = [
-    ...(record.parent_platforms || []).map((item) => item.platform?.name),
-    ...(record.platforms || []).map((item) => item.platform?.name),
-  ].filter(Boolean);
-  const atoms = inferAtoms([...genres, ...(record.tags || []).map((item) => item.name)]);
-  const exact = normalizeQuery(record.name) === normalizeQuery(query);
-  return {
-    resultShapeVersion: SEARCH_RESULT_VERSION,
-    title: record.name,
-    sourceId: "rawg_provider_hook",
-    sourceLabel: "RAWG provider",
-    catalogStatus: "provider_result",
-    matchConfidence: exact ? "high" : "medium",
-    matchKind: exact ? "exact" : "provider",
-    coverStatus: record.background_image ? "candidate" : "missing",
-    priceStatus: "missing",
-    provider: "rawg",
-    sourceUrl: record.slug ? `https://rawg.io/games/${record.slug}` : "https://rawg.io/",
-    coverUrl: record.background_image || "",
-    platforms: [...new Set(platforms)].slice(0, 8),
-    atoms,
-    vibe: genres.length ? `${genres.slice(0, 2).join(" / ")} provider result` : "Provider metadata result",
-    reason: "Live metadata provider result; price and subscription status still need store-backed checks.",
-    score: exact ? 96 : 70,
-    reconciliation: {
-      status: "new_external",
-      action: "add_unverified_wishlist",
-      canonicalTitle: record.name,
-      duplicateOf: "",
-      duplicateSource: "",
-      confidence: "low",
-      note: "The client reconciles this provider title against its local catalog and aliases.",
-    },
-    duplicateOf: "",
-    duplicateSource: "",
-    canAddToWishlist: true,
-  };
-}
-
-function inferAtoms(names) {
-  const text = names.join(" ").toLowerCase();
-  const rules = [
-    [/action|combat|shooter|fps/, "action"],
-    [/adventure|exploration/, "exploration"],
-    [/role.?playing|rpg/, "rpg"],
-    [/strategy|tactical/, "strategy"],
-    [/puzzle/, "puzzle"],
-    [/horror/, "horror"],
-    [/sports|racing|football|soccer/, "sports"],
-    [/simulation|management/, "management"],
-    [/platform/, "platforming"],
-    [/indie/, "indie"],
-    [/multiplayer|co-op|coop/, "multiplayer"],
-    [/survival/, "survival"],
-    [/open.?world/, "open-world"],
-  ];
-  const atoms = rules.filter(([pattern]) => pattern.test(text)).map(([, atom]) => atom);
-  return [...new Set(atoms.length ? atoms : ["story", "action"])].slice(0, 6);
-}
-
 function providerFailure(query, sourceHealth, httpStatus = null) {
   return {
     resultShapeVersion: SEARCH_RESULT_VERSION,
@@ -286,7 +224,7 @@ Keep uncertainty visible. Do not mention that you are an AI. Return plain text o
 }
 
 function normalizeQuery(value) {
-  return String(value || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+  return normalizeSearchTitle(value);
 }
 
 function allowedOrigins(value) {

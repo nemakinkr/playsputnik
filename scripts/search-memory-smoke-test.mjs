@@ -80,11 +80,11 @@ try {
           provider: "rawg",
           sourceHealth: "cached_results",
           sourceHealthDetail: "Using locally cached provider results.",
-          resultShapeVersion: "search-result-v2",
+          resultShapeVersion: "search-result-v3",
           checkedAt: "2026-07-01T11:30:00Z",
           cachedAt: "2026-07-01T11:35:00Z",
           results: [{
-            resultShapeVersion: "search-result-v2",
+            resultShapeVersion: "search-result-v3",
             title,
             sourceId: "rawg_provider_hook",
             sourceLabel: "RAWG provider",
@@ -98,6 +98,26 @@ try {
             coverUrl: "https://media.rawg.io/media/games/firewatch-test.jpg",
             platforms: ["PC", "PlayStation", "Xbox", "Nintendo"],
             atoms: ["exploration", "story", "mystery"],
+            inferredAtoms: ["exploration", "story", "mystery"],
+            session: "medium",
+            length: "short",
+            difficulty: "normal",
+            commitment: "low",
+            tone: "moody",
+            content: "low-violence",
+            reviewBurden: "low",
+            adultTimeFit: "weeknight",
+            inferenceProfile: {
+              version: "rawg-inference-v1",
+              status: "inferred",
+              confidence: "medium",
+              fields: {
+                atoms: { value: ["exploration", "story", "mystery"], confidence: "medium", evidence: [] },
+                session: { value: "medium", confidence: "medium", evidence: [] },
+                length: { value: "short", confidence: "medium", evidence: [{ kind: "rawg_average_playtime", value: "4h" }] },
+              },
+              limitations: ["price_requires_store_source", "subscription_requires_store_source"],
+            },
             vibe: "Adventure provider result",
             reason: "Live metadata provider result; price and subscription status still need store-backed checks.",
             score: 96,
@@ -309,6 +329,11 @@ try {
         priceStatus: record.priceStatus || "",
         atoms: Array.isArray(record.atoms) ? record.atoms.length : 0,
         inferredAtoms: Array.isArray(record.inferredAtoms) ? record.inferredAtoms.length : 0,
+        session: record.session || "",
+        length: record.length || "",
+        commitment: record.commitment || "",
+        inferenceVersion: record.inferenceProfile?.version || "",
+        inferenceConfidence: record.inferenceProfile?.confidence || "",
         providerImport: record.providerImport || null,
         sourcePassport: record.sourcePassport || null,
         coverUrl: record.coverUrl || "",
@@ -474,7 +499,12 @@ try {
     assert(after.record?.providerImport?.status === "candidate", `Expected RAWG provider import candidate status, got ${after.record?.providerImport?.status}`);
     assert(after.record?.providerImport?.attributionRequired, "Expected RAWG cover attribution flag");
     assert(after.record?.sourcePassport?.sourceId === "rawg_provider_hook", `Expected source passport rawg hook, got ${after.record?.sourcePassport?.sourceId}`);
-    assert(after.record?.sourcePassport?.resultShapeVersion === "search-result-v2", "Expected provider result shape version to persist");
+    assert(after.record?.sourcePassport?.resultShapeVersion === "search-result-v3", "Expected provider result shape version to persist");
+    assert(after.record?.sourcePassport?.inferenceVersion === "rawg-inference-v1", "Expected inference version in the source passport");
+    assert(after.record?.session === "medium" && after.record?.length === "short", "Expected inferred time profile to persist");
+    assert(after.record?.commitment === "low", "Expected inferred commitment to persist");
+    assert(after.record?.inferenceVersion === "rawg-inference-v1", "Expected structured inference profile to persist");
+    assert(after.record?.inferenceConfidence === "medium", "Expected capped inference confidence to persist");
     assert(after.record?.coverUrl && after.record?.sourceUrl, "Expected RAWG cover/source URLs to persist");
     assert(after.record.atoms >= 3, `Expected RAWG/imported candidate atoms to feed taste, got ${after.record.atoms}`);
     assert(dataProviderImports.activeView === "data", `Expected Data view for provider import review, got ${dataProviderImports.activeView}`);

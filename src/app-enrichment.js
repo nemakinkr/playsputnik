@@ -125,6 +125,11 @@
         sourcePassportItem(t("narrative.detail.cover"), result.coverStatus),
         sourcePassportItem(t("narrative.detail.price"), result.priceStatus),
         sourcePassportItem(
+          t("discover.passportInference"),
+          result.inferenceProfile?.confidence || "pending",
+          result.inferenceProfile?.confidence === "medium" ? "good" : "warn",
+        ),
+        sourcePassportItem(
           t("narrative.detail.platform"),
           result.platforms?.length ? result.platforms.slice(0, 3).join(" / ") : t("discover.statusMissing"),
           result.platforms?.length ? "neutral" : "warn",

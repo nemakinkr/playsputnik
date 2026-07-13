@@ -1770,7 +1770,7 @@ function aiEnrichmentForGame(item) {
     risk,
     atoms,
     missing,
-    session: rule?.session || item.session || "unknown",
+    session: item.session || rule?.session || "unknown",
   };
 }
 
@@ -1823,14 +1823,14 @@ function externalGameFromUserGame(record) {
     title: record.title,
     atoms,
     vibe: record.vibe || record.enrichmentSummary || rule?.summary || "External wishlist candidate",
-    session: rule?.session || "medium",
-    difficulty: "normal",
-    length: "medium",
-    commitment: "medium",
-    tone: "strange",
-    content: "low-violence",
-    reviewBurden: "high",
-    adultTimeFit: rule?.session === "short" ? "weeknight" : rule?.session === "long" ? "vacation" : "weekend",
+    session: record.session || rule?.session || "medium",
+    difficulty: record.difficulty || "normal",
+    length: record.length || "unknown",
+    commitment: record.commitment || "medium",
+    tone: record.tone || "neutral",
+    content: record.content || "unknown",
+    reviewBurden: record.reviewBurden || "medium",
+    adultTimeFit: record.adultTimeFit || (rule?.session === "short" ? "weeknight" : rule?.session === "long" ? "vacation" : "evening"),
     backlog: false,
     wishlist: saved,
     externalCandidate: true,
@@ -6280,6 +6280,7 @@ function detailProviderImportHtml(game) {
     t("narrative.detail.rawgCover", { state: localizedCoverReadiness(game) }),
     t("narrative.detail.rawgAtoms", { count: (game.atoms || []).length }),
     ...(meta.platforms?.length ? [t("narrative.detail.rawgPlatforms", { platforms: meta.platforms.slice(0, 3).join(" / ") })] : []),
+    ...(meta.inferenceProfile?.confidence ? [t("narrative.detail.rawgInference", { confidence: compactStatus(meta.inferenceProfile.confidence) })] : []),
     ...(importedAt ? [t("narrative.detail.rawgImported", { date: importedAt.slice(0, 10) })] : []),
   ];
   return `

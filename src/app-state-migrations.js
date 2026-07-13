@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 4;
+  const CURRENT_STATE_VERSION = 5;
 
   const migrations = {
     1(state) {
@@ -45,6 +45,24 @@
         : {};
       return {
         ...state,
+        providerSearchCache,
+      };
+    },
+    5(state) {
+      const currentShape = "search-result-v3";
+      const providerSearch = state.providerSearch && typeof state.providerSearch === "object"
+        ? state.providerSearch
+        : {};
+      const providerSearchCache = Object.fromEntries(
+        Object.entries(state.providerSearchCache || {}).filter(([, record]) => (
+          record?.resultShapeVersion === currentShape && Array.isArray(record.results)
+        )),
+      );
+      return {
+        ...state,
+        providerSearch: providerSearch.resultShapeVersion === currentShape
+          ? providerSearch
+          : { query: "", status: "idle", provider: "", sourceHealth: "", results: [], error: "" },
         providerSearchCache,
       };
     },

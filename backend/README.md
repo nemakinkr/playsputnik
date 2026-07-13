@@ -5,7 +5,9 @@ frontend host. The Worker exposes:
 
 - `GET /api/health` — provider readiness, no secret values.
 - `GET /api/search?q=...` — RAWG metadata candidates, cached at the edge for
-  six hours. Prices and subscription state are intentionally not claimed.
+  six hours. The shared `rawg-inference-v1` normalizer derives a conservative
+  taste/session profile with per-field evidence and capped confidence. Prices,
+  subscription state, and languages are intentionally not claimed.
 - `POST /api/narrative` — optional locale-aware Anthropic copy from structured
   game/taste facts. Personalized responses are never cached at the edge.
 
@@ -100,7 +102,8 @@ triggered manually. It verifies:
 
 - health contract and configured RAWG secret;
 - allowed GitHub Pages CORS origin;
-- live RAWG search with a cover candidate and no invented price;
+- live RAWG search with a cover candidate, structured inference provenance,
+  and no invented price or subscription state;
 - edge-cache `HIT` on a repeated query;
 - `403` for an untrusted origin.
 
@@ -114,6 +117,8 @@ its local catalog and deterministic narratives during an outage.
 ./scripts/check.sh --fast
 ```
 
-The normal gate runs `scripts/backend-worker-test.mjs`, covering CORS, health,
-RAWG normalization, cache hits, narrative secrets, input validation, and the
-absence of a public PSN endpoint.
+The normal gate runs `scripts/backend-worker-test.mjs` and
+`scripts/rawg-enrichment-test.mjs`, covering CORS, health, title matching,
+provenance-aware RAWG normalization, confidence caps, cache hits, narrative
+secrets, input validation, store-data honesty, and the absence of a public PSN
+endpoint.

@@ -66,7 +66,7 @@ assert(/CACHE_VERSION = "v\d+"/.test(swSource), "Published sw.js should expose a
 assert(gameCount >= 400, `Expected published data-health to report at least 400 games, got ${gameCount || "unknown"}`);
 assert(sourceCount >= 3, `Expected at least 3 search sources, got ${sourceCount}`);
 assert(editorialRu.locale === "ru", "Published editorial overlay should declare the Russian locale");
-assert(Object.keys(editorialRu.records || {}).length >= 20, "Published editorial overlay should contain the key-game starter set");
+assert(Object.keys(editorialRu.records || {}).length >= 100, "Published editorial overlay should contain the priority 100 set");
 assert(editorialRu.records?.["Mafia: The Old Country"]?.summary, "Published editorial overlay should contain the Mafia anchor");
 assert(coverPercent >= 90 || /100/.test(JSON.stringify(dataHealth.coverage || dataHealth)), "Published data should report strong cover coverage");
 assert(pricePercent >= 90, `Published data should report strong price coverage, got ${pricePercent || "unknown"}`);

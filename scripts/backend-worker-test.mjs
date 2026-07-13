@@ -28,6 +28,10 @@ globalThis.fetch = async (url, options = {}) => {
         slug: "stray",
         background_image: "https://example.test/stray.jpg",
         genres: [{ name: "Adventure" }, { name: "Indie" }],
+        tags: [{ name: "Atmospheric" }, { name: "Story Rich" }, { name: "Puzzle" }],
+        playtime: 6,
+        rating: 4.3,
+        ratings_count: 5000,
         parent_platforms: [{ platform: { name: "PlayStation" } }],
       }],
     });
@@ -53,7 +57,7 @@ assert.equal(health.status, 200);
 assert.deepEqual(await health.json(), {
   status: "ok",
   service: "playsputnik-api",
-  version: "playsputnik-api-v1",
+  version: "playsputnik-api-v2",
   searchConfigured: true,
   aiConfigured: true,
   aiNarrativeVersion: "ai-narrative-v2",
@@ -72,6 +76,13 @@ const firstPayload = await firstSearch.json();
 assert.equal(firstPayload.results[0].title, "Stray");
 assert.equal(firstPayload.results[0].provider, "rawg");
 assert.equal(firstPayload.results[0].priceStatus, "missing");
+assert.equal(firstPayload.resultShapeVersion, "search-result-v3");
+assert.equal(firstPayload.results[0].session, "medium");
+assert.equal(firstPayload.results[0].length, "short");
+assert.equal(firstPayload.results[0].inferenceProfile.version, "rawg-inference-v1");
+assert.equal(firstPayload.results[0].inferenceProfile.confidence, "medium");
+assert(firstPayload.results[0].inferenceProfile.limitations.includes("price_requires_store_source"));
+assert(!("price" in firstPayload.results[0]), "RAWG normalization must not invent a price");
 
 const secondSearch = await handleRequest(searchRequest, env, context);
 assert.equal(secondSearch.headers.get("X-PlaySputnik-Cache"), "HIT");

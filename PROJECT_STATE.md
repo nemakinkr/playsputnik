@@ -1,6 +1,6 @@
 # PlaySputnik Project State
 
-Last updated: 2026-06-30 (Codex resumed after Claude polish/architecture
+Last updated: 2026-07-13 (Codex resumed after Claude polish/architecture
 series; see HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
 performance rules).
 
@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v89 (cache-first static assets / network-first navigation and
+- Service worker v134 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -63,8 +63,8 @@ reviews, catalogs, sale pages, and announcements.
   metrics and ranking explanations. A seeded mobile browser gate verifies
   dynamic copy in EN/RU. Phase 6 editorial localization is underway: a
   separate Russian overlay keeps authored taglines/summaries safe from
-  provider refreshes, with 25 key games covered and deterministic fallback for
-  the rest. Atoms and related taste signals now render through complete EN/RU
+  provider refreshes, with the first 100 priority catalog games covered and a
+  deterministic fallback for the rest. Atoms and related taste signals now render through complete EN/RU
   taxonomy labels while retaining stable machine keys. Phase 6 technical
   diagnostics are localized as a finite machine-state layer: source payloads,
   refresh bands, dev checks, runtime provider states, catalog lanes, import
@@ -81,6 +81,13 @@ reviews, catalogs, sale pages, and announcements.
   origin via `PLAYSPUTNIK_API_ORIGIN` and generated `runtime-config.js`.
   The public backend intentionally rejects PSN import until account-token
   security exists.
+- RAWG search enrichment now uses one shared production/local normalizer.
+  `search-result-v3` persists atoms, session, length, difficulty, commitment,
+  tone, content, review burden, and adult-time fit with per-field RAWG evidence,
+  an explicit inference version, and confidence capped at medium. Missing or
+  weak metadata stays uncertain; RAWG never supplies price, Plus, or language
+  claims. Saved external games retain this profile in recommendations and
+  detail.
 - Production API is live at
   `https://playsputnik-api.playsputnik.workers.dev`. Pages receives this origin
   through the `PLAYSPUTNIK_API_ORIGIN` repository variable. RAWG search and

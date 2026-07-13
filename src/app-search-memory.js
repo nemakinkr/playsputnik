@@ -75,6 +75,8 @@
         sourceHealth: state.providerSearch?.sourceHealth || "",
         sourceHealthDetail: state.providerSearch?.sourceHealthDetail || "",
         checkedAt: state.providerSearch?.checkedAt || "",
+        inferenceVersion: result.inferenceProfile?.version || "",
+        inferenceConfidence: result.inferenceProfile?.confidence || "",
       };
       const providerImport = providerImportFromSearchResult(result, {
         query: state.gameSearchQuery || result.title,
@@ -96,6 +98,15 @@
         platforms: result.platforms?.length ? result.platforms : current.platforms || [],
         atoms: atoms.length ? atoms : current.atoms || [],
         inferredAtoms: inferredAtoms.length ? inferredAtoms : current.inferredAtoms || [],
+        session: result.session || current.session || "",
+        difficulty: result.difficulty || current.difficulty || "",
+        length: result.length || current.length || "",
+        commitment: result.commitment || current.commitment || "",
+        tone: result.tone || current.tone || "",
+        content: result.content || current.content || "",
+        reviewBurden: result.reviewBurden || current.reviewBurden || "",
+        adultTimeFit: result.adultTimeFit || current.adultTimeFit || "",
+        inferenceProfile: result.inferenceProfile || current.inferenceProfile || null,
         vibe: result.vibe || result.reason || "External wishlist candidate",
         enrichmentStatus: enrichment.status,
         enrichmentSummary: enrichment.summary,
@@ -122,6 +133,15 @@
       target.platforms = base.platforms;
       target.atoms = base.atoms;
       target.inferredAtoms = base.inferredAtoms;
+      target.session = base.session;
+      target.difficulty = base.difficulty;
+      target.length = base.length;
+      target.commitment = base.commitment;
+      target.tone = base.tone;
+      target.content = base.content;
+      target.reviewBurden = base.reviewBurden;
+      target.adultTimeFit = base.adultTimeFit;
+      target.inferenceProfile = base.inferenceProfile;
       target.vibe = base.vibe;
       target.enrichmentStatus = base.enrichmentStatus;
       target.enrichmentSummary = base.enrichmentSummary;

@@ -6,6 +6,7 @@ on:
     paths:
       - "backend/**"
       - "scripts/backend-worker-test.mjs"
+      - "scripts/rawg-enrichment-test.mjs"
       - "scripts/backend-live-monitor.mjs"
       - ".github/workflows/deploy-backend.yml"
   workflow_dispatch:
@@ -26,7 +27,9 @@ jobs:
         with:
           node-version: 24
       - name: Test Worker contract
-        run: node scripts/backend-worker-test.mjs
+        run: |
+          node scripts/backend-worker-test.mjs
+          node scripts/rawg-enrichment-test.mjs
 
       - name: Check Cloudflare deploy credentials
         id: cloudflare

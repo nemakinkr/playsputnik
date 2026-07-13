@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import http from "node:http";
 import { envPresence, loadLocalEnv } from "./local-env.mjs";
+import { SEARCH_RESULT_VERSION, normalizeRawgResult } from "../backend/rawg-normalize.mjs";
 
 const ROOT = new URL("../", import.meta.url);
 const localEnv = await loadLocalEnv(ROOT);
@@ -9,54 +10,22 @@ const onceIndex = args.indexOf("--once");
 const onceQuery = onceIndex >= 0 ? args[onceIndex + 1] || "" : "";
 const portIndex = args.indexOf("--port");
 const port = Number(portIndex >= 0 ? args[portIndex + 1] : process.env.PLAYSPUTNIK_SEARCH_PORT || 4191);
-const rawgApiKey = process.env.RAWG_API_KEY || "";
+const rawgApiKey = process.env.RAWG_API_KEY || localEnv.RAWG_API_KEY || "";
 const rawgKey = envPresence("RAWG_API_KEY", localEnv);
 const anthropicApiKey = process.env.ANTHROPIC_API_KEY || localEnv.ANTHROPIC_API_KEY || "";
 const aiModel = process.env.PLAYSPUTNIK_AI_MODEL || localEnv.PLAYSPUTNIK_AI_MODEL || "claude-haiku-4-5";
 const forceFixture = args.includes("--force-fixture");
-const SEARCH_RESULT_SHAPE_VERSION = "search-result-v2";
+const SEARCH_RESULT_SHAPE_VERSION = SEARCH_RESULT_VERSION;
 
-const [fixtures, taxonomy, games, catalogBackbone, titleAliases] = await Promise.all([
+const [fixtures, games, catalogBackbone, titleAliases] = await Promise.all([
   readJson("data/global-search-fixtures.json"),
-  readJson("data/taxonomy.json"),
   readJson("data/games.json"),
   readJson("data/catalog-backbone.json"),
   readJson("data/title-aliases.json"),
 ]);
 
-const taxonomyAtoms = new Set(taxonomy.axes.atoms || []);
 const seedIndex = new Map((games || []).map((game) => [titleKey(game.title), game]));
 const backboneIndex = new Map((catalogBackbone.records || []).map((record) => [titleKey(record.title), record]));
-const genreAtomRules = [
-  [/action|combat/i, ["action"]],
-  [/adrenaline|fast.?paced/i, ["adrenaline", "action"]],
-  [/adventure/i, ["exploration", "story"]],
-  [/story.?rich|narrative|choices.?matter/i, ["story", "choice"]],
-  [/role.?playing|rpg/i, ["rpg", "choice", "systems"]],
-  [/shooter|fps/i, ["shooter", "action"]],
-  [/strategy|tactical/i, ["strategy", "systems"]],
-  [/puzzle/i, ["puzzle", "systems"]],
-  [/horror/i, ["horror", "tension"]],
-  [/mystery|detective/i, ["mystery", "story"]],
-  [/crime/i, ["crime", "realistic"]],
-  [/sports|racing|football|soccer/i, ["sports", "competitive"]],
-  [/simulation|management/i, ["management", "systems"]],
-  [/platform/i, ["platforming", "action"]],
-  [/indie/i, ["indie"]],
-  [/multiplayer|co-op|coop/i, ["multiplayer", "co-op"]],
-  [/survival/i, ["survival", "systems"]],
-  [/open.?world/i, ["open-world", "exploration"]],
-  [/stealth/i, ["stealth", "tactical"]],
-  [/souls.?like|difficult|hard/i, ["souls-like", "challenge"]],
-  [/turn.?based/i, ["turn-based", "tactical"]],
-  [/rogue.?like|rogue.?lite/i, ["roguelike", "systems"]],
-  [/atmospheric/i, ["atmosphere"]],
-  [/sci.?fi|cyberpunk/i, ["sci-fi", "strange"]],
-  [/fantasy/i, ["fantasy", "mythic"]],
-  [/sandbox|crafting|creative/i, ["sandbox", "creative", "systems"]],
-  [/cozy|farming|fishing|relax/i, ["cozy", "slow"]],
-  [/music|rhythm/i, ["music"]],
-];
 
 if (onceIndex >= 0) {
   const payload = await providerSearchPayload(onceQuery);
@@ -517,7 +486,6 @@ async function rawgSearch(query) {
 }
 
 function rawgRecordToSearchResult(record, query) {
-  const atoms = inferAtomsFromRawg(record);
   const match = searchMatch(record.name, searchTextBlob([
     record.name,
     record.slug,
@@ -526,28 +494,14 @@ function rawgRecordToSearchResult(record, query) {
   ]), query);
   if (!match.score) return null;
   const exactish = ["exact", "alias"].includes(match.kind);
-  const platforms = [
-    ...(record.parent_platforms || []).map((item) => item.platform?.name),
-    ...(record.platforms || []).map((item) => item.platform?.name),
-  ].filter(Boolean);
-  return withReconciliation({
-    title: record.name,
-    sourceId: "rawg_provider_hook",
-    sourceLabel: "RAWG provider",
-    catalogStatus: "provider_result",
-    matchConfidence: exactish ? "high" : "medium",
-    coverStatus: record.background_image ? "candidate" : "missing",
-    priceStatus: "missing",
-    provider: "rawg",
-    sourceUrl: record.slug ? `https://rawg.io/games/${record.slug}` : "https://rawg.io/",
-    coverUrl: record.background_image || "",
-    platforms: [...new Set(platforms)].slice(0, 6),
-    atoms,
-    vibe: providerVibe(record, atoms),
-    reason: "Live metadata provider result; price and subscription status still need store-backed checks.",
-    score: exactish ? 96 : Math.max(match.score - 8, 30),
-    matchKind: match.kind,
+  const normalized = normalizeRawgResult(record, query, {
+    match: {
+      kind: match.kind,
+      confidence: exactish ? "high" : match.score >= 60 ? "medium" : "low",
+      score: exactish ? 96 : Math.max(match.score - 8, 30),
+    },
   });
+  return normalized ? withReconciliation(normalized) : null;
 }
 
 function normalizeProviderResult(result) {
@@ -566,6 +520,16 @@ function normalizeProviderResult(result) {
     coverUrl: result.coverUrl || "",
     platforms: Array.isArray(result.platforms) ? [...new Set(result.platforms.filter(Boolean))].slice(0, 8) : [],
     atoms: Array.isArray(result.atoms) ? [...new Set(result.atoms.filter(Boolean))].slice(0, 8) : [],
+    inferredAtoms: Array.isArray(result.inferredAtoms) ? [...new Set(result.inferredAtoms.filter(Boolean))].slice(0, 8) : [],
+    session: result.session || "unknown",
+    length: result.length || "unknown",
+    difficulty: result.difficulty || "normal",
+    commitment: result.commitment || "medium",
+    tone: result.tone || "neutral",
+    content: result.content || "unknown",
+    reviewBurden: result.reviewBurden || "medium",
+    adultTimeFit: result.adultTimeFit || "evening",
+    inferenceProfile: result.inferenceProfile || null,
     vibe: result.vibe || "Provider search candidate",
     reason: result.reason || "Provider metadata result; price and subscription status still need store-backed checks.",
     score: typeof result.score === "number" ? result.score : 0,
@@ -634,29 +598,6 @@ function withReconciliation(result) {
     duplicateSource: reconciliation.duplicateSource,
     canAddToWishlist: true,
   };
-}
-
-function inferAtomsFromRawg(record) {
-  const names = [
-    ...(record.genres || []).flatMap((item) => [item.name, item.slug]),
-    ...(record.tags || []).flatMap((item) => [item.name, item.slug]),
-  ].filter(Boolean);
-  const atoms = [];
-  names.forEach((name) => {
-    genreAtomRules.forEach(([pattern, mapped]) => {
-      if (pattern.test(name)) atoms.push(...mapped);
-    });
-  });
-  if (record.rating && record.rating >= 4.2) atoms.push("story");
-  const unique = [...new Set(atoms)].filter((atom) => taxonomyAtoms.has(atom));
-  return unique.length >= 3 ? unique.slice(0, 5) : [...new Set([...unique, "story", "action", "systems"])].slice(0, 5);
-}
-
-function providerVibe(record, atoms) {
-  const genres = (record.genres || []).map((item) => item.name).filter(Boolean).slice(0, 2).join(" / ");
-  if (genres) return `${genres} provider result`;
-  if (atoms.length) return `${atoms.slice(0, 2).join(" / ")} provider result`;
-  return "Provider metadata result";
 }
 
 function normalizeLocale(locale) {

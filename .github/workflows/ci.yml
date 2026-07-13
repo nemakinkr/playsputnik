@@ -35,6 +35,7 @@ jobs:
           node scripts/architecture-map.mjs --check
           node scripts/ai-narrative-test.mjs
           node scripts/backend-worker-test.mjs
+          node scripts/rawg-enrichment-test.mjs
       - name: QA harness (module logic, no browser)
         run: node scripts/qa-harness.mjs
       # Browser gates (contrast + mobile 375px + a11y + stale-hidden) — catch regressions that
