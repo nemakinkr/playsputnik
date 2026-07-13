@@ -227,6 +227,12 @@ async function runFounderRankingScenario(page) {
     atoms: [...document.querySelectorAll("#taste-atoms .atom-pill")].map((node) => node.textContent?.replace(/\s+/g, " ").trim() || ""),
   }));
 
+  await page.evaluate(() => document.querySelector('[data-app-view="stats"]')?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "stats", null, { timeout: 5000 });
+  const calibration = await page.evaluate(() => (
+    document.querySelector("#stats-calibration")?.textContent?.replace(/\s+/g, " ").trim() || ""
+  ));
+
   await page.evaluate(() => document.querySelector('[data-app-view="wishlist"]')?.click());
   await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "wishlist", null, { timeout: 5000 });
   await page.waitForFunction(() => document.querySelectorAll(".wishlist-row").length >= 3, null, { timeout: 10000 });
@@ -236,7 +242,7 @@ async function runFounderRankingScenario(page) {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
 
-  return { preview, taste, wishlist };
+  return { preview, taste, calibration, wishlist };
 }
 
 const { chromium } = await loadPlaywright();
@@ -429,6 +435,8 @@ try {
   assert(/нет пробелов|no source gaps|coverage check|проверка покрытия/i.test(founderRanking.preview.gapText), `Expected complete-coverage copy, got: ${founderRanking.preview.gapText}`);
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
+  assert(/111/.test(founderRanking.calibration), `Expected forecast calibration to use all 111 resolved ranking records, got: ${founderRanking.calibration}`);
+  assert(/7[.,]1|nearest|ближай/i.test(founderRanking.calibration), `Expected founder calibration to expose measured nearest-game quality, got: ${founderRanking.calibration}`);
   assert(/Taste profile|Профиль вкуса|gaming fingerprint|игровой отпечаток/i.test(founderRanking.taste.screen), `Expected founder taste profile screen to render, got: ${founderRanking.taste.screen}`);
   assert(founderRanking.taste.atoms.some((atom) => /сюжет|story/i.test(atom)), `Expected founder taste atoms to include story, got: ${founderRanking.taste.atoms.join(", ")}`);
   assert(founderRanking.wishlist.rows.some((title) => ["Mafia: The Old Country", "007 First Light", "The Alters", "Dead Space", "Final Fantasy VII Rebirth"].includes(title)), `Expected founder wishlist to surface story-forward next candidates, got: ${founderRanking.wishlist.rows.join(" / ")}`);

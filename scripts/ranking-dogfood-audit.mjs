@@ -8,6 +8,9 @@ const titleAliases = JSON.parse(await readFile(new URL("data/title-aliases.json"
 const catalogBackbone = JSON.parse(await readFile(new URL("data/catalog-backbone.json", ROOT), "utf8"));
 const globalSearchFixtures = JSON.parse(await readFile(new URL("data/global-search-fixtures.json", ROOT), "utf8"));
 const appRadarSource = await readFile(new URL("src/app-radar.js", ROOT), "utf8");
+const appScoreSource = await readFile(new URL("src/app-score.js", ROOT), "utf8");
+const appRecommendSource = await readFile(new URL("src/app-recommend.js", ROOT), "utf8");
+const appSource = await readFile(new URL("app.js", ROOT), "utf8");
 const OUTPUT_JSON = process.argv.includes("--json");
 
 const SEED_TOP_10_MIN_MATCHED = 8;
@@ -137,6 +140,16 @@ function countSignals(rows) {
     .map(([signal, count]) => ({ signal, count }));
 }
 
+function signalPrevalence(rows) {
+  const counts = new Map();
+  rows.forEach(({ game, scoringGame }) => {
+    const source = scoringGame || game;
+    if (!source) return;
+    new Set(gameSignals(source)).forEach((signal) => counts.set(signal, (counts.get(signal) || 0) + 1));
+  });
+  return new Map([...counts].map(([signal, count]) => [signal, count / rows.length]));
+}
+
 function hasCyrillic(value) {
   return /\p{Script=Cyrillic}/u.test(value);
 }
@@ -169,6 +182,32 @@ function loadAppRankedParser() {
     combinedTasteWeight: () => 0,
   });
   return tools.parseRankedTasteLines;
+}
+
+function loadScoreTools(state, pool) {
+  const sandbox = {
+    window: { PlaySputnikI18n: { t: (key) => key } },
+    Math,
+    Set,
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(appScoreSource, sandbox, { filename: "src/app-score.js" });
+  return sandbox.window.PlaySputnikScore.createScoreTools({
+    getState: () => state,
+    getProfileGames: () => [],
+    getQuickReaction: () => "",
+    getFeedbackSource: () => null,
+    getTasteConflict: () => ({ atoms: [] }),
+    getTasteSignalCount: () => 0,
+    getRecommendationPool: () => pool,
+    getTasteReferencePool: () => pool,
+    titleMatches: (a, b) => titleKey(a) === titleKey(b),
+    titleKey,
+    effectiveGameState: () => "",
+    getSubscriptionStatus: () => ({ canConfirm: false }),
+    getPriceStatus: () => ({ canConfirm: false }),
+    QUICK_TASTE_FIRST_TARGET: 5,
+  });
 }
 
 const gameByKey = new Map(games.map((game) => [titleKey(game.title), game]));
@@ -259,6 +298,54 @@ const founderWishlistTop = founderRecommendationPool.filter((game) => game.wishl
 const founderPlayTop = founderRecommendationPool.slice(0, 8);
 const founderSportsCandidate = founderRecommendationPool.find((game) => game.atoms.includes("sports"));
 const founderMafiaCandidate = founderRecommendationPool.find((game) => game.title === "Mafia: The Old Country");
+const scoreState = {
+  importedRatings: scoringMatched.map((row) => ({
+    title: row.scoringGame.title,
+    rating: row.derivedRating / 10,
+  })),
+  userGames: {},
+  quickReactions: {},
+  calibrationSkips: {},
+  liked: new Set(),
+  atomWeights: importWeights,
+  feedbackLog: [],
+  notebook: {
+    ranked: rows.map((row) => ({ title: row.scoringGame?.title || row.title, rank: row.rank })),
+    completed: [],
+  },
+};
+const calibrationPool = [...new Map(
+  scoringMatched.map((row) => [row.key, row.scoringGame]),
+).values()];
+const calibration = loadScoreTools(scoreState, calibrationPool).tasteCalibrationProfile();
+const equivalentRankError = Math.round(
+  (calibration.meanAbsoluteError / (100 - BOTTOM_MIN_DERIVED_RATING)) * (rows.length - 1),
+);
+const topPrevalence = signalPrevalence(top25);
+const tailPrevalence = signalPrevalence(bottom25);
+const signalLift = [...new Set([...topPrevalence.keys(), ...tailPrevalence.keys()])]
+  .map((signal) => ({
+    signal,
+    top: Number((topPrevalence.get(signal) || 0).toFixed(2)),
+    tail: Number((tailPrevalence.get(signal) || 0).toFixed(2)),
+    lift: Number(((topPrevalence.get(signal) || 0) - (tailPrevalence.get(signal) || 0)).toFixed(2)),
+  }));
+const topDiscriminators = signalLift
+  .filter((item) => item.lift >= 0.16)
+  .sort((a, b) => b.lift - a.lift || a.signal.localeCompare(b.signal))
+  .slice(0, 8);
+const tailDiscriminators = signalLift
+  .filter((item) => item.lift <= -0.16)
+  .sort((a, b) => a.lift - b.lift || a.signal.localeCompare(b.signal))
+  .slice(0, 8);
+const weakDiscriminators = signalLift
+  .filter((item) => item.top + item.tail >= 0.32 && Math.abs(item.lift) <= 0.08)
+  .sort((a, b) => (b.top + b.tail) - (a.top + a.tail) || a.signal.localeCompare(b.signal))
+  .slice(0, 8);
+const rankedImportBlock = appSource.slice(
+  appSource.indexOf("function analyzeRankedTasteImport"),
+  appSource.indexOf("function parsedTasteImportEntries"),
+);
 
 const audit = {
   mode: "ranking-dogfood-audit",
@@ -289,6 +376,11 @@ const audit = {
     top25Signals: countSignals(top25),
     bottom25Signals: countSignals(bottom25),
     top10Titles: top10.map((row) => row.matchedTitle || row.knownTitle || `UNKNOWN: ${row.title}`),
+    discrimination: {
+      top: topDiscriminators,
+      tail: tailDiscriminators,
+      weak: weakDiscriminators,
+    },
   },
   onboarding: {
     probeTitles: onboardingProbeTitles,
@@ -303,6 +395,16 @@ const audit = {
     top25Average: Number(top25ImportAverage.toFixed(1)),
     bottom25Average: Number(bottom25ImportAverage.toFixed(1)),
     topBeatsTail: top25ImportAverage > bottom25ImportAverage,
+    sourceNeutral: !/applyRatingWeight\([^\n]+(?:isAnchor|isProvider|resolution\.status)/.test(rankedImportBlock),
+  },
+  forecastCalibration: {
+    sampleSize: calibration.count,
+    ready: calibration.ready,
+    trusted: calibration.trusted,
+    model: calibration.model,
+    meanAbsoluteError: calibration.meanAbsoluteError,
+    equivalentRankError,
+    modelErrors: calibration.modelErrors,
   },
   founderRecommendations: {
     playTop: founderPlayTop.map(({ title, score }) => ({ title, score })),
@@ -349,7 +451,9 @@ if (OUTPUT_JSON) {
   const promotion = audit.weakSpots.seedPromotionCandidates.map((item) => `${item.rank}. ${item.knownTitle} (${item.source})`).slice(0, 5).join("; ");
   console.log(`✅ Ranking dogfood OK: ${audit.ranking.seedMatched}/${audit.ranking.total} seed, ${audit.ranking.knownMatched}/${audit.ranking.total} known, top10 seed ${audit.ranking.seedTop10Matched}/10, top30 known ${audit.ranking.knownTop30Matched}/30, top60 known ${audit.ranking.knownTop60Matched}/60`);
   console.log(`   Top taste shape: ${audit.tasteShape.top25Signals.slice(0, 5).map((item) => `${item.signal}:${item.count}`).join(", ")}`);
+  console.log(`   Discriminators: top ${topDiscriminators.slice(0, 4).map((item) => `${item.signal}:${item.lift}`).join(", ")}; tail ${tailDiscriminators.slice(0, 4).map((item) => `${item.signal}:${item.lift}`).join(", ")}`);
   console.log(`   Ranked import: top25 avg ${audit.rankedImport.top25Average}, bottom25 avg ${audit.rankedImport.bottom25Average}, signals ${audit.rankedImport.topSignals.slice(0, 5).map((item) => `${item.signal}:${item.weight}`).join(", ")}`);
+  console.log(`   Forecast calibration: ${audit.forecastCalibration.sampleSize} games, ${audit.forecastCalibration.model} model, holdout MAE ${audit.forecastCalibration.meanAbsoluteError} (~${audit.forecastCalibration.equivalentRankError} ranks)`);
   console.log(`   Founder wishlist: ${audit.founderRecommendations.wishlistTop.slice(0, 5).map((item) => `${item.title}:${item.score}`).join(", ")}`);
   console.log(`   Promote next: ${promotion || "none"}`);
   console.log(`   Unknown top gaps: ${topUnknown || "none"}`);
@@ -373,6 +477,28 @@ assert(knownCoverage >= KNOWN_TOTAL_MIN_COVERAGE, `Known-corpus ranking coverage
 assert(
   scoringMatched.length >= knownMatched.length,
   `Ranked import scoring should use the known corpus, got ${scoringMatched.length}/${knownMatched.length}`,
+);
+assert(audit.rankedImport.sourceNeutral, "Explicit taste evidence must not be weakened by catalog source confidence");
+assert(
+  calibration.count === scoringMatched.length,
+  `Forecast calibration should use every resolved ranked game, got ${calibration.count}/${scoringMatched.length}`,
+);
+assert(
+  /getTasteReferencePool:\s*\(\) => tasteReferencePool\(\)/.test(appSource)
+    && /function tasteReferencePool\([\s\S]{0,500}globalSearchFixtures\?\.records/.test(appSource),
+  "Production calibration must include resolved seed, backbone, and external-fixture taste references",
+);
+assert(calibration.ready, "The full founder ranking should make personal forecast calibration ready");
+assert(calibration.trusted, `Founder ranking calibration should be honest enough to trust, MAE ${calibration.meanAbsoluteError}`);
+assert(
+  equivalentRankError <= 25,
+  `Founder ranking forecasts are too imprecise: MAE ${calibration.meanAbsoluteError} equals about ${equivalentRankError} ranks`,
+);
+assert(topDiscriminators.length >= 3, `Founder ranking should reveal at least three top-vs-tail taste discriminators, got ${topDiscriminators.length}`);
+assert(tailDiscriminators.length >= 2, `Founder ranking should reveal at least two tail taste discriminators, got ${tailDiscriminators.length}`);
+assert(
+  /ratingForecast\.calibrated[\s\S]{0,240}rankRangeForPersonalRating/.test(appRecommendSource),
+  "Calibrated personal rank forecasts must use the context-free personal rating model",
 );
 assert((rows.at(-1)?.derivedRating || 0) >= BOTTOM_MIN_DERIVED_RATING, "Ranked-list tail must remain positive taste evidence");
 assert(importTopSignals.some((item) => item.signal === "story"), "Ranked import should learn story as a top signal from the founder ranking");

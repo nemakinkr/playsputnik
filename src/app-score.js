@@ -39,6 +39,7 @@
     getTasteConflict,
     getTasteSignalCount,
     getRecommendationPool = () => [],
+    getTasteReferencePool = getRecommendationPool,
     titleMatches,
     titleKey,
     effectiveGameState,
@@ -294,7 +295,9 @@
     function personalRatingRecords() {
       if (_ratingRecordsCache) return _ratingRecordsCache;
       const state = getState();
-      const pool = getRecommendationPool();
+      // Ratings may reference a resolved catalog/backbone/search record that
+      // is intentionally not exposed as a recommendation candidate yet.
+      const pool = getTasteReferencePool();
       const byTitle = new Map();
       (state.importedRatings || []).forEach((entry) => {
         const game = pool.find((candidate) => titleMatches(candidate.title, entry.title));
@@ -747,6 +750,28 @@
       return [70, 110];
     }
 
+    // Convert the calibrated personal rating back onto the user's own ranked
+    // list. Unlike scoreGame(), this deliberately excludes tonight's budget,
+    // access, mood, and session context: those choose what to play now, not
+    // where a game belongs in the user's long-term taste ranking.
+    function rankRangeForPersonalRating(rating, rankingSize, meanAbsoluteError = 10) {
+      if (!Number.isFinite(rating) || !Number.isFinite(rankingSize) || rankingSize < 2) return null;
+      const size = Math.round(rankingSize);
+      const insertionPositions = size + 1;
+      const topRating = 100;
+      const tailRating = 58;
+      const normalized = Math.max(0, Math.min(1, (topRating - rating) / (topRating - tailRating)));
+      const center = 1 + Math.round(normalized * size);
+      const boundedError = Number.isFinite(meanAbsoluteError)
+        ? Math.max(3, Math.min(18, meanAbsoluteError))
+        : 10;
+      const spread = Math.max(5, Math.round((boundedError / (topRating - tailRating)) * size));
+      return [
+        Math.max(1, center - spread),
+        Math.min(insertionPositions, center + spread),
+      ];
+    }
+
     return {
       gameSignals,
       feedbackWeightForAction,
@@ -777,6 +802,7 @@
       gameChunkProfile,
       personalFitBand,
       rankRangeForScore,
+      rankRangeForPersonalRating,
     };
   }
 

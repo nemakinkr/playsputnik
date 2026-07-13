@@ -145,13 +145,21 @@ reviews, catalogs, sale pages, and announcements.
   recognizability with diagnostic axis coverage, so the first few swipes span
   different taste dimensions instead of drifting into three similar questions.
 - Ranking dogfood: a real 111-title ranked-favorites fixture now gates the
-  import/taste baseline. `scripts/ranking-dogfood-audit.mjs` strips
+  import/taste and forecast baseline. `scripts/ranking-dogfood-audit.mjs` strips
   PlayStation-generation emoji markers, treats the ranking tail as weaker
   positive affinity rather than dislike, checks seed-catalog and broader
   search/backbone coverage separately, and prints weak spots. Current baseline:
   47/111 seed matches, 8/10 seed top-10 matches, 21/30 seed top-30 matches,
-  82/111 known-corpus matches, 30/30 known top-30 matches, and 60/60 known
-  top-60 matches. The first follow-up closed the top-30 unknown search gaps by
+  111/111 known-corpus matches, 30/30 known top-30 matches, and 60/60 known
+  top-60 matches. All 111 resolved records now participate in local forecast
+  calibration without making fixture-only records visible recommendations.
+  The selected nearest-game model currently has 7.1/100 held-out MAE, roughly
+  19 positions on this 111-game list. Personal rank ranges are derived from
+  that calibrated taste estimate and list length; budget, access, mood, and
+  tonight's session affect the play-now decision but no longer move a game's
+  long-term personal rank. Explicit user ranks also carry equal taste weight
+  regardless of whether metadata came from seed, backbone, or search fixture.
+  The first follow-up closed the top-30 unknown search gaps by
   adding honest external-index records for Kingdom Come: Deliverance II, Days
   Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,
   Nobody Wants to Die, and Dying Light 2 Stay Human. The second follow-up

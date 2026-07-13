@@ -298,8 +298,15 @@ tail as weaker positive taste evidence, not dislike. It also separates
 full seed-catalog coverage from broader known search/backbone coverage.
 
 Current baseline: 47/111 seed matches, 8/10 seed top-10 matches, 21/30 seed
-top-30 matches, 82/111 known-corpus matches, 30/30 known top-30 matches, and
-60/60 known top-60 matches. New aliases were added for
+top-30 matches, 111/111 known-corpus matches, 30/30 known top-30 matches, and
+60/60 known top-60 matches. The product dogfood gate also runs the real local
+forecast calibration over all 111 resolved records: nearest-game wins with
+7.1/100 held-out MAE (about 19 ranking positions). Calibration now has a
+separate taste-reference pool, so backbone/search records can teach from an
+explicit import without appearing automatically in recommendation surfaces.
+Personal rank ranges use this context-free taste forecast rather than the
+play-now score, and imported rank strength is no longer reduced by technical
+catalog source. New aliases were added for
 high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of

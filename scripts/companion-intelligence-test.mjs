@@ -67,6 +67,7 @@ const state = {
   notebook: { ranked: [], completed: [] },
 };
 const key = (title) => String(title || "").toLowerCase();
+const recommendationGames = games.filter((game) => game.title !== "Story C");
 const tools = context.window.PlaySputnikScore.createScoreTools({
   getState: () => state,
   getProfileGames: () => [],
@@ -74,7 +75,8 @@ const tools = context.window.PlaySputnikScore.createScoreTools({
   getFeedbackSource: () => null,
   getTasteConflict: () => ({ atoms: [] }),
   getTasteSignalCount: () => 0,
-  getRecommendationPool: () => games,
+  getRecommendationPool: () => recommendationGames,
+  getTasteReferencePool: () => games,
   titleMatches: (a, b) => key(a) === key(b),
   titleKey: key,
   effectiveGameState: () => "",
@@ -85,6 +87,11 @@ const tools = context.window.PlaySputnikScore.createScoreTools({
 const calibration = tools.tasteCalibrationProfile();
 assert.equal(calibration.ready, true);
 assert.equal(calibration.count, 6);
+assert.equal(
+  tools.personalRatingRecords().some((record) => record.game.title === "Story C"),
+  true,
+  "an imported rating should calibrate forecasts even when its reference record is not a visible recommendation candidate",
+);
 assert(Number.isFinite(calibration.meanAbsoluteError));
 assert(["baseline", "neighbor", "signal", "ensemble"].includes(calibration.model));
 assert.equal(
@@ -99,6 +106,15 @@ assert(storyForecast.rating >= 80, `expected a high calibrated story forecast, g
 assert(storyForecast.neighbors.some((title) => title.startsWith("Story")));
 assert.equal(storyForecast.calibrated, calibration.trusted);
 assert.equal(tools.personalRatingForecast(games[0]).known, true);
+assert.deepEqual(
+  Array.from(tools.rankRangeForPersonalRating(90, 111, 7.2)),
+  [8, 46],
+  "personal rank ranges should map calibrated ratings onto the user's actual ranking length",
+);
+assert(
+  tools.rankRangeForPersonalRating(90, 111, 7.2)[1] < tools.rankRangeForPersonalRating(70, 111, 7.2)[0],
+  "a stronger personal rating should map above a weaker one without decision-context inputs",
+);
 const questions = tools.calibrationQuestionGames(3);
 assert.equal(questions.length, 1, "only one unrated game remains in the synthetic catalog");
 assert.equal(questions[0].game.title, "New Story");

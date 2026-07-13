@@ -445,6 +445,7 @@ const {
   gameChunkProfile,
   personalFitBand,
   rankRangeForScore,
+  rankRangeForPersonalRating,
 } = window.PlaySputnikScore.createScoreTools({
   getState: () => state,
   getProfileGames: () => profileGames,
@@ -453,6 +454,7 @@ const {
   getTasteConflict: () => quickTasteConflictReport(),
   getTasteSignalCount: () => quickTasteSignalCount(),
   getRecommendationPool: () => recommendationPool(),
+  getTasteReferencePool: () => tasteReferencePool(),
   titleMatches,
   titleKey,
   effectiveGameState,
@@ -528,6 +530,7 @@ const {
   scoreGame,
   personalFitBand,
   rankRangeForScore,
+  rankRangeForPersonalRating,
   notebookWishlistWeight,
   notebookAccessKind,
   effectiveGameState,
@@ -1965,6 +1968,21 @@ function recommendationPool() {
   return [...byTitle.values()];
 }
 
+function tasteReferencePool() {
+  const byTitle = new Map();
+  [
+    ...games,
+    ...(catalogBackbone?.records || []),
+    ...(globalSearchFixtures?.records || []),
+    ...externalMemoryGames(),
+  ].forEach((game) => {
+    if (!game?.title) return;
+    const key = titleKey(game.title);
+    if (!byTitle.has(key)) byTitle.set(key, game);
+  });
+  return [...byTitle.values()];
+}
+
 function sourceGames() {
   const byTitle = new Map();
   [...profileGames, ...games, ...catalogBackboneTasteGames(), ...externalMemoryGames()].forEach((game) => byTitle.set(titleKey(game.title), game));
@@ -2333,7 +2351,10 @@ function analyzeRankedTasteImport(rankedEntries) {
     const rating = derivedRatingFromRank(entry.rank, total);
     const isAnchor = resolution.status === "anchor";
     const isProvider = resolution.sourceId === "rawg_provider_hook";
-    applyRatingWeight(weights, game, rating, isAnchor ? 1 : isProvider ? 0.8 : 0.55);
+    // The user's rank is first-party evidence. Source confidence belongs to
+    // cover/price/catalog provenance and must not weaken an explicit taste
+    // signal merely because the game's metadata came from another corpus.
+    applyRatingWeight(weights, game, rating);
     if (isAnchor || isProvider) rememberImportedRating(game, rating);
     matched.push({ title: resolution.title || game.title, rating, sourceId: resolution.sourceId, trusted: isAnchor || isProvider });
   });
@@ -2399,7 +2420,7 @@ function analyzeTasteImport() {
       if (!game) return;
       const isAnchor = resolution.status === "anchor";
       const isProvider = resolution.sourceId === "rawg_provider_hook";
-      applyRatingWeight(weights, game, parsed.rating, isAnchor ? 1 : isProvider ? 0.8 : 0.55);
+      applyRatingWeight(weights, game, parsed.rating);
       if (isAnchor || isProvider) rememberImportedRating(game, parsed.rating);
       matched.push({ title: resolution.title || game.title, rating: parsed.rating, sourceId: resolution.sourceId, trusted: isAnchor || isProvider });
     });
@@ -2447,7 +2468,7 @@ function tasteImportPreview() {
     const game = resolution.record;
     if (!game) return;
     const rating = isRanked ? derivedRatingFromRank(entry.rank, entries.length) : entry.rating;
-    applyRatingWeight(weights, game, rating, resolution.status === "anchor" ? 1 : 0.55);
+    applyRatingWeight(weights, game, rating);
   });
   const topSignals = Object.entries(weights)
     .filter(([, value]) => value > 0)

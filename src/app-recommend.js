@@ -22,6 +22,7 @@
     scoreGame,
     personalFitBand,
     rankRangeForScore,
+    rankRangeForPersonalRating,
     notebookWishlistWeight,
     notebookAccessKind,
     effectiveGameState,
@@ -467,17 +468,25 @@
       }
 
       if (hasRankingBaseline) {
-        const [baseLow, baseHigh] = rankRangeForScore(score);
+        const calibration = tasteCalibrationProfile();
+        const calibratedRange = ratingForecast.calibrated
+          ? rankRangeForPersonalRating(
+              ratingForecast.rating,
+              state.notebook.ranked.length,
+              calibration.meanAbsoluteError,
+            )
+          : null;
+        const [baseLow, baseHigh] = calibratedRange || rankRangeForScore(score);
         const spread = verdict.kind === "polarizing"
           ? { low: 6, high: 10 }
           : verdict.kind === "caution" || verdict.kind === "exploratory"
             ? { low: 3, high: 12 }
             : { low: 0, high: 0 };
-        const ratingShift = !ratingForecast.known && ratingForecast.calibrated && Number.isFinite(ratingForecast.rating)
-          ? Math.round((ratingForecast.rating - 70) / 8)
-          : 0;
-        const low = Math.max(1, baseLow - spread.low - Math.max(0, ratingShift));
-        const high = Math.max(low + 4, baseHigh + spread.high - Math.min(0, ratingShift));
+        const low = Math.max(1, baseLow - spread.low);
+        const high = Math.min(
+          state.notebook.ranked.length + 1,
+          Math.max(low + 1, baseHigh + spread.high),
+        );
         return {
           label: t("narrative.recommend.forecastLabel", { low, high }),
           confidence,
