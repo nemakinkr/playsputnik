@@ -159,6 +159,18 @@ reviews, catalogs, sale pages, and announcements.
   tonight's session affect the play-now decision but no longer move a game's
   long-term personal rank. Explicit user ranks also carry equal taste weight
   regardless of whether metadata came from seed, backbone, or search fixture.
+  The held-out ordinal benchmark now also gates recommendation quality:
+  P@10 0.50, top-quartile recall 0.57, zero tail intrusions in the predicted
+  top 10, and 0.80 pairwise ordering accuracy. A separate 16-title explicit
+  wishlist gold set gates candidate priority at NDCG@10 0.98, must-play
+  recall@5 1.00, and high-intent precision@5 1.00. Assumed dislikes are kept
+  out of pass/fail metrics until the founder confirms them. Wishlist hearts
+  are now real intent tiers (12/44/84 points), not a weak linear nudge.
+  Explicitly imported backbone/search wishlist records enter recommendations
+  without exposing the rest of those corpora or pretending their store facts
+  are verified. The atom-quality gate fixed and now protects six high-impact
+  records; removing Battlefield 1's false open-world signal eliminated the
+  only bottom-quartile intrusion from the forecast top 10.
   The first follow-up closed the top-30 unknown search gaps by
   adding honest external-index records for Kingdom Come: Deliverance II, Days
   Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,

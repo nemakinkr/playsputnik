@@ -107,6 +107,11 @@ assert(storyForecast.neighbors.some((title) => title.startsWith("Story")));
 assert.equal(storyForecast.calibrated, calibration.trusted);
 assert.equal(tools.personalRatingForecast(games[0]).known, true);
 assert.deepEqual(
+  [0, 1, 2, 3].map((hearts) => tools.wishlistIntentScore(hearts)),
+  [0, 12, 44, 84],
+  "wishlist hearts should behave as distinct intent tiers rather than a weak linear nudge",
+);
+assert.deepEqual(
   Array.from(tools.rankRangeForPersonalRating(90, 111, 7.2)),
   [8, 46],
   "personal rank ranges should map calibrated ratings onto the user's actual ranking length",

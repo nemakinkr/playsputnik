@@ -20,6 +20,7 @@ jobs:
         run: |
           node scripts/validate-data.mjs
           node scripts/editorial-data-check.mjs
+          node scripts/atom-quality-audit.mjs
       - name: Validate i18n catalogs and usage
         run: |
           node scripts/i18n-check.mjs
@@ -27,6 +28,7 @@ jobs:
           node scripts/companion-intelligence-test.mjs
           node scripts/onboarding-diagnostic-test.mjs
           node scripts/ranking-dogfood-audit.mjs
+          node scripts/founder-recommendation-evaluation.mjs
           node scripts/decision-workflow-test.mjs
           node scripts/detail-view-test.mjs
           node scripts/state-migrations-test.mjs

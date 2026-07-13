@@ -1,11 +1,11 @@
 {
   "mode": "pre-mvp-catalog-backbone",
-  "updatedAt": "2026-07-01T10:00:00Z",
+  "updatedAt": "2026-07-13T12:30:00Z",
   "goal": "Provide a structured growth queue from the 24-game seed catalog toward a 150-game private-demo catalog without requiring full price or cover ingestion for every title.",
   "target": {
     "seedTarget": 150,
     "currentSeed": 461,
-    "backboneRecords": 123,
+    "backboneRecords": 125,
     "nextPromotionBatch": 13,
     "minimumReadyForInvestorDemo": 60
   },
@@ -3197,6 +3197,58 @@
       "atomStatus": "complete",
       "priceNeed": "warm",
       "reason": "Founder ranking 31-60 favorite; captures lighter co-op action-horror appetite."
+    },
+    {
+      "title": "Assassin's Creed Shadows",
+      "lane": "open_world_rpg",
+      "priority": 1,
+      "status": "candidate",
+      "source": "founder_wishlist",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "open-world",
+        "stealth",
+        "action",
+        "story",
+        "choice"
+      ],
+      "session": "medium",
+      "commitment": "high",
+      "adultTimeFit": "weekend",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "Explicit two-heart founder wishlist candidate; local metadata supports offline taste evaluation while store facts remain unverified."
+    },
+    {
+      "title": "Senua's Saga: Hellblade II",
+      "lane": "cinematic_story",
+      "priority": 1,
+      "status": "candidate",
+      "source": "founder_wishlist",
+      "platforms": [
+        "PS5",
+        "PC",
+        "Xbox"
+      ],
+      "atoms": [
+        "story",
+        "cinematic",
+        "action",
+        "atmosphere",
+        "linear"
+      ],
+      "session": "medium",
+      "commitment": "low",
+      "adultTimeFit": "weeknight",
+      "coverStatus": "missing",
+      "atomStatus": "complete",
+      "priceNeed": "hot",
+      "reason": "Explicit two-heart founder wishlist candidate; compact cinematic-story metadata is available without asserting live price or subscription facts."
     }
   ]
 }

@@ -1631,7 +1631,7 @@ function checkSelectors() {
   assert(/alias-totk/.test(searchQualityMatrixSource) && /alias-jedi-fallen-order/.test(searchQualityMatrixSource), "Search quality matrix should cover demo-quality shorthand aliases");
   assert(/Fortnite/.test(searchFixtureMainstreamDiagnosticFixture) && /Factorio/.test(searchFixtureMainstreamDiagnosticFixture), "Mainstream diagnostic search fixture import source is missing");
   assert(/typo-balders/.test(searchQualityMatrixSource), "Search quality matrix should cover typo tolerance");
-  assert(/alias_manual/.test(searchQualityMatrixSource), "Search quality matrix should cover alias manual fallback");
+  assert(/hellblade-short/.test(searchQualityMatrixSource) && /catalog_backbone/.test(searchQualityMatrixSource), "Search quality matrix should cover alias resolution through the managed backbone");
   assert(/id="taste-understood-panel"/.test(html), "Today should expose an imported-taste understood panel");
   assert(/function renderTasteUnderstoodPanel/.test(appSource), "Imported taste understood panel should be rendered from real taste state");
   assert(/taste-understood-panel/.test(css), "Imported taste understood panel should be styled");

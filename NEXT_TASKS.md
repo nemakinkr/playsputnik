@@ -306,7 +306,18 @@ separate taste-reference pool, so backbone/search records can teach from an
 explicit import without appearing automatically in recommendation surfaces.
 Personal rank ranges use this context-free taste forecast rather than the
 play-now score, and imported rank strength is no longer reduced by technical
-catalog source. New aliases were added for
+catalog source. The held-out ordinal gate currently reports P@10 0.50,
+top-quartile recall 0.57, zero bottom-quartile intrusions in the predicted top
+10, and 0.80 pairwise accuracy. The separate explicit-wishlist gold set covers
+16/16 candidates and gates NDCG@10 0.98, must-play recall@5 1.00, and
+high-intent precision@5 1.00. `confirmedNotForMe` intentionally remains empty;
+Destiny 2 and Nickelodeon All-Star Brawl 2 are confirmation prompts, not
+invented negative labels. Hearts now act as distinct intent tiers, and an
+explicitly imported backbone/search wishlist title becomes a recommendation
+candidate without making the whole auxiliary corpus visible. The atom-quality
+gate protects corrected high-impact metadata for Battlefield 1, Monster
+Hunter: World, Destiny 2, Knockout City, Assassin's Creed Brotherhood, and
+Rise of the Tomb Raider. New aliases were added for
 high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of

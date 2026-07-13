@@ -1959,9 +1959,77 @@ function catalogBackboneTasteGames() {
     .map(backboneTasteGameFromRecord);
 }
 
+function externalFixtureTasteGameFromRecord(record) {
+  const atoms = record.atoms || [];
+  const session = record.session || "medium";
+  const commitment = record.commitment || (session === "long" ? "high" : "medium");
+  const tone = record.tone
+    || (atoms.includes("horror") || atoms.includes("dark") ? "dark" : atoms.includes("cinematic") ? "epic" : "neutral");
+  return {
+    title: record.title,
+    atoms,
+    vibe: record.vibe || record.reason || "Explicit search memory candidate",
+    session,
+    difficulty: record.difficulty || "normal",
+    length: record.length || (commitment === "high" ? "long" : "medium"),
+    commitment,
+    tone,
+    content: record.content || backboneContent(record),
+    reviewBurden: record.reviewBurden || "high",
+    adultTimeFit: record.adultTimeFit || (session === "short" ? "weeknight" : "weekend"),
+    backlog: false,
+    wishlist: false,
+    externalCandidate: true,
+    recommendationLane: "external",
+    color: "linear-gradient(135deg, #27313f, #1d4ed8)",
+    prices: {},
+    discount: {},
+    priceMeta: {},
+    priceHistory: {},
+    psPlus: [],
+    subscriptionMeta: {},
+    coverMeta: {
+      title: record.title,
+      status: record.coverStatus || "candidate",
+      source: record.provider || "prototype_external_index",
+      sourceUrl: record.sourceUrl || "local://external-fixture",
+      checkedAt: globalSearchFixtures?.updatedAt || new Date().toISOString(),
+      licenseNote: "Explicit search-memory candidate; store facts still require verification.",
+      url: "",
+    },
+    externalMeta: {
+      provider: record.provider || "prototype_external_index",
+      sourceUrl: record.sourceUrl || "",
+      catalogStatus: "external_fixture",
+      platforms: record.platforms || [],
+      priceStatus: record.priceStatus || "missing",
+    },
+  };
+}
+
+function explicitCatalogMemoryGames() {
+  const explicitTitles = new Set([
+    ...(state.notebook?.wishlist || []).map((entry) => titleKey(entry.title)),
+    ...(state.notebook?.access || []).map((entry) => titleKey(entry.title)),
+  ]);
+  if (!explicitTitles.size) return [];
+  const records = [];
+  (catalogBackbone?.records || []).forEach((record) => {
+    if (explicitTitles.has(titleKey(record.title)) && !knownSeedGame(record.title)) {
+      records.push(backboneTasteGameFromRecord(record));
+    }
+  });
+  (globalSearchFixtures?.records || []).forEach((record) => {
+    if (explicitTitles.has(titleKey(record.title)) && !knownSeedGame(record.title)) {
+      records.push(externalFixtureTasteGameFromRecord(record));
+    }
+  });
+  return records;
+}
+
 function recommendationPool() {
   const byTitle = new Map();
-  [...games, ...externalMemoryGames()].forEach((game) => {
+  [...games, ...explicitCatalogMemoryGames(), ...externalMemoryGames()].forEach((game) => {
     const key = titleKey(game.title);
     if (!byTitle.has(key)) byTitle.set(key, game);
   });

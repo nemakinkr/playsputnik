@@ -19,6 +19,7 @@ fi
 echo "── 1/7 validate-data ──────────────────────────"
 "$NODE" scripts/validate-data.mjs
 "$NODE" scripts/editorial-data-check.mjs
+"$NODE" scripts/atom-quality-audit.mjs
 "$NODE" scripts/sw-version-check.mjs
 "$NODE" scripts/manifest-cache-check.mjs
 
@@ -28,6 +29,7 @@ echo "── 2/7 i18n catalogs + usage ─────────────�
 "$NODE" scripts/companion-intelligence-test.mjs
 "$NODE" scripts/onboarding-diagnostic-test.mjs
 "$NODE" scripts/ranking-dogfood-audit.mjs
+"$NODE" scripts/founder-recommendation-evaluation.mjs
 "$NODE" scripts/search-quality-matrix.mjs
 "$NODE" scripts/decision-workflow-test.mjs
 "$NODE" scripts/detail-view-test.mjs

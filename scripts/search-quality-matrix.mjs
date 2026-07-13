@@ -102,7 +102,7 @@ const CASES = [
   { id: "ru-ratchet-rift", query: "Ratchet & Clank: Сквозь миры", expectedTop: "Ratchet & Clank: Rift Apart", sourceId: "seed_catalog", matchKind: "exact" },
   { id: "alias-la-noire", query: "L. A. Noire", expectedTop: "L.A. Noire", sourceId: "seed_catalog", matchKind: "exact" },
   { id: "alias-true-colors", query: "Life is Strange True Colors", expectedTop: "Life is Strange: True Colors", sourceId: "catalog_backbone", matchKind: "exact" },
-  { id: "hellblade-short", query: "Hellblade II", expectedTop: "Senua's Saga: Hellblade II", sourceId: "manual_unverified", matchKind: "alias_manual" },
+  { id: "hellblade-short", query: "Hellblade II", expectedTop: "Senua's Saga: Hellblade II", sourceId: "catalog_backbone", matchKind: "exact" },
   { id: "bond-number", query: "007", expectedTop: "007 First Light", sourceId: "seed_catalog", matchKind: "exact" },
   { id: "bond-project", query: "Project 007", expectedTop: "007 First Light", sourceId: "seed_catalog", matchKind: "exact" },
   { id: "fixture-black-myth", query: "Black Myth", expectedTop: "Black Myth: Wukong", sourceId: "prototype_external_index", matchKind: "prefix" },

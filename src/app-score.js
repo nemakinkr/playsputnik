@@ -351,6 +351,51 @@
       return Math.max(0, Math.min(100, value));
     }
 
+    function rankingQualityFromHoldouts(holdouts, model) {
+      const rows = holdouts.map(({ record, result }) => ({
+        title: record.game.title,
+        actual: record.rating,
+        predicted: result.predictions[model],
+      }));
+      if (rows.length < 8) return null;
+      const byActual = [...rows].sort((a, b) => b.actual - a.actual || a.title.localeCompare(b.title));
+      const byPrediction = [...rows].sort((a, b) => b.predicted - a.predicted || a.title.localeCompare(b.title));
+      const quartileSize = Math.max(1, Math.ceil(rows.length / 4));
+      const topActual = new Set(byActual.slice(0, quartileSize).map((row) => row.title));
+      const bottomActual = new Set(byActual.slice(-quartileSize).map((row) => row.title));
+      const top10 = byPrediction.slice(0, Math.min(10, rows.length));
+      const predictedTopQuartile = byPrediction.slice(0, quartileSize);
+      const precisionAt10 = top10.filter((row) => topActual.has(row.title)).length / top10.length;
+      const topQuartileRecall = predictedTopQuartile.filter((row) => topActual.has(row.title)).length / quartileSize;
+      const bottomIntrusionsAt10 = top10.filter((row) => bottomActual.has(row.title)).length;
+      let comparablePairs = 0;
+      let correctlyOrderedPairs = 0;
+      for (let left = 0; left < rows.length; left += 1) {
+        for (let right = left + 1; right < rows.length; right += 1) {
+          const actualDelta = rows[left].actual - rows[right].actual;
+          if (Math.abs(actualDelta) < 4) continue;
+          comparablePairs += 1;
+          const predictedDelta = rows[left].predicted - rows[right].predicted;
+          if (Math.sign(actualDelta) === Math.sign(predictedDelta)) correctlyOrderedPairs += 1;
+          else if (predictedDelta === 0) correctlyOrderedPairs += 0.5;
+        }
+      }
+      return {
+        precisionAt10: Math.round(precisionAt10 * 100) / 100,
+        topQuartileRecall: Math.round(topQuartileRecall * 100) / 100,
+        bottomIntrusionsAt10,
+        pairwiseAccuracy: comparablePairs
+          ? Math.round((correctlyOrderedPairs / comparablePairs) * 100) / 100
+          : null,
+        top10: top10.map((row) => ({
+          title: row.title,
+          actual: Math.round(row.actual),
+          predicted: Math.round(row.predicted),
+          tier: topActual.has(row.title) ? "top" : bottomActual.has(row.title) ? "tail" : "middle",
+        })),
+      };
+    }
+
     function ratingModelPredictions(game, records) {
       if (!records.length) return null;
       const neighbors = records
@@ -435,6 +480,7 @@
       );
       const model = Object.entries(modelErrors).sort((a, b) => a[1] - b[1])[0][0];
       const residuals = modelResiduals[model];
+      const rankingQuality = rankingQualityFromHoldouts(holdouts, model);
       const signalResiduals = {};
       holdouts.forEach(({ record }, index) => {
         const residual = residuals[index];
@@ -460,6 +506,7 @@
         meanAbsoluteError,
         model,
         modelErrors,
+        rankingQuality,
         signalBias,
         underestimated: rankedBias.filter(([, value]) => value >= 4).slice(0, 3),
         overestimated: rankedBias.filter(([, value]) => value <= -4).slice(0, 3),
@@ -578,6 +625,14 @@
       return item ? item.hearts : 0;
     }
 
+    function wishlistIntentScore(hearts) {
+      const weight = Math.max(0, Math.round(Number(hearts) || 0));
+      if (weight >= 3) return 84 + (weight - 3) * 24;
+      if (weight === 2) return 44;
+      if (weight === 1) return 12;
+      return 0;
+    }
+
     function notebookAccessKind(title) {
       const state = getState();
       const item = state.notebook.access.find((entry) => titleMatches(entry.title, title));
@@ -656,7 +711,7 @@
       const tasteProfile = tasteEngineProfile();
       const tasteScore = tasteEngineScore(game, tasteProfile);
       const notebookTaste = notebookTasteScore(game);
-      const wishlistScore = notebookWishlistWeight(game.title) * 12;
+      const wishlistScore = wishlistIntentScore(notebookWishlistWeight(game.title));
       const accessKind = notebookAccessKind(game.title);
       const effectiveState = effectiveGameState(game);
       const externalScore = game.externalCandidate
@@ -793,6 +848,7 @@
       calibrationQuestionGames,
       notebookTitles,
       notebookWishlistWeight,
+      wishlistIntentScore,
       notebookAccessKind,
       notebookCompletedSet,
       notebookRankedSet,

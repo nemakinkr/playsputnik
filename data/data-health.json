@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T12:21:01.423Z",
+  "generatedAt": "2026-07-13T12:45:38.460Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -16,7 +16,7 @@
     "catalogProviderCount": 5,
     "catalogTierCount": 3,
     "catalogWorkbenchCount": 6,
-    "catalogBackboneCount": 123,
+    "catalogBackboneCount": 125,
     "catalogBackboneReadyCount": 0,
     "catalogBackbonePromotedCount": 29,
     "searchSourceCount": 5,
@@ -80,7 +80,7 @@
   },
   "catalogBackbone": {
     "mode": "pre-mvp-catalog-backbone",
-    "recordCount": 123,
+    "recordCount": 125,
     "laneCount": 10,
     "seedTarget": 150,
     "currentSeed": 461,
@@ -88,14 +88,14 @@
     "readyForSeedCount": 0,
     "atomReviewCount": 0,
     "blockedIdentityCount": 1,
-    "coverMissingCount": 94,
-    "hotPriceNeedCount": 7,
+    "coverMissingCount": 96,
+    "hotPriceNeedCount": 9,
     "laneCounts": [
       {
         "id": "cinematic_story",
         "label": "Cinematic story",
         "target": 18,
-        "count": 17,
+        "count": 18,
         "promoted": 6,
         "ready": 0
       },
@@ -103,7 +103,7 @@
         "id": "open_world_rpg",
         "label": "Open-world / RPG",
         "target": 18,
-        "count": 14,
+        "count": 15,
         "promoted": 6,
         "ready": 0
       },
@@ -204,7 +204,7 @@
     ]
   },
   "refreshDigest": {
-    "generatedAt": "2026-07-13T12:21:01.417Z",
+    "generatedAt": "2026-07-13T12:45:38.453Z",
     "priceSnapshotCount": 1844,
     "subscriptionRecordCount": 503,
     "latestPriceCheckedAt": "2026-07-13T10:33:00.561Z",
@@ -299,7 +299,7 @@
     },
     {
       "atom": "story",
-      "count": 252
+      "count": 250
     },
     {
       "atom": "systems",
@@ -307,7 +307,7 @@
     },
     {
       "atom": "indie",
-      "count": 145
+      "count": 144
     },
     {
       "atom": "atmosphere",
@@ -315,11 +315,11 @@
     },
     {
       "atom": "rpg",
-      "count": 122
+      "count": 121
     },
     {
       "atom": "multiplayer",
-      "count": 111
+      "count": 110
     },
     {
       "atom": "platformer",
@@ -335,7 +335,7 @@
     },
     {
       "atom": "open-world",
-      "count": 40
+      "count": 37
     },
     {
       "atom": "strategy",

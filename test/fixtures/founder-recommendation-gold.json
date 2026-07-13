@@ -1,0 +1,37 @@
+{
+  "profile": "founder",
+  "version": 1,
+  "evidencePolicy": "Only explicit founder ranking and wishlist order are hard labels. Assistant-inferred dislikes remain unconfirmed and are excluded from pass/fail metrics.",
+  "rankedFixture": "test/fixtures/founder-ranking-ru.txt",
+  "wishlist": [
+    { "title": "007 First Light", "label": "must_play", "hearts": 3 },
+    { "title": "Mafia: The Old Country", "label": "must_play", "hearts": 3 },
+    { "title": "Ghost of Yotei", "label": "must_play", "hearts": 3 },
+    { "title": "The Alters", "label": "strong_interest", "hearts": 2 },
+    { "title": "Assassin's Creed Shadows", "label": "strong_interest", "hearts": 2 },
+    { "title": "Death Stranding 2", "label": "strong_interest", "hearts": 2 },
+    { "title": "Senua's Saga: Hellblade II", "label": "strong_interest", "hearts": 2 },
+    { "title": "Pathologic 3", "label": "strong_interest", "hearts": 2 },
+    { "title": "Crimson Desert", "label": "consider", "hearts": 1 },
+    { "title": "Indiana Jones and the Great Circle", "label": "consider", "hearts": 1 },
+    { "title": "Baldur's Gate 3", "label": "consider", "hearts": 1 },
+    { "title": "The Outer Worlds 2", "label": "consider", "hearts": 1 },
+    { "title": "Ready or Not", "label": "consider", "hearts": 1 },
+    { "title": "Directive 8020", "label": "consider", "hearts": 1 },
+    { "title": "The Precinct", "label": "consider", "hearts": 1 },
+    { "title": "Vasilisa and Baba Yaga", "label": "consider", "hearts": 1 }
+  ],
+  "unconfirmedContrasts": [
+    {
+      "title": "Destiny 2",
+      "status": "needs_founder_confirmation",
+      "reason": "Previously discussed as a likely low-priority service/grind fit, but the founder did not explicitly reject it."
+    },
+    {
+      "title": "Nickelodeon All-Star Brawl 2",
+      "status": "needs_founder_confirmation",
+      "reason": "Previously discussed as a likely format mismatch, but the founder did not explicitly reject it."
+    }
+  ],
+  "confirmedNotForMe": []
+}

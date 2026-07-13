@@ -405,6 +405,7 @@ const audit = {
     meanAbsoluteError: calibration.meanAbsoluteError,
     equivalentRankError,
     modelErrors: calibration.modelErrors,
+    rankingQuality: calibration.rankingQuality,
   },
   founderRecommendations: {
     playTop: founderPlayTop.map(({ title, score }) => ({ title, score })),
@@ -454,6 +455,7 @@ if (OUTPUT_JSON) {
   console.log(`   Discriminators: top ${topDiscriminators.slice(0, 4).map((item) => `${item.signal}:${item.lift}`).join(", ")}; tail ${tailDiscriminators.slice(0, 4).map((item) => `${item.signal}:${item.lift}`).join(", ")}`);
   console.log(`   Ranked import: top25 avg ${audit.rankedImport.top25Average}, bottom25 avg ${audit.rankedImport.bottom25Average}, signals ${audit.rankedImport.topSignals.slice(0, 5).map((item) => `${item.signal}:${item.weight}`).join(", ")}`);
   console.log(`   Forecast calibration: ${audit.forecastCalibration.sampleSize} games, ${audit.forecastCalibration.model} model, holdout MAE ${audit.forecastCalibration.meanAbsoluteError} (~${audit.forecastCalibration.equivalentRankError} ranks)`);
+  console.log(`   Recommendation quality: P@10 ${audit.forecastCalibration.rankingQuality.precisionAt10}, top-quartile recall ${audit.forecastCalibration.rankingQuality.topQuartileRecall}, bottom intrusions ${audit.forecastCalibration.rankingQuality.bottomIntrusionsAt10}, pairwise ${audit.forecastCalibration.rankingQuality.pairwiseAccuracy}`);
   console.log(`   Founder wishlist: ${audit.founderRecommendations.wishlistTop.slice(0, 5).map((item) => `${item.title}:${item.score}`).join(", ")}`);
   console.log(`   Promote next: ${promotion || "none"}`);
   console.log(`   Unknown top gaps: ${topUnknown || "none"}`);
@@ -490,6 +492,8 @@ assert(
 );
 assert(calibration.ready, "The full founder ranking should make personal forecast calibration ready");
 assert(calibration.trusted, `Founder ranking calibration should be honest enough to trust, MAE ${calibration.meanAbsoluteError}`);
+assert(calibration.rankingQuality?.precisionAt10 >= 0.4, `Founder recommendation P@10 is too low: ${calibration.rankingQuality?.precisionAt10}`);
+assert(calibration.rankingQuality?.bottomIntrusionsAt10 <= 1, `Founder recommendation top 10 contains too many tail games: ${calibration.rankingQuality?.bottomIntrusionsAt10}`);
 assert(
   equivalentRankError <= 25,
   `Founder ranking forecasts are too imprecise: MAE ${calibration.meanAbsoluteError} equals about ${equivalentRankError} ranks`,
