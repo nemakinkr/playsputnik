@@ -100,17 +100,27 @@ function atomWeightsFromRatings(ratings) {
   return weights;
 }
 
-function loadScoreTools(state, pool, referencePool) {
+function loadScoreTools(state, pool, referencePool, { profileGames = [], quickReactions = {} } = {}) {
+  const conflictAtoms = (() => {
+    const positive = new Set();
+    const negative = new Set();
+    profileGames.forEach((game) => {
+      const reaction = quickReactions[titleKey(game.title)];
+      if (reaction === "loved") gameSignals(game).forEach((signal) => positive.add(signal));
+      if (reaction === "not_for_me") gameSignals(game).forEach((signal) => negative.add(signal));
+    });
+    return [...positive].filter((signal) => negative.has(signal));
+  })();
   const sandbox = { window: { PlaySputnikI18n: { t: (key) => key } }, Math, Set };
   vm.createContext(sandbox);
   vm.runInContext(scoreSource, sandbox, { filename: "src/app-score.js" });
   return sandbox.window.PlaySputnikScore.createScoreTools({
     getState: () => state,
-    getProfileGames: () => [],
-    getQuickReaction: () => "",
+    getProfileGames: () => profileGames,
+    getQuickReaction: (title) => quickReactions[titleKey(title)] || "",
     getFeedbackSource: () => null,
-    getTasteConflict: () => ({ atoms: [] }),
-    getTasteSignalCount: () => 0,
+    getTasteConflict: () => ({ atoms: conflictAtoms }),
+    getTasteSignalCount: () => Object.keys(quickReactions).length,
     getRecommendationPool: () => pool,
     getTasteReferencePool: () => referencePool,
     titleMatches: (a, b) => titleKey(a) === titleKey(b),
@@ -136,11 +146,22 @@ const dcg = (rows, limit) => rows.slice(0, limit).reduce(
   0,
 );
 
-const reports = fixture.profiles.map((profile) => {
-  const missingRatings = profile.ratings.filter(({ title }) => !resolve(title)).map(({ title }) => title);
-  const atomWeights = atomWeightsFromRatings(profile.ratings);
+function evaluateProfile(profile, ratings, mode = "import") {
+  const missingRatings = ratings.filter(({ title }) => !resolve(title)).map(({ title }) => title);
+  const atomWeights = mode === "quick" ? {} : atomWeightsFromRatings(ratings);
+  const quickReactions = mode === "quick"
+    ? Object.fromEntries(ratings.map(({ title, rating }) => [
+        titleKey(resolve(title)?.record.title || title),
+        rating >= 7 ? "loved" : rating <= 5 ? "not_for_me" : "played",
+      ]))
+    : {};
+  const quickProfileGames = mode === "quick"
+    ? ratings.map(({ title }) => resolve(title)?.record).filter(Boolean)
+    : [];
   const state = {
-    importedRatings: profile.ratings.map(({ title, rating }) => ({ title: resolve(title)?.record.title || title, rating })),
+    importedRatings: mode === "quick"
+      ? []
+      : ratings.map(({ title, rating }) => ({ title: resolve(title)?.record.title || title, rating })),
     userGames: {},
     quickReactions: {},
     calibrationSkips: {},
@@ -159,7 +180,10 @@ const reports = fixture.profiles.map((profile) => {
     budget: -1,
     notebook: { ranked: [], completed: [], access: [], wishlist: [], prices: [], upcoming: [] },
   };
-  const tools = loadScoreTools(state, candidates, referencePool);
+  const tools = loadScoreTools(state, candidates, referencePool, {
+    profileGames: quickProfileGames,
+    quickReactions,
+  });
   const ranked = candidateRows
     .filter((row) => row.game)
     .map((row) => ({
@@ -177,6 +201,8 @@ const reports = fixture.profiles.map((profile) => {
     id: profile.id,
     name: profile.name,
     hypothesis: profile.hypothesis,
+    ratingCount: ratings.length,
+    signalMode: mode,
     missingRatings,
     strongestSignals: Object.entries(atomWeights)
       .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]) || a[0].localeCompare(b[0]))
@@ -191,45 +217,60 @@ const reports = fixture.profiles.map((profile) => {
     top3: top3.map(({ title, label, score }) => ({ title, label, score })),
     ranked,
   };
-});
-
-const top3Sets = reports.map((report) => new Set(report.top3.map((row) => titleKey(row.title))));
-const similarities = [];
-for (let left = 0; left < top3Sets.length; left += 1) {
-  for (let right = left + 1; right < top3Sets.length; right += 1) {
-    const union = new Set([...top3Sets[left], ...top3Sets[right]]);
-    const overlap = [...top3Sets[left]].filter((title) => top3Sets[right].has(title)).length;
-    similarities.push(overlap / union.size);
-  }
 }
-const aggregate = {
-  profileCount: reports.length,
-  candidateCoverage: round(candidates.length / fixture.candidatePool.length),
-  ratingCoverage: round(
-    reports.reduce((sum, report) => sum + (fixture.profiles.find((profile) => profile.id === report.id).ratings.length - report.missingRatings.length), 0)
-      / fixture.profiles.reduce((sum, profile) => sum + profile.ratings.length, 0),
-  ),
-  meanNdcgAt6: round(reports.reduce((sum, report) => sum + report.metrics.ndcgAt6, 0) / reports.length),
-  meanHighFitPrecisionAt3: round(reports.reduce((sum, report) => sum + report.metrics.highFitPrecisionAt3, 0) / reports.length),
-  totalAvoidIntrusionsAt3: reports.reduce((sum, report) => sum + report.metrics.avoidIntrusionsAt3, 0),
-  meanTop3Jaccard: round(similarities.reduce((sum, value) => sum + value, 0) / similarities.length),
-  uniqueTopChoices: new Set(reports.map((report) => titleKey(report.top3[0]?.title))).size,
-};
+
+function summarize(reports) {
+  const top3Sets = reports.map((profile) => new Set(profile.top3.map((row) => titleKey(row.title))));
+  const similarities = [];
+  for (let left = 0; left < top3Sets.length; left += 1) {
+    for (let right = left + 1; right < top3Sets.length; right += 1) {
+      const union = new Set([...top3Sets[left], ...top3Sets[right]]);
+      const overlap = [...top3Sets[left]].filter((title) => top3Sets[right].has(title)).length;
+      similarities.push(overlap / union.size);
+    }
+  }
+  return {
+    profileCount: reports.length,
+    candidateCoverage: round(candidates.length / fixture.candidatePool.length),
+    ratingCoverage: round(
+      reports.reduce((sum, profile) => sum + (profile.ratingCount - profile.missingRatings.length), 0)
+        / reports.reduce((sum, profile) => sum + profile.ratingCount, 0),
+    ),
+    meanNdcgAt6: round(reports.reduce((sum, profile) => sum + profile.metrics.ndcgAt6, 0) / reports.length),
+    meanHighFitPrecisionAt3: round(reports.reduce((sum, profile) => sum + profile.metrics.highFitPrecisionAt3, 0) / reports.length),
+    totalAvoidIntrusionsAt3: reports.reduce((sum, profile) => sum + profile.metrics.avoidIntrusionsAt3, 0),
+    meanTop3Jaccard: round(similarities.reduce((sum, value) => sum + value, 0) / similarities.length),
+    uniqueTopChoices: new Set(reports.map((profile) => titleKey(profile.top3[0]?.title))).size,
+  };
+}
+
+const fullProfiles = fixture.profiles.map((profile) => evaluateProfile(profile, profile.ratings));
+const starterProfiles = fixture.profiles.map((profile) => {
+  const starterKeys = new Set((profile.starterTitles || []).map(titleKey));
+  return evaluateProfile(profile, profile.ratings.filter(({ title }) => starterKeys.has(titleKey(title))), "quick");
+});
+const aggregate = summarize(fullProfiles);
+const starterAggregate = summarize(starterProfiles);
 const report = {
   mode: "synthetic-profile-evaluation",
   fixturePolicy: fixture.method,
   aggregate,
-  profiles: reports,
+  profiles: fullProfiles,
+  starter: { aggregate: starterAggregate, profiles: starterProfiles },
   missingCandidates: candidateRows.filter((row) => !row.game).map((row) => row.title),
 };
 
 if (OUTPUT_JSON) console.log(JSON.stringify(report, null, 2));
 else {
   console.log(`✅ Synthetic profile evaluation: ${aggregate.profileCount} profiles, ${candidates.length}/${fixture.candidatePool.length} candidates, mean NDCG@6 ${aggregate.meanNdcgAt6}, mean high-fit P@3 ${aggregate.meanHighFitPrecisionAt3}`);
-  reports.forEach((profile) => {
+  fullProfiles.forEach((profile) => {
     console.log(`   ${profile.name}: ${profile.top3.map((row) => `${row.title}:${row.label}:${row.score}`).join(", ")} · margin ${profile.metrics.positiveAvoidMargin}`);
   });
   console.log(`   Personalization: ${aggregate.uniqueTopChoices}/${aggregate.profileCount} unique top choices, mean top-3 overlap ${aggregate.meanTop3Jaccard}`);
+  console.log(`   Five-signal start: mean NDCG@6 ${starterAggregate.meanNdcgAt6}, mean high-fit P@3 ${starterAggregate.meanHighFitPrecisionAt3}, avoid intrusions ${starterAggregate.totalAvoidIntrusionsAt3}`);
+  starterProfiles.forEach((profile) => {
+    console.log(`   ↳ ${profile.name}: ${profile.top3.map((row) => `${row.title}:${row.label}:${row.score}`).join(", ")}`);
+  });
 }
 
 assert(fixture.profiles.length >= 3, "Synthetic benchmark needs at least three independent profiles");
@@ -237,10 +278,17 @@ fixture.profiles.forEach((profile) => {
   const candidateKeys = new Set(fixture.candidatePool.map(titleKey));
   const leaks = profile.ratings.filter(({ title }) => candidateKeys.has(titleKey(title))).map(({ title }) => title);
   assert(leaks.length === 0, `${profile.name} leaks rated titles into the candidate pool: ${leaks.join(", ")}`);
+  assert(profile.starterTitles?.length === 5, `${profile.name} needs exactly five starter ratings`);
+  const ratingKeys = new Set(profile.ratings.map(({ title }) => titleKey(title)));
+  const unknownStarterTitles = profile.starterTitles.filter((title) => !ratingKeys.has(titleKey(title)));
+  assert(unknownStarterTitles.length === 0, `${profile.name} starter titles are absent from ratings: ${unknownStarterTitles.join(", ")}`);
+  const starterRatings = profile.ratings.filter(({ title }) => profile.starterTitles.some((starter) => titleKey(starter) === titleKey(title)));
+  assert(starterRatings.filter(({ rating }) => rating >= 7).length >= 2, `${profile.name} starter profile needs at least two positive reactions`);
+  assert(starterRatings.filter(({ rating }) => rating <= 5).length >= 1, `${profile.name} starter profile needs at least one negative reaction`);
 });
 assert(aggregate.candidateCoverage === 1, `Synthetic candidate coverage regressed: missing ${report.missingCandidates.join(", ")}`);
-assert(aggregate.ratingCoverage === 1, `Synthetic rating coverage regressed: ${reports.flatMap((profile) => profile.missingRatings).join(", ")}`);
-reports.forEach((profile) => {
+assert(aggregate.ratingCoverage === 1, `Synthetic rating coverage regressed: ${fullProfiles.flatMap((profile) => profile.missingRatings).join(", ")}`);
+fullProfiles.forEach((profile) => {
   assert(profile.metrics.ndcgAt6 >= 0.72, `${profile.name} NDCG@6 is too low: ${profile.metrics.ndcgAt6}`);
   assert(profile.metrics.highFitPrecisionAt3 >= 0.67, `${profile.name} high-fit precision@3 is too low: ${profile.metrics.highFitPrecisionAt3}`);
   assert(profile.metrics.avoidIntrusionsAt3 === 0, `${profile.name} surfaced an avoid title in the top 3`);
@@ -248,3 +296,17 @@ reports.forEach((profile) => {
 });
 assert(aggregate.uniqueTopChoices === aggregate.profileCount, `Profiles collapsed onto ${aggregate.uniqueTopChoices}/${aggregate.profileCount} unique top choices`);
 assert(aggregate.meanTop3Jaccard <= 0.35, `Synthetic top-3 recommendations are too similar: ${aggregate.meanTop3Jaccard}`);
+assert(starterAggregate.ratingCoverage === 1, `Five-signal rating coverage regressed: ${starterProfiles.flatMap((profile) => profile.missingRatings).join(", ")}`);
+starterProfiles.forEach((profile) => {
+  assert(profile.ratingCount === 5, `${profile.name} starter benchmark used ${profile.ratingCount}/5 ratings`);
+  assert(profile.signalMode === "quick", `${profile.name} starter benchmark bypassed the quick-reaction path`);
+  assert(profile.metrics.ndcgAt6 >= 0.68, `${profile.name} five-signal NDCG@6 is too low: ${profile.metrics.ndcgAt6}`);
+  assert(profile.metrics.highFitPrecisionAt3 >= 0.67, `${profile.name} five-signal high-fit precision@3 is too low: ${profile.metrics.highFitPrecisionAt3}`);
+  assert(profile.metrics.avoidIntrusionsAt3 === 0, `${profile.name} five-signal profile surfaced an avoid title in the top 3`);
+  assert(profile.metrics.positiveAvoidMargin >= 10, `${profile.name} five-signal positive/avoid margin is too small: ${profile.metrics.positiveAvoidMargin}`);
+});
+starterProfiles.forEach((profile) => {
+  assert(["ideal", "strong"].includes(profile.top3[0]?.label), `${profile.name} five-signal top choice is not a high-fit candidate`);
+});
+assert(starterAggregate.uniqueTopChoices >= 2, `Five-signal profiles collapsed onto ${starterAggregate.uniqueTopChoices}/${starterAggregate.profileCount} unique top choices`);
+assert(starterAggregate.meanTop3Jaccard <= 0.35, `Five-signal top-3 recommendations are too similar: ${starterAggregate.meanTop3Jaccard}`);

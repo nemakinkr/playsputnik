@@ -21,6 +21,7 @@
       "id": "systems_architect",
       "name": "Systems architect",
       "hypothesis": "Prefers strategic planning, simulation and difficult systems; avoids reflex-first action and annual sports loops.",
+      "starterTitles": ["Civilization VI", "XCOM 2", "Cities: Skylines", "Doom (2016)", "FIFA 17"],
       "ratings": [
         { "title": "Civilization VI", "rating": 10 },
         { "title": "XCOM 2", "rating": 9.5 },
@@ -53,6 +54,7 @@
       "id": "competitive_regular",
       "name": "Competitive regular",
       "hypothesis": "Prefers fast action, mastery and repeatable multiplayer; avoids reading-heavy and slow management games.",
+      "starterTitles": ["Helldivers 2", "Rocket League", "Sifu", "Disco Elysium", "Unpacking"],
       "ratings": [
         { "title": "Helldivers 2", "rating": 10 },
         { "title": "Rocket League", "rating": 9.5 },
@@ -85,6 +87,7 @@
       "id": "cozy_social",
       "name": "Cozy social player",
       "hypothesis": "Prefers warm low-pressure play, creativity and approachable co-op; avoids horror, punishing challenge and graphic action.",
+      "starterTitles": ["Stardew Valley", "Unpacking", "It Takes Two", "Resident Evil 7: Biohazard", "Elden Ring"],
       "ratings": [
         { "title": "Stardew Valley", "rating": 10 },
         { "title": "Unpacking", "rating": 9.5 },

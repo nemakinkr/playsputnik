@@ -300,14 +300,16 @@ full seed-catalog coverage from broader known search/backbone coverage.
 Current baseline: 47/111 seed matches, 8/10 seed top-10 matches, 21/30 seed
 top-30 matches, 111/111 known-corpus matches, 30/30 known top-30 matches, and
 60/60 known top-60 matches. The product dogfood gate also runs the real local
-forecast calibration over all 111 resolved records: nearest-game wins with
-7.1/100 held-out MAE (about 19 ranking positions). Calibration now has a
+forecast calibration over all 111 resolved records. Deep profiles keep models
+within 1.5 points of best held-out MAE, then choose the strongest top-tier
+ranking quality; this selects the signal model at 8.0/100 MAE (about 21 ranking
+positions), versus nearest-game at 7.1. Calibration now has a
 separate taste-reference pool, so backbone/search records can teach from an
 explicit import without appearing automatically in recommendation surfaces.
 Personal rank ranges use this context-free taste forecast rather than the
 play-now score, and imported rank strength is no longer reduced by technical
-catalog source. The held-out ordinal gate currently reports P@10 0.50,
-top-quartile recall 0.57, zero bottom-quartile intrusions in the predicted top
+catalog source. The held-out ordinal gate currently reports P@10 0.90,
+top-quartile recall 0.61, zero bottom-quartile intrusions in the predicted top
 10, and 0.80 pairwise accuracy. The separate explicit-wishlist gold set covers
 16/16 candidates and gates NDCG@10 0.98, must-play recall@5 1.00, and
 high-intent precision@5 1.00. `confirmedNotForMe` intentionally remains empty;
@@ -327,7 +329,10 @@ initial failure revealed that imported weights saturated both pull and caution
 caps; `tasteEngineScore()` now normalizes by evidence volume and downweights
 auxiliary tone/content/time/commitment signals relative to core atoms. Keep the
 fixture labelled as synthetic: it catches collapse and regressions but cannot
-replace real-user validation. New aliases were added for
+replace real-user validation. A separate five-signal run uses the production
+quick-reaction path with mixed positive/negative answers; it gates NDCG@6 0.91,
+high-fit precision@3 0.89, zero avoid intrusions, mean top-3 overlap 0.07, and
+a high-fit winner for every persona. New aliases were added for
 high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of

@@ -443,7 +443,7 @@ try {
   assert(/(?:80|8[1-9]|9\d|1\d\d)/.test(founderRanking.taste.summary), `Expected founder taste summary to include 80+ imported ratings, got: ${founderRanking.taste.summary}`);
   assert(founderRanking.taste.profile.includes("111"), `Expected founder taste profile to include ranked baseline size, got: ${founderRanking.taste.profile}`);
   assert(/111/.test(founderRanking.calibration), `Expected forecast calibration to use all 111 resolved ranking records, got: ${founderRanking.calibration}`);
-  assert(/7[.,]1|nearest|ближай/i.test(founderRanking.calibration), `Expected founder calibration to expose measured nearest-game quality, got: ${founderRanking.calibration}`);
+  assert(/(?:±\s*)?8(?:\D|$)|atom patterns|паттерны игровых атомов/i.test(founderRanking.calibration), `Expected founder calibration to expose measured rank-aware model quality, got: ${founderRanking.calibration}`);
   assert(/Taste profile|Профиль вкуса|gaming fingerprint|игровой отпечаток/i.test(founderRanking.taste.screen), `Expected founder taste profile screen to render, got: ${founderRanking.taste.screen}`);
   assert(founderRanking.taste.atoms.some((atom) => /сюжет|story/i.test(atom)), `Expected founder taste atoms to include story, got: ${founderRanking.taste.atoms.join(", ")}`);
   assert(founderRanking.wishlist.rows.some((title) => ["Mafia: The Old Country", "007 First Light", "The Alters", "Dead Space", "Final Fantasy VII Rebirth"].includes(title)), `Expected founder wishlist to surface story-forward next candidates, got: ${founderRanking.wishlist.rows.join(" / ")}`);

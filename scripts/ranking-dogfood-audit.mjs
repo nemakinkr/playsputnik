@@ -405,6 +405,7 @@ const audit = {
     meanAbsoluteError: calibration.meanAbsoluteError,
     equivalentRankError,
     modelErrors: calibration.modelErrors,
+    rankingQualityByModel: calibration.rankingQualityByModel,
     rankingQuality: calibration.rankingQuality,
   },
   founderRecommendations: {
@@ -492,7 +493,19 @@ assert(
 );
 assert(calibration.ready, "The full founder ranking should make personal forecast calibration ready");
 assert(calibration.trusted, `Founder ranking calibration should be honest enough to trust, MAE ${calibration.meanAbsoluteError}`);
-assert(calibration.rankingQuality?.precisionAt10 >= 0.4, `Founder recommendation P@10 is too low: ${calibration.rankingQuality?.precisionAt10}`);
+const bestModelError = Math.min(...Object.values(calibration.modelErrors));
+const eligibleRankingPrecision = Object.entries(calibration.modelErrors)
+  .filter(([, error]) => error <= bestModelError + 1.5)
+  .map(([model]) => calibration.rankingQualityByModel[model]?.precisionAt10 || 0);
+assert(
+  calibration.meanAbsoluteError <= bestModelError + 1.5,
+  `Selected deep-profile model exceeds the MAE tradeoff: ${calibration.meanAbsoluteError} vs ${bestModelError}`,
+);
+assert(
+  calibration.rankingQuality?.precisionAt10 >= Math.max(...eligibleRankingPrecision),
+  "Deep-profile model selection did not choose the strongest eligible top-10 precision",
+);
+assert(calibration.rankingQuality?.precisionAt10 >= 0.8, `Founder recommendation P@10 is too low: ${calibration.rankingQuality?.precisionAt10}`);
 assert(calibration.rankingQuality?.bottomIntrusionsAt10 <= 1, `Founder recommendation top 10 contains too many tail games: ${calibration.rankingQuality?.bottomIntrusionsAt10}`);
 assert(
   equivalentRankError <= 25,

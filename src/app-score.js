@@ -505,9 +505,33 @@
           Math.round((residuals.reduce((sum, value) => sum + Math.abs(value), 0) / residuals.length) * 10) / 10,
         ]),
       );
-      const model = Object.entries(modelErrors).sort((a, b) => a[1] - b[1])[0][0];
+      const rankingQualityByModel = Object.fromEntries(
+        Object.keys(modelResiduals).map((candidateModel) => [
+          candidateModel,
+          rankingQualityFromHoldouts(holdouts, candidateModel),
+        ]),
+      );
+      const byError = Object.entries(modelErrors).sort((a, b) => a[1] - b[1]);
+      const bestError = byError[0][1];
+      const rankingUtility = (candidateModel) => {
+        const quality = rankingQualityByModel[candidateModel];
+        if (!quality) return -1;
+        return quality.precisionAt10 * 0.55
+          + quality.topQuartileRecall * 0.25
+          + quality.pairwiseAccuracy * 0.2;
+      };
+      // For a deep profile, a tiny MAE win should not select a model that
+      // reconstructs the user's favorite tier much worse. Keep numeric error
+      // within 1.5 points of the best model, then optimize ranking quality.
+      // With fewer than 20 ratings the top-10 holdout is too noisy, so retain
+      // pure MAE selection for onboarding and early profiles.
+      const model = records.length >= 20
+        ? byError
+          .filter(([, error]) => error <= bestError + 1.5)
+          .sort((a, b) => rankingUtility(b[0]) - rankingUtility(a[0]) || a[1] - b[1])[0][0]
+        : byError[0][0];
       const residuals = modelResiduals[model];
-      const rankingQuality = rankingQualityFromHoldouts(holdouts, model);
+      const rankingQuality = rankingQualityByModel[model];
       const signalResiduals = {};
       holdouts.forEach(({ record }, index) => {
         const residual = residuals[index];
@@ -532,7 +556,9 @@
         meanError: Math.round((residuals.reduce((sum, value) => sum + value, 0) / residuals.length) * 10) / 10,
         meanAbsoluteError,
         model,
+        bestError,
         modelErrors,
+        rankingQualityByModel,
         rankingQuality,
         signalBias,
         underestimated: rankedBias.filter(([, value]) => value >= 4).slice(0, 3),

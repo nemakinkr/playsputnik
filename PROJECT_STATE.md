@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v138 (cache-first static assets / network-first navigation and
+- Service worker v139 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -153,14 +153,17 @@ reviews, catalogs, sale pages, and announcements.
   111/111 known-corpus matches, 30/30 known top-30 matches, and 60/60 known
   top-60 matches. All 111 resolved records now participate in local forecast
   calibration without making fixture-only records visible recommendations.
-  The selected nearest-game model currently has 7.1/100 held-out MAE, roughly
-  19 positions on this 111-game list. Personal rank ranges are derived from
+  Deep profiles now choose a forecast model in two stages: stay within 1.5 MAE
+  points of the numerically best model, then maximize held-out top-tier ranking
+  quality. On the 111-game fixture this selects the signal model at 8.0/100 MAE,
+  roughly 21 positions, instead of nearest-game at 7.1/100 MAE. Personal rank
+  ranges are derived from
   that calibrated taste estimate and list length; budget, access, mood, and
   tonight's session affect the play-now decision but no longer move a game's
   long-term personal rank. Explicit user ranks also carry equal taste weight
   regardless of whether metadata came from seed, backbone, or search fixture.
   The held-out ordinal benchmark now also gates recommendation quality:
-  P@10 0.50, top-quartile recall 0.57, zero tail intrusions in the predicted
+  P@10 0.90, top-quartile recall 0.61, zero tail intrusions in the predicted
   top 10, and 0.80 pairwise ordering accuracy. A separate 16-title explicit
   wishlist gold set gates candidate priority at NDCG@10 0.98, must-play
   recall@5 1.00, and high-intent precision@5 1.00. Assumed dislikes are kept
@@ -182,6 +185,12 @@ reviews, catalogs, sale pages, and announcements.
   Founder wishlist metrics remain unchanged after that correction. These
   personas are anti-overfitting hypotheses, not substitutes for future
   validation with independent real users.
+  The same personas now have a separate five-signal gate that uses the actual
+  quick-reaction contract (not imported numeric ratings), with mixed positive
+  and negative answers. It currently achieves mean NDCG@6 0.91, high-fit
+  precision@3 0.89, zero avoid intrusions, mean top-3 overlap 0.07, and a
+  high-fit winner for every profile. This supports a useful first hypothesis
+  after five answers without claiming the profile is complete.
   The first follow-up closed the top-30 unknown search gaps by
   adding honest external-index records for Kingdom Come: Deliverance II, Days
   Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,
