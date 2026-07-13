@@ -1,5 +1,12 @@
 (() => {
   const t = window.PlaySputnikI18n?.t || ((key) => key);
+  const HIGH_INTENSITY_ATOMS = [
+    "adrenaline", "boss-rush", "challenge", "competitive", "horror",
+    "precision", "souls-like", "soulslike", "tension",
+  ];
+  const LOW_INTENSITY_ATOMS = [
+    "cozy", "creative", "logic", "management", "puzzle", "routine", "slow",
+  ];
   const FEEDBACK_ACTION_KEYS = {
     playing: "taste.actionPlaying", want_to_finish: "taste.actionFinish", paused: "taste.actionPaused",
     completed: "taste.actionCompleted", good_fit: "taste.actionLiked", saved: "taste.actionSaved",
@@ -13,6 +20,39 @@
     drop_not_for_me: "taste.actionDropRejected", drop_claim_only: "taste.actionClaimOnly",
     not_for_me: "taste.actionHidden",
   };
+
+  function normalizeDifficultyBand(value) {
+    if (["easy", "low"].includes(value)) return "low";
+    if (["hard", "high"].includes(value)) return "high";
+    return "medium";
+  }
+
+  function gameIntensityBand(game = {}) {
+    const atoms = new Set(game.atoms || []);
+    const difficulty = normalizeDifficultyBand(game.difficulty);
+    if (
+      difficulty === "high"
+      || HIGH_INTENSITY_ATOMS.some((atom) => atoms.has(atom))
+      || game.tone === "tense"
+    ) return "high";
+    if (
+      difficulty === "low"
+      || LOW_INTENSITY_ATOMS.some((atom) => atoms.has(atom))
+    ) return "low";
+    return "medium";
+  }
+
+  function gameSignalsForGame(game = {}) {
+    return [
+      ...(game.atoms || []),
+      game.tone,
+      game.content,
+      game.adultTimeFit,
+      game.commitment,
+      game.difficulty && `difficulty:${normalizeDifficultyBand(game.difficulty)}`,
+      `intensity:${gameIntensityBand(game)}`,
+    ].filter(Boolean);
+  }
 
   function classifyTasteVerdict({ pull = 0, caution = 0, uncertainty = 0, confidence = "Early" } = {}) {
     const cautionStrength = Math.abs(Math.min(0, caution));
@@ -48,13 +88,7 @@
     QUICK_TASTE_FIRST_TARGET,
   }) {
     function gameSignals(game) {
-      return [
-        ...(game.atoms || []),
-        game.tone,
-        game.content,
-        game.adultTimeFit,
-        game.commitment,
-      ].filter(Boolean);
+      return gameSignalsForGame(game);
     }
 
     function feedbackWeightForAction(action) {
@@ -237,9 +271,9 @@
       });
 
       const evidenceCount = sources.quick + sources.imported + sources.feedback + state.notebook.ranked.length + state.notebook.completed.length;
-      const confidence = evidenceCount >= 18 && mixedAtoms.length <= 2
+      const confidence = evidenceCount >= 20 && mixedAtoms.length <= 2
         ? "High"
-        : evidenceCount >= 8
+        : evidenceCount >= 10
           ? "Medium"
           : evidenceCount >= QUICK_TASTE_FIRST_TARGET
             ? "Starter"
@@ -284,6 +318,8 @@
         if (signal === game.content) return 0.3;
         if (signal === game.adultTimeFit) return 0.4;
         if (signal === game.commitment) return 0.35;
+        if (signal.startsWith("difficulty:")) return 0.5;
+        if (signal.startsWith("intensity:")) return 0.45;
         return 0.5;
       };
       const learningEvidence = Math.max(
@@ -915,5 +951,11 @@
     };
   }
 
-  window.PlaySputnikScore = { createScoreTools, classifyTasteVerdict };
+  window.PlaySputnikScore = {
+    createScoreTools,
+    classifyTasteVerdict,
+    gameSignalsForGame,
+    normalizeDifficultyBand,
+    gameIntensityBand,
+  };
 })();

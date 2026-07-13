@@ -84,6 +84,16 @@ const tools = context.window.PlaySputnikScore.createScoreTools({
   getPriceStatus: () => ({ canConfirm: false }),
   QUICK_TASTE_FIRST_TARGET: 5,
 });
+assert.deepEqual(
+  Array.from(tools.gameSignals({ atoms: ["cozy"], difficulty: "easy" })).slice(-2),
+  ["difficulty:low", "intensity:low"],
+  "difficulty and intensity should be distinct structured taste signals",
+);
+assert.deepEqual(
+  Array.from(tools.gameSignals({ atoms: ["challenge"], difficulty: "hard" })).slice(-2),
+  ["difficulty:high", "intensity:high"],
+  "challenging games should teach high difficulty and intensity without a raw high-key collision",
+);
 const calibration = tools.tasteCalibrationProfile();
 assert.equal(calibration.ready, true);
 assert.equal(calibration.count, 6);
@@ -136,7 +146,7 @@ assert.equal(tools.calibrationQuestionGames(3).length, 0, "rated games must disa
 
 context.window.PlaySputnikConfig = {
   QUICK_TASTE_FIRST_TARGET: 5,
-  QUICK_TASTE_USABLE_TARGET: 8,
+  QUICK_TASTE_USABLE_TARGET: 10,
   QUICK_TASTE_SHARP_TARGET: 20,
 };
 context.window.PlaySputnikRecommend = {};

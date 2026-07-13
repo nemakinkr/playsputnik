@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v139 (cache-first static assets / network-first navigation and
+- Service worker v140 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -130,16 +130,16 @@ reviews, catalogs, sale pages, and announcements.
   The estimator now selects per user among four fully local models: personal
   mean, weighted nearest games, regularized atom patterns, and an ensemble.
   Selection uses the same held-out evaluation and Stats names the winner.
-- Onboarding: 30-game swipe deck, visible 30-second contract, 3/6/10
-  milestones, animated hero exit, first-pick payoff after 3 real taste
-  signals, and "use now / improve later" guidance for swipes, library access,
-  or pasted ratings. The first payoff
+- Onboarding: 30-game swipe deck, visible 30-second contract, honest 5/10/20
+  confidence milestones, animated hero exit, and a cautious first-pick payoff
+  after 5 real taste signals, with "use now / improve later" guidance for
+  swipes, library access, or pasted ratings. The first payoff
   now shows a concrete verdict: what was learned, what to try now, and what is
   still uncertain, plus a "Next 3 clicks" journey into detail, memory, and
   Discover search. Clean profiles now get the one-question taste prompt in the
-  first Today viewport; the 3-signal answer is explicitly framed as a test pick,
+  first Today viewport; the 5-signal answer is explicitly framed as a test pick,
   and the top-pick hero shows why/risk/next-action before deeper evidence. The
-  clean first-run hero now states the no-account / 3-tap /
+  clean first-run hero now states the no-account / 5-tap /
   useful-before-setup value contract and shows a source-aware diagnostic game
   poster before deeper onboarding. The quick taste queue now balances broad
   recognizability with diagnostic axis coverage, so the first few swipes span
@@ -190,7 +190,14 @@ reviews, catalogs, sale pages, and announcements.
   and negative answers. It currently achieves mean NDCG@6 0.91, high-fit
   precision@3 0.89, zero avoid intrusions, mean top-3 overlap 0.07, and a
   high-fit winner for every profile. This supports a useful first hypothesis
-  after five answers without claiming the profile is complete.
+  after five answers without claiming the profile is complete. A deterministic
+  stress layer also samples 20 unique random five-card sets per persona (60
+  scenarios total): mean NDCG@6 0.89, high-fit winner rate 0.95, and avoid-free
+  top-3 rate 0.95. The same work aligned profile confidence to 5 = hypothesis,
+  10 = working read, and 20 = confident quick profile. Difficulty and derived
+  intensity now use separate structured taste signals with lower importance
+  than core mechanics; EN/RU explanations localize them without exposing
+  machine keys. The stress gate exposed and fixed incorrect DOOM Eternal atoms.
   The first follow-up closed the top-30 unknown search gaps by
   adding honest external-index records for Kingdom Come: Deliverance II, Days
   Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,

@@ -93,7 +93,9 @@
   }
 
   function atomLabel(value) {
-    const axes = ["atoms", "tone", "content", "adultTimeFit", "commitment", "difficulty", "session", "reviewBurden"];
+    const structured = String(value || "").match(/^(difficulty|intensity):(.+)$/);
+    if (structured) return taxonomyLabel(structured[1], structured[2]);
+    const axes = ["atoms", "tone", "content", "adultTimeFit", "commitment", "difficulty", "intensity", "session", "reviewBurden"];
     for (const axis of axes) {
       const key = `taxonomy.${axis}.${value}`;
       const translated = t(key);

@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-06-30. Pick the next task here without rereading the
+Last updated: 2026-07-13. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 ARCHITECTURE.md (generated ownership map), CLAUDE.md (dev workflow + perf
 rules). The user's decision remains **polish before showing the product to
@@ -180,24 +180,24 @@ flow if amnestied games feel too buried.
 
 ### 3. Onboarding dogfood pass
 
-Status: follow-up. The first polish pass is done: the 3-signal payoff no
+Status: follow-up. The first polish pass is done: the early payoff no
 longer appears on an empty profile, the hero cards use the same quick-reaction
 format as the main swipe deck, and the first-run bridge now says "use now,
 improve later" with swipes / library / pasted-rating paths. Follow-up done:
 the quick swipe card now states the 30-second value contract, and the first
-payoff copy frames 3 signals as the first useful read rather than a final
+payoff copy frames 5 signals as the first useful read rather than a final
 profile. Follow-up done: the clean-profile Today screen now surfaces the
 one-question quick onboarding hero in the first viewport, with three visible
 reaction buttons backed by the same diagnostic taste logic as the full swipe
 deck. `browser-smoke-test.mjs` gates that the first-run entry cannot slip below
-the fold again. Follow-up done: the 3-signal result is framed as a "test pick"
+the fold again. Follow-up done: the 5-signal result is framed as a "test pick"
 rather than a personal ranking, and the top-pick hero now shows a compact
 decision strip for why/risk/next action. `core-journey-smoke-test.mjs` gates
 the early framing, hero strip, detail, and Discover path. Follow-up done: the
 top-pick hero now has one context-aware primary CTA before secondary actions,
 and Library plan rows read as ordered next steps with a primary action per row.
 Follow-up done: the clean first-run hero now makes the first-60-second value
-contract explicit before setup: no account required, three taps to a first
+contract explicit before setup: no account required, five taps to a first
 pick, and usable before PSN/library/rating import. The diagnostic game card now
 uses the same source-aware cover treatment as the rest of the product instead
 of a blank color tile, with compact mobile spacing so the reaction buttons
@@ -211,7 +211,7 @@ tuning.
 
 Follow-up done: onboarding now points more explicitly into gradual Library
 memory instead of implying a full PSN/import setup. Quick swipe completion and
-the 3-signal contract both say the app is usable now and My Games can start
+the 5-signal contract both say the app is usable now and My Games can start
 later with one title, PSN access, or a pasted list.
 
 ### 4. Chunk-label copy refinement
@@ -322,9 +322,9 @@ Hunter: World, Destiny 2, Knockout City, Assassin's Creed Brotherhood, and
 Rise of the Tomb Raider. A separate synthetic benchmark now protects against
 founder-only overfitting: three deterministic fictional personas (systems,
 competitive, cozy) rate disjoint training games and rank the same 13 unseen
-candidates. Current aggregate is NDCG@6 0.93, high-fit precision@3 0.78, zero
+candidates. Current aggregate is NDCG@6 0.93, high-fit precision@3 0.89, zero
 avoid intrusions in any top 3, three distinct top choices, and mean top-3
-overlap 0.17. The gate also rejects training/candidate title leakage. Its
+overlap 0.07. The gate also rejects training/candidate title leakage. Its
 initial failure revealed that imported weights saturated both pull and caution
 caps; `tasteEngineScore()` now normalizes by evidence volume and downweights
 auxiliary tone/content/time/commitment signals relative to core atoms. Keep the
@@ -332,8 +332,14 @@ fixture labelled as synthetic: it catches collapse and regressions but cannot
 replace real-user validation. A separate five-signal run uses the production
 quick-reaction path with mixed positive/negative answers; it gates NDCG@6 0.91,
 high-fit precision@3 0.89, zero avoid intrusions, mean top-3 overlap 0.07, and
-a high-fit winner for every persona. New aliases were added for
-high-value Russian/variant titles already present in the corpus: The Witcher 3,
+a high-fit winner for every persona. A second deterministic layer samples 20
+unique random five-card sets for each persona (60 scenarios): NDCG@6 0.89,
+high-fit winner rate 0.95, and avoid-free top-3 rate 0.95. Confidence copy and
+logic now agree on 5 = hypothesis, 10 = working read, 20 = confident profile.
+Difficulty and derived intensity are separate prefixed signals, localized in
+EN/RU and intentionally weighted below mechanics; the stress run also exposed
+and fixed DOOM Eternal's incorrect co-op/atmosphere atoms. New aliases were
+added for high-value Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of
 Ashes, The Stanley Parable, Marvel's Guardians of the Galaxy, and Dying Light 2
@@ -527,7 +533,7 @@ and the budget range now have mobile-safe touch heights. SW v31.
   exercised against the actual published site.
 - Mobile navigation polish: all 8 product areas are visible on a 390px mobile
   viewport without horizontal scrolling, with primary/secondary hierarchy.
-- First-session payoff polish: after 3 real onboarding signals, the product
+- First-session payoff polish: after 5 real onboarding signals, the product
   states what it learned, what to try now, and what remains uncertain.
 - Core user journey polish: first read now leads directly into detail,
   memory action, and Discover search through a compact guided rail.
@@ -547,7 +553,7 @@ and the budget range now have mobile-safe touch heights. SW v31.
   access, wishlist, and finished/memory states so changing a state immediately
   explains what the user should do next.
 - Onboarding dogfood: the quick swipe card now shows a visible 30-second
-  contract ("clicks to first pick" plus 3/6/10 progress), making the value
+  contract ("clicks to first pick" plus 5/10/20 progress), making the value
   promise obvious before the user has answered enough games.
 - Library action polish: My Games rows now show 2-3 contextual quick actions
   first and move the full state/rating matrix into a `More states` disclosure.

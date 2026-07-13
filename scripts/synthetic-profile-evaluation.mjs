@@ -9,6 +9,8 @@ const external = JSON.parse(await readFile(new URL("data/global-search-fixtures.
 const aliases = JSON.parse(await readFile(new URL("data/title-aliases.json", ROOT), "utf8"));
 const scoreSource = await readFile(new URL("src/app-score.js", ROOT), "utf8");
 const OUTPUT_JSON = process.argv.includes("--json");
+const STRESS_SETS_PER_PROFILE = 20;
+const STRESS_SET_SIZE = 5;
 
 function normalizeTitle(title) {
   return String(title || "")
@@ -28,15 +30,10 @@ function titleKey(title) {
   return normalizeTitle(alias?.title || title);
 }
 
-function gameSignals(game) {
-  return [
-    ...(game.atoms || []),
-    game.tone,
-    game.content,
-    game.adultTimeFit,
-    game.commitment,
-  ].filter(Boolean);
-}
+const signalSandbox = { window: { PlaySputnikI18n: { t: (key) => key } }, Math, Set };
+vm.createContext(signalSandbox);
+vm.runInContext(scoreSource, signalSandbox, { filename: "src/app-score.js" });
+const gameSignals = signalSandbox.window.PlaySputnikScore.gameSignalsForGame;
 
 function normalizeCandidate(record, source) {
   const atoms = record.atoms || [];
@@ -244,19 +241,89 @@ function summarize(reports) {
   };
 }
 
+function seededRandom(seedText) {
+  let seed = [...seedText].reduce((value, character) => (
+    Math.imul(value ^ character.charCodeAt(0), 16777619) >>> 0
+  ), 2166136261);
+  return () => {
+    seed += 0x6D2B79F5;
+    let value = seed;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function randomRatingSets(profile) {
+  assert(profile.ratings.length >= STRESS_SET_SIZE, `${profile.name} needs at least ${STRESS_SET_SIZE} ratings for stress sampling`);
+  const random = seededRandom(`playsputnik:${profile.id}:five-signal:v1`);
+  const sets = [];
+  const seen = new Set();
+  while (sets.length < STRESS_SETS_PER_PROFILE) {
+    const shuffled = [...profile.ratings];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swap = Math.floor(random() * (index + 1));
+      [shuffled[index], shuffled[swap]] = [shuffled[swap], shuffled[index]];
+    }
+    const sample = shuffled.slice(0, STRESS_SET_SIZE);
+    const signature = sample.map(({ title }) => titleKey(title)).sort().join("|");
+    if (seen.has(signature)) continue;
+    seen.add(signature);
+    sets.push(sample);
+  }
+  return sets;
+}
+
+function summarizeStress(reports) {
+  const groups = fixture.profiles.map((profile) => {
+    const scenarios = reports.filter((report) => report.id === profile.id);
+    return {
+      id: profile.id,
+      name: profile.name,
+      scenarioCount: scenarios.length,
+      meanNdcgAt6: round(scenarios.reduce((sum, report) => sum + report.metrics.ndcgAt6, 0) / scenarios.length),
+      meanHighFitPrecisionAt3: round(scenarios.reduce((sum, report) => sum + report.metrics.highFitPrecisionAt3, 0) / scenarios.length),
+      highFitTopChoiceRate: round(scenarios.filter((report) => ["ideal", "strong"].includes(report.top3[0]?.label)).length / scenarios.length),
+      avoidFreeTop3Rate: round(scenarios.filter((report) => report.metrics.avoidIntrusionsAt3 === 0).length / scenarios.length),
+    };
+  });
+  return {
+    scenarioCount: reports.length,
+    setsPerProfile: STRESS_SETS_PER_PROFILE,
+    meanNdcgAt6: round(reports.reduce((sum, report) => sum + report.metrics.ndcgAt6, 0) / reports.length),
+    meanHighFitPrecisionAt3: round(reports.reduce((sum, report) => sum + report.metrics.highFitPrecisionAt3, 0) / reports.length),
+    highFitTopChoiceRate: round(reports.filter((report) => ["ideal", "strong"].includes(report.top3[0]?.label)).length / reports.length),
+    avoidFreeTop3Rate: round(reports.filter((report) => report.metrics.avoidIntrusionsAt3 === 0).length / reports.length),
+    profiles: groups,
+  };
+}
+
 const fullProfiles = fixture.profiles.map((profile) => evaluateProfile(profile, profile.ratings));
 const starterProfiles = fixture.profiles.map((profile) => {
   const starterKeys = new Set((profile.starterTitles || []).map(titleKey));
   return evaluateProfile(profile, profile.ratings.filter(({ title }) => starterKeys.has(titleKey(title))), "quick");
 });
+const stressProfiles = fixture.profiles.flatMap((profile) => (
+  randomRatingSets(profile).map((ratings, index) => ({
+    ...evaluateProfile(profile, ratings, "quick"),
+    scenario: index + 1,
+    reactions: {
+      positive: ratings.filter(({ rating }) => rating >= 7).length,
+      neutral: ratings.filter(({ rating }) => rating > 5 && rating < 7).length,
+      negative: ratings.filter(({ rating }) => rating <= 5).length,
+    },
+  }))
+));
 const aggregate = summarize(fullProfiles);
 const starterAggregate = summarize(starterProfiles);
+const stressAggregate = summarizeStress(stressProfiles);
 const report = {
   mode: "synthetic-profile-evaluation",
   fixturePolicy: fixture.method,
   aggregate,
   profiles: fullProfiles,
   starter: { aggregate: starterAggregate, profiles: starterProfiles },
+  stress: { aggregate: stressAggregate, scenarios: stressProfiles },
   missingCandidates: candidateRows.filter((row) => !row.game).map((row) => row.title),
 };
 
@@ -270,6 +337,10 @@ else {
   console.log(`   Five-signal start: mean NDCG@6 ${starterAggregate.meanNdcgAt6}, mean high-fit P@3 ${starterAggregate.meanHighFitPrecisionAt3}, avoid intrusions ${starterAggregate.totalAvoidIntrusionsAt3}`);
   starterProfiles.forEach((profile) => {
     console.log(`   ↳ ${profile.name}: ${profile.top3.map((row) => `${row.title}:${row.label}:${row.score}`).join(", ")}`);
+  });
+  console.log(`   Random five-signal stress: ${stressAggregate.scenarioCount} scenarios, mean NDCG@6 ${stressAggregate.meanNdcgAt6}, high-fit winner ${stressAggregate.highFitTopChoiceRate}, avoid-free top 3 ${stressAggregate.avoidFreeTop3Rate}`);
+  stressAggregate.profiles.forEach((profile) => {
+    console.log(`   ↳ ${profile.name}: NDCG ${profile.meanNdcgAt6}, high-fit winner ${profile.highFitTopChoiceRate}, avoid-free ${profile.avoidFreeTop3Rate}`);
   });
 }
 
@@ -310,3 +381,14 @@ starterProfiles.forEach((profile) => {
 });
 assert(starterAggregate.uniqueTopChoices >= 2, `Five-signal profiles collapsed onto ${starterAggregate.uniqueTopChoices}/${starterAggregate.profileCount} unique top choices`);
 assert(starterAggregate.meanTop3Jaccard <= 0.35, `Five-signal top-3 recommendations are too similar: ${starterAggregate.meanTop3Jaccard}`);
+assert(stressAggregate.scenarioCount === fixture.profiles.length * STRESS_SETS_PER_PROFILE, `Expected ${fixture.profiles.length * STRESS_SETS_PER_PROFILE} random five-signal scenarios, got ${stressAggregate.scenarioCount}`);
+assert(stressAggregate.meanNdcgAt6 >= 0.78, `Random five-signal mean NDCG@6 is too low: ${stressAggregate.meanNdcgAt6}`);
+assert(stressAggregate.meanHighFitPrecisionAt3 >= 0.7, `Random five-signal mean high-fit precision@3 is too low: ${stressAggregate.meanHighFitPrecisionAt3}`);
+assert(stressAggregate.highFitTopChoiceRate >= 0.8, `Random five-signal high-fit top choice rate is too low: ${stressAggregate.highFitTopChoiceRate}`);
+assert(stressAggregate.avoidFreeTop3Rate >= 0.9, `Random five-signal avoid-free top-3 rate is too low: ${stressAggregate.avoidFreeTop3Rate}`);
+stressAggregate.profiles.forEach((profile) => {
+  assert(profile.scenarioCount === STRESS_SETS_PER_PROFILE, `${profile.name} has ${profile.scenarioCount}/${STRESS_SETS_PER_PROFILE} stress scenarios`);
+  assert(profile.meanNdcgAt6 >= 0.7, `${profile.name} random five-signal NDCG@6 is too low: ${profile.meanNdcgAt6}`);
+  assert(profile.highFitTopChoiceRate >= 0.7, `${profile.name} random five-signal high-fit top choice rate is too low: ${profile.highFitTopChoiceRate}`);
+  assert(profile.avoidFreeTop3Rate >= 0.8, `${profile.name} random five-signal avoid-free top-3 rate is too low: ${profile.avoidFreeTop3Rate}`);
+});

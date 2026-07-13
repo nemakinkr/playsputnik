@@ -126,8 +126,8 @@
       clear: "Cleared",
     },
     QUICK_TASTE_FIRST_TARGET: 5,
-    QUICK_TASTE_USABLE_TARGET: 8,
-    QUICK_TASTE_SHARP_TARGET: 10,
+    QUICK_TASTE_USABLE_TARGET: 10,
+    QUICK_TASTE_SHARP_TARGET: 20,
     TITLE_ENRICHMENT_RULES: [
       {
         terms: ["stray"],

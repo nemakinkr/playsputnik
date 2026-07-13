@@ -912,8 +912,8 @@ function checkSelectors() {
   assert(/function quickPayoffStage/.test(appOnboardingSource), "Quick onboarding payoff stage copy is missing");
   assert(/function quickPayoffMilestones/.test(appOnboardingSource), "Quick onboarding payoff milestones are missing");
   assert(/taste-payoff/.test(appSource + css), "Quick onboarding should render a payoff block");
-  assert(/taste-payoff-ladder/.test(appSource + css), "Quick onboarding should render a 3/6/10 payoff ladder");
-  assert(/First spark/.test(appOnboardingSource + i18nEnSource) && /Safer read/.test(appOnboardingSource + i18nEnSource) && /Sharper picks/.test(appOnboardingSource + i18nEnSource), "Quick onboarding payoff should cover 3/6/10 moments");
+  assert(/taste-payoff-ladder/.test(appSource + css), "Quick onboarding should render a 5/10/20 payoff ladder");
+  assert(/First hypothesis/.test(appOnboardingSource + i18nEnSource) && /Working read/.test(appOnboardingSource + i18nEnSource) && /Confident profile/.test(appOnboardingSource + i18nEnSource), "Quick onboarding payoff should cover honest 5/10/20 confidence moments");
   assert(/function quickTasteConflictReport/.test(appOnboardingSource), "Quick onboarding should detect mixed early taste signals");
   assert(/function conflictResolutionScore/.test(appOnboardingSource), "Quick onboarding should score conflict-resolution follow-ups");
   assert(/function tasteEngineProfile/.test(appScoreSource), "Taste Engine v2 profile builder is missing");
@@ -1356,7 +1356,7 @@ function checkSelectors() {
   assert(/Paste text/.test(html), "Deep route should accept pasted ratings");
   assert(/function entryLabel/.test(appEntrySource), "Entry label function is missing from entry module");
   assert(/function entryRouteProofCopy/.test(appEntrySource), "Entry route proof copy is missing from entry module");
-  assert(/settings\.entry\.proofInitialLabel/.test(appEntrySource) && /Usable after \{target\} signals/.test(i18nEnSource), "Entry proof should communicate fast-start threshold");
+  assert(/settings\.entry\.proofInitialLabel/.test(appEntrySource) && /First pick after \{target\} signals/.test(i18nEnSource), "Entry proof should communicate fast-start threshold without overstating profile maturity");
   assert(/First hypothesis/.test(appAnswerSource + appEntrySource + html), "Quick onboarding should call the early payoff a hypothesis");
   assert(/PlaySputnikEntry/.test(appEntrySource), "Entry module must export PlaySputnikEntry");
   assert(/PlaySputnikEntry/.test(appSource), "app.js must reference PlaySputnikEntry");

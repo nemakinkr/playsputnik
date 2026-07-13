@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-13T14:14:39.362Z",
+  "generatedAt": "2026-07-13T14:40:02.060Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -204,7 +204,7 @@
     ]
   },
   "refreshDigest": {
-    "generatedAt": "2026-07-13T14:14:39.357Z",
+    "generatedAt": "2026-07-13T14:40:02.053Z",
     "priceSnapshotCount": 1844,
     "subscriptionRecordCount": 503,
     "latestPriceCheckedAt": "2026-07-13T10:33:00.561Z",
@@ -311,7 +311,7 @@
     },
     {
       "atom": "atmosphere",
-      "count": 122
+      "count": 121
     },
     {
       "atom": "rpg",
@@ -327,7 +327,7 @@
     },
     {
       "atom": "co-op",
-      "count": 51
+      "count": 50
     },
     {
       "atom": "sci-fi",
