@@ -26,6 +26,7 @@
     userStateToUserGame,
     saveState,
     render,
+    onLibraryEntriesImported = () => {},
     els,
   }) {
     let _pendingImportEntries = null;
@@ -216,10 +217,12 @@
       if (els.libraryImportConfirm) {
         els.libraryImportConfirm.addEventListener("click", () => {
           if (!_pendingImportEntries) return;
-          const added = applyLibraryImportEntries(_pendingImportEntries);
+          const importedEntries = _pendingImportEntries;
+          const added = applyLibraryImportEntries(importedEntries);
           _pendingImportEntries = null;
           saveState();
           render();
+          onLibraryEntriesImported(importedEntries);
           if (els.libraryImportPreview) {
             els.libraryImportPreview.style.display = "none";
             els.libraryImportPreview.innerHTML = "";

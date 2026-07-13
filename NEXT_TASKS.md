@@ -42,6 +42,10 @@ Run `./scripts/check.sh` before claiming any task done.
   with `providerImport` + `sourcePassport`, source/cover URLs, attribution flag,
   match confidence, and missing-price honesty; `rawg-lazy-import-smoke` gates
   the flow without live network or secrets.
+- Automatic provider resolution for pasted rankings and library imports: done.
+  Unknown titles run through a resumable, concurrency-bounded RAWG queue and
+  keep their original rating/rank/library semantics; low-confidence and failed
+  matches remain reviewable instead of being silently accepted.
 
 ## Track: Localization (EN + RU) — ACTIVE, large multi-phase project
 

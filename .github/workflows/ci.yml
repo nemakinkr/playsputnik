@@ -30,6 +30,7 @@ jobs:
           node scripts/decision-workflow-test.mjs
           node scripts/detail-view-test.mjs
           node scripts/state-migrations-test.mjs
+          node scripts/import-resolution-test.mjs
           node scripts/release-upgrade-test.mjs
           node scripts/state-class-check.mjs
           node scripts/architecture-map.mjs --check

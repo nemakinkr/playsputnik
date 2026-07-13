@@ -88,6 +88,14 @@ reviews, catalogs, sale pages, and announcements.
   weak metadata stays uncertain; RAWG never supplies price, Plus, or language
   claims. Saved external games retain this profile in recommendations and
   detail.
+- Ranked-taste and smart-library imports now resolve unknown titles through a
+  persisted RAWG batch queue instead of stopping at a manual Discover list.
+  The queue deduplicates up to 120 titles, limits provider work to two
+  concurrent requests, resumes after reload, and preserves the imported
+  meaning: rank/rating stays a taste signal, while owned/completed/etc. stays
+  a library state. Uncertain or failed matches remain explicit review items.
+  The reusable workflow lives in `src/app-import-resolution.js`; schema v6 and
+  deterministic unit/browser gates protect it.
 - Production API is live at
   `https://playsputnik-api.playsputnik.workers.dev`. Pages receives this origin
   through the `PLAYSPUTNIK_API_ORIGIN` repository variable. RAWG search and

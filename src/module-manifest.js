@@ -29,6 +29,7 @@
     [4, "src/app-visual.js", "PlaySputnikVisual", "Catalog filtering and visual state"],
     [4, "src/app-provider-import.js", "PlaySputnikProviderImport", "Provider import metadata and review actions"],
     [4, "src/app-search-memory.js", "PlaySputnikSearchMemory", "Search-result memory workflows"],
+    [4, "src/app-import-resolution.js", "PlaySputnikImportResolution", "Batch provider resolution for imported titles"],
     [4, "src/app-memory-focus.js", "PlaySputnikMemoryFocus", "Search-to-library focus handoff"],
     [4, "src/app-wishlist.js", "PlaySputnikWishlist", "Wishlist and buy guardrails"],
     [4, "src/app-cards.js", "PlaySputnikCards", "Shared game-card rendering"],

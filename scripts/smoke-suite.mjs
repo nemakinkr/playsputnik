@@ -1,7 +1,7 @@
 /* Browser smoke suite orchestrator.
  *
  * The Playwright smoke tests (app-view, core-journey, demo-profile, design,
- * game-detail, library-wishlist, search-memory, rawg-lazy-import,
+ * game-detail, library-wishlist, search-memory, rawg-lazy-import, import-resolution,
  * visual-catalog) default to the app on :4190 and the provider backend on :4191. Run on their own they fail
  * (no servers) and silently rot — exactly what bit search-memory-smoke after a
  * search-row markup refactor. This brings them under one command: serve the
@@ -32,6 +32,7 @@ const SMOKES = [
     script: "search-memory-smoke-test.mjs",
     args: ["--query=Firewatch", "--expected=Firewatch", "--state=saved", "--inject-rawg"],
   },
+  { id: "import-resolution-smoke", script: "import-resolution-smoke-test.mjs" },
   { id: "visual-catalog-smoke", script: "visual-catalog-smoke-test.mjs" },
 ];
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));

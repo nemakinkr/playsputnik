@@ -15,6 +15,8 @@ const legacy = {
     stale: { resultShapeVersion: "search-result-v2", results: [{ title: "Stale" }] },
     current: { resultShapeVersion: "search-result-v3", results: [{ title: "Current" }] },
   },
+  importLookupQueue: ["Alan Wake 2"],
+  importLookupResolved: { "alan wake 2": true },
 };
 const migrated = migrateState(legacy);
 
@@ -25,6 +27,8 @@ assert.equal(migrated.activeView, "today");
 assert.deepEqual([...migrated.providerSearch.results], []);
 assert.deepEqual(Object.keys(migrated.providerSearchCache), ["current"]);
 assert.equal(migrated.providerSearch.query, "");
+assert.equal(migrated.importLookupItems["alan wake 2"].status, "resolved");
+assert.equal(migrated.importLookupItems["alan wake 2"].kind, "lookup");
 assert.equal(legacy.stateVersion, undefined, "migration must not mutate stored input");
 assert.deepEqual(
   JSON.parse(JSON.stringify(migrateState(migrated))),

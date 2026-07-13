@@ -168,6 +168,9 @@ if (!window.PlaySputnikExport) {
 if (!window.PlaySputnikSearchMemory) {
   throw new Error("PlaySputnikSearchMemory must load before app.js");
 }
+if (!window.PlaySputnikImportResolution) {
+  throw new Error("PlaySputnikImportResolution must load before app.js");
+}
 
 const {
   STORAGE_KEY,
@@ -678,6 +681,28 @@ const {
   aiEnrichmentForGame: (item) => aiEnrichmentForGame(item),
   providerImportFromSearchResult,
   providerCoverLicenseNote,
+});
+
+const {
+  queueEntries: queueImportResolutionEntries,
+  runBatch: runImportResolutionBatch,
+  resumeBatch: resumeImportResolutionBatch,
+  clearQueue: clearImportResolutionQueue,
+  progress: importLookupProgress,
+  activeTitle: activeImportLookupTitle,
+  nextTitle: nextImportLookupTitle,
+  markResolved: markImportLookupResolvedForTitle,
+} = window.PlaySputnikImportResolution.createImportResolutionTools({
+  getState: () => state,
+  titleKey,
+  titleMatches,
+  fetchProvider: (query) => fetchProviderForImport(query),
+  normalizeProviderResult: (record, query) => searchResultFromProvider(record, query),
+  onResolved: (entry, result, payload) => applyResolvedImportEntry(entry, result, payload),
+  onProgress: (_snapshot, event) => handleImportResolutionProgress(event),
+  onComplete: () => handleImportResolutionComplete(),
+  concurrency: 2,
+  maxBatchSize: 120,
 });
 
 const {
@@ -1225,6 +1250,7 @@ const { bindExportListeners } = window.PlaySputnikExport.createExportTools({
   userStateToUserGame,
   saveState: () => persistState(state),
   render: () => render(),
+  onLibraryEntriesImported: (entries) => queueLibraryImportResolution(entries),
   els,
 });
 bindExportListeners();
@@ -1963,7 +1989,7 @@ function providerSearchCacheRecord(query) {
 }
 
 function rememberProviderSearch(query, record) {
-  if (!record || record.status !== "live" || !Array.isArray(record.results) || !record.results.length) return;
+  if (!record || !["live", "fallback"].includes(record.status) || !Array.isArray(record.results) || !record.results.length) return;
   const key = providerSearchCacheKey(query);
   const nextCache = {
     ...(state.providerSearchCache || {}),
@@ -1978,6 +2004,30 @@ function rememberProviderSearch(query, record) {
     .sort((a, b) => String(b[1].cachedAt || b[1].checkedAt || "").localeCompare(String(a[1].cachedAt || a[1].checkedAt || "")))
     .slice(0, 24);
   state.providerSearchCache = Object.fromEntries(entries);
+}
+
+async function fetchProviderForImport(query) {
+  const cached = providerSearchCacheRecord(query);
+  if (cached) return cached;
+  const endpoint = new URL(PROVIDER_SEARCH_ENDPOINT);
+  endpoint.searchParams.set("q", query);
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), 15000);
+  try {
+    const response = await fetch(endpoint, { cache: "no-store", signal: controller.signal });
+    if (!response.ok) throw new Error(`Provider search failed: ${response.status}`);
+    const payload = await response.json();
+    const record = {
+      ...payload,
+      query,
+      status: payload.mode === "provider_live" ? "live" : "fallback",
+      results: Array.isArray(payload.results) ? payload.results : [],
+    };
+    rememberProviderSearch(query, record);
+    return record;
+  } finally {
+    window.clearTimeout(timeout);
+  }
 }
 
 const PROVIDER_SEARCH_AUTO_DELAY_MS = 650;
@@ -2238,6 +2288,21 @@ function importResolutionForTitle(rawTitle) {
   if (fixture) {
     return { status: "known", title: fixture.title, sourceId: "prototype_external_index", record: fixture };
   }
+  const providerMemory = Object.values(state.userGames || {}).find((record) => (
+    record?.title
+    && titleMatches(record.title, title)
+    && (record.providerImport?.provider || record.sourcePassport?.provider || record.source?.startsWith("search_"))
+  ));
+  if (providerMemory) {
+    return {
+      status: "known",
+      title: providerMemory.title,
+      sourceId: providerMemory.provider === "rawg" || providerMemory.providerImport?.provider === "rawg"
+        ? "rawg_provider_hook"
+        : "prototype_external_index",
+      record: providerMemory,
+    };
+  }
   return { status: "missing", title: cleanedTitle, sourceId: "", record: null };
 }
 
@@ -2267,9 +2332,10 @@ function analyzeRankedTasteImport(rankedEntries) {
     if (!game) return;
     const rating = derivedRatingFromRank(entry.rank, total);
     const isAnchor = resolution.status === "anchor";
-    applyRatingWeight(weights, game, rating, isAnchor ? 1 : 0.55);
-    if (isAnchor) rememberImportedRating(game, rating);
-    matched.push({ title: resolution.title || game.title, rating, sourceId: resolution.sourceId, trusted: isAnchor });
+    const isProvider = resolution.sourceId === "rawg_provider_hook";
+    applyRatingWeight(weights, game, rating, isAnchor ? 1 : isProvider ? 0.8 : 0.55);
+    if (isAnchor || isProvider) rememberImportedRating(game, rating);
+    matched.push({ title: resolution.title || game.title, rating, sourceId: resolution.sourceId, trusted: isAnchor || isProvider });
   });
 
   state.atomWeights = weights;
@@ -2288,31 +2354,54 @@ function analyzeRankedTasteImport(rankedEntries) {
   return { matched, total };
 }
 
-function analyzeTasteImport() {
-  const weights = {};
-  const matched = [];
+function parsedTasteImportEntries() {
   const text = state.ratingImport || "";
-  const rankedEntries = parseRankedTasteLines(text);
   const lines = text
     .split(/\n|\\n/)
     .map((line) => line.trim())
     .filter(Boolean);
+  const rankedEntries = parseRankedTasteLines(text);
+  const isRanked = rankedEntries.length >= 8 && rankedEntries.length >= lines.length * 0.6;
+  const entries = isRanked
+    ? rankedEntries.map((entry, index) => ({
+        title: entry.title,
+        rank: entry.rank || index + 1,
+        rating: derivedRatingFromRank(entry.rank || index + 1, rankedEntries.length),
+      }))
+    : lines.map(parseRatingLine).filter(Boolean);
+  return { text, lines, isRanked, entries };
+}
 
-  if (rankedEntries.length >= 8 && rankedEntries.length >= lines.length * 0.6) {
-    analyzeRankedTasteImport(rankedEntries);
+function unresolvedTasteImportEntries() {
+  const parsed = parsedTasteImportEntries();
+  return parsed.entries
+    .filter((entry) => importResolutionForTitle(entry.title).status === "missing")
+    .map((entry) => ({
+      ...entry,
+      kind: "rating",
+      total: parsed.entries.length,
+    }));
+}
+
+function analyzeTasteImport() {
+  const weights = {};
+  const matched = [];
+  const { isRanked, entries } = parsedTasteImportEntries();
+
+  if (isRanked) {
+    analyzeRankedTasteImport(entries);
     return;
   }
 
-  lines.forEach((line) => {
-      const parsed = parseRatingLine(line);
-      if (!parsed) return;
+  entries.forEach((parsed) => {
       const resolution = importResolutionForTitle(parsed.title);
       const game = resolution.record;
       if (!game) return;
       const isAnchor = resolution.status === "anchor";
-      applyRatingWeight(weights, game, parsed.rating, isAnchor ? 1 : 0.55);
-      if (isAnchor) rememberImportedRating(game, parsed.rating);
-      matched.push({ title: resolution.title || game.title, rating: parsed.rating, sourceId: resolution.sourceId, trusted: isAnchor });
+      const isProvider = resolution.sourceId === "rawg_provider_hook";
+      applyRatingWeight(weights, game, parsed.rating, isAnchor ? 1 : isProvider ? 0.8 : 0.55);
+      if (isAnchor || isProvider) rememberImportedRating(game, parsed.rating);
+      matched.push({ title: resolution.title || game.title, rating: parsed.rating, sourceId: resolution.sourceId, trusted: isAnchor || isProvider });
     });
   state.atomWeights = weights;
   state.importedRatings = matched;
@@ -2580,7 +2669,8 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
 
   const sourceHits = preview.reviewGroups?.find((group) => group.kind === "known")?.rows || [];
   const misses = preview.reviewGroups?.find((group) => group.kind === "missing")?.rows || [];
-  const lookupTitles = [...sourceHits, ...misses].map((row) => row.rawTitle || row.title).filter(Boolean).slice(0, 8);
+  const unresolvedEntries = unresolvedTasteImportEntries();
+  const lookupTitles = unresolvedEntries.map((entry) => entry.title);
   const confidence = preview.strong
     ? t("settings.tasteImport.reportConfidenceStrong")
     : preview.ready
@@ -2590,6 +2680,16 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
   const anchorPct = preview.total ? Math.round((preview.matched / preview.total) * 100) : 0;
   const knownPct = preview.total ? Math.round((preview.known / preview.total) * 100) : 0;
   const gapCount = Math.max(0, preview.total - preview.known);
+  const reviewCount = gapCount ? lookupTitles.length : sourceHits.length;
+  const batchSummary = state.importLookupBatchSummary?.kind === "rating" ? state.importLookupBatchSummary : null;
+  const batchRunning = batchSummary?.status === "running";
+  const batchStatus = batchRunning
+    ? t("settings.tasteImport.reportAutoRunning", batchSummary)
+    : batchSummary?.status === "complete"
+      ? t("settings.tasteImport.reportAutoComplete", batchSummary)
+      : batchSummary?.status === "partial"
+        ? t("settings.tasteImport.reportAutoPartial", batchSummary)
+        : "";
   els.tasteImportReport.hidden = false;
   els.tasteImportReport.innerHTML = `
     <div class="taste-import-report-head">
@@ -2621,15 +2721,16 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
       <div>
         <span>${gapCount ? t("settings.tasteImport.reportGapEyebrow") : t("settings.tasteImport.reportGapClearEyebrow")}</span>
         <strong>${t(gapCount ? "settings.tasteImport.reportGapTitle" : "settings.tasteImport.reportGapClearTitle", { count: gapCount })}</strong>
-        <small>${t(gapCount ? "settings.tasteImport.reportGapDetail" : "settings.tasteImport.reportGapClearDetail", { count: lookupTitles.length })}</small>
+        <small>${t(gapCount ? "settings.tasteImport.reportAutoDetail" : "settings.tasteImport.reportGapClearDetail", { count: reviewCount })}</small>
       </div>
-      ${lookupTitles.length ? `<button class="secondary-action" data-import-gap-action type="button">${t("settings.tasteImport.reportGapAction", { count: lookupTitles.length })}</button>` : ""}
+      ${lookupTitles.length ? `<button class="secondary-action" data-import-gap-action type="button" ${batchRunning ? "disabled" : ""}>${t(batchRunning ? "settings.tasteImport.reportAutoResolving" : "settings.tasteImport.reportAutoResolve", { count: lookupTitles.length })}</button>` : ""}
     </div>
+    ${batchStatus ? `<p class="import-lookup-batch-summary">${batchStatus}</p>` : ""}
     <div class="taste-import-report-next">
       <span>${t("settings.tasteImport.reportQueueTitle")}</span>
       ${lookupTitles.length ? `
-        <button class="taste-import-report-batch primary-action" data-import-report-batch type="button">
-          ${t("settings.tasteImport.reportBatchSearch", { count: lookupTitles.length })}
+        <button class="taste-import-report-batch primary-action" data-import-report-batch type="button" ${batchRunning ? "disabled" : ""}>
+          ${t(batchRunning ? "settings.tasteImport.reportAutoResolving" : "settings.tasteImport.reportAutoResolve", { count: lookupTitles.length })}
         </button>
       ` : ""}
       ${queue.length ? `
@@ -2648,10 +2749,10 @@ function renderTasteImportReport(preview = tasteImportPreview()) {
     button.addEventListener("click", () => openDiscoverForTitle(button.dataset.importReportSearch || ""));
   });
   els.tasteImportReport.querySelector("[data-import-report-batch]")?.addEventListener("click", () => {
-    openDiscoverForImportQueue(lookupTitles);
+    startAutomaticImportResolution(unresolvedEntries);
   });
   els.tasteImportReport.querySelector("[data-import-gap-action]")?.addEventListener("click", () => {
-    openDiscoverForImportQueue(lookupTitles);
+    startAutomaticImportResolution(unresolvedEntries);
   });
 }
 
@@ -3844,45 +3945,66 @@ function openDiscoverForTitle(title) {
 }
 
 function openDiscoverForImportQueue(titles) {
-  const queue = [...new Set((titles || []).map((title) => String(title || "").trim()).filter(Boolean))].slice(0, 8);
+  const queue = [...new Set((titles || []).map((title) => String(title || "").trim()).filter(Boolean))];
   if (!queue.length) return;
-  state.importLookupQueue = queue;
-  state.importLookupResolved = Object.fromEntries(queue.map((title) => [
-    titleKey(title),
-    Boolean(state.importLookupResolved?.[titleKey(title)]),
-  ]));
+  queueImportResolutionEntries(queue.map((title) => ({ title, kind: "lookup" })));
   openDiscoverForTitle(queue[0]);
 }
 
-function activeImportLookupTitle(query = state.gameSearchQuery || "") {
-  const queue = (state.importLookupQueue || []).filter(Boolean);
-  return queue.find((title) => titleMatches(title, query)) || queue.find((title) => !state.importLookupResolved?.[titleKey(title)]) || queue[0] || "";
+let importResolutionRenderTimer = null;
+
+function scheduleImportResolutionRender() {
+  window.clearTimeout(importResolutionRenderTimer);
+  importResolutionRenderTimer = window.setTimeout(() => render(), 140);
 }
 
-function nextImportLookupTitle(currentTitle = activeImportLookupTitle()) {
-  const queue = (state.importLookupQueue || []).filter(Boolean);
-  if (!queue.length) return "";
-  const currentIndex = Math.max(0, queue.findIndex((title) => titleMatches(title, currentTitle)));
-  const ordered = [...queue.slice(currentIndex + 1), ...queue.slice(0, currentIndex + 1)];
-  return ordered.find((title) => !state.importLookupResolved?.[titleKey(title)]) || "";
+function handleImportResolutionProgress(event) {
+  saveState();
+  if (["queued", "started", "settled", "cleared"].includes(event?.phase)) scheduleImportResolutionRender();
 }
 
-function importLookupProgress() {
-  const queue = (state.importLookupQueue || []).filter(Boolean);
-  const done = queue.filter((title) => state.importLookupResolved?.[titleKey(title)]).length;
-  return { total: queue.length, done, remaining: Math.max(0, queue.length - done) };
+function applyResolvedImportEntry(entry, result) {
+  if (entry.kind === "rating") {
+    const title = rememberSearchResultWithoutState(result);
+    const remembered = explicitUserGame(title) || searchResultMemoryRecord(result);
+    rememberImportedRating(remembered, entry.rating);
+    return;
+  }
+  const resolvedState = entry.userState || "owned";
+  const record = applySearchResultState(result, resolvedState);
+  if (record && entry.hoursPlayed != null) record.hoursPlayed = entry.hoursPlayed;
 }
 
-function markImportLookupResolvedForTitle(title) {
-  const queue = (state.importLookupQueue || []).filter(Boolean);
-  if (!queue.length || !title) return false;
-  const matched = queue.find((item) => titleMatches(item, title));
-  if (!matched) return false;
-  state.importLookupResolved = {
-    ...(state.importLookupResolved || {}),
-    [titleKey(matched)]: true,
-  };
-  return true;
+function handleImportResolutionComplete() {
+  window.clearTimeout(importResolutionRenderTimer);
+  const hasTasteEntries = Object.values(state.importLookupItems || {}).some((item) => item?.kind === "rating");
+  if (hasTasteEntries) analyzeTasteImport();
+  render();
+}
+
+function startAutomaticImportResolution(entries, { retryUnresolved = false } = {}) {
+  if (!retryUnresolved) queueImportResolutionEntries(entries);
+  return runImportResolutionBatch({ retryUnresolved });
+}
+
+function queueTasteImportResolution() {
+  const entries = unresolvedTasteImportEntries();
+  if (!entries.length) return Promise.resolve(importLookupProgress());
+  return startAutomaticImportResolution(entries);
+}
+
+function queueLibraryImportResolution(entries) {
+  const unresolved = (entries || [])
+    .filter((entry) => entry?.title && importResolutionForTitle(entry.title).status === "missing")
+    .map((entry) => ({
+      title: entry.title,
+      kind: "library",
+      userState: entry.status || "owned",
+      hoursPlayed: entry.hoursPlayed,
+      rating: entry.rating,
+    }));
+  if (!unresolved.length) return Promise.resolve(importLookupProgress());
+  return startAutomaticImportResolution(unresolved);
 }
 
 function globalSearchResultsForTitle(title) {
@@ -3910,20 +4032,20 @@ function saveKnownImportLookupMatches() {
   if (!queue.length) return { total: 0, saved: 0, remaining: 0 };
   let saved = 0;
   queue.forEach((title) => {
-    const key = titleKey(title);
-    if (state.importLookupResolved?.[key]) return;
+    if (state.importLookupResolved?.[titleKey(title)]) return;
     const result = bestKnownImportLookupResult(title);
     if (!result) return;
     applySearchResultState(result, "saved");
-    state.importLookupResolved = {
-      ...(state.importLookupResolved || {}),
-      [key]: true,
-    };
+    markImportLookupResolvedForTitle(title);
     saved += 1;
   });
   const progress = importLookupProgress();
   state.importLookupBatchSummary = {
+    status: progress.remaining ? "partial" : "complete",
     saved,
+    resolved: progress.done,
+    review: progress.review || 0,
+    failed: progress.failed || 0,
     total: queue.length,
     remaining: progress.remaining,
     updatedAt: new Date().toISOString(),
@@ -5568,9 +5690,7 @@ function renderImportLookupQueue(query) {
     });
   });
   card.querySelector("[data-import-lookup-clear]")?.addEventListener("click", () => {
-    state.importLookupQueue = [];
-    state.importLookupResolved = {};
-    state.importLookupBatchSummary = null;
+    clearImportResolutionQueue();
     render();
   });
   card.querySelector("[data-import-lookup-save-matches]")?.addEventListener("click", () => {
@@ -7602,6 +7722,7 @@ els.analyzeRatings.addEventListener("click", () => {
   state.ratingImport = els.ratingImport.value;
   analyzeTasteImport();
   render();
+  queueTasteImportResolution();
 });
 els.notebookImport.addEventListener("input", () => {
   state.notebookImport = els.notebookImport.value;
@@ -8124,6 +8245,7 @@ async function hydrateDeferredData() {
       render();
       await new Promise((resolve) => window.setTimeout(resolve, 0));
     }
+    resumeImportResolutionBatch();
   } catch (error) {
     if (!searchSources?.sources?.length || !Array.isArray(globalSearchFixtures?.records)) {
       searchIndexStatus = "failed";

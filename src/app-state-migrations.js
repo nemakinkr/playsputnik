@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 5;
+  const CURRENT_STATE_VERSION = 6;
 
   const migrations = {
     1(state) {
@@ -64,6 +64,47 @@
           ? providerSearch
           : { query: "", status: "idle", provider: "", sourceHealth: "", results: [], error: "" },
         providerSearchCache,
+      };
+    },
+    6(state) {
+      const legacyTitleKey = (title) => String(title || "")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/&/g, " and ")
+        .replace(/[^\p{Letter}\p{Number}]+/gu, " ")
+        .trim();
+      const queue = Array.isArray(state.importLookupQueue)
+        ? state.importLookupQueue.map((title) => String(title || "").trim()).filter(Boolean)
+        : [];
+      const resolved = state.importLookupResolved && typeof state.importLookupResolved === "object" && !Array.isArray(state.importLookupResolved)
+        ? state.importLookupResolved
+        : {};
+      const existingItems = state.importLookupItems && typeof state.importLookupItems === "object" && !Array.isArray(state.importLookupItems)
+        ? state.importLookupItems
+        : {};
+      const importLookupItems = { ...existingItems };
+      queue.forEach((title) => {
+        const legacyKey = legacyTitleKey(title);
+        const matchingKey = Object.keys(resolved).find((key) => key === legacyKey);
+        if (!importLookupItems[legacyKey]) {
+          importLookupItems[legacyKey] = {
+            title,
+            kind: "lookup",
+            status: matchingKey && resolved[matchingKey] ? "resolved" : "pending",
+            attempts: 0,
+            updatedAt: null,
+          };
+        }
+      });
+      return {
+        ...state,
+        importLookupQueue: queue,
+        importLookupResolved: resolved,
+        importLookupItems,
+        importLookupBatchSummary: state.importLookupBatchSummary && typeof state.importLookupBatchSummary === "object"
+          ? state.importLookupBatchSummary
+          : null,
       };
     },
   };
