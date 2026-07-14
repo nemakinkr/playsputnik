@@ -231,6 +231,8 @@ async function runFounderRankingScenario(page) {
     summary: document.querySelector("#taste-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
     profile: document.querySelector("#taste-profile-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
     screen: document.querySelector("#taste-profile-screen")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    intensity: document.querySelector(".taste-profile-pace")?.textContent?.replace(/\s+/g, " ").trim() || "",
+    intensityKind: document.querySelector(".taste-profile-pace")?.dataset.tasteIntensity || "",
     atoms: [...document.querySelectorAll("#taste-atoms .atom-pill")].map((node) => node.textContent?.replace(/\s+/g, " ").trim() || ""),
   }));
 
@@ -445,6 +447,8 @@ try {
   assert(/111/.test(founderRanking.calibration), `Expected forecast calibration to use all 111 resolved ranking records, got: ${founderRanking.calibration}`);
   assert(/(?:±\s*)?8(?:\D|$)|atom patterns|паттерны игровых атомов/i.test(founderRanking.calibration), `Expected founder calibration to expose measured rank-aware model quality, got: ${founderRanking.calibration}`);
   assert(/Taste profile|Профиль вкуса|gaming fingerprint|игровой отпечаток/i.test(founderRanking.taste.screen), `Expected founder taste profile screen to render, got: ${founderRanking.taste.screen}`);
+  assert(["calm", "intense", "balanced"].includes(founderRanking.taste.intensityKind), `Expected founder intensity preference, got: ${founderRanking.taste.intensityKind}`);
+  assert(/Preferred pace|Предпочтительный ритм/i.test(founderRanking.taste.intensity), `Expected localized intensity preference copy, got: ${founderRanking.taste.intensity}`);
   assert(founderRanking.taste.atoms.some((atom) => /сюжет|story/i.test(atom)), `Expected founder taste atoms to include story, got: ${founderRanking.taste.atoms.join(", ")}`);
   assert(founderRanking.wishlist.rows.some((title) => ["Mafia: The Old Country", "007 First Light", "The Alters", "Dead Space", "Final Fantasy VII Rebirth"].includes(title)), `Expected founder wishlist to surface story-forward next candidates, got: ${founderRanking.wishlist.rows.join(" / ")}`);
   assert(founderRanking.wishlist.rows.includes("Ghost of Yotei"), `An explicitly imported backbone wishlist game should become a recommendation candidate, got: ${founderRanking.wishlist.rows.join(" / ")}`);

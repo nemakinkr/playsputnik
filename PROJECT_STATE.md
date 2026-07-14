@@ -212,10 +212,19 @@ reviews, catalogs, sale pages, and announcements.
   high-impact recommendation/onboarding records now carry an explicit curated
   intensity, reducing low-confidence profiles from 292 to 274; the detail
   cockpit shows difficulty, intensity, confidence, source, and evidence without
-  adding this diagnostic layer to the main recommendation surface. Source
+  adding this diagnostic layer to the main recommendation surface. The taste
+  profile now derives an honest calm/intense/balanced preference from positive
+  and negative intensity evidence and cites it in EN/RU explanations only when
+  confidence and candidate alignment justify the claim. The detail block uses
+  an equal-column desktop grid and a one-column mobile grid, both browser-gated.
+  Source
   aliases such as easy/low and hard/high remain accepted inputs but cannot leak
   into the taste model. The stress gate exposed and fixed incorrect DOOM
   Eternal atoms.
+  A committed per-persona report at
+  `reports/synthetic-profile-diagnostics.json` records overranked candidates,
+  missed high-fit candidates, recurring stress mismatches, and each persona's
+  three weakest five-signal scenarios; the evaluation gate fails if it is stale.
   Top recommendations now receive a controlled diversity rerank: the strongest
   game is fixed at #1, only candidates within 12 score points may trade places,
   and atom/session/tone similarity breaks near-ties. The gate proves that this

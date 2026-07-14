@@ -23,6 +23,7 @@ jobs:
           node scripts/editorial-data-check.mjs
           node scripts/atom-quality-audit.mjs
           node scripts/difficulty-intensity-audit.mjs
+          node scripts/intensity-preference-test.mjs
       - name: Validate i18n catalogs and usage
         run: |
           node scripts/i18n-check.mjs

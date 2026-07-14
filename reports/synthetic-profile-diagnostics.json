@@ -1,0 +1,1760 @@
+{
+  "version": 1,
+  "fixtureVersion": 1,
+  "policy": "Synthetic labels are product hypotheses. Rows below are diagnostic mismatches, not claims about real players.",
+  "aggregate": {
+    "full": {
+      "profileCount": 8,
+      "candidateCoverage": 1,
+      "ratingCoverage": 1,
+      "meanNdcgAt6": 0.9,
+      "meanHighFitPrecisionAt3": 0.92,
+      "totalAvoidIntrusionsAt3": 0,
+      "meanTop3Jaccard": 0.1,
+      "uniqueTopChoices": 6
+    },
+    "starter": {
+      "profileCount": 8,
+      "candidateCoverage": 1,
+      "ratingCoverage": 1,
+      "meanNdcgAt6": 0.91,
+      "meanHighFitPrecisionAt3": 0.96,
+      "totalAvoidIntrusionsAt3": 0,
+      "meanTop3Jaccard": 0.12,
+      "uniqueTopChoices": 5
+    },
+    "stress": {
+      "scenarioCount": 160,
+      "setsPerProfile": 20,
+      "meanNdcgAt6": 0.86,
+      "meanHighFitPrecisionAt3": 0.87,
+      "highFitTopChoiceRate": 0.94,
+      "avoidFreeTop3Rate": 0.96,
+      "profiles": [
+        {
+          "id": "systems_architect",
+          "name": "Systems architect",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.89,
+          "meanHighFitPrecisionAt3": 0.8,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 0.95
+        },
+        {
+          "id": "competitive_regular",
+          "name": "Competitive regular",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.9,
+          "meanHighFitPrecisionAt3": 0.87,
+          "highFitTopChoiceRate": 1,
+          "avoidFreeTop3Rate": 0.95
+        },
+        {
+          "id": "cozy_social",
+          "name": "Cozy social player",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.85,
+          "meanHighFitPrecisionAt3": 0.8,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 1
+        },
+        {
+          "id": "narrative_detective",
+          "name": "Narrative detective",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.89,
+          "meanHighFitPrecisionAt3": 0.95,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 1
+        },
+        {
+          "id": "open_world_wanderer",
+          "name": "Open-world wanderer",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.72,
+          "meanHighFitPrecisionAt3": 0.74,
+          "highFitTopChoiceRate": 0.85,
+          "avoidFreeTop3Rate": 0.95
+        },
+        {
+          "id": "short_form_curator",
+          "name": "Short-form curator",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.79,
+          "meanHighFitPrecisionAt3": 0.85,
+          "highFitTopChoiceRate": 0.9,
+          "avoidFreeTop3Rate": 0.85
+        },
+        {
+          "id": "horror_aficionado",
+          "name": "Horror aficionado",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.93,
+          "meanHighFitPrecisionAt3": 0.95,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 1
+        },
+        {
+          "id": "finite_campaign_guardian",
+          "name": "Finite-campaign guardian",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.89,
+          "meanHighFitPrecisionAt3": 1,
+          "highFitTopChoiceRate": 1,
+          "avoidFreeTop3Rate": 1
+        }
+      ]
+    }
+  },
+  "profiles": [
+    {
+      "id": "systems_architect",
+      "name": "Systems architect",
+      "hypothesis": "Prefers strategic planning, simulation and difficult systems; avoids reflex-first action and annual sports loops.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.96,
+          "highFitPrecisionAt3": 0.67,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 51.2
+        },
+        "top3": [
+          {
+            "title": "Into the Breach",
+            "label": "ideal",
+            "score": 30
+          },
+          {
+            "title": "Two Point Hospital",
+            "label": "strong",
+            "score": 28
+          },
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "stretch",
+            "score": 5
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "stretch",
+            "score": 5
+          },
+          {
+            "title": "Diablo IV",
+            "label": "stretch",
+            "score": 2
+          },
+          {
+            "title": "The Last of Us Part I",
+            "label": "stretch",
+            "score": -4
+          }
+        ],
+        "missedHighFit": []
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.93,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 56.27
+        },
+        "top3": [
+          {
+            "title": "Two Point Hospital",
+            "label": "strong",
+            "score": 27
+          },
+          {
+            "title": "Crusader Kings III",
+            "label": "ideal",
+            "score": 25
+          },
+          {
+            "title": "Into the Breach",
+            "label": "ideal",
+            "score": 25
+          }
+        ],
+        "overranked": [
+          {
+            "title": "The Last of Us Part I",
+            "label": "stretch",
+            "score": 6
+          },
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "stretch",
+            "score": 4
+          },
+          {
+            "title": "Diablo IV",
+            "label": "stretch",
+            "score": 3
+          }
+        ],
+        "missedHighFit": []
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "systems_architect",
+          "name": "Systems architect",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.89,
+          "meanHighFitPrecisionAt3": 0.8,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 0.95
+        },
+        "recurringTop3Mismatches": [
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "stretch",
+            "count": 3
+          },
+          {
+            "title": "Firewatch",
+            "label": "stretch",
+            "count": 3
+          },
+          {
+            "title": "Monster Hunter: World",
+            "label": "stretch",
+            "count": 3
+          },
+          {
+            "title": "Diablo IV",
+            "label": "stretch",
+            "count": 1
+          },
+          {
+            "title": "DOOM Eternal",
+            "label": "avoid",
+            "count": 1
+          }
+        ],
+        "weakestScenarios": [
+          {
+            "scenario": 13,
+            "reactions": {
+              "positive": 5,
+              "neutral": 0,
+              "negative": 0
+            },
+            "ndcgAt6": 0.37,
+            "highFitPrecisionAt3": 0,
+            "top3": [
+              {
+                "title": "DOOM Eternal",
+                "label": "avoid",
+                "score": 70
+              },
+              {
+                "title": "Animal Crossing: New Horizons",
+                "label": "stretch",
+                "score": 69
+              },
+              {
+                "title": "Firewatch",
+                "label": "stretch",
+                "score": 69
+              }
+            ]
+          },
+          {
+            "scenario": 20,
+            "reactions": {
+              "positive": 2,
+              "neutral": 0,
+              "negative": 3
+            },
+            "ndcgAt6": 0.76,
+            "highFitPrecisionAt3": 0.33,
+            "top3": [
+              {
+                "title": "Crusader Kings III",
+                "label": "ideal",
+                "score": -16
+              },
+              {
+                "title": "Diablo IV",
+                "label": "stretch",
+                "score": -22
+              },
+              {
+                "title": "Monster Hunter: World",
+                "label": "stretch",
+                "score": -24
+              }
+            ]
+          },
+          {
+            "scenario": 6,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.79,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Two Point Hospital",
+                "label": "strong",
+                "score": 48
+              },
+              {
+                "title": "Crusader Kings III",
+                "label": "ideal",
+                "score": 19
+              },
+              {
+                "title": "Animal Crossing: New Horizons",
+                "label": "stretch",
+                "score": 6
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "competitive_regular",
+      "name": "Competitive regular",
+      "hypothesis": "Prefers fast action, mastery and repeatable multiplayer; avoids reading-heavy and slow management games.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.85,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 42.02
+        },
+        "top3": [
+          {
+            "title": "EA Sports FC 26",
+            "label": "strong",
+            "score": 65
+          },
+          {
+            "title": "DOOM Eternal",
+            "label": "ideal",
+            "score": 47
+          },
+          {
+            "title": "Overcooked! 2",
+            "label": "strong",
+            "score": 45
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Resident Evil Village",
+            "label": "stretch",
+            "score": 38
+          },
+          {
+            "title": "Alan Wake 2",
+            "label": "stretch",
+            "score": 33
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Monster Hunter: World",
+            "label": "strong",
+            "score": 24
+          },
+          {
+            "title": "Diablo IV",
+            "label": "strong",
+            "score": 18
+          },
+          {
+            "title": "The Last of Us Part I",
+            "label": "strong",
+            "score": 18
+          },
+          {
+            "title": "Hades",
+            "label": "strong",
+            "score": 8
+          }
+        ]
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.92,
+          "highFitPrecisionAt3": 0.67,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 45.68
+        },
+        "top3": [
+          {
+            "title": "DOOM Eternal",
+            "label": "ideal",
+            "score": 59
+          },
+          {
+            "title": "Resident Evil Village",
+            "label": "stretch",
+            "score": 40
+          },
+          {
+            "title": "Overcooked! 2",
+            "label": "strong",
+            "score": 33
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Resident Evil Village",
+            "label": "stretch",
+            "score": 40
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Monster Hunter: World",
+            "label": "strong",
+            "score": 21
+          },
+          {
+            "title": "Hades",
+            "label": "strong",
+            "score": 14
+          },
+          {
+            "title": "The Last of Us Part I",
+            "label": "strong",
+            "score": 8
+          }
+        ]
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "competitive_regular",
+          "name": "Competitive regular",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.9,
+          "meanHighFitPrecisionAt3": 0.87,
+          "highFitTopChoiceRate": 1,
+          "avoidFreeTop3Rate": 0.95
+        },
+        "recurringTop3Mismatches": [
+          {
+            "title": "Resident Evil Village",
+            "label": "stretch",
+            "count": 7
+          },
+          {
+            "title": "Crusader Kings III",
+            "label": "avoid",
+            "count": 1
+          }
+        ],
+        "weakestScenarios": [
+          {
+            "scenario": 4,
+            "reactions": {
+              "positive": 4,
+              "neutral": 0,
+              "negative": 1
+            },
+            "ndcgAt6": 0.73,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "DOOM Eternal",
+                "label": "ideal",
+                "score": 59
+              },
+              {
+                "title": "Crusader Kings III",
+                "label": "avoid",
+                "score": 54
+              },
+              {
+                "title": "Diablo IV",
+                "label": "strong",
+                "score": 54
+              }
+            ]
+          },
+          {
+            "scenario": 14,
+            "reactions": {
+              "positive": 4,
+              "neutral": 0,
+              "negative": 1
+            },
+            "ndcgAt6": 0.79,
+            "highFitPrecisionAt3": 1,
+            "top3": [
+              {
+                "title": "EA Sports FC 26",
+                "label": "strong",
+                "score": 61
+              },
+              {
+                "title": "DOOM Eternal",
+                "label": "ideal",
+                "score": 59
+              },
+              {
+                "title": "Overcooked! 2",
+                "label": "strong",
+                "score": 50
+              }
+            ]
+          },
+          {
+            "scenario": 13,
+            "reactions": {
+              "positive": 4,
+              "neutral": 0,
+              "negative": 1
+            },
+            "ndcgAt6": 0.84,
+            "highFitPrecisionAt3": 1,
+            "top3": [
+              {
+                "title": "Overcooked! 2",
+                "label": "strong",
+                "score": 62
+              },
+              {
+                "title": "EA Sports FC 26",
+                "label": "strong",
+                "score": 61
+              },
+              {
+                "title": "DOOM Eternal",
+                "label": "ideal",
+                "score": 59
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cozy_social",
+      "name": "Cozy social player",
+      "hypothesis": "Prefers warm low-pressure play, creativity and approachable co-op; avoids horror, punishing challenge and graphic action.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.93,
+          "highFitPrecisionAt3": 0.67,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 65.17
+        },
+        "top3": [
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "ideal",
+            "score": 56
+          },
+          {
+            "title": "Two Point Hospital",
+            "label": "strong",
+            "score": 52
+          },
+          {
+            "title": "Pentiment",
+            "label": "stretch",
+            "score": 46
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Pentiment",
+            "label": "stretch",
+            "score": 46
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Overcooked! 2",
+            "label": "strong",
+            "score": 7
+          }
+        ]
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.85,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 51.67
+        },
+        "top3": [
+          {
+            "title": "Two Point Hospital",
+            "label": "strong",
+            "score": 58
+          },
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "ideal",
+            "score": 51
+          },
+          {
+            "title": "Journey",
+            "label": "strong",
+            "score": 17
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Pentiment",
+            "label": "stretch",
+            "score": 6
+          },
+          {
+            "title": "EA Sports FC 26",
+            "label": "stretch",
+            "score": -5
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Firewatch",
+            "label": "strong",
+            "score": -19
+          },
+          {
+            "title": "Overcooked! 2",
+            "label": "strong",
+            "score": -33
+          }
+        ]
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "cozy_social",
+          "name": "Cozy social player",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.85,
+          "meanHighFitPrecisionAt3": 0.8,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 1
+        },
+        "recurringTop3Mismatches": [
+          {
+            "title": "Pentiment",
+            "label": "stretch",
+            "count": 8
+          },
+          {
+            "title": "Crusader Kings III",
+            "label": "stretch",
+            "count": 4
+          }
+        ],
+        "weakestScenarios": [
+          {
+            "scenario": 10,
+            "reactions": {
+              "positive": 4,
+              "neutral": 0,
+              "negative": 1
+            },
+            "ndcgAt6": 0.65,
+            "highFitPrecisionAt3": 0.33,
+            "top3": [
+              {
+                "title": "Pentiment",
+                "label": "stretch",
+                "score": 65
+              },
+              {
+                "title": "Crusader Kings III",
+                "label": "stretch",
+                "score": 64
+              },
+              {
+                "title": "Journey",
+                "label": "strong",
+                "score": 64
+              }
+            ]
+          },
+          {
+            "scenario": 1,
+            "reactions": {
+              "positive": 2,
+              "neutral": 0,
+              "negative": 3
+            },
+            "ndcgAt6": 0.75,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Two Point Hospital",
+                "label": "strong",
+                "score": 50
+              },
+              {
+                "title": "What Remains of Edith Finch",
+                "label": "strong",
+                "score": 16
+              },
+              {
+                "title": "Crusader Kings III",
+                "label": "stretch",
+                "score": 4
+              }
+            ]
+          },
+          {
+            "scenario": 2,
+            "reactions": {
+              "positive": 4,
+              "neutral": 0,
+              "negative": 1
+            },
+            "ndcgAt6": 0.75,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Journey",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "What Remains of Edith Finch",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "Crusader Kings III",
+                "label": "stretch",
+                "score": 65
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "narrative_detective",
+      "name": "Narrative detective",
+      "hypothesis": "Prefers authored stories, dialogue and consequential choices; avoids competitive loops and service-first progression.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.96,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 75.3
+        },
+        "top3": [
+          {
+            "title": "What Remains of Edith Finch",
+            "label": "ideal",
+            "score": 47
+          },
+          {
+            "title": "Firewatch",
+            "label": "ideal",
+            "score": 42
+          },
+          {
+            "title": "Pentiment",
+            "label": "ideal",
+            "score": 42
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Ghost of Tsushima",
+            "label": "stretch",
+            "score": 23
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Journey",
+            "label": "strong",
+            "score": 7
+          }
+        ]
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.96,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 50.43
+        },
+        "top3": [
+          {
+            "title": "What Remains of Edith Finch",
+            "label": "ideal",
+            "score": 70
+          },
+          {
+            "title": "Firewatch",
+            "label": "ideal",
+            "score": 69
+          },
+          {
+            "title": "Pentiment",
+            "label": "ideal",
+            "score": 69
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Hades",
+            "label": "stretch",
+            "score": 65
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Alan Wake 2",
+            "label": "strong",
+            "score": 55
+          }
+        ]
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "narrative_detective",
+          "name": "Narrative detective",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.89,
+          "meanHighFitPrecisionAt3": 0.95,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 1
+        },
+        "recurringTop3Mismatches": [
+          {
+            "title": "Ghost of Tsushima",
+            "label": "stretch",
+            "count": 3
+          }
+        ],
+        "weakestScenarios": [
+          {
+            "scenario": 19,
+            "reactions": {
+              "positive": 2,
+              "neutral": 0,
+              "negative": 3
+            },
+            "ndcgAt6": 0.8,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Pentiment",
+                "label": "ideal",
+                "score": 41
+              },
+              {
+                "title": "Ghost of Tsushima",
+                "label": "stretch",
+                "score": 30
+              },
+              {
+                "title": "The Last of Us Part I",
+                "label": "strong",
+                "score": 22
+              }
+            ]
+          },
+          {
+            "scenario": 18,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.81,
+            "highFitPrecisionAt3": 1,
+            "top3": [
+              {
+                "title": "The Last of Us Part I",
+                "label": "strong",
+                "score": 25
+              },
+              {
+                "title": "Alan Wake 2",
+                "label": "strong",
+                "score": 20
+              },
+              {
+                "title": "Pentiment",
+                "label": "ideal",
+                "score": 15
+              }
+            ]
+          },
+          {
+            "scenario": 2,
+            "reactions": {
+              "positive": 4,
+              "neutral": 0,
+              "negative": 1
+            },
+            "ndcgAt6": 0.82,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Ghost of Tsushima",
+                "label": "stretch",
+                "score": 70
+              },
+              {
+                "title": "What Remains of Edith Finch",
+                "label": "ideal",
+                "score": 70
+              },
+              {
+                "title": "Firewatch",
+                "label": "ideal",
+                "score": 69
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "open_world_wanderer",
+      "name": "Open-world wanderer",
+      "hypothesis": "Prefers exploration, place and self-directed discovery; avoids compact abstract systems and menu-heavy management.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.78,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 51.25
+        },
+        "top3": [
+          {
+            "title": "Ghost of Tsushima",
+            "label": "ideal",
+            "score": 67
+          },
+          {
+            "title": "The Last of Us Part I",
+            "label": "strong",
+            "score": 67
+          },
+          {
+            "title": "Resident Evil Village",
+            "label": "strong",
+            "score": 65
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Alan Wake 2",
+            "label": "stretch",
+            "score": 62
+          },
+          {
+            "title": "Pentiment",
+            "label": "stretch",
+            "score": 44
+          },
+          {
+            "title": "DOOM Eternal",
+            "label": "stretch",
+            "score": 38
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Firewatch",
+            "label": "strong",
+            "score": 22
+          },
+          {
+            "title": "Diablo IV",
+            "label": "strong",
+            "score": 9
+          },
+          {
+            "title": "Journey",
+            "label": "strong",
+            "score": 7
+          },
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "strong",
+            "score": 2
+          },
+          {
+            "title": "Monster Hunter: World",
+            "label": "ideal",
+            "score": -9
+          }
+        ]
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.82,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 58.63
+        },
+        "top3": [
+          {
+            "title": "Ghost of Tsushima",
+            "label": "ideal",
+            "score": 66
+          },
+          {
+            "title": "Resident Evil Village",
+            "label": "strong",
+            "score": 66
+          },
+          {
+            "title": "The Last of Us Part I",
+            "label": "strong",
+            "score": 66
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Alan Wake 2",
+            "label": "stretch",
+            "score": 61
+          },
+          {
+            "title": "Pentiment",
+            "label": "stretch",
+            "score": 50
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "Diablo IV",
+            "label": "strong",
+            "score": 18
+          },
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "strong",
+            "score": 9
+          },
+          {
+            "title": "Monster Hunter: World",
+            "label": "ideal",
+            "score": 2
+          },
+          {
+            "title": "Journey",
+            "label": "strong",
+            "score": -10
+          }
+        ]
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "open_world_wanderer",
+          "name": "Open-world wanderer",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.72,
+          "meanHighFitPrecisionAt3": 0.74,
+          "highFitTopChoiceRate": 0.85,
+          "avoidFreeTop3Rate": 0.95
+        },
+        "recurringTop3Mismatches": [
+          {
+            "title": "Alan Wake 2",
+            "label": "stretch",
+            "count": 7
+          },
+          {
+            "title": "DOOM Eternal",
+            "label": "stretch",
+            "count": 6
+          },
+          {
+            "title": "What Remains of Edith Finch",
+            "label": "stretch",
+            "count": 2
+          },
+          {
+            "title": "EA Sports FC 26",
+            "label": "avoid",
+            "count": 1
+          }
+        ],
+        "weakestScenarios": [
+          {
+            "scenario": 7,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.59,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "DOOM Eternal",
+                "label": "stretch",
+                "score": 66
+              },
+              {
+                "title": "Resident Evil Village",
+                "label": "strong",
+                "score": 66
+              },
+              {
+                "title": "The Last of Us Part I",
+                "label": "strong",
+                "score": 66
+              }
+            ]
+          },
+          {
+            "scenario": 10,
+            "reactions": {
+              "positive": 1,
+              "neutral": 0,
+              "negative": 4
+            },
+            "ndcgAt6": 0.65,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Resident Evil Village",
+                "label": "strong",
+                "score": -2
+              },
+              {
+                "title": "DOOM Eternal",
+                "label": "stretch",
+                "score": -6
+              },
+              {
+                "title": "Ghost of Tsushima",
+                "label": "ideal",
+                "score": -9
+              }
+            ]
+          },
+          {
+            "scenario": 1,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.67,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "DOOM Eternal",
+                "label": "stretch",
+                "score": 66
+              },
+              {
+                "title": "Ghost of Tsushima",
+                "label": "ideal",
+                "score": 62
+              },
+              {
+                "title": "Resident Evil Village",
+                "label": "strong",
+                "score": 62
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "short_form_curator",
+      "name": "Short-form curator",
+      "hypothesis": "Prefers concise authored or run-based experiences; avoids sprawling commitments and endless progression.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.97,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 54.62
+        },
+        "top3": [
+          {
+            "title": "What Remains of Edith Finch",
+            "label": "ideal",
+            "score": 70
+          },
+          {
+            "title": "Firewatch",
+            "label": "strong",
+            "score": 69
+          },
+          {
+            "title": "Hades",
+            "label": "ideal",
+            "score": 65
+          }
+        ],
+        "overranked": [],
+        "missedHighFit": [
+          {
+            "title": "DOOM Eternal",
+            "label": "strong",
+            "score": -1
+          }
+        ]
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.92,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 56.48
+        },
+        "top3": [
+          {
+            "title": "Into the Breach",
+            "label": "strong",
+            "score": 61
+          },
+          {
+            "title": "What Remains of Edith Finch",
+            "label": "ideal",
+            "score": 58
+          },
+          {
+            "title": "Firewatch",
+            "label": "strong",
+            "score": 47
+          }
+        ],
+        "overranked": [],
+        "missedHighFit": [
+          {
+            "title": "DOOM Eternal",
+            "label": "strong",
+            "score": -14
+          }
+        ]
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "short_form_curator",
+          "name": "Short-form curator",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.79,
+          "meanHighFitPrecisionAt3": 0.85,
+          "highFitTopChoiceRate": 0.9,
+          "avoidFreeTop3Rate": 0.85
+        },
+        "recurringTop3Mismatches": [
+          {
+            "title": "Two Point Hospital",
+            "label": "stretch",
+            "count": 4
+          },
+          {
+            "title": "Animal Crossing: New Horizons",
+            "label": "stretch",
+            "count": 2
+          },
+          {
+            "title": "Crusader Kings III",
+            "label": "avoid",
+            "count": 1
+          },
+          {
+            "title": "EA Sports FC 26",
+            "label": "avoid",
+            "count": 1
+          },
+          {
+            "title": "Ghost of Tsushima",
+            "label": "avoid",
+            "count": 1
+          }
+        ],
+        "weakestScenarios": [
+          {
+            "scenario": 4,
+            "reactions": {
+              "positive": 5,
+              "neutral": 0,
+              "negative": 0
+            },
+            "ndcgAt6": 0.55,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Ghost of Tsushima",
+                "label": "avoid",
+                "score": 70
+              },
+              {
+                "title": "Journey",
+                "label": "ideal",
+                "score": 70
+              },
+              {
+                "title": "Overcooked! 2",
+                "label": "strong",
+                "score": 70
+              }
+            ]
+          },
+          {
+            "scenario": 16,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.64,
+            "highFitPrecisionAt3": 0.33,
+            "top3": [
+              {
+                "title": "Into the Breach",
+                "label": "strong",
+                "score": 26
+              },
+              {
+                "title": "Animal Crossing: New Horizons",
+                "label": "stretch",
+                "score": 18
+              },
+              {
+                "title": "Two Point Hospital",
+                "label": "stretch",
+                "score": 12
+              }
+            ]
+          },
+          {
+            "scenario": 18,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.64,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Two Point Hospital",
+                "label": "stretch",
+                "score": 48
+              },
+              {
+                "title": "Journey",
+                "label": "ideal",
+                "score": 39
+              },
+              {
+                "title": "Overcooked! 2",
+                "label": "strong",
+                "score": 39
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "horror_aficionado",
+      "name": "Horror aficionado",
+      "hypothesis": "Prefers tension, dread and authored horror; avoids cozy routines, sports and low-stakes social play.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.98,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 91.83
+        },
+        "top3": [
+          {
+            "title": "Resident Evil Village",
+            "label": "ideal",
+            "score": 70
+          },
+          {
+            "title": "The Last of Us Part I",
+            "label": "strong",
+            "score": 70
+          },
+          {
+            "title": "Alan Wake 2",
+            "label": "ideal",
+            "score": 65
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Ghost of Tsushima",
+            "label": "stretch",
+            "score": 58
+          },
+          {
+            "title": "Hades",
+            "label": "stretch",
+            "score": 31
+          }
+        ],
+        "missedHighFit": []
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.92,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 71.25
+        },
+        "top3": [
+          {
+            "title": "DOOM Eternal",
+            "label": "strong",
+            "score": 62
+          },
+          {
+            "title": "Resident Evil Village",
+            "label": "ideal",
+            "score": 62
+          },
+          {
+            "title": "The Last of Us Part I",
+            "label": "strong",
+            "score": 62
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Diablo IV",
+            "label": "stretch",
+            "score": 57
+          },
+          {
+            "title": "Ghost of Tsushima",
+            "label": "stretch",
+            "score": 54
+          }
+        ],
+        "missedHighFit": []
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "horror_aficionado",
+          "name": "Horror aficionado",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.93,
+          "meanHighFitPrecisionAt3": 0.95,
+          "highFitTopChoiceRate": 0.95,
+          "avoidFreeTop3Rate": 1
+        },
+        "recurringTop3Mismatches": [
+          {
+            "title": "Ghost of Tsushima",
+            "label": "stretch",
+            "count": 2
+          },
+          {
+            "title": "Hades",
+            "label": "stretch",
+            "count": 1
+          }
+        ],
+        "weakestScenarios": [
+          {
+            "scenario": 5,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.76,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "DOOM Eternal",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "Ghost of Tsushima",
+                "label": "stretch",
+                "score": 70
+              },
+              {
+                "title": "Resident Evil Village",
+                "label": "ideal",
+                "score": 70
+              }
+            ]
+          },
+          {
+            "scenario": 18,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.79,
+            "highFitPrecisionAt3": 0.67,
+            "top3": [
+              {
+                "title": "Ghost of Tsushima",
+                "label": "stretch",
+                "score": 70
+              },
+              {
+                "title": "Resident Evil Village",
+                "label": "ideal",
+                "score": 70
+              },
+              {
+                "title": "The Last of Us Part I",
+                "label": "strong",
+                "score": 70
+              }
+            ]
+          },
+          {
+            "scenario": 1,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.92,
+            "highFitPrecisionAt3": 1,
+            "top3": [
+              {
+                "title": "DOOM Eternal",
+                "label": "strong",
+                "score": 62
+              },
+              {
+                "title": "Resident Evil Village",
+                "label": "ideal",
+                "score": 62
+              },
+              {
+                "title": "The Last of Us Part I",
+                "label": "strong",
+                "score": 62
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "finite_campaign_guardian",
+      "name": "Finite-campaign guardian",
+      "hypothesis": "Prefers complete single-player campaigns with a clear ending; avoids live-service upkeep, grind and competitive obligation.",
+      "full": {
+        "metrics": {
+          "ndcgAt6": 0.77,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 32.83
+        },
+        "top3": [
+          {
+            "title": "Ghost of Tsushima",
+            "label": "strong",
+            "score": 70
+          },
+          {
+            "title": "Pentiment",
+            "label": "strong",
+            "score": 69
+          },
+          {
+            "title": "Firewatch",
+            "label": "strong",
+            "score": 60
+          }
+        ],
+        "overranked": [
+          {
+            "title": "Two Point Hospital",
+            "label": "avoid",
+            "score": 44
+          }
+        ],
+        "missedHighFit": [
+          {
+            "title": "The Last of Us Part I",
+            "label": "ideal",
+            "score": 43
+          },
+          {
+            "title": "Alan Wake 2",
+            "label": "strong",
+            "score": 38
+          },
+          {
+            "title": "DOOM Eternal",
+            "label": "strong",
+            "score": 5
+          },
+          {
+            "title": "Journey",
+            "label": "strong",
+            "score": 0
+          },
+          {
+            "title": "Into the Breach",
+            "label": "strong",
+            "score": -27
+          }
+        ]
+      },
+      "fiveSignalStart": {
+        "metrics": {
+          "ndcgAt6": 0.92,
+          "highFitPrecisionAt3": 1,
+          "avoidIntrusionsAt3": 0,
+          "positiveAvoidMargin": 50
+        },
+        "top3": [
+          {
+            "title": "What Remains of Edith Finch",
+            "label": "strong",
+            "score": 62
+          },
+          {
+            "title": "Ghost of Tsushima",
+            "label": "strong",
+            "score": 58
+          },
+          {
+            "title": "Firewatch",
+            "label": "strong",
+            "score": 57
+          }
+        ],
+        "overranked": [],
+        "missedHighFit": [
+          {
+            "title": "Alan Wake 2",
+            "label": "strong",
+            "score": 49
+          },
+          {
+            "title": "Into the Breach",
+            "label": "strong",
+            "score": 9
+          },
+          {
+            "title": "Journey",
+            "label": "strong",
+            "score": -11
+          },
+          {
+            "title": "DOOM Eternal",
+            "label": "strong",
+            "score": -20
+          }
+        ]
+      },
+      "randomFiveSignalStress": {
+        "metrics": {
+          "id": "finite_campaign_guardian",
+          "name": "Finite-campaign guardian",
+          "scenarioCount": 20,
+          "meanNdcgAt6": 0.89,
+          "meanHighFitPrecisionAt3": 1,
+          "highFitTopChoiceRate": 1,
+          "avoidFreeTop3Rate": 1
+        },
+        "recurringTop3Mismatches": [],
+        "weakestScenarios": [
+          {
+            "scenario": 3,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.77,
+            "highFitPrecisionAt3": 1,
+            "top3": [
+              {
+                "title": "Ghost of Tsushima",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "What Remains of Edith Finch",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "Firewatch",
+                "label": "strong",
+                "score": 69
+              }
+            ]
+          },
+          {
+            "scenario": 17,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.77,
+            "highFitPrecisionAt3": 1,
+            "top3": [
+              {
+                "title": "Ghost of Tsushima",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "What Remains of Edith Finch",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "Firewatch",
+                "label": "strong",
+                "score": 69
+              }
+            ]
+          },
+          {
+            "scenario": 19,
+            "reactions": {
+              "positive": 3,
+              "neutral": 0,
+              "negative": 2
+            },
+            "ndcgAt6": 0.77,
+            "highFitPrecisionAt3": 1,
+            "top3": [
+              {
+                "title": "Ghost of Tsushima",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "What Remains of Edith Finch",
+                "label": "strong",
+                "score": 70
+              },
+              {
+                "title": "Firewatch",
+                "label": "strong",
+                "score": 69
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

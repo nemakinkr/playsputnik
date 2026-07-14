@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import vm from "node:vm";
 
 const ROOT = new URL("../", import.meta.url);
@@ -9,6 +9,8 @@ const external = JSON.parse(await readFile(new URL("data/global-search-fixtures.
 const aliases = JSON.parse(await readFile(new URL("data/title-aliases.json", ROOT), "utf8"));
 const scoreSource = await readFile(new URL("src/app-score.js", ROOT), "utf8");
 const OUTPUT_JSON = process.argv.includes("--json");
+const WRITE_DIAGNOSTICS = process.argv.includes("--write-diagnostics");
+const DIAGNOSTICS_URL = new URL("reports/synthetic-profile-diagnostics.json", ROOT);
 const STRESS_SETS_PER_PROFILE = 20;
 const STRESS_SET_SIZE = 5;
 
@@ -317,6 +319,78 @@ const stressProfiles = fixture.profiles.flatMap((profile) => (
 const aggregate = summarize(fullProfiles);
 const starterAggregate = summarize(starterProfiles);
 const stressAggregate = summarizeStress(stressProfiles);
+
+function compactRows(rows) {
+  return rows.map(({ title, label, score }) => ({ title, label, score }));
+}
+
+function modeDiagnostics(profile) {
+  const topSix = profile.ranked.slice(0, 6);
+  return {
+    metrics: profile.metrics,
+    top3: profile.top3,
+    overranked: compactRows(topSix.filter((row) => ["stretch", "avoid"].includes(row.label))),
+    missedHighFit: compactRows(profile.ranked.filter((row, index) => index >= 6 && ["ideal", "strong"].includes(row.label))),
+  };
+}
+
+function stressDiagnostics(profileId) {
+  const scenarios = stressProfiles.filter((profile) => profile.id === profileId);
+  const recurring = new Map();
+  scenarios.forEach((scenario) => scenario.top3
+    .filter((row) => ["stretch", "avoid"].includes(row.label))
+    .forEach((row) => {
+      const key = `${row.title}|${row.label}`;
+      const current = recurring.get(key) || { title: row.title, label: row.label, count: 0 };
+      current.count += 1;
+      recurring.set(key, current);
+    }));
+  const aggregateProfile = stressAggregate.profiles.find((profile) => profile.id === profileId);
+  return {
+    metrics: aggregateProfile,
+    recurringTop3Mismatches: [...recurring.values()]
+      .sort((left, right) => right.count - left.count || left.title.localeCompare(right.title))
+      .slice(0, 5),
+    weakestScenarios: [...scenarios]
+      .sort((left, right) => left.metrics.ndcgAt6 - right.metrics.ndcgAt6
+        || left.metrics.highFitPrecisionAt3 - right.metrics.highFitPrecisionAt3
+        || left.scenario - right.scenario)
+      .slice(0, 3)
+      .map((scenario) => ({
+        scenario: scenario.scenario,
+        reactions: scenario.reactions,
+        ndcgAt6: scenario.metrics.ndcgAt6,
+        highFitPrecisionAt3: scenario.metrics.highFitPrecisionAt3,
+        top3: scenario.top3,
+      })),
+  };
+}
+
+const diagnostics = {
+  version: 1,
+  fixtureVersion: fixture.version,
+  policy: "Synthetic labels are product hypotheses. Rows below are diagnostic mismatches, not claims about real players.",
+  aggregate: { full: aggregate, starter: starterAggregate, stress: stressAggregate },
+  profiles: fixture.profiles.map((profile) => ({
+    id: profile.id,
+    name: profile.name,
+    hypothesis: profile.hypothesis,
+    full: modeDiagnostics(fullProfiles.find((row) => row.id === profile.id)),
+    fiveSignalStart: modeDiagnostics(starterProfiles.find((row) => row.id === profile.id)),
+    randomFiveSignalStress: stressDiagnostics(profile.id),
+  })),
+};
+
+if (WRITE_DIAGNOSTICS) {
+  await writeFile(DIAGNOSTICS_URL, `${JSON.stringify(diagnostics, null, 2)}\n`);
+} else {
+  const committedDiagnostics = JSON.parse(await readFile(DIAGNOSTICS_URL, "utf8"));
+  assert(
+    JSON.stringify(committedDiagnostics) === JSON.stringify(diagnostics),
+    "Synthetic profile diagnostics are stale; run scripts/synthetic-profile-evaluation.mjs --write-diagnostics",
+  );
+}
+
 const report = {
   mode: "synthetic-profile-evaluation",
   fixturePolicy: fixture.method,
@@ -324,6 +398,7 @@ const report = {
   profiles: fullProfiles,
   starter: { aggregate: starterAggregate, profiles: starterProfiles },
   stress: { aggregate: stressAggregate, scenarios: stressProfiles },
+  diagnostics,
   missingCandidates: candidateRows.filter((row) => !row.game).map((row) => row.title),
 };
 
@@ -341,6 +416,11 @@ else {
   console.log(`   Random five-signal stress: ${stressAggregate.scenarioCount} scenarios, mean NDCG@6 ${stressAggregate.meanNdcgAt6}, high-fit winner ${stressAggregate.highFitTopChoiceRate}, avoid-free top 3 ${stressAggregate.avoidFreeTop3Rate}`);
   stressAggregate.profiles.forEach((profile) => {
     console.log(`   ↳ ${profile.name}: NDCG ${profile.meanNdcgAt6}, high-fit winner ${profile.highFitTopChoiceRate}, avoid-free ${profile.avoidFreeTop3Rate}`);
+  });
+  diagnostics.profiles.forEach((profile) => {
+    const fullIssues = profile.full.overranked.length + profile.full.missedHighFit.length;
+    const startIssues = profile.fiveSignalStart.overranked.length + profile.fiveSignalStart.missedHighFit.length;
+    console.log(`   ⚑ ${profile.name}: ${fullIssues} full-profile mismatches, ${startIssues} five-signal mismatches, weakest stress NDCG ${profile.randomFiveSignalStress.weakestScenarios[0]?.ndcgAt6}`);
   });
 }
 

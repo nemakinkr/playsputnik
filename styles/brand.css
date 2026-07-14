@@ -1125,6 +1125,7 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 }
 
 .detail-play-profile-grid {
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -1140,6 +1141,10 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 }
 
 @media (max-width: 560px) {
+  .taste-profile-pace {
+    grid-template-columns: 1fr;
+  }
+
   .detail-play-profile-grid {
     grid-template-columns: 1fr;
   }
@@ -2166,6 +2171,33 @@ body[data-app-view-current="today"] .hero-primary-cta small {
 
 .taste-profile-lens {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.taste-profile-pace {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--ps-blue) 24%, var(--ps-border));
+  border-radius: var(--radius-sm);
+  background: var(--accent-bg);
+  padding: 10px;
+}
+
+.taste-profile-pace span,
+.taste-profile-pace small {
+  color: var(--text-mid);
+  font-size: 0.7rem;
+  font-weight: 850;
+}
+
+.taste-profile-pace span { text-transform: uppercase; }
+
+.taste-profile-pace strong {
+  min-width: 0;
+  color: var(--text-strong);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
 }
 
 .taste-profile-proof {

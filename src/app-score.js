@@ -263,6 +263,35 @@
       _tasteProfileCache = computeTasteEngineProfile();
       return _tasteProfileCache;
     }
+
+    function tasteIntensityPreference(profile = tasteEngineProfile()) {
+      const positive = profile.positiveWeights || {};
+      const negative = profile.negativeWeights || {};
+      const calmScore = (positive["intensity:low"] || 0) + (negative["intensity:high"] || 0);
+      const intenseScore = (positive["intensity:high"] || 0) + (negative["intensity:low"] || 0);
+      const evidenceWeight = calmScore + intenseScore;
+      const gap = Math.abs(calmScore - intenseScore);
+      const separation = evidenceWeight ? gap / evidenceWeight : 0;
+      const kind = evidenceWeight < 1.5
+        ? "uncertain"
+        : separation < 0.2
+          ? "balanced"
+          : calmScore > intenseScore
+            ? "calm"
+            : "intense";
+      const confidence = kind === "uncertain" || separation < 0.25
+        ? "low"
+        : separation >= 0.5 && ["High", "Medium"].includes(profile.confidence)
+          ? "high"
+          : "medium";
+      return {
+        kind,
+        confidence,
+        calmScore: Math.round(calmScore * 10) / 10,
+        intenseScore: Math.round(intenseScore * 10) / 10,
+        evidenceWeight: Math.round(evidenceWeight * 10) / 10,
+      };
+    }
     function computeTasteEngineProfile() {
       const state = getState();
       const combinedWeights = {};
@@ -965,6 +994,7 @@
       quickTasteWeights,
       legacyLikedTasteWeights,
       tasteEngineProfile,
+      tasteIntensityPreference,
       invalidateTasteProfile,
       tasteEngineGameSignals,
       tasteEngineScore,

@@ -59,6 +59,13 @@ try {
     difficulty: document.querySelector("[data-detail-difficulty]")?.textContent?.trim() || "",
     intensity: document.querySelector("[data-detail-intensity]")?.textContent?.trim() || "",
     intensityConfidence: document.querySelector("[data-detail-intensity-confidence]")?.textContent?.trim() || "",
+    playProfileLayout: (() => {
+      const grid = document.querySelector(".detail-play-profile-grid");
+      return grid ? {
+        display: getComputedStyle(grid).display,
+        widths: [...grid.children].map((child) => Math.round(child.getBoundingClientRect().width)),
+      } : null;
+    })(),
     sourceRows: document.querySelectorAll(".detail-source-row").length,
     atomSignals: document.querySelectorAll(".detail-atom-signal").length,
     primaryCta: document.querySelector("[data-detail-primary-action]")?.textContent?.trim() || "",
@@ -138,6 +145,11 @@ try {
   assert(before.sourceTrust === 1, "Expected detail data trust block");
   assert(before.playProfile === 1, "Expected difficulty/intensity play profile");
   assert(before.difficulty && before.intensity && before.intensityConfidence, "Expected localized difficulty, intensity and confidence values");
+  assert(before.playProfileLayout?.display === "grid", `Expected play profile grid layout, got ${before.playProfileLayout?.display}`);
+  assert(
+    Math.max(...before.playProfileLayout.widths) - Math.min(...before.playProfileLayout.widths) <= 2,
+    `Expected equal play profile columns, got ${before.playProfileLayout.widths.join("/")}`,
+  );
   assert(before.sourceRows >= 4, `Expected source trust rows, got ${before.sourceRows}`);
   assert(before.atomSignals >= 1, `Expected atom signal chips, got ${before.atomSignals}`);
   assert(before.primaryCta, "Expected smart primary CTA");

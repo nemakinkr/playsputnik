@@ -29,6 +29,7 @@ echo "── 2/7 i18n catalogs + usage ─────────────�
 "$NODE" scripts/i18n-startup-test.mjs
 "$NODE" scripts/companion-intelligence-test.mjs
 "$NODE" scripts/difficulty-intensity-audit.mjs
+"$NODE" scripts/intensity-preference-test.mjs
 "$NODE" scripts/onboarding-diagnostic-test.mjs
 "$NODE" scripts/recommendation-diversity-test.mjs
 "$NODE" scripts/ranking-dogfood-audit.mjs

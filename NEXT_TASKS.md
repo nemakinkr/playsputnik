@@ -355,6 +355,12 @@ stress scenarios keep early recommendations honest. Eighteen high-impact
 catalog records now carry explicit curated intensity; the game detail surface
 shows difficulty, intensity, confidence, source, and human-readable evidence,
 while the remaining low-confidence catalog records stay explicitly uncertain.
+The taste engine now summarizes calm versus intense preference without
+overclaiming sparse or mixed evidence, and aligned recommendations can cite the
+signal in EN/RU. `reports/synthetic-profile-diagnostics.json` turns aggregate
+scores into per-persona mismatch lists and weakest stress scenarios; its
+freshness is gated. The open-world and systems failures are now the clearest
+evidence-led scoring targets.
 New aliases were added for high-value
 Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,

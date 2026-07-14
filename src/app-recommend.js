@@ -14,6 +14,7 @@
     getRecommendationPool,
     getRefreshPolicy,
     tasteEngineProfile,
+    tasteIntensityPreference,
     tasteEngineGameSignals,
     tasteEngineScore,
     classifyTasteVerdict,
@@ -101,6 +102,20 @@
       if (score >= 65) return t("narrative.recommend.fitStrong");
       if (score >= 45) return t("narrative.recommend.fitPromising");
       return t("narrative.recommend.fitExperiment");
+    }
+
+    function localizedIntensityReason(kind, context) {
+      const keys = {
+        fact: {
+          calm: "narrative.recommend.factIntensity.calm",
+          intense: "narrative.recommend.factIntensity.intense",
+        },
+        forecast: {
+          calm: "narrative.recommend.forecastReasonIntensity.calm",
+          intense: "narrative.recommend.forecastReasonIntensity.intense",
+        },
+      };
+      return t(keys[context]?.[kind] || "narrative.recommend.reasonSparse");
     }
 
     function capConfidence(value, cap) {
@@ -312,7 +327,12 @@
       const facts = [];
       const tasteProfile = tasteEngineProfile();
       const tasteSignals = tasteEngineGameSignals(game, tasteProfile);
+      const intensityPreference = tasteIntensityPreference(tasteProfile);
       if (tasteSignals.positive.length) facts.push(t("narrative.recommend.factTaste", { signals: labelAtoms(tasteSignals.positive.slice(0, 2), " + ") }));
+      if (
+        intensityPreference.confidence !== "low"
+        && tasteSignals.positive.includes(`intensity:${intensityPreference.kind === "calm" ? "low" : "high"}`)
+      ) facts.push(localizedIntensityReason(intensityPreference.kind, "fact"));
       if (tasteSignals.mixed.length) facts.push(t("narrative.recommend.factMixed", { signals: labelAtoms(tasteSignals.mixed.slice(0, 2), " + ") }));
       if (notebookWishlistWeight(game.title)) facts.push(t("narrative.recommend.factWishlist", { count: notebookWishlistWeight(game.title) }));
       if (notebookAccessKind(game.title)) facts.push(t("narrative.recommend.factAccess", { access: notebookAccessKind(game.title) }));
@@ -407,6 +427,7 @@
       const references = personalReferenceGames(game);
       const tasteProfile = tasteEngineProfile();
       const tasteSignals = tasteEngineGameSignals(game, tasteProfile);
+      const intensityPreference = tasteIntensityPreference(tasteProfile);
       const verdict = tasteVerdict(game);
       const ratingForecast = personalRatingForecast(game);
       const positiveAtoms = tasteSignals.positive.slice(0, 2);
@@ -443,6 +464,10 @@
       if (positiveAtoms.length) {
         reasons.push(t("narrative.recommend.forecastReasonSignal", { signals: positiveAtoms.join(" + ") }));
       }
+      if (
+        intensityPreference.confidence !== "low"
+        && tasteSignals.positive.includes(`intensity:${intensityPreference.kind === "calm" ? "low" : "high"}`)
+      ) reasons.push(localizedIntensityReason(intensityPreference.kind, "forecast"));
       const accessLabel = answerAccessLabel(game);
       if (accessLabel) reasons.push(t("narrative.recommend.forecastReasonAccess", { access: accessLabel }));
       if (!reasons.length) reasons.push(t("narrative.recommend.forecastReasonFit", { fit: localizedFitBand(score) }));

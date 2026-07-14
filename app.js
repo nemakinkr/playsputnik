@@ -429,6 +429,7 @@ const {
   quickTasteWeights,
   legacyLikedTasteWeights,
   tasteEngineProfile,
+  tasteIntensityPreference,
   invalidateTasteProfile,
   tasteEngineGameSignals,
   tasteEngineScore,
@@ -525,6 +526,7 @@ const {
   getRecommendationPool: () => recommendationPool(),
   getRefreshPolicy: () => refreshPolicy,
   tasteEngineProfile,
+  tasteIntensityPreference,
   tasteEngineGameSignals,
   tasteEngineScore,
   classifyTasteVerdict,
@@ -3260,6 +3262,7 @@ function buildTasteProfileText() {
 
   // Sample liked game titles (up to 3, from loved quickReactions)
   const lovedSample = [...new Set([...loved, ...importedLoved])].slice(0, 3);
+  const intensityPreference = tasteIntensityPreference();
 
   return {
     totalSignals,
@@ -3270,13 +3273,22 @@ function buildTasteProfileText() {
     lovedSample,
     loved,
     avoided,
+    intensityPreference,
     rankedCount: state.notebook?.ranked?.length || 0,
   };
 }
 
 function renderTasteProfileScreen(profile) {
   if (!els.tasteProfileScreen) return;
-  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, avoided, rankedCount } = profile;
+  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, avoided, rankedCount, intensityPreference } = profile;
+  const intensityKindKey = {
+    calm: "taste.profileIntensityKind.calm", intense: "taste.profileIntensityKind.intense",
+    balanced: "taste.profileIntensityKind.balanced", uncertain: "taste.profileIntensityKind.uncertain",
+  }[intensityPreference.kind];
+  const intensityConfidenceKey = {
+    low: "taste.profileIntensityConfidence.low", medium: "taste.profileIntensityConfidence.medium",
+    high: "taste.profileIntensityConfidence.high",
+  }[intensityPreference.confidence];
   const strengthLabel = totalSignals === 0
     ? t("taste.profileWaiting")
     : strength === "strong"
@@ -3335,6 +3347,11 @@ function renderTasteProfileScreen(profile) {
           <strong class="taste-profile-anchor-list">${avoidedCopy}</strong>
         </div>
       </div>
+      <div class="taste-profile-pace" data-taste-intensity="${intensityPreference.kind}">
+        <span>${t("taste.profileIntensity")}</span>
+        <strong>${t(intensityKindKey)}</strong>
+        <small>${t(intensityConfidenceKey)}</small>
+      </div>
       <div class="taste-profile-proof">
         <div><span>${t("taste.profileSignals")}</span><strong>${totalSignals}</strong></div>
         <div><span>${t("taste.profileImported")}</span><strong>${importedCount}</strong></div>
@@ -3371,7 +3388,7 @@ function renderTasteProfile() {
   // Rich profile summary
   if (!els.tasteProfileSummary) return;
   const profileText = buildTasteProfileText();
-  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, rankedCount } = profileText;
+  const { totalSignals, strength, allPositive, negativeAtoms, archetype, lovedSample, rankedCount, intensityPreference } = profileText;
   renderTasteProfileScreen(profileText);
 
   if (els.tasteProfileBadge) {
@@ -3406,6 +3423,15 @@ function renderTasteProfile() {
       ? ` ${t("settings.tasteProfileDynamic.skips", { atoms: labelAtoms(negativeAtoms.slice(0, 2), ", ") })}`
       : "";
     parts.push(`<p class="taste-line">${positiveCopy}${negativeCopy}</p>`);
+  }
+
+  if (intensityPreference.kind !== "uncertain") {
+    const intensitySummaryKey = {
+      calm: "settings.tasteProfileDynamic.intensity.calm",
+      intense: "settings.tasteProfileDynamic.intensity.intense",
+      balanced: "settings.tasteProfileDynamic.intensity.balanced",
+    }[intensityPreference.kind];
+    parts.push(`<p class="taste-line">${t(intensitySummaryKey)}</p>`);
   }
 
   if (lovedSample.length) {
