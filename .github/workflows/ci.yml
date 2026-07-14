@@ -21,12 +21,14 @@ jobs:
           node scripts/validate-data.mjs
           node scripts/editorial-data-check.mjs
           node scripts/atom-quality-audit.mjs
+          node scripts/difficulty-intensity-audit.mjs
       - name: Validate i18n catalogs and usage
         run: |
           node scripts/i18n-check.mjs
           node scripts/i18n-startup-test.mjs
           node scripts/companion-intelligence-test.mjs
           node scripts/onboarding-diagnostic-test.mjs
+          node scripts/recommendation-diversity-test.mjs
           node scripts/ranking-dogfood-audit.mjs
           node scripts/founder-recommendation-evaluation.mjs
           node scripts/synthetic-profile-evaluation.mjs

@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v140 (cache-first static assets / network-first navigation and
+- Service worker v141 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -144,6 +144,10 @@ reviews, catalogs, sale pages, and announcements.
   poster before deeper onboarding. The quick taste queue now balances broad
   recognizability with diagnostic axis coverage, so the first few swipes span
   different taste dimensions instead of drifting into three similar questions.
+  Candidate ordering now also calculates Bayesian expected information gain
+  across atom and diagnostic-axis reactions. Repeated evidence reduces a
+  question's value, unresolved conflicts remain priority follow-ups, and the
+  familiar-game ordering still acts as a recognizability guardrail.
 - Ranking dogfood: a real 111-title ranked-favorites fixture now gates the
   import/taste and forecast baseline. `scripts/ranking-dogfood-audit.mjs` strips
   PlayStation-generation emoji markers, treats the ranking tail as weaker
@@ -176,9 +180,9 @@ reviews, catalogs, sale pages, and announcements.
   only bottom-quartile intrusion from the forecast top 10.
   A second recommendation gate now runs three deterministic fictional personas
   against the same 13 unseen candidates. The systems, competitive, and cozy
-  profiles currently achieve mean NDCG@6 0.93, high-fit precision@3 0.78, zero
+  profiles currently achieve mean NDCG@6 0.93, high-fit precision@3 0.89, zero
   avoid-title intrusions in any top 3, three distinct top choices, and mean
-  top-3 overlap 0.17. The fixture explicitly forbids training/candidate title
+  top-3 overlap 0.07. The fixture explicitly forbids training/candidate title
   leakage. Its first run exposed score saturation from large imported profiles;
   taste scoring now normalizes by learning evidence and treats mechanics/genre
   atoms as stronger evidence than tone, content, time-fit, and commitment.
@@ -197,7 +201,16 @@ reviews, catalogs, sale pages, and announcements.
   10 = working read, and 20 = confident quick profile. Difficulty and derived
   intensity now use separate structured taste signals with lower importance
   than core mechanics; EN/RU explanations localize them without exposing
-  machine keys. The stress gate exposed and fixed incorrect DOOM Eternal atoms.
+  machine keys. A catalog-wide gate now runs the same production normalizer
+  over all 461 games: difficulty resolves to 28 low / 349 medium / 84 high,
+  while derived intensity resolves to 31 low / 309 medium / 121 high. Source
+  aliases such as easy/low and hard/high remain accepted inputs but cannot leak
+  into the taste model. The stress gate exposed and fixed incorrect DOOM
+  Eternal atoms.
+  Top recommendations now receive a controlled diversity rerank: the strongest
+  game is fixed at #1, only candidates within 12 score points may trade places,
+  and atom/session/tone similarity breaks near-ties. The gate proves that this
+  reduces repeated top-3 experiences without promoting materially weaker games.
   The first follow-up closed the top-30 unknown search gaps by
   adding honest external-index records for Kingdom Come: Deliverance II, Days
   Gone, Atomic Heart, Dispatch, Marvel's Guardians of the Galaxy, Metro Exodus,

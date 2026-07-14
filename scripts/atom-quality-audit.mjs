@@ -48,9 +48,14 @@ check("Rise of the Tomb Raider", (game) => (
   && game.atoms.includes("cinematic")
   && !game.atoms.includes("open-world")
 ), "hub exploration must not be represented as a full open world");
+check("DOOM Eternal", (game) => (
+  game.atoms.includes("shooter")
+  && game.atoms.includes("adrenaline")
+  && !game.atoms.includes("co-op")
+), "arena shooter must expose adrenaline/shooter intensity without a fabricated co-op signal");
 
 if (violations.length) {
   throw new Error(`Atom quality audit failed:\n- ${violations.join("\n- ")}`);
 }
 
-console.log(`✅ Atom quality audit: ${games.length} records scanned, 6 high-impact recommendation records gated, service-vibe consistency clean`);
+console.log(`✅ Atom quality audit: ${games.length} records scanned, 7 high-impact recommendation records gated, service-vibe consistency clean`);

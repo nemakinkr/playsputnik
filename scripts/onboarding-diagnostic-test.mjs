@@ -85,6 +85,19 @@ const broadTools = createTools(broadState);
 assert(broadTools.quickProfileMaturity(5, 5).stage === "hypothesis", "Five signals must remain a cautious hypothesis");
 assert(broadTools.quickProfileMaturity(10, 10).stage === "usable", "Ten signals must unlock a working taste read");
 assert(broadTools.quickProfileMaturity(20, 20).stage === "sharp", "Twenty signals must unlock the confident quick profile");
+assert(broadTools.diagnosticInformationGain(profileGames[0]) > 0, "Every unanswered diagnostic game should have measurable information gain");
+const informationTarget = profileGames.find((game) => game.title === "The Witcher 3: Wild Hunt");
+const freshInformation = broadTools.diagnosticInformationGain(informationTarget);
+react(broadState, "The Last of Us Part I", "loved");
+react(broadState, "Red Dead Redemption 2", "loved");
+const learnedInformation = broadTools.diagnosticInformationGain(informationTarget);
+assert(
+  learnedInformation < freshInformation,
+  `repeated story evidence should reduce expected information gain (${freshInformation} -> ${learnedInformation})`,
+);
+delete broadState.quickReactions[titleKey("The Last of Us Part I")];
+delete broadState.quickReactions[titleKey("Red Dead Redemption 2")];
+([...broadState.liked]).forEach((title) => broadState.liked.delete(title));
 const firstThree = [
   answerNext(broadState, broadTools),
   answerNext(broadState, broadTools),
@@ -99,6 +112,14 @@ assert(
   firstThreeAxes.some((axis) => ["systems", "intensity", "social"].includes(axis)),
   `Expected early onboarding to include a format/intensity/social check, got ${firstThreeAxes.join(", ")}`,
 );
+const broadNext = broadTools.nextDiagnosticGame();
+const unansweredScores = profileGames
+  .filter((game) => !broadTools.quickReaction(game.title))
+  .map((game) => broadTools.diagnosticQuestionScore(game));
+assert(
+  broadTools.diagnosticQuestionScore(broadNext) === Math.max(...unansweredScores),
+  "next onboarding question should maximize the production information score",
+);
 
 const conflictState = { quickReactions: {}, liked: new Set() };
 react(conflictState, "The Witcher 3: Wild Hunt", "loved");
@@ -110,4 +131,9 @@ const followUp = conflictTools.nextDiagnosticGame();
 assert(conflict.hasConflict && conflict.atoms.includes("choice"), `Expected choice conflict, got ${JSON.stringify(conflict)}`);
 assert(followUp.atoms.includes("choice"), `Expected conflict follow-up to revisit choice, got ${followUp.title}`);
 
-console.log(`✅ onboarding diagnostics gate honest 5/10/20 confidence, cover ${firstThreeAxes.length} axes in the first 3 questions (${firstThree.map((game) => game.title).join(" / ")}), and resolve mixed choice signals with ${followUp.title}`);
+assert(
+  conflictTools.diagnosticQuestionScore(followUp) > conflictTools.diagnosticQuestionScore(profileGames.find((game) => game.title === "EA Sports FC 26")),
+  "an unresolved taste conflict should outweigh an unrelated question",
+);
+
+console.log(`✅ onboarding diagnostics gate honest 5/10/20 confidence, maximize information gain, cover ${firstThreeAxes.length} axes in the first 3 questions (${firstThree.map((game) => game.title).join(" / ")}), and resolve mixed choice signals with ${followUp.title}`);

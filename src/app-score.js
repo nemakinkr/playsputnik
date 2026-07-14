@@ -5,7 +5,10 @@
     "precision", "souls-like", "soulslike", "tension",
   ];
   const LOW_INTENSITY_ATOMS = [
-    "cozy", "creative", "logic", "management", "puzzle", "routine", "slow",
+    "cozy", "routine", "slow",
+  ];
+  const LOW_INTENSITY_SUPPORT_ATOMS = [
+    "creative", "logic", "management", "puzzle",
   ];
   const FEEDBACK_ACTION_KEYS = {
     playing: "taste.actionPlaying", want_to_finish: "taste.actionFinish", paused: "taste.actionPaused",
@@ -27,30 +30,58 @@
     return "medium";
   }
 
-  function gameIntensityBand(game = {}) {
+  function gameDifficultyIntensityProfile(game = {}) {
     const atoms = new Set(game.atoms || []);
     const difficulty = normalizeDifficultyBand(game.difficulty);
+    const highEvidence = HIGH_INTENSITY_ATOMS.filter((atom) => atoms.has(atom));
+    const lowEvidence = LOW_INTENSITY_ATOMS.filter((atom) => atoms.has(atom));
+    const lowSupport = LOW_INTENSITY_SUPPORT_ATOMS.filter((atom) => atoms.has(atom));
+    const evidence = [
+      game.difficulty ? `difficulty:${game.difficulty}` : "",
+      ...highEvidence.map((atom) => `atom:${atom}`),
+      ...lowEvidence.map((atom) => `atom:${atom}`),
+      ...lowSupport.map((atom) => `atom:${atom}`),
+      game.tone === "tense" ? "tone:tense" : "",
+    ].filter(Boolean);
+    let intensity = "medium";
     if (
       difficulty === "high"
-      || HIGH_INTENSITY_ATOMS.some((atom) => atoms.has(atom))
+      || highEvidence.length
       || game.tone === "tense"
-    ) return "high";
-    if (
+    ) intensity = "high";
+    else if (
       difficulty === "low"
-      || LOW_INTENSITY_ATOMS.some((atom) => atoms.has(atom))
-    ) return "low";
-    return "medium";
+      || lowEvidence.length
+      || lowSupport.length >= 2
+    ) intensity = "low";
+    return {
+      difficulty,
+      intensity,
+      evidence,
+      confidence: game.difficulty && game.difficulty !== "normal"
+        ? "high"
+        : evidence.length >= 3
+          ? "high"
+          : evidence.length >= 2
+          ? "medium"
+          : "low",
+    };
+  }
+
+  function gameIntensityBand(game = {}) {
+    return gameDifficultyIntensityProfile(game).intensity;
   }
 
   function gameSignalsForGame(game = {}) {
+    const profile = gameDifficultyIntensityProfile(game);
     return [
       ...(game.atoms || []),
       game.tone,
       game.content,
       game.adultTimeFit,
       game.commitment,
-      game.difficulty && `difficulty:${normalizeDifficultyBand(game.difficulty)}`,
-      `intensity:${gameIntensityBand(game)}`,
+      game.difficulty && `difficulty:${profile.difficulty}`,
+      `intensity:${profile.intensity}`,
     ].filter(Boolean);
   }
 
@@ -955,6 +986,7 @@
     createScoreTools,
     classifyTasteVerdict,
     gameSignalsForGame,
+    gameDifficultyIntensityProfile,
     normalizeDifficultyBand,
     gameIntensityBand,
   };

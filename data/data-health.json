@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T08:35:40.816Z",
+  "generatedAt": "2026-07-14T10:53:46.846Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -204,10 +204,10 @@
     ]
   },
   "refreshDigest": {
-    "generatedAt": "2026-07-14T08:35:40.813Z",
+    "generatedAt": "2026-07-14T10:53:46.838Z",
     "priceSnapshotCount": 1844,
     "subscriptionRecordCount": 508,
-    "latestPriceCheckedAt": "2026-07-14T08:30:41.785Z",
+    "latestPriceCheckedAt": "2026-07-14T09:10:05.208Z",
     "latestSubscriptionCheckedAt": "2026-07-14T08:33:49.805Z",
     "priceSourceCount": 6,
     "subscriptionSourceCount": 1,
@@ -218,7 +218,7 @@
         "priceCount": 461,
         "discountCount": 80,
         "subscriptionCount": 144,
-        "latestPriceCheckedAt": "2026-07-14T08:30:41.785Z",
+        "latestPriceCheckedAt": "2026-07-14T09:10:05.208Z",
         "latestSubscriptionCheckedAt": "2026-07-14T08:33:49.805Z"
       },
       {
@@ -226,7 +226,7 @@
         "priceCount": 461,
         "discountCount": 77,
         "subscriptionCount": 134,
-        "latestPriceCheckedAt": "2026-07-14T08:30:41.785Z",
+        "latestPriceCheckedAt": "2026-07-14T09:10:05.208Z",
         "latestSubscriptionCheckedAt": "2026-07-14T08:33:49.805Z"
       },
       {
@@ -234,7 +234,7 @@
         "priceCount": 461,
         "discountCount": 77,
         "subscriptionCount": 117,
-        "latestPriceCheckedAt": "2026-07-14T08:30:41.785Z",
+        "latestPriceCheckedAt": "2026-07-14T09:10:05.208Z",
         "latestSubscriptionCheckedAt": "2026-07-14T08:33:49.805Z"
       },
       {
@@ -242,7 +242,7 @@
         "priceCount": 461,
         "discountCount": 139,
         "subscriptionCount": 113,
-        "latestPriceCheckedAt": "2026-07-14T08:30:41.785Z",
+        "latestPriceCheckedAt": "2026-07-14T09:10:05.208Z",
         "latestSubscriptionCheckedAt": "2026-07-14T08:33:49.805Z"
       }
     ]

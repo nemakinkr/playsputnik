@@ -11,6 +11,44 @@
     long: "narrative.recommend.sessionLong",
   };
 
+  function recommendationSimilarity(left, right) {
+    const leftAtoms = new Set(left.atoms || []);
+    const rightAtoms = new Set(right.atoms || []);
+    const union = new Set([...leftAtoms, ...rightAtoms]);
+    const sharedAtoms = [...leftAtoms].filter((atom) => rightAtoms.has(atom)).length;
+    const atomSimilarity = union.size ? sharedAtoms / union.size : 0;
+    const sessionSimilarity = left.session && left.session === right.session ? 0.1 : 0;
+    const toneSimilarity = left.tone && left.tone === right.tone ? 0.1 : 0;
+    return Math.min(1, atomSimilarity * 0.8 + sessionSimilarity + toneSimilarity);
+  }
+
+  function diversifyRecommendationOrder(
+    ranked,
+    { limit = 6, window = 15, maxScoreDrop = 12, similarityPenalty = 10 } = {},
+  ) {
+    if (!Array.isArray(ranked) || ranked.length < 3 || limit < 2) return ranked || [];
+    const source = [...ranked];
+    const selected = [source[0]];
+    const remaining = source.slice(1, Math.max(limit, window));
+    while (selected.length < Math.min(limit, source.length) && remaining.length) {
+      const bestRemainingScore = remaining[0].score;
+      const eligible = remaining.filter((game) => bestRemainingScore - game.score <= maxScoreDrop);
+      const winner = eligible
+        .map((game) => ({
+          game,
+          utility: game.score - Math.max(
+            ...selected.map((chosen) => recommendationSimilarity(game, chosen)),
+          ) * similarityPenalty,
+          order: source.indexOf(game),
+        }))
+        .sort((a, b) => b.utility - a.utility || b.game.score - a.game.score || a.order - b.order)[0].game;
+      selected.push(winner);
+      remaining.splice(remaining.indexOf(winner), 1);
+    }
+    const selectedSet = new Set(selected);
+    return [...selected, ...source.filter((game) => !selectedSet.has(game))];
+  }
+
   function createRankingTools({
     getState,
     getRecommendationPool,
@@ -44,7 +82,7 @@
       const state = getState();
       const completed = notebookCompletedSet();
       const rankedKnown = notebookRankedSet ? notebookRankedSet() : new Set();
-      _rankedCache = getRecommendationPool()
+      const scored = getRecommendationPool()
         .filter((game) => !state.hidden.has(game.title))
         .filter((game) => !state.snoozed.has(game.title))
         .filter((game) => !RANK_EXCLUDED_STATES.includes(getGameUserState(game.title)))
@@ -52,6 +90,7 @@
         .filter((game) => !rankedKnown.has(titleKey(game.title)))
         .map((game) => ({ ...game, score: scoreGame(game) }))
         .sort((a, b) => b.score - a.score);
+      _rankedCache = diversifyRecommendationOrder(scored);
       return _rankedCache;
     }
 
@@ -134,5 +173,9 @@
     return { rankedGames, invalidateRankedGames, clusterGames, dealReason, dealScore, purchaseRisk, purchaseScore, purchaseCandidates };
   }
 
-  window.PlaySputnikRanking = { createRankingTools };
+  window.PlaySputnikRanking = {
+    createRankingTools,
+    recommendationSimilarity,
+    diversifyRecommendationOrder,
+  };
 })();

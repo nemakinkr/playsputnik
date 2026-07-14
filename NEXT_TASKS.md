@@ -338,8 +338,15 @@ high-fit winner rate 0.95, and avoid-free top-3 rate 0.95. Confidence copy and
 logic now agree on 5 = hypothesis, 10 = working read, 20 = confident profile.
 Difficulty and derived intensity are separate prefixed signals, localized in
 EN/RU and intentionally weighted below mechanics; the stress run also exposed
-and fixed DOOM Eternal's incorrect co-op/atmosphere atoms. New aliases were
-added for high-value Russian/variant titles already present in the corpus: The Witcher 3,
+and fixed DOOM Eternal's incorrect co-op/atmosphere atoms. A catalog-wide
+production-helper audit now guarantees normalized difficulty/intensity coverage
+for all 461 seed games and reports band/confidence distributions. Onboarding
+question selection now adds Bayesian expected information gain to axis/atom
+coverage, while keeping conflict follow-ups and recognizable early games.
+Recommendation ranking now preserves #1 but diversity-reranks near-tied
+candidates within a 12-point quality floor; a deterministic gate prevents weak
+novelty from being promoted. New aliases were added for high-value
+Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of
 Ashes, The Stanley Parable, Marvel's Guardians of the Galaxy, and Dying Light 2

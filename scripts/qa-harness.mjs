@@ -941,7 +941,8 @@ function checkSelectors() {
   assert(/function quickSwipeFollowUpHint/.test(appOnboardingSource), "Swipe deck should expose a light follow-up hint");
   assert(/Good follow-up/.test(appOnboardingSource + i18nEnSource), "Swipe deck should keep targeted follow-ups magical rather than mechanical");
   assert(/Clarifying/.test(appOnboardingSource), "Internal selector should still understand targeted conflict follow-ups");
-  assert(/conflictScore: conflictResolutionScore/.test(appOnboardingSource), "Adaptive selector should keep a conflict-resolution score");
+  assert(/function diagnosticInformationGain/.test(appOnboardingSource), "Adaptive selector should measure expected information gain");
+  assert(/function diagnosticQuestionScore/.test(appOnboardingSource) && /conflictResolutionScore\(game/.test(appOnboardingSource), "Adaptive selector should combine information gain with conflict resolution");
   assert(/10000 \+ .*conflictScore/.test(appOnboardingSource), "Conflict-resolution candidates should outrank ordinary coverage");
   assert(/function quickSwipeAtomChips/.test(appOnboardingSource), "Swipe deck atom chips are missing");
   assert(/is-conflict/.test(appOnboardingSource + css), "Swipe deck should mark conflict atoms visually");

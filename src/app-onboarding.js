@@ -118,11 +118,72 @@
       return missingAxisCoverage * 450 + newAxisCoverage * 90;
     }
 
-    function diagnosticNeedScore(game, missingAtoms = uncoveredDiagnosticAtoms(), answeredAtoms = quickAnsweredAtoms()) {
+    function diagnosticNeedScore(
+      game,
+      missingAtoms = uncoveredDiagnosticAtoms(),
+      answeredAtoms = quickAnsweredAtoms(),
+      missingAxes = uncoveredDiagnosticAxes(),
+      answeredAxes = quickAnsweredAxes(),
+    ) {
       const atoms = new Set(game.atoms || []);
       const missingCoverage = missingAtoms.filter((atom) => atoms.has(atom)).length;
       const newAtomCoverage = [...atoms].filter((atom) => !answeredAtoms.has(atom)).length;
-      return diagnosticAxisNeedScore(game) + missingCoverage * 100 + newAtomCoverage;
+      return diagnosticAxisNeedScore(game, missingAxes, answeredAxes) + missingCoverage * 100 + newAtomCoverage;
+    }
+
+    function binaryEntropy(probability) {
+      if (probability <= 0 || probability >= 1) return 0;
+      return -probability * Math.log2(probability) - (1 - probability) * Math.log2(1 - probability);
+    }
+
+    function expectedBinaryInformationGain(positive = 0, negative = 0) {
+      const alpha = positive + 1;
+      const beta = negative + 1;
+      const total = alpha + beta;
+      const positiveChance = alpha / total;
+      const currentEntropy = binaryEntropy(positiveChance);
+      const positiveEntropy = binaryEntropy((alpha + 1) / (total + 1));
+      const negativeEntropy = binaryEntropy(alpha / (total + 1));
+      return Math.max(0, currentEntropy - (
+        positiveChance * positiveEntropy + (1 - positiveChance) * negativeEntropy
+      ));
+    }
+
+    function quickTasteAxisReactionStats() {
+      const stats = Object.fromEntries(
+        DIAGNOSTIC_AXIS_GROUPS.map((group) => [group.id, { positive: 0, negative: 0 }]),
+      );
+      profileGames.forEach((game) => {
+        const reaction = quickReaction(game.title);
+        if (!reaction || reaction === "unplayed") return;
+        const direction = reaction === "not_for_me" ? "negative" : "positive";
+        diagnosticAxisHits(game).forEach((axis) => { stats[axis][direction] += 1; });
+      });
+      return stats;
+    }
+
+    function diagnosticInformationGain(
+      game,
+      atomStats = quickTasteAtomReactionStats(),
+      axisStats = quickTasteAxisReactionStats(),
+    ) {
+      const axisGain = diagnosticAxisHits(game)
+        .map((axis) => expectedBinaryInformationGain(
+          axisStats[axis]?.positive || 0,
+          axisStats[axis]?.negative || 0,
+        ))
+        .sort((a, b) => b - a)
+        .slice(0, 2)
+        .reduce((sum, value) => sum + value, 0);
+      const atomGain = [...new Set(game.atoms || [])]
+        .map((atom) => expectedBinaryInformationGain(
+          atomStats[atom]?.positive || 0,
+          atomStats[atom]?.negative || 0,
+        ))
+        .sort((a, b) => b - a)
+        .slice(0, 3)
+        .reduce((sum, value) => sum + value, 0);
+      return Math.round((axisGain * 1200 + atomGain * 300) * 100) / 100;
     }
 
     function conflictResolutionScore(game, conflict = quickTasteConflictReport(), answeredAtoms = quickAnsweredAtoms()) {
@@ -133,6 +194,31 @@
       const newContextCoverage = [...atoms].filter((atom) => !answeredAtoms.has(atom) && !conflict.atoms.includes(atom)).length;
       const focusedEnough = Math.round((conflictCoverage.length / Math.max(1, atoms.size)) * 10);
       return conflictCoverage.length * 500 + newContextCoverage * 25 + focusedEnough;
+    }
+
+    function diagnosticQuestionContext() {
+      return {
+        missingAtoms: uncoveredDiagnosticAtoms(),
+        answeredAtoms: quickAnsweredAtoms(),
+        missingAxes: uncoveredDiagnosticAxes(),
+        answeredAxes: quickAnsweredAxes(),
+        atomStats: quickTasteAtomReactionStats(),
+        axisStats: quickTasteAxisReactionStats(),
+        conflict: quickTasteConflictReport(),
+      };
+    }
+
+    function diagnosticQuestionScore(game, index = profileGames.indexOf(game), context = diagnosticQuestionContext()) {
+      const conflictScore = conflictResolutionScore(game, context.conflict, context.answeredAtoms);
+      const baseScore = diagnosticNeedScore(
+        game,
+        context.missingAtoms,
+        context.answeredAtoms,
+        context.missingAxes,
+        context.answeredAxes,
+      ) + diagnosticInformationGain(game, context.atomStats, context.axisStats);
+      const focusedScore = context.conflict.hasConflict && conflictScore ? 10000 + conflictScore : baseScore;
+      return focusedScore - Math.min(Math.max(index, 0), 24) * 40;
     }
 
     function diagnosticFocusForGame(game, missingAtoms = uncoveredDiagnosticAtoms(), conflict = quickTasteConflictReport()) {
@@ -175,24 +261,15 @@
     }
 
     function nextDiagnosticGame() {
-      const missingAtoms = uncoveredDiagnosticAtoms();
-      const answeredAtoms = quickAnsweredAtoms();
-      const conflict = quickTasteConflictReport();
+      const context = diagnosticQuestionContext();
       return profileGames
         .filter((game) => !quickReaction(game.title))
         .map((game, index) => ({
           game,
           index,
-          conflictScore: conflictResolutionScore(game, conflict, answeredAtoms),
-          score: diagnosticNeedScore(game, missingAtoms, answeredAtoms),
+          score: diagnosticQuestionScore(game, profileGames.indexOf(game), context),
         }))
-        .sort((a, b) => {
-          const aScore = conflict.hasConflict && a.conflictScore ? 10000 + a.conflictScore : a.score;
-          const bScore = conflict.hasConflict && b.conflictScore ? 10000 + b.conflictScore : b.score;
-          const aOrderPenalty = Math.min(a.index, 24) * 40;
-          const bOrderPenalty = Math.min(b.index, 24) * 40;
-          return (bScore - bOrderPenalty) - (aScore - aOrderPenalty) || a.index - b.index;
-        })[0]?.game;
+        .sort((a, b) => b.score - a.score || a.index - b.index)[0]?.game;
     }
 
     function quickReactionSummary() {
@@ -411,6 +488,9 @@
       uncoveredDiagnosticAxes,
       diagnosticAxisNeedScore,
       diagnosticNeedScore,
+      diagnosticInformationGain,
+      diagnosticQuestionContext,
+      diagnosticQuestionScore,
       conflictResolutionScore,
       diagnosticFocusForGame,
       quickSwipeFocusLabel,
