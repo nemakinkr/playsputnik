@@ -17,6 +17,7 @@ if [ ! -x "$NODE" ]; then
 fi
 
 echo "── 1/7 validate-data ──────────────────────────"
+"$NODE" scripts/workflow-runtime-check.mjs
 "$NODE" scripts/validate-data.mjs
 "$NODE" scripts/editorial-data-check.mjs
 "$NODE" scripts/atom-quality-audit.mjs

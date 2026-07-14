@@ -12,12 +12,13 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
       - name: Validate data
         run: |
+          node scripts/workflow-runtime-check.mjs
           node scripts/validate-data.mjs
           node scripts/editorial-data-check.mjs
           node scripts/atom-quality-audit.mjs
@@ -54,7 +55,7 @@ jobs:
           sleep 1
       - name: Browser gates (contrast + mobile + a11y + stale-hidden)
         run: node scripts/browser-gates.mjs http://127.0.0.1:7432/
-      # Browser smoke suite — the 8 Playwright smokes previously ran only in
+      # Browser smoke suite — the Playwright smokes previously ran only in
       # check.sh locally, so a smoke regression could slip past CI (search-memory
       # already rotted that way once). Install Playwright's Chromium and run the
       # self-contained suite (boots its own preview :4190 + fixture backend :4191).
@@ -63,7 +64,7 @@ jobs:
           npm init -y >/dev/null 2>&1
           npm install playwright >/dev/null 2>&1
           npx playwright install chromium
-      - name: Browser smoke suite (8 Playwright smokes, fixture backend)
+      - name: Browser smoke suite (Playwright smokes, fixture backend)
         run: |
           export PLAYSPUTNIK_CHROME="$(node -e "console.log(require('playwright').chromium.executablePath())")"
           node scripts/smoke-suite.mjs

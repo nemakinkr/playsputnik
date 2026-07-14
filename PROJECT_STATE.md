@@ -27,6 +27,10 @@ reviews, catalogs, sale pages, and announcements.
   RAWG covers → validate gate → bot commit → explicit Pages redeploy) with a
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
+- All six GitHub workflows run their own scripts on Node.js 24 and use the
+  Node.js 24-compatible official action majors (`checkout/setup-node@v6`,
+  Pages configure/upload/deploy `v6/v5/v5`). A local + CI runtime-policy gate
+  prevents deprecated action majors or `node-version: 20` from returning.
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
 - Service worker v142 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
