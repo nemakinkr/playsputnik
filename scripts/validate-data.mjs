@@ -102,7 +102,7 @@ function validateGame(game) {
     });
   }
 
-  ["session", "difficulty", "commitment", "tone", "content", "reviewBurden", "adultTimeFit"].forEach((axis) => {
+  ["session", "difficulty", "intensity", "commitment", "tone", "content", "reviewBurden", "adultTimeFit"].forEach((axis) => {
     if (game[axis] && taxonomySets[axis] && !taxonomySets[axis].has(game[axis])) {
       issues.push(`Unknown ${axis}: ${game[axis]}`);
     }

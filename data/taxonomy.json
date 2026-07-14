@@ -128,6 +128,6 @@
     "reviewBurden": "Low review burden means the user can decide without watching long explainers or reading multiple reviews.",
     "adultTimeFit": "Weeknight fit is valuable for players with money but limited free time.",
     "commitment": "Commitment is separate from total length: a long game may still support short, self-contained sessions.",
-    "intensity": "Intensity is derived from difficulty, pressure, precision, horror, and challenge signals; it is separate from genre."
+    "intensity": "Intensity is separate from genre. Priority catalog records may carry a curated low/medium/high value; other records derive it from difficulty, pressure, precision, horror, and challenge signals."
   }
 }

@@ -320,21 +320,23 @@ candidate without making the whole auxiliary corpus visible. The atom-quality
 gate protects corrected high-impact metadata for Battlefield 1, Monster
 Hunter: World, Destiny 2, Knockout City, Assassin's Creed Brotherhood, and
 Rise of the Tomb Raider. A separate synthetic benchmark now protects against
-founder-only overfitting: three deterministic fictional personas (systems,
-competitive, cozy) rate disjoint training games and rank the same 13 unseen
-candidates. Current aggregate is NDCG@6 0.93, high-fit precision@3 0.89, zero
-avoid intrusions in any top 3, three distinct top choices, and mean top-3
-overlap 0.07. The gate also rejects training/candidate title leakage. Its
+founder-only overfitting: eight deterministic fictional personas (systems,
+competitive, cozy, narrative, open-world, short-form, horror, and finite
+campaign) rate disjoint training games and rank the same 18 unseen candidates.
+Current aggregate is NDCG@6 0.90, high-fit precision@3 0.92, zero avoid
+intrusions in any top 3, six distinct top choices, and mean top-3 overlap 0.10.
+The gate also rejects training/candidate title leakage. Its
 initial failure revealed that imported weights saturated both pull and caution
 caps; `tasteEngineScore()` now normalizes by evidence volume and downweights
 auxiliary tone/content/time/commitment signals relative to core atoms. Keep the
 fixture labelled as synthetic: it catches collapse and regressions but cannot
 replace real-user validation. A separate five-signal run uses the production
 quick-reaction path with mixed positive/negative answers; it gates NDCG@6 0.91,
-high-fit precision@3 0.89, zero avoid intrusions, mean top-3 overlap 0.07, and
+high-fit precision@3 0.96, zero avoid intrusions, mean top-3 overlap 0.10, and
 a high-fit winner for every persona. A second deterministic layer samples 20
-unique random five-card sets for each persona (60 scenarios): NDCG@6 0.89,
-high-fit winner rate 0.95, and avoid-free top-3 rate 0.95. Confidence copy and
+unique random five-card sets for each of eight personas (160 scenarios):
+NDCG@6 0.86, high-fit winner rate 0.94, and avoid-free top-3 rate 0.96.
+Confidence copy and
 logic now agree on 5 = hypothesis, 10 = working read, 20 = confident profile.
 Difficulty and derived intensity are separate prefixed signals, localized in
 EN/RU and intentionally weighted below mechanics; the stress run also exposed
@@ -345,7 +347,15 @@ question selection now adds Bayesian expected information gain to axis/atom
 coverage, while keeping conflict follow-ups and recognizable early games.
 Recommendation ranking now preserves #1 but diversity-reranks near-tied
 candidates within a 12-point quality floor; a deterministic gate prevents weak
-novelty from being promoted. New aliases were added for high-value
+novelty from being promoted.
+The synthetic anti-overfitting gate now covers eight distinct personas and 18
+unseen candidates, including narrative, open-world, short-form, horror, and
+finite-campaign/live-service-averse users. Its 160 deterministic five-answer
+stress scenarios keep early recommendations honest. Eighteen high-impact
+catalog records now carry explicit curated intensity; the game detail surface
+shows difficulty, intensity, confidence, source, and human-readable evidence,
+while the remaining low-confidence catalog records stay explicitly uncertain.
+New aliases were added for high-value
 Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,
 Uncharted, Ratchet & Clank: Rift Apart, Until Dawn, The Order: 1886, House of

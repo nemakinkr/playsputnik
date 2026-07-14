@@ -1124,6 +1124,27 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   color: var(--text-strong);
 }
 
+.detail-play-profile-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.detail-play-profile-grid .value-chip small {
+  color: var(--text-mid);
+}
+
+.detail-play-profile-evidence {
+  margin: 10px 0 0;
+  color: var(--text-mid);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 560px) {
+  .detail-play-profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .answer-panel,
 .plan-panel,
 .library-plan-panel,

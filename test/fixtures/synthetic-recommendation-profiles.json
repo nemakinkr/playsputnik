@@ -14,7 +14,12 @@
     "Resident Evil Village",
     "Pentiment",
     "Monster Hunter: World",
-    "Hades"
+    "Hades",
+    "Firewatch",
+    "Ghost of Tsushima",
+    "What Remains of Edith Finch",
+    "Alan Wake 2",
+    "The Last of Us Part I"
   ],
   "profiles": [
     {
@@ -47,7 +52,12 @@
         "Resident Evil Village": "avoid",
         "Pentiment": "stretch",
         "Monster Hunter: World": "stretch",
-        "Hades": "stretch"
+        "Hades": "stretch",
+        "Firewatch": "stretch",
+        "Ghost of Tsushima": "stretch",
+        "What Remains of Edith Finch": "stretch",
+        "Alan Wake 2": "avoid",
+        "The Last of Us Part I": "stretch"
       }
     },
     {
@@ -80,7 +90,12 @@
         "Resident Evil Village": "stretch",
         "Pentiment": "avoid",
         "Monster Hunter: World": "strong",
-        "Hades": "strong"
+        "Hades": "strong",
+        "Firewatch": "avoid",
+        "Ghost of Tsushima": "strong",
+        "What Remains of Edith Finch": "avoid",
+        "Alan Wake 2": "stretch",
+        "The Last of Us Part I": "strong"
       }
     },
     {
@@ -113,7 +128,142 @@
         "Resident Evil Village": "avoid",
         "Pentiment": "stretch",
         "Monster Hunter: World": "avoid",
-        "Hades": "stretch"
+        "Hades": "stretch",
+        "Firewatch": "strong",
+        "Ghost of Tsushima": "stretch",
+        "What Remains of Edith Finch": "strong",
+        "Alan Wake 2": "avoid",
+        "The Last of Us Part I": "avoid"
+      }
+    },
+    {
+      "id": "narrative_detective",
+      "name": "Narrative detective",
+      "hypothesis": "Prefers authored stories, dialogue and consequential choices; avoids competitive loops and service-first progression.",
+      "starterTitles": ["Detroit: Become Human", "Disco Elysium", "Life is Strange: True Colors", "The Sims 4", "Civilization VI"],
+      "ratings": [
+        { "title": "Detroit: Become Human", "rating": 10 },
+        { "title": "Disco Elysium", "rating": 9.5 },
+        { "title": "Life is Strange: True Colors", "rating": 9 },
+        { "title": "As Dusk Falls", "rating": 8.5 },
+        { "title": "The Council", "rating": 8 },
+        { "title": "Fortnite", "rating": 2 },
+        { "title": "Rocket League", "rating": 3 },
+        { "title": "Call of Duty: Black Ops 4", "rating": 3.5 },
+        { "title": "The Sims 4", "rating": 3.5 },
+        { "title": "Civilization VI", "rating": 4 }
+      ],
+      "labels": {
+        "Crusader Kings III": "stretch", "Into the Breach": "stretch", "Two Point Hospital": "stretch",
+        "DOOM Eternal": "avoid", "EA Sports FC 26": "avoid", "Diablo IV": "avoid",
+        "Animal Crossing: New Horizons": "stretch", "Overcooked! 2": "avoid", "Journey": "strong",
+        "Resident Evil Village": "stretch", "Pentiment": "ideal", "Monster Hunter: World": "avoid",
+        "Hades": "stretch", "Firewatch": "ideal", "Ghost of Tsushima": "stretch",
+        "What Remains of Edith Finch": "ideal", "Alan Wake 2": "strong", "The Last of Us Part I": "strong"
+      }
+    },
+    {
+      "id": "open_world_wanderer",
+      "name": "Open-world wanderer",
+      "hypothesis": "Prefers exploration, place and self-directed discovery; avoids compact abstract systems and menu-heavy management.",
+      "starterTitles": ["Red Dead Redemption 2", "The Witcher 3: Wild Hunt", "Horizon Zero Dawn", "Unpacking", "Tetris Effect: Connected"],
+      "ratings": [
+        { "title": "Red Dead Redemption 2", "rating": 10 },
+        { "title": "The Witcher 3: Wild Hunt", "rating": 9.5 },
+        { "title": "Horizon Zero Dawn", "rating": 9 },
+        { "title": "The Elder Scrolls V: Skyrim", "rating": 8.5 },
+        { "title": "Death Stranding", "rating": 8 },
+        { "title": "Unpacking", "rating": 3 },
+        { "title": "Tetris Effect: Connected", "rating": 3.5 },
+        { "title": "Disco Elysium", "rating": 3 },
+        { "title": "Sifu", "rating": 4.5 },
+        { "title": "Civilization VI", "rating": 4 }
+      ],
+      "labels": {
+        "Crusader Kings III": "stretch", "Into the Breach": "avoid", "Two Point Hospital": "avoid",
+        "DOOM Eternal": "stretch", "EA Sports FC 26": "avoid", "Diablo IV": "strong",
+        "Animal Crossing: New Horizons": "strong", "Overcooked! 2": "avoid", "Journey": "strong",
+        "Resident Evil Village": "strong", "Pentiment": "stretch", "Monster Hunter: World": "ideal",
+        "Hades": "stretch", "Firewatch": "strong", "Ghost of Tsushima": "ideal",
+        "What Remains of Edith Finch": "stretch", "Alan Wake 2": "stretch", "The Last of Us Part I": "strong"
+      }
+    },
+    {
+      "id": "short_form_curator",
+      "name": "Short-form curator",
+      "hypothesis": "Prefers concise authored or run-based experiences; avoids sprawling commitments and endless progression.",
+      "starterTitles": ["A Short Hike", "Unpacking", "Inside", "Persona 5 Royal", "Assassin's Creed Valhalla"],
+      "ratings": [
+        { "title": "A Short Hike", "rating": 10 },
+        { "title": "Unpacking", "rating": 9.5 },
+        { "title": "Inside", "rating": 9 },
+        { "title": "Abzu", "rating": 8.5 },
+        { "title": "Sayonara Wild Hearts", "rating": 8.5 },
+        { "title": "Untitled Goose Game", "rating": 8 },
+        { "title": "Persona 5 Royal", "rating": 3 },
+        { "title": "Assassin's Creed Valhalla", "rating": 3.5 },
+        { "title": "Red Dead Redemption 2", "rating": 4 },
+        { "title": "Civilization VI", "rating": 4.5 }
+      ],
+      "labels": {
+        "Crusader Kings III": "avoid", "Into the Breach": "strong", "Two Point Hospital": "stretch",
+        "DOOM Eternal": "strong", "EA Sports FC 26": "avoid", "Diablo IV": "avoid",
+        "Animal Crossing: New Horizons": "stretch", "Overcooked! 2": "strong", "Journey": "ideal",
+        "Resident Evil Village": "stretch", "Pentiment": "stretch", "Monster Hunter: World": "avoid",
+        "Hades": "ideal", "Firewatch": "strong", "Ghost of Tsushima": "avoid",
+        "What Remains of Edith Finch": "ideal", "Alan Wake 2": "avoid", "The Last of Us Part I": "stretch"
+      }
+    },
+    {
+      "id": "horror_aficionado",
+      "name": "Horror aficionado",
+      "hypothesis": "Prefers tension, dread and authored horror; avoids cozy routines, sports and low-stakes social play.",
+      "starterTitles": ["Resident Evil 7: Biohazard", "Dead Space", "Until Dawn", "Stardew Valley", "FIFA 17"],
+      "ratings": [
+        { "title": "Resident Evil 7: Biohazard", "rating": 10 },
+        { "title": "Dead Space", "rating": 9.5 },
+        { "title": "Until Dawn", "rating": 9 },
+        { "title": "The Quarry", "rating": 8.5 },
+        { "title": "Silent Hill 2", "rating": 8.5 },
+        { "title": "Stardew Valley", "rating": 2.5 },
+        { "title": "Unpacking", "rating": 3 },
+        { "title": "FIFA 17", "rating": 2 },
+        { "title": "The Sims 4", "rating": 3.5 },
+        { "title": "Rocket League", "rating": 4 }
+      ],
+      "labels": {
+        "Crusader Kings III": "avoid", "Into the Breach": "avoid", "Two Point Hospital": "avoid",
+        "DOOM Eternal": "strong", "EA Sports FC 26": "avoid", "Diablo IV": "stretch",
+        "Animal Crossing: New Horizons": "avoid", "Overcooked! 2": "avoid", "Journey": "stretch",
+        "Resident Evil Village": "ideal", "Pentiment": "stretch", "Monster Hunter: World": "stretch",
+        "Hades": "stretch", "Firewatch": "stretch", "Ghost of Tsushima": "stretch",
+        "What Remains of Edith Finch": "stretch", "Alan Wake 2": "ideal", "The Last of Us Part I": "strong"
+      }
+    },
+    {
+      "id": "finite_campaign_guardian",
+      "name": "Finite-campaign guardian",
+      "hypothesis": "Prefers complete single-player campaigns with a clear ending; avoids live-service upkeep, grind and competitive obligation.",
+      "starterTitles": ["God of War", "Uncharted 4: A Thief's End", "Mafia: Definitive Edition", "Destiny 2", "Fortnite"],
+      "ratings": [
+        { "title": "God of War", "rating": 10 },
+        { "title": "Uncharted 4: A Thief's End", "rating": 9.5 },
+        { "title": "Mafia: Definitive Edition", "rating": 9 },
+        { "title": "Marvel's Guardians of the Galaxy", "rating": 8.5 },
+        { "title": "Control", "rating": 8.5 },
+        { "title": "Destiny 2", "rating": 2 },
+        { "title": "Fortnite", "rating": 2.5 },
+        { "title": "Apex Legends", "rating": 3 },
+        { "title": "League of Legends", "rating": 3 },
+        { "title": "Rocket League", "rating": 4 }
+      ],
+      "labels": {
+        "Crusader Kings III": "avoid", "Into the Breach": "strong", "Two Point Hospital": "avoid",
+        "DOOM Eternal": "strong", "EA Sports FC 26": "avoid", "Diablo IV": "avoid",
+        "Animal Crossing: New Horizons": "avoid", "Overcooked! 2": "stretch", "Journey": "strong",
+        "Resident Evil Village": "strong", "Pentiment": "strong", "Monster Hunter: World": "avoid",
+        "Hades": "stretch", "Firewatch": "strong", "Ghost of Tsushima": "strong",
+        "What Remains of Edith Finch": "strong", "Alan Wake 2": "strong", "The Last of Us Part I": "ideal"
       }
     }
   ]

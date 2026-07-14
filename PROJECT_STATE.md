@@ -1,6 +1,6 @@
 # PlaySputnik Project State
 
-Last updated: 2026-07-13 (Codex resumed after Claude polish/architecture
+Last updated: 2026-07-14 (Codex resumed after Claude polish/architecture
 series; see HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
 performance rules).
 
@@ -28,7 +28,7 @@ reviews, catalogs, sale pages, and announcements.
   `source-health` issue monitor; CI on push (`ci.yml`: validate + i18n
   catalogs/usage + qa-harness + browser gates).
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v141 (cache-first static assets / network-first navigation and
+- Service worker v142 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -178,11 +178,12 @@ reviews, catalogs, sale pages, and announcements.
   are verified. The atom-quality gate fixed and now protects six high-impact
   records; removing Battlefield 1's false open-world signal eliminated the
   only bottom-quartile intrusion from the forecast top 10.
-  A second recommendation gate now runs three deterministic fictional personas
-  against the same 13 unseen candidates. The systems, competitive, and cozy
-  profiles currently achieve mean NDCG@6 0.93, high-fit precision@3 0.89, zero
-  avoid-title intrusions in any top 3, three distinct top choices, and mean
-  top-3 overlap 0.07. The fixture explicitly forbids training/candidate title
+  A second recommendation gate now runs eight deterministic fictional personas
+  against the same 18 unseen candidates. Systems, competitive, cozy, narrative,
+  open-world, short-form, horror, and finite-campaign profiles currently achieve
+  mean NDCG@6 0.90, high-fit precision@3 0.92, zero avoid-title intrusions in
+  any top 3, six distinct top choices, and mean top-3 overlap 0.10. The fixture
+  explicitly forbids training/candidate title
   leakage. Its first run exposed score saturation from large imported profiles;
   taste scoring now normalizes by learning evidence and treats mechanics/genre
   atoms as stronger evidence than tone, content, time-fit, and commitment.
@@ -192,18 +193,22 @@ reviews, catalogs, sale pages, and announcements.
   The same personas now have a separate five-signal gate that uses the actual
   quick-reaction contract (not imported numeric ratings), with mixed positive
   and negative answers. It currently achieves mean NDCG@6 0.91, high-fit
-  precision@3 0.89, zero avoid intrusions, mean top-3 overlap 0.07, and a
+  precision@3 0.96, zero avoid intrusions, mean top-3 overlap 0.10, and a
   high-fit winner for every profile. This supports a useful first hypothesis
   after five answers without claiming the profile is complete. A deterministic
-  stress layer also samples 20 unique random five-card sets per persona (60
-  scenarios total): mean NDCG@6 0.89, high-fit winner rate 0.95, and avoid-free
-  top-3 rate 0.95. The same work aligned profile confidence to 5 = hypothesis,
+  stress layer also samples 20 unique random five-card sets per persona (160
+  scenarios total): mean NDCG@6 0.86, high-fit winner rate 0.94, and avoid-free
+  top-3 rate 0.96. The same work aligned profile confidence to 5 = hypothesis,
   10 = working read, and 20 = confident quick profile. Difficulty and derived
   intensity now use separate structured taste signals with lower importance
   than core mechanics; EN/RU explanations localize them without exposing
   machine keys. A catalog-wide gate now runs the same production normalizer
   over all 461 games: difficulty resolves to 28 low / 349 medium / 84 high,
-  while derived intensity resolves to 31 low / 309 medium / 121 high. Source
+  while intensity resolves to 35 low / 300 medium / 126 high. Eighteen
+  high-impact recommendation/onboarding records now carry an explicit curated
+  intensity, reducing low-confidence profiles from 292 to 274; the detail
+  cockpit shows difficulty, intensity, confidence, source, and evidence without
+  adding this diagnostic layer to the main recommendation surface. Source
   aliases such as easy/low and hard/high remain accepted inputs but cannot leak
   into the taste model. The stress gate exposed and fixed incorrect DOOM
   Eternal atoms.

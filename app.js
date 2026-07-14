@@ -6511,6 +6511,45 @@ function detailProviderImportHtml(game) {
   `;
 }
 
+function detailDifficultyIntensityModel(game) {
+  const profile = window.PlaySputnikScore.gameDifficultyIntensityProfile(game);
+  const confidenceKey = {
+    low: "narrative.common.confidenceLow",
+    medium: "narrative.common.confidenceMedium",
+    high: "narrative.common.confidenceHigh",
+  }[profile.confidence] || "narrative.common.confidenceLow";
+  const evidence = profile.evidence
+    .filter((item) => !item.startsWith("intensity:"))
+    .map((item) => {
+      const [kind, value] = item.split(":");
+      if (kind === "difficulty") {
+        return t("narrative.detail.playProfileEvidenceDifficulty", {
+          value: labelTaxonomy("difficulty", value),
+        });
+      }
+      if (kind === "atom") {
+        return t("narrative.detail.playProfileEvidenceAtom", { value: labelAtom(value) });
+      }
+      if (kind === "tone") {
+        return t("narrative.detail.playProfileEvidenceTone", {
+          value: labelTaxonomy("tone", value),
+        });
+      }
+      return "";
+    })
+    .filter(Boolean)
+    .slice(0, 4);
+  return {
+    difficulty: labelTaxonomy("difficulty", profile.difficulty === "medium" ? "normal" : profile.difficulty),
+    intensity: labelTaxonomy("intensity", profile.intensity),
+    confidence: t(confidenceKey),
+    source: t(profile.source === "catalog"
+      ? "narrative.detail.playProfileSourceCatalog"
+      : "narrative.detail.playProfileSourceDerived"),
+    evidence: evidence.length ? evidence : [t("narrative.detail.playProfileEvidenceFallback")],
+  };
+}
+
 function renderGameDetail(shouldFocus = false) {
   const detailGame = detailGameForTitle(selectedGameTitle);
   if (!selectedGameTitle || !detailGame) {
@@ -6533,6 +6572,7 @@ function renderGameDetail(shouldFocus = false) {
   const valueCard = gameValueCard(game);
   const trustRows = detailSourceTrustRows(game);
   const providerImport = detailProviderImportHtml(game);
+  const playProfile = detailDifficultyIntensityModel(game);
   const aiContext = {
     fallbackDescription: description,
     personalReason: rationale.detail,
@@ -6625,6 +6665,7 @@ function renderGameDetail(shouldFocus = false) {
     priceWatch,
     trustRows,
     providerImport,
+    playProfile,
     facts,
     passport,
     cachedAiExplanation,

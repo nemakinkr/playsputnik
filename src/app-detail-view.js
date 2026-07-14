@@ -22,6 +22,7 @@
         priceWatch,
         trustRows,
         providerImport,
+        playProfile,
         facts,
         passport,
         cachedAiExplanation,
@@ -95,6 +96,25 @@
           <h3>${t("narrative.detail.priceAlert")}</h3>
           ${priceWatch}
         </section>` : ""}
+        <section class="game-detail-section detail-play-profile" data-detail-play-profile>
+          <h3>${t("narrative.detail.playProfileTitle")}</h3>
+          <div class="value-cards detail-play-profile-grid">
+            <div class="value-chip">
+              <span>${t("narrative.detail.playProfileDifficulty")}</span>
+              <strong data-detail-difficulty>${playProfile.difficulty}</strong>
+            </div>
+            <div class="value-chip">
+              <span>${t("narrative.detail.playProfileIntensity")}</span>
+              <strong data-detail-intensity>${playProfile.intensity}</strong>
+            </div>
+            <div class="value-chip">
+              <span>${t("narrative.detail.playProfileConfidence")}</span>
+              <strong data-detail-intensity-confidence>${playProfile.confidence}</strong>
+              <small>${playProfile.source}</small>
+            </div>
+          </div>
+          <p class="detail-play-profile-evidence"><strong>${t("narrative.detail.playProfileEvidence")}:</strong> ${playProfile.evidence.join(" · ")}</p>
+        </section>
         <section class="game-detail-section detail-source-trust" data-detail-source-trust>
           <h3>${t("narrative.detail.dataTrust")}</h3>
           <div class="detail-source-grid">

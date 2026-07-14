@@ -33,32 +33,39 @@
   function gameDifficultyIntensityProfile(game = {}) {
     const atoms = new Set(game.atoms || []);
     const difficulty = normalizeDifficultyBand(game.difficulty);
+    const explicitIntensity = ["low", "medium", "high"].includes(game.intensity)
+      ? game.intensity
+      : "";
     const highEvidence = HIGH_INTENSITY_ATOMS.filter((atom) => atoms.has(atom));
     const lowEvidence = LOW_INTENSITY_ATOMS.filter((atom) => atoms.has(atom));
     const lowSupport = LOW_INTENSITY_SUPPORT_ATOMS.filter((atom) => atoms.has(atom));
     const evidence = [
       game.difficulty ? `difficulty:${game.difficulty}` : "",
+      explicitIntensity ? `intensity:${explicitIntensity}` : "",
       ...highEvidence.map((atom) => `atom:${atom}`),
       ...lowEvidence.map((atom) => `atom:${atom}`),
       ...lowSupport.map((atom) => `atom:${atom}`),
       game.tone === "tense" ? "tone:tense" : "",
     ].filter(Boolean);
-    let intensity = "medium";
-    if (
+    let intensity = explicitIntensity || "medium";
+    if (!explicitIntensity && (
       difficulty === "high"
       || highEvidence.length
       || game.tone === "tense"
-    ) intensity = "high";
-    else if (
+    )) intensity = "high";
+    else if (!explicitIntensity && (
       difficulty === "low"
       || lowEvidence.length
       || lowSupport.length >= 2
-    ) intensity = "low";
+    )) intensity = "low";
     return {
       difficulty,
       intensity,
       evidence,
-      confidence: game.difficulty && game.difficulty !== "normal"
+      source: explicitIntensity ? "catalog" : "derived",
+      confidence: explicitIntensity
+        ? "high"
+        : game.difficulty && game.difficulty !== "normal"
         ? "high"
         : evidence.length >= 3
           ? "high"

@@ -55,6 +55,10 @@ try {
     tasteFit: document.querySelectorAll("[data-detail-taste-fit]").length,
     atomMap: document.querySelectorAll("[data-detail-atom-map]").length,
     sourceTrust: document.querySelectorAll("[data-detail-source-trust]").length,
+    playProfile: document.querySelectorAll("[data-detail-play-profile]").length,
+    difficulty: document.querySelector("[data-detail-difficulty]")?.textContent?.trim() || "",
+    intensity: document.querySelector("[data-detail-intensity]")?.textContent?.trim() || "",
+    intensityConfidence: document.querySelector("[data-detail-intensity-confidence]")?.textContent?.trim() || "",
     sourceRows: document.querySelectorAll(".detail-source-row").length,
     atomSignals: document.querySelectorAll(".detail-atom-signal").length,
     primaryCta: document.querySelector("[data-detail-primary-action]")?.textContent?.trim() || "",
@@ -132,6 +136,8 @@ try {
   assert(before.tasteFit === 1, "Expected detail taste fit block");
   assert(before.atomMap === 1, "Expected detail atom signal map");
   assert(before.sourceTrust === 1, "Expected detail data trust block");
+  assert(before.playProfile === 1, "Expected difficulty/intensity play profile");
+  assert(before.difficulty && before.intensity && before.intensityConfidence, "Expected localized difficulty, intensity and confidence values");
   assert(before.sourceRows >= 4, `Expected source trust rows, got ${before.sourceRows}`);
   assert(before.atomSignals >= 1, `Expected atom signal chips, got ${before.atomSignals}`);
   assert(before.primaryCta, "Expected smart primary CTA");

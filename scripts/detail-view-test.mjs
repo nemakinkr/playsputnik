@@ -27,6 +27,13 @@ const html = detailBodyHtml({
   market: "",
   priceWatch: "",
   trustRows: [{ tone: "good", label: "Catalog", value: "Seed", detail: "Curated" }],
+  playProfile: {
+    difficulty: "Normal",
+    intensity: "Moderate",
+    confidence: "High",
+    source: "Curated catalog value",
+    evidence: ["difficulty: normal"],
+  },
   facts: [{ type: "session", label: "Medium" }],
   passport: '<div class="source-passport"></div>',
   cachedAiExplanation: "",
@@ -42,10 +49,12 @@ const html = detailBodyHtml({
 assert(detailHeroHtml(game, "<span>Fit</span>").includes("Control"));
 assert(/data-detail-cockpit/.test(html));
 assert(/data-detail-source-trust/.test(html));
+assert(/data-detail-play-profile/.test(html));
+assert(/data-detail-intensity-confidence>High</.test(html));
 assert(/data-detail-state="saved"/.test(html));
 assert(/data-detail-rate-later/.test(html) && /is-selected/.test(html));
 assert(/data-rate-sputniks="5"/.test(html));
 assert(/Alan Wake &quot;2&quot;/.test(html), "similar-game data attributes should be escaped");
 assert(/detail-get-link--store/.test(html));
 
-console.log("✅ game-detail view composes cockpit, trust, actions, ratings, and links");
+console.log("✅ game-detail view composes cockpit, play profile, trust, actions, ratings, and links");

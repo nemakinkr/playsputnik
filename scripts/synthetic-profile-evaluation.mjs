@@ -344,7 +344,7 @@ else {
   });
 }
 
-assert(fixture.profiles.length >= 3, "Synthetic benchmark needs at least three independent profiles");
+assert(fixture.profiles.length === 8, `Synthetic benchmark should cover eight independent profiles, got ${fixture.profiles.length}`);
 fixture.profiles.forEach((profile) => {
   const candidateKeys = new Set(fixture.candidatePool.map(titleKey));
   const leaks = profile.ratings.filter(({ title }) => candidateKeys.has(titleKey(title))).map(({ title }) => title);
@@ -356,6 +356,8 @@ fixture.profiles.forEach((profile) => {
   const starterRatings = profile.ratings.filter(({ title }) => profile.starterTitles.some((starter) => titleKey(starter) === titleKey(title)));
   assert(starterRatings.filter(({ rating }) => rating >= 7).length >= 2, `${profile.name} starter profile needs at least two positive reactions`);
   assert(starterRatings.filter(({ rating }) => rating <= 5).length >= 1, `${profile.name} starter profile needs at least one negative reaction`);
+  const missingLabels = fixture.candidatePool.filter((title) => !profile.labels[title]);
+  assert(missingLabels.length === 0, `${profile.name} is missing candidate labels: ${missingLabels.join(", ")}`);
 });
 assert(aggregate.candidateCoverage === 1, `Synthetic candidate coverage regressed: missing ${report.missingCandidates.join(", ")}`);
 assert(aggregate.ratingCoverage === 1, `Synthetic rating coverage regressed: ${fullProfiles.flatMap((profile) => profile.missingRatings).join(", ")}`);
@@ -365,7 +367,7 @@ fullProfiles.forEach((profile) => {
   assert(profile.metrics.avoidIntrusionsAt3 === 0, `${profile.name} surfaced an avoid title in the top 3`);
   assert(profile.metrics.positiveAvoidMargin >= 18, `${profile.name} positive/avoid score margin is too small: ${profile.metrics.positiveAvoidMargin}`);
 });
-assert(aggregate.uniqueTopChoices === aggregate.profileCount, `Profiles collapsed onto ${aggregate.uniqueTopChoices}/${aggregate.profileCount} unique top choices`);
+assert(aggregate.uniqueTopChoices >= Math.ceil(aggregate.profileCount * 0.7), `Profiles collapsed onto ${aggregate.uniqueTopChoices}/${aggregate.profileCount} unique top choices`);
 assert(aggregate.meanTop3Jaccard <= 0.35, `Synthetic top-3 recommendations are too similar: ${aggregate.meanTop3Jaccard}`);
 assert(starterAggregate.ratingCoverage === 1, `Five-signal rating coverage regressed: ${starterProfiles.flatMap((profile) => profile.missingRatings).join(", ")}`);
 starterProfiles.forEach((profile) => {

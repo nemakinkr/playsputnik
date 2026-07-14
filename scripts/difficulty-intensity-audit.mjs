@@ -21,10 +21,31 @@ const acceptedBands = new Set(["low", "medium", "high"]);
 const difficultyCounts = { low: 0, medium: 0, high: 0 };
 const intensityCounts = { low: 0, medium: 0, high: 0 };
 const confidenceCounts = { low: 0, medium: 0, high: 0 };
+const HIGH_IMPACT_EXPLICIT_TITLES = [
+  "007 First Light",
+  "Baldur's Gate 3",
+  "Civilization VI",
+  "Crusader Kings III",
+  "Cyberpunk 2077",
+  "Death Stranding",
+  "Diablo IV",
+  "Disco Elysium",
+  "God of War Ragnarok",
+  "Gran Turismo 7",
+  "Grand Theft Auto V",
+  "Hades",
+  "It Takes Two",
+  "Mafia: The Old Country",
+  "Minecraft",
+  "Overcooked! 2",
+  "The Alters",
+  "The Last of Us Part I",
+];
 
 assert(games.length >= 450, `Expected the full managed catalog, got ${games.length} games`);
 games.forEach((game) => {
   assert(acceptedSourceValues.has(game.difficulty), `${game.title} has unsupported difficulty: ${game.difficulty}`);
+  if (game.intensity) assert(acceptedBands.has(game.intensity), `${game.title} has unsupported explicit intensity: ${game.intensity}`);
   const profile = gameDifficultyIntensityProfile(game);
   assert(acceptedBands.has(profile.difficulty), `${game.title} has invalid normalized difficulty: ${profile.difficulty}`);
   assert(acceptedBands.has(profile.intensity), `${game.title} has invalid derived intensity: ${profile.intensity}`);
@@ -39,6 +60,14 @@ games.forEach((game) => {
 
 const byTitle = new Map(games.map((game) => [game.title, game]));
 const profileFor = (title) => gameDifficultyIntensityProfile(byTitle.get(title));
+HIGH_IMPACT_EXPLICIT_TITLES.forEach((title) => {
+  const game = byTitle.get(title);
+  assert(game, `High-impact intensity title is missing: ${title}`);
+  assert(game.intensity, `${title} needs an explicit curated intensity`);
+  const profile = profileFor(title);
+  assert.equal(profile.source, "catalog", `${title} should expose catalog-backed intensity`);
+  assert.equal(profile.confidence, "high", `${title} explicit intensity should be high confidence`);
+});
 assert.deepEqual(
   { difficulty: profileFor("DOOM Eternal").difficulty, intensity: profileFor("DOOM Eternal").intensity },
   { difficulty: "medium", intensity: "high" },
