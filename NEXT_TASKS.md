@@ -361,6 +361,14 @@ signal in EN/RU. `reports/synthetic-profile-diagnostics.json` turns aggregate
 scores into per-persona mismatch lists and weakest stress scenarios; its
 freshness is gated. The open-world and systems failures are now the clearest
 evidence-led scoring targets.
+The first evidence-led correction is complete: hard taste-score saturation was
+replaced by a bounded soft cap, weak scenarios now retain their exact five input
+games, and high-value open-world/exploration metadata was corrected and gated.
+Systems worst-case NDCG improved 0.37→0.76; open-world mean stress improved
+0.72→0.77. Three contradictory profiles now gate mixed-domain taste without
+high-confidence overclaiming. Onboarding explicitly contrasts calm and intense
+games within its first three questions instead of treating intensity as a
+one-sided action tag.
 New aliases were added for high-value
 Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,

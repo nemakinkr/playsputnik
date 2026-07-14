@@ -24,12 +24,17 @@ games.forEach((game) => {
 check("Battlefield 1", (game) => game.atoms.includes("shooter") && !game.atoms.includes("open-world"), "linear shooter campaign must not teach open-world preference");
 check("Monster Hunter: World", (game) => (
   game.atoms.includes("challenge")
+  && game.atoms.includes("exploration")
   && !game.atoms.includes("story")
   && game.session === "long"
   && game.length === "massive"
   && game.commitment === "high"
   && game.reviewBurden === "high"
 ), "hunting/build loop must expose its real time and systems friction");
+check("Horizon Zero Dawn", (game) => game.atoms.includes("open-world") && game.atoms.includes("exploration"), "open-world exploration must be represented in taste learning");
+check("The Elder Scrolls V: Skyrim", (game) => game.atoms.includes("open-world") && game.atoms.includes("exploration"), "open-world exploration must be represented in taste learning");
+check("Journey", (game) => game.atoms.includes("exploration") && !game.atoms.includes("multiplayer"), "exploration must outweigh its anonymous optional companion");
+check("Diablo IV", (game) => game.atoms.includes("open-world") && game.atoms.includes("systems"), "open-world systems loop must be represented");
 check("Destiny 2", (game) => (
   game.atoms.includes("service")
   && !game.atoms.includes("open-world")
@@ -58,4 +63,4 @@ if (violations.length) {
   throw new Error(`Atom quality audit failed:\n- ${violations.join("\n- ")}`);
 }
 
-console.log(`✅ Atom quality audit: ${games.length} records scanned, 7 high-impact recommendation records gated, service-vibe consistency clean`);
+console.log(`✅ Atom quality audit: ${games.length} records scanned, 11 high-impact recommendation records gated, service-vibe consistency clean`);

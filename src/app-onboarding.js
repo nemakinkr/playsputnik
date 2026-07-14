@@ -19,6 +19,10 @@
     { id: "life", labelKey: "settings.onboarding.axisLife", atoms: ["short", "long", "slow", "cozy", "routine", "service"] },
     { id: "social", labelKey: "settings.onboarding.axisSocial", atoms: ["multiplayer", "co-op", "competitive", "social", "sports", "racing", "puzzle"] },
   ];
+  const INTENSITY_POLE_ATOMS = {
+    calm: ["cozy", "routine", "slow", "reading", "creative", "management", "puzzle"],
+    intense: ["action", "adrenaline", "shooter", "horror", "challenge", "soulslike", "tension", "competitive"],
+  };
 
   function createOnboardingTools({
     getState,
@@ -77,6 +81,43 @@
       return DIAGNOSTIC_AXIS_GROUPS
         .filter((group) => group.atoms.some((atom) => atoms.has(atom)))
         .map((group) => group.id);
+    }
+
+    function diagnosticIntensityPole(game) {
+      const atoms = new Set(game.atoms || []);
+      const calm = INTENSITY_POLE_ATOMS.calm.filter((atom) => atoms.has(atom)).length;
+      const intense = INTENSITY_POLE_ATOMS.intense.filter((atom) => atoms.has(atom)).length;
+      if (calm === intense) return "";
+      return calm > intense ? "calm" : "intense";
+    }
+
+    function quickAnsweredIntensityPoles() {
+      const poles = new Set();
+      profileGames.forEach((game) => {
+        const reaction = quickReaction(game.title);
+        const pole = diagnosticIntensityPole(game);
+        if (reaction && reaction !== "unplayed" && pole) poles.add(pole);
+      });
+      return poles;
+    }
+
+    function quickIntensityReactionStats() {
+      const stats = { calm: { positive: 0, negative: 0 }, intense: { positive: 0, negative: 0 } };
+      profileGames.forEach((game) => {
+        const reaction = quickReaction(game.title);
+        const pole = diagnosticIntensityPole(game);
+        if (!pole || !reaction || reaction === "unplayed") return;
+        stats[pole][reaction === "not_for_me" ? "negative" : "positive"] += 1;
+      });
+      return stats;
+    }
+
+    function intensityContrastNeedScore(game, answeredPoles = quickAnsweredIntensityPoles()) {
+      const pole = diagnosticIntensityPole(game);
+      if (!pole) return 0;
+      if (!answeredPoles.size) return 300;
+      if (answeredPoles.size === 1 && !answeredPoles.has(pole)) return 1200;
+      return 0;
     }
 
     function diagnosticAxisLabels(axisIds, limit = 2) {
@@ -166,6 +207,7 @@
       game,
       atomStats = quickTasteAtomReactionStats(),
       axisStats = quickTasteAxisReactionStats(),
+      intensityStats = quickIntensityReactionStats(),
     ) {
       const axisGain = diagnosticAxisHits(game)
         .map((axis) => expectedBinaryInformationGain(
@@ -183,7 +225,14 @@
         .sort((a, b) => b - a)
         .slice(0, 3)
         .reduce((sum, value) => sum + value, 0);
-      return Math.round((axisGain * 1200 + atomGain * 300) * 100) / 100;
+      const pole = diagnosticIntensityPole(game);
+      const intensityGain = pole
+        ? expectedBinaryInformationGain(
+          intensityStats[pole]?.positive || 0,
+          intensityStats[pole]?.negative || 0,
+        )
+        : 0;
+      return Math.round((axisGain * 1200 + atomGain * 300 + intensityGain * 900) * 100) / 100;
     }
 
     function conflictResolutionScore(game, conflict = quickTasteConflictReport(), answeredAtoms = quickAnsweredAtoms()) {
@@ -204,6 +253,8 @@
         answeredAxes: quickAnsweredAxes(),
         atomStats: quickTasteAtomReactionStats(),
         axisStats: quickTasteAxisReactionStats(),
+        intensityStats: quickIntensityReactionStats(),
+        answeredIntensityPoles: quickAnsweredIntensityPoles(),
         conflict: quickTasteConflictReport(),
       };
     }
@@ -216,7 +267,9 @@
         context.answeredAtoms,
         context.missingAxes,
         context.answeredAxes,
-      ) + diagnosticInformationGain(game, context.atomStats, context.axisStats);
+      )
+        + diagnosticInformationGain(game, context.atomStats, context.axisStats, context.intensityStats)
+        + intensityContrastNeedScore(game, context.answeredIntensityPoles);
       const focusedScore = context.conflict.hasConflict && conflictScore ? 10000 + conflictScore : baseScore;
       return focusedScore - Math.min(Math.max(index, 0), 24) * 40;
     }
@@ -482,6 +535,10 @@
       quickAnsweredAtoms,
       uncoveredDiagnosticAtoms,
       diagnosticAxisHits,
+      diagnosticIntensityPole,
+      quickAnsweredIntensityPoles,
+      quickIntensityReactionStats,
+      intensityContrastNeedScore,
       diagnosticAxisLabels,
       quickTasteSignalAxes,
       quickAnsweredAxes,

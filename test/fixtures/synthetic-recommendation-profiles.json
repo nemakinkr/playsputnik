@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "method": "Deterministic fictional personas invented for product testing. Ratings and candidate labels are synthetic hypotheses, not claims about real users.",
   "candidatePool": [
     "Crusader Kings III",
@@ -264,6 +264,71 @@
         "Resident Evil Village": "strong", "Pentiment": "strong", "Monster Hunter: World": "avoid",
         "Hades": "stretch", "Firewatch": "strong", "Ghost of Tsushima": "strong",
         "What Remains of Edith Finch": "strong", "Alan Wake 2": "strong", "The Last of Us Part I": "ideal"
+      }
+    }
+  ],
+  "contradictoryProfiles": [
+    {
+      "id": "dual_tempo_storyteller",
+      "name": "Dual-tempo storyteller",
+      "hypothesis": "Likes both quiet authored stories and intense finite action, but rejects service loops, sports and management-heavy play.",
+      "starterTitles": ["Disco Elysium", "Doom (2016)", "Control", "FIFA 17", "Cities: Skylines"],
+      "ratings": [
+        { "title": "Disco Elysium", "rating": 9.5 }, { "title": "Life is Strange: True Colors", "rating": 9 },
+        { "title": "As Dusk Falls", "rating": 8.5 }, { "title": "Doom (2016)", "rating": 9 },
+        { "title": "Sifu", "rating": 8.5 }, { "title": "Control", "rating": 9 },
+        { "title": "FIFA 17", "rating": 2 }, { "title": "Fortnite", "rating": 3 },
+        { "title": "Cities: Skylines", "rating": 3.5 }, { "title": "The Sims 4", "rating": 4 }
+      ],
+      "labels": {
+        "Crusader Kings III": "avoid", "Into the Breach": "avoid", "Two Point Hospital": "avoid",
+        "DOOM Eternal": "strong", "EA Sports FC 26": "avoid", "Diablo IV": "stretch",
+        "Animal Crossing: New Horizons": "stretch", "Overcooked! 2": "stretch", "Journey": "strong",
+        "Resident Evil Village": "strong", "Pentiment": "strong", "Monster Hunter: World": "stretch",
+        "Hades": "stretch", "Firewatch": "strong", "Ghost of Tsushima": "strong",
+        "What Remains of Edith Finch": "strong", "Alan Wake 2": "ideal", "The Last of Us Part I": "ideal"
+      }
+    },
+    {
+      "id": "cozy_horror_switcher",
+      "name": "Cozy-horror switcher",
+      "hypothesis": "Alternates between gentle low-pressure games and authored horror, while avoiding competitive obligation and abstract strategy.",
+      "starterTitles": ["Stardew Valley", "Resident Evil 7: Biohazard", "Unpacking", "FIFA 17", "Civilization VI"],
+      "ratings": [
+        { "title": "Stardew Valley", "rating": 10 }, { "title": "Unpacking", "rating": 9 },
+        { "title": "Spiritfarer", "rating": 8.5 }, { "title": "Resident Evil 7: Biohazard", "rating": 9.5 },
+        { "title": "Until Dawn", "rating": 9 }, { "title": "The Quarry", "rating": 8.5 },
+        { "title": "FIFA 17", "rating": 2 }, { "title": "Rocket League", "rating": 3 },
+        { "title": "Civilization VI", "rating": 3.5 }, { "title": "Destiny 2", "rating": 3 }
+      ],
+      "labels": {
+        "Crusader Kings III": "avoid", "Into the Breach": "avoid", "Two Point Hospital": "stretch",
+        "DOOM Eternal": "stretch", "EA Sports FC 26": "avoid", "Diablo IV": "avoid",
+        "Animal Crossing: New Horizons": "ideal", "Overcooked! 2": "stretch", "Journey": "strong",
+        "Resident Evil Village": "ideal", "Pentiment": "stretch", "Monster Hunter: World": "avoid",
+        "Hades": "stretch", "Firewatch": "strong", "Ghost of Tsushima": "stretch",
+        "What Remains of Edith Finch": "strong", "Alan Wake 2": "ideal", "The Last of Us Part I": "strong"
+      }
+    },
+    {
+      "id": "strategic_spectacle",
+      "name": "Strategic spectacle player",
+      "hypothesis": "Enjoys demanding systems and polished single-player spectacle together, but dislikes low-stakes routine and competitive services.",
+      "starterTitles": ["Civilization VI", "God of War", "Control", "Fortnite", "Unpacking"],
+      "ratings": [
+        { "title": "Civilization VI", "rating": 9.5 }, { "title": "XCOM 2", "rating": 9 },
+        { "title": "Baldur's Gate 3", "rating": 9 }, { "title": "God of War", "rating": 9.5 },
+        { "title": "Control", "rating": 9 }, { "title": "Cyberpunk 2077", "rating": 8.5 },
+        { "title": "Fortnite", "rating": 2.5 }, { "title": "FIFA 17", "rating": 2 },
+        { "title": "Stardew Valley", "rating": 4 }, { "title": "Unpacking", "rating": 3.5 }
+      ],
+      "labels": {
+        "Crusader Kings III": "ideal", "Into the Breach": "ideal", "Two Point Hospital": "stretch",
+        "DOOM Eternal": "strong", "EA Sports FC 26": "avoid", "Diablo IV": "strong",
+        "Animal Crossing: New Horizons": "avoid", "Overcooked! 2": "stretch", "Journey": "stretch",
+        "Resident Evil Village": "strong", "Pentiment": "strong", "Monster Hunter: World": "strong",
+        "Hades": "strong", "Firewatch": "stretch", "Ghost of Tsushima": "strong",
+        "What Remains of Edith Finch": "stretch", "Alan Wake 2": "strong", "The Last of Us Part I": "strong"
       }
     }
   ]

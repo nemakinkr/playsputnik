@@ -225,6 +225,17 @@ reviews, catalogs, sale pages, and announcements.
   `reports/synthetic-profile-diagnostics.json` records overranked candidates,
   missed high-fit candidates, recurring stress mismatches, and each persona's
   three weakest five-signal scenarios; the evaluation gate fails if it is stale.
+  The report now includes the exact five input games for every weak scenario
+  and a separate three-person contradictory-taste suite (quiet story + action,
+  cozy + horror, systems + spectacle). Taste pull uses a bounded soft cap rather
+  than a hard 70-point ceiling, preserving discrimination between repeated core
+  motifs and incidental metadata matches. This raised eight-profile full NDCG
+  from 0.90 to 0.92 and random five-signal stress from 0.86 to 0.88; the former
+  systems collapse improved from 0.37 to 0.76, while open-world mean stress
+  improved from 0.72 to 0.77 with a high-fit winner in all 20 scenarios.
+  Onboarding now treats calm/intense as a bipolar diagnostic axis and asks an
+  opposite-pole counterpoint after learning only one side. Its first three
+  deterministic questions cover both poles and all six broad taste axes.
   Top recommendations now receive a controlled diversity rerank: the strongest
   game is fixed at #1, only candidates within 12 score points may trade places,
   and atom/session/tone similarity breaks near-ties. The gate proves that this

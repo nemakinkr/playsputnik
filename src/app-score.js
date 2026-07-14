@@ -405,8 +405,14 @@
         (sum, signal) => sum + profile.negativeWeights[signal] * signalImportance(signal),
         0,
       ) / evidenceScale;
-      const pull = Math.min(70, Math.round(pullRaw * 6));
-      const caution = -Math.min(55, Math.round(cautionRaw * 7));
+      const softCap = (value, threshold, headroom, curve) => value <= threshold
+        ? value
+        : threshold + headroom * (1 - Math.exp(-(value - threshold) / curve));
+      // Keep taste bounded, but preserve enough headroom to distinguish a
+      // repeated core motif from a few incidental matches. A hard cap made
+      // unrelated five-positive-signal profiles collapse onto the same score.
+      const pull = Math.round(softCap(pullRaw * 6, 55, 25, 45));
+      const caution = -Math.round(softCap(cautionRaw * 7, 42, 18, 36));
       const mixedPenalty = signals.mixed.length ? Math.min(12, signals.mixed.length * 4) : 0;
       const tensionPenalty = pull >= 24 && Math.abs(caution) >= 14 ? 8 : 0;
       const earlyPenalty = profile.confidence === "Early" ? 4 : 0;

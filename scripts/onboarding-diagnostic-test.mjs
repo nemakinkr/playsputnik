@@ -104,6 +104,7 @@ const firstThree = [
   answerNext(broadState, broadTools),
 ];
 const firstThreeAxes = [...new Set(firstThree.flatMap((game) => broadTools.diagnosticAxisHits(game)))];
+const firstThreeIntensityPoles = new Set(firstThree.map((game) => broadTools.diagnosticIntensityPole(game)).filter(Boolean));
 const firstQuestionIndex = profileGames.findIndex((game) => game.title === firstThree[0].title);
 
 assert(firstQuestionIndex >= 0 && firstQuestionIndex < 12, `Expected the first onboarding question to stay broadly recognizable, got ${firstThree[0].title} at profile index ${firstQuestionIndex}`);
@@ -111,6 +112,10 @@ assert(firstThreeAxes.length >= 4, `Expected first three onboarding games to cov
 assert(
   firstThreeAxes.some((axis) => ["systems", "intensity", "social"].includes(axis)),
   `Expected early onboarding to include a format/intensity/social check, got ${firstThreeAxes.join(", ")}`,
+);
+assert(
+  firstThreeIntensityPoles.has("calm") && firstThreeIntensityPoles.has("intense"),
+  `Expected first three onboarding games to contrast calm and intense play, got ${[...firstThreeIntensityPoles].join(", ")}`,
 );
 const broadNext = broadTools.nextDiagnosticGame();
 const unansweredScores = profileGames
@@ -136,4 +141,14 @@ assert(
   "an unresolved taste conflict should outweigh an unrelated question",
 );
 
-console.log(`✅ onboarding diagnostics gate honest 5/10/20 confidence, maximize information gain, cover ${firstThreeAxes.length} axes in the first 3 questions (${firstThree.map((game) => game.title).join(" / ")}), and resolve mixed choice signals with ${followUp.title}`);
+const calmOnlyState = { quickReactions: {}, liked: new Set() };
+react(calmOnlyState, "Red Dead Redemption 2", "loved");
+const calmOnlyTools = createTools(calmOnlyState);
+const intensityCounterpart = calmOnlyTools.nextDiagnosticGame();
+assert(calmOnlyTools.diagnosticIntensityPole(intensityCounterpart) === "intense", `Expected an intense counterpoint after one calm answer, got ${intensityCounterpart.title}`);
+assert(
+  calmOnlyTools.intensityContrastNeedScore(intensityCounterpart) > calmOnlyTools.intensityContrastNeedScore(profileGames.find((game) => game.title === "Stardew Valley")),
+  "Opposite intensity pole should receive a larger diagnostic bonus",
+);
+
+console.log(`✅ onboarding diagnostics gate honest 5/10/20 confidence, contrasts calm/intense play in the first 3 questions (${firstThree.map((game) => game.title).join(" / ")}), covers ${firstThreeAxes.length} axes, and resolves mixed choice signals with ${followUp.title}`);

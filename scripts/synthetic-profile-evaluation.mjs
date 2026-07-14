@@ -190,6 +190,10 @@ function evaluateProfile(profile, ratings, mode = "import") {
       source: row.source,
       label: profile.labels[row.title],
       score: tools.scoreGame(row.game),
+      taste: (() => {
+        const result = tools.tasteEngineScore(row.game);
+        return { pull: result.pull, caution: result.caution, uncertainty: result.uncertainty };
+      })(),
     }))
     .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
   const ideal = [...ranked].sort((a, b) => gain(b.label) - gain(a.label) || a.title.localeCompare(b.title));
@@ -207,6 +211,7 @@ function evaluateProfile(profile, ratings, mode = "import") {
       .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]) || a[0].localeCompare(b[0]))
       .slice(0, 10)
       .map(([signal, weight]) => ({ signal, weight: round(weight) })),
+    intensityPreference: tools.tasteIntensityPreference(),
     metrics: {
       ndcgAt6: round(dcg(ranked, 6) / dcg(ideal, 6)),
       highFitPrecisionAt3: round(top3.filter((row) => ["ideal", "strong"].includes(row.label)).length / top3.length),
@@ -276,8 +281,8 @@ function randomRatingSets(profile) {
   return sets;
 }
 
-function summarizeStress(reports) {
-  const groups = fixture.profiles.map((profile) => {
+function summarizeStress(reports, profiles) {
+  const groups = profiles.map((profile) => {
     const scenarios = reports.filter((report) => report.id === profile.id);
     return {
       id: profile.id,
@@ -309,6 +314,7 @@ const stressProfiles = fixture.profiles.flatMap((profile) => (
   randomRatingSets(profile).map((ratings, index) => ({
     ...evaluateProfile(profile, ratings, "quick"),
     scenario: index + 1,
+    inputs: ratings.map(({ title, rating }) => ({ title, rating })),
     reactions: {
       positive: ratings.filter(({ rating }) => rating >= 7).length,
       neutral: ratings.filter(({ rating }) => rating > 5 && rating < 7).length,
@@ -318,7 +324,28 @@ const stressProfiles = fixture.profiles.flatMap((profile) => (
 ));
 const aggregate = summarize(fullProfiles);
 const starterAggregate = summarize(starterProfiles);
-const stressAggregate = summarizeStress(stressProfiles);
+const stressAggregate = summarizeStress(stressProfiles, fixture.profiles);
+const contradictorySourceProfiles = fixture.contradictoryProfiles || [];
+const contradictoryFullProfiles = contradictorySourceProfiles.map((profile) => evaluateProfile(profile, profile.ratings));
+const contradictoryStarterProfiles = contradictorySourceProfiles.map((profile) => {
+  const starterKeys = new Set((profile.starterTitles || []).map(titleKey));
+  return evaluateProfile(profile, profile.ratings.filter(({ title }) => starterKeys.has(titleKey(title))), "quick");
+});
+const contradictoryStressProfiles = contradictorySourceProfiles.flatMap((profile) => (
+  randomRatingSets(profile).map((ratings, index) => ({
+    ...evaluateProfile(profile, ratings, "quick"),
+    scenario: index + 1,
+    inputs: ratings.map(({ title, rating }) => ({ title, rating })),
+    reactions: {
+      positive: ratings.filter(({ rating }) => rating >= 7).length,
+      neutral: ratings.filter(({ rating }) => rating > 5 && rating < 7).length,
+      negative: ratings.filter(({ rating }) => rating <= 5).length,
+    },
+  }))
+));
+const contradictoryAggregate = summarize(contradictoryFullProfiles);
+const contradictoryStarterAggregate = summarize(contradictoryStarterProfiles);
+const contradictoryStressAggregate = summarizeStress(contradictoryStressProfiles, contradictorySourceProfiles);
 
 function compactRows(rows) {
   return rows.map(({ title, label, score }) => ({ title, label, score }));
@@ -328,14 +355,15 @@ function modeDiagnostics(profile) {
   const topSix = profile.ranked.slice(0, 6);
   return {
     metrics: profile.metrics,
+    intensityPreference: profile.intensityPreference,
     top3: profile.top3,
     overranked: compactRows(topSix.filter((row) => ["stretch", "avoid"].includes(row.label))),
     missedHighFit: compactRows(profile.ranked.filter((row, index) => index >= 6 && ["ideal", "strong"].includes(row.label))),
   };
 }
 
-function stressDiagnostics(profileId) {
-  const scenarios = stressProfiles.filter((profile) => profile.id === profileId);
+function stressDiagnostics(profileId, stressRows = stressProfiles, stressSummary = stressAggregate) {
+  const scenarios = stressRows.filter((profile) => profile.id === profileId);
   const recurring = new Map();
   scenarios.forEach((scenario) => scenario.top3
     .filter((row) => ["stretch", "avoid"].includes(row.label))
@@ -345,7 +373,7 @@ function stressDiagnostics(profileId) {
       current.count += 1;
       recurring.set(key, current);
     }));
-  const aggregateProfile = stressAggregate.profiles.find((profile) => profile.id === profileId);
+  const aggregateProfile = stressSummary.profiles.find((profile) => profile.id === profileId);
   return {
     metrics: aggregateProfile,
     recurringTop3Mismatches: [...recurring.values()]
@@ -358,6 +386,7 @@ function stressDiagnostics(profileId) {
       .slice(0, 3)
       .map((scenario) => ({
         scenario: scenario.scenario,
+        inputs: scenario.inputs,
         reactions: scenario.reactions,
         ndcgAt6: scenario.metrics.ndcgAt6,
         highFitPrecisionAt3: scenario.metrics.highFitPrecisionAt3,
@@ -367,7 +396,7 @@ function stressDiagnostics(profileId) {
 }
 
 const diagnostics = {
-  version: 1,
+  version: 2,
   fixtureVersion: fixture.version,
   policy: "Synthetic labels are product hypotheses. Rows below are diagnostic mismatches, not claims about real players.",
   aggregate: { full: aggregate, starter: starterAggregate, stress: stressAggregate },
@@ -379,6 +408,21 @@ const diagnostics = {
     fiveSignalStart: modeDiagnostics(starterProfiles.find((row) => row.id === profile.id)),
     randomFiveSignalStress: stressDiagnostics(profile.id),
   })),
+  contradictory: {
+    aggregate: {
+      full: contradictoryAggregate,
+      starter: contradictoryStarterAggregate,
+      stress: contradictoryStressAggregate,
+    },
+    profiles: contradictorySourceProfiles.map((profile) => ({
+      id: profile.id,
+      name: profile.name,
+      hypothesis: profile.hypothesis,
+      full: modeDiagnostics(contradictoryFullProfiles.find((row) => row.id === profile.id)),
+      fiveSignalStart: modeDiagnostics(contradictoryStarterProfiles.find((row) => row.id === profile.id)),
+      randomFiveSignalStress: stressDiagnostics(profile.id, contradictoryStressProfiles, contradictoryStressAggregate),
+    })),
+  },
 };
 
 if (WRITE_DIAGNOSTICS) {
@@ -398,6 +442,12 @@ const report = {
   profiles: fullProfiles,
   starter: { aggregate: starterAggregate, profiles: starterProfiles },
   stress: { aggregate: stressAggregate, scenarios: stressProfiles },
+  contradictory: {
+    aggregate: contradictoryAggregate,
+    profiles: contradictoryFullProfiles,
+    starter: { aggregate: contradictoryStarterAggregate, profiles: contradictoryStarterProfiles },
+    stress: { aggregate: contradictoryStressAggregate, scenarios: contradictoryStressProfiles },
+  },
   diagnostics,
   missingCandidates: candidateRows.filter((row) => !row.game).map((row) => row.title),
 };
@@ -422,6 +472,10 @@ else {
     const startIssues = profile.fiveSignalStart.overranked.length + profile.fiveSignalStart.missedHighFit.length;
     console.log(`   ⚑ ${profile.name}: ${fullIssues} full-profile mismatches, ${startIssues} five-signal mismatches, weakest stress NDCG ${profile.randomFiveSignalStress.weakestScenarios[0]?.ndcgAt6}`);
   });
+  console.log(`   Contradictory profiles: ${contradictoryAggregate.profileCount}, full NDCG ${contradictoryAggregate.meanNdcgAt6}, five-signal NDCG ${contradictoryStarterAggregate.meanNdcgAt6}, stress NDCG ${contradictoryStressAggregate.meanNdcgAt6}`);
+  contradictoryFullProfiles.forEach((profile) => {
+    console.log(`   ↳ ${profile.name}: ${profile.top3.map((row) => `${row.title}:${row.label}:${row.score}`).join(", ")}`);
+  });
 }
 
 assert(fixture.profiles.length === 8, `Synthetic benchmark should cover eight independent profiles, got ${fixture.profiles.length}`);
@@ -438,6 +492,19 @@ fixture.profiles.forEach((profile) => {
   assert(starterRatings.filter(({ rating }) => rating <= 5).length >= 1, `${profile.name} starter profile needs at least one negative reaction`);
   const missingLabels = fixture.candidatePool.filter((title) => !profile.labels[title]);
   assert(missingLabels.length === 0, `${profile.name} is missing candidate labels: ${missingLabels.join(", ")}`);
+});
+assert(contradictorySourceProfiles.length === 3, `Contradictory benchmark should cover three profiles, got ${contradictorySourceProfiles.length}`);
+contradictorySourceProfiles.forEach((profile) => {
+  const candidateKeys = new Set(fixture.candidatePool.map(titleKey));
+  const leaks = profile.ratings.filter(({ title }) => candidateKeys.has(titleKey(title))).map(({ title }) => title);
+  assert(leaks.length === 0, `${profile.name} leaks rated titles into the contradictory candidate pool: ${leaks.join(", ")}`);
+  assert(profile.starterTitles?.length === 5, `${profile.name} needs exactly five contradictory starter ratings`);
+  const ratingKeys = new Set(profile.ratings.map(({ title }) => titleKey(title)));
+  assert(profile.starterTitles.every((title) => ratingKeys.has(titleKey(title))), `${profile.name} has a contradictory starter title absent from ratings`);
+  const starterRatings = profile.ratings.filter(({ title }) => profile.starterTitles.some((starter) => titleKey(starter) === titleKey(title)));
+  assert(starterRatings.filter(({ rating }) => rating >= 7).length >= 2, `${profile.name} contradictory starter needs at least two positive reactions`);
+  assert(starterRatings.filter(({ rating }) => rating <= 5).length >= 1, `${profile.name} contradictory starter needs at least one negative reaction`);
+  assert(fixture.candidatePool.every((title) => profile.labels[title]), `${profile.name} is missing contradictory candidate labels`);
 });
 assert(aggregate.candidateCoverage === 1, `Synthetic candidate coverage regressed: missing ${report.missingCandidates.join(", ")}`);
 assert(aggregate.ratingCoverage === 1, `Synthetic rating coverage regressed: ${fullProfiles.flatMap((profile) => profile.missingRatings).join(", ")}`);
@@ -474,3 +541,30 @@ stressAggregate.profiles.forEach((profile) => {
   assert(profile.highFitTopChoiceRate >= 0.7, `${profile.name} random five-signal high-fit top choice rate is too low: ${profile.highFitTopChoiceRate}`);
   assert(profile.avoidFreeTop3Rate >= 0.8, `${profile.name} random five-signal avoid-free top-3 rate is too low: ${profile.avoidFreeTop3Rate}`);
 });
+const systemsStress = diagnostics.profiles.find((profile) => profile.id === "systems_architect").randomFiveSignalStress;
+const openWorldStress = stressAggregate.profiles.find((profile) => profile.id === "open_world_wanderer");
+assert(systemsStress.weakestScenarios[0].ndcgAt6 >= 0.7, `Systems profile still collapses under positive-only evidence: ${systemsStress.weakestScenarios[0].ndcgAt6}`);
+assert(openWorldStress.meanNdcgAt6 >= 0.75 && openWorldStress.highFitTopChoiceRate >= 0.95, `Open-world profile remains unstable: ${JSON.stringify(openWorldStress)}`);
+contradictoryFullProfiles.forEach((profile) => {
+  assert(profile.metrics.ndcgAt6 >= 0.75, `${profile.name} contradictory full-profile NDCG@6 is too low: ${profile.metrics.ndcgAt6}`);
+  assert(profile.metrics.highFitPrecisionAt3 >= 0.67, `${profile.name} contradictory full-profile precision@3 is too low`);
+  assert(profile.metrics.avoidIntrusionsAt3 === 0, `${profile.name} contradictory full profile surfaced an avoid title`);
+  assert(profile.metrics.positiveAvoidMargin >= 25, `${profile.name} contradictory full-profile margin is too small`);
+});
+contradictoryStarterProfiles.forEach((profile) => {
+  assert(profile.ratingCount === 5 && profile.signalMode === "quick", `${profile.name} contradictory starter bypassed the five-signal path`);
+  assert(profile.metrics.ndcgAt6 >= 0.7, `${profile.name} contradictory five-signal NDCG@6 is too low: ${profile.metrics.ndcgAt6}`);
+  assert(profile.metrics.highFitPrecisionAt3 >= 0.67, `${profile.name} contradictory five-signal precision@3 is too low`);
+  assert(profile.metrics.avoidIntrusionsAt3 === 0, `${profile.name} contradictory five-signal profile surfaced an avoid title`);
+});
+contradictoryStressAggregate.profiles.forEach((profile) => {
+  assert(profile.meanNdcgAt6 >= 0.75, `${profile.name} contradictory stress NDCG is too low: ${profile.meanNdcgAt6}`);
+  assert(profile.highFitTopChoiceRate >= 0.85, `${profile.name} contradictory stress high-fit winner rate is too low`);
+  assert(profile.avoidFreeTop3Rate >= 0.95, `${profile.name} contradictory stress avoid-free rate is too low`);
+});
+const contradictoryIntensityReads = [
+  ...contradictoryFullProfiles.map((profile) => profile.intensityPreference),
+  ...contradictoryStarterProfiles.map((profile) => profile.intensityPreference),
+];
+assert(contradictoryIntensityReads.some((preference) => preference.kind === "balanced"), "Contradictory profiles should preserve at least one balanced intensity read");
+assert(contradictoryIntensityReads.every((preference) => preference.confidence !== "high"), "Contradictory profiles must not claim high intensity confidence");

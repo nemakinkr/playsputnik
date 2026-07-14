@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T12:07:44.395Z",
+  "generatedAt": "2026-07-14T12:50:39.275Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -204,7 +204,7 @@
     ]
   },
   "refreshDigest": {
-    "generatedAt": "2026-07-14T12:07:44.388Z",
+    "generatedAt": "2026-07-14T12:50:39.268Z",
     "priceSnapshotCount": 1844,
     "subscriptionRecordCount": 508,
     "latestPriceCheckedAt": "2026-07-14T09:10:05.208Z",
@@ -303,23 +303,23 @@
     },
     {
       "atom": "systems",
-      "count": 169
+      "count": 167
     },
     {
       "atom": "indie",
       "count": 144
     },
     {
-      "atom": "atmosphere",
-      "count": 121
-    },
-    {
       "atom": "rpg",
       "count": 121
     },
     {
+      "atom": "atmosphere",
+      "count": 119
+    },
+    {
       "atom": "multiplayer",
-      "count": 110
+      "count": 108
     },
     {
       "atom": "platformer",
@@ -327,7 +327,7 @@
     },
     {
       "atom": "co-op",
-      "count": 50
+      "count": 49
     },
     {
       "atom": "sci-fi",
@@ -335,7 +335,7 @@
     },
     {
       "atom": "open-world",
-      "count": 37
+      "count": 40
     },
     {
       "atom": "strategy",
