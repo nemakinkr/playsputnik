@@ -1,6 +1,8 @@
 import { SEARCH_RESULT_VERSION, normalizeRawgResult, normalizeSearchTitle } from "./rawg-normalize.mjs";
 
 const API_VERSION = "playsputnik-api-v2";
+const DEFAULT_WORKERS_AI_MODEL = "@cf/zai-org/glm-4.7-flash";
+const DEFAULT_ANTHROPIC_MODEL = "claude-haiku-4-5";
 const DEFAULT_ORIGINS = [
   "https://nemakinkr.github.io",
   "http://localhost:4190",
@@ -25,12 +27,15 @@ export async function handleRequest(request, env = {}, ctx = {}) {
   if (request.method === "OPTIONS") return preflight(allowedOrigin);
 
   if (url.pathname === "/api/health" && request.method === "GET") {
+    const ai = activeAiProvider(env);
     return json({
       status: "ok",
       service: "playsputnik-api",
       version: API_VERSION,
       searchConfigured: Boolean(env.RAWG_API_KEY),
-      aiConfigured: Boolean(env.ANTHROPIC_API_KEY),
+      aiConfigured: Boolean(ai),
+      aiProvider: ai?.id || "none",
+      aiModel: ai?.model || "",
       aiNarrativeVersion: "ai-narrative-v2",
     }, 200, allowedOrigin);
   }
@@ -118,7 +123,8 @@ async function search(request, env, ctx, allowedOrigin) {
 }
 
 async function narrative(request, env, allowedOrigin) {
-  if (!env.ANTHROPIC_API_KEY) {
+  const provider = activeAiProvider(env);
+  if (!provider) {
     return json({ error: "AI narrative is not configured" }, 503, allowedOrigin);
   }
 
@@ -141,37 +147,95 @@ async function narrative(request, env, allowedOrigin) {
     return json({ error: error.message }, 400, allowedOrigin);
   }
 
-  let upstream;
+  let generated;
   try {
-    upstream = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: env.AI_MODEL || "claude-haiku-4-5",
-        max_tokens: prompt.maxTokens,
-        system: prompt.system,
-        messages: [{ role: "user", content: prompt.prompt }],
-      }),
-    }, 12000);
-  } catch {
-    return json({ error: "AI provider timed out" }, 504, allowedOrigin);
+    generated = await generateAiText(provider, prompt, env);
+  } catch (error) {
+    const timedOut = error?.name === "TimeoutError";
+    return json({ error: timedOut ? "AI provider timed out" : "AI provider request failed" }, timedOut ? 504 : 502, allowedOrigin);
   }
 
-  const data = await upstream.json().catch(() => ({}));
-  if (!upstream.ok) return json({ error: "AI provider request failed" }, 502, allowedOrigin);
-  const text = String(data.content?.[0]?.text || "").trim();
+  const text = String(generated.text || "").trim();
   if (!text) return json({ error: "AI provider returned an empty narrative" }, 502, allowedOrigin);
 
   return json({
     text: text.slice(0, 1800),
     kind: prompt.kind,
     locale: prompt.locale,
-    model: env.AI_MODEL || "claude-haiku-4-5",
+    provider: generated.provider,
+    model: generated.model,
   }, 200, allowedOrigin, { "Cache-Control": "no-store" });
+}
+
+function activeAiProvider(env = {}) {
+  const preference = String(env.AI_PROVIDER || "").toLowerCase();
+  const workers = env.AI && typeof env.AI.run === "function"
+    ? {
+        id: "workers_ai",
+        model: env.WORKERS_AI_MODEL || (preference === "workers_ai" ? env.AI_MODEL : "") || DEFAULT_WORKERS_AI_MODEL,
+      }
+    : null;
+  const anthropic = env.ANTHROPIC_API_KEY
+    ? {
+        id: "anthropic",
+        model: env.ANTHROPIC_MODEL || (preference === "anthropic" ? env.AI_MODEL : "") || DEFAULT_ANTHROPIC_MODEL,
+      }
+    : null;
+  if (preference === "anthropic" && anthropic) return anthropic;
+  if (preference === "workers_ai" && workers) return workers;
+  return workers || anthropic;
+}
+
+async function generateAiText(provider, prompt, env) {
+  if (provider.id === "workers_ai") {
+    const result = await withPromiseTimeout(env.AI.run(provider.model, {
+      messages: [
+        { role: "system", content: prompt.system },
+        { role: "user", content: prompt.prompt },
+      ],
+      max_tokens: prompt.maxTokens,
+      temperature: 0.25,
+    }), 12000);
+    const content = result?.response ?? result?.choices?.[0]?.message?.content ?? result?.result?.response;
+    const text = Array.isArray(content)
+      ? content.map((item) => typeof item === "string" ? item : item?.text || item?.content || "").join("")
+      : content;
+    return { provider: provider.id, model: provider.model, text: String(text || "").trim() };
+  }
+
+  const upstream = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": env.ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: provider.model,
+      max_tokens: prompt.maxTokens,
+      system: prompt.system,
+      messages: [{ role: "user", content: prompt.prompt }],
+    }),
+  }, 12000);
+  const data = await upstream.json().catch(() => ({}));
+  if (!upstream.ok) throw new Error("Anthropic request failed");
+  return {
+    provider: provider.id,
+    model: provider.model,
+    text: String(data.content?.[0]?.text || "").trim(),
+  };
+}
+
+function withPromiseTimeout(promise, timeoutMs) {
+  let timer;
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      const error = new Error("AI provider timed out");
+      error.name = "TimeoutError";
+      reject(error);
+    }, timeoutMs);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
 }
 
 function providerFailure(query, sourceHealth, httpStatus = null) {

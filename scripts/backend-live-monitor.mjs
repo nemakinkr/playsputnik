@@ -33,6 +33,9 @@ assert(health.response.ok, `health returned ${health.response.status}`);
 assert(health.data.status === "ok", `health status is ${health.data.status || "missing"}`);
 assert(health.data.service === "playsputnik-api", `unexpected service ${health.data.service || "missing"}`);
 assert(health.data.searchConfigured === true, "RAWG search secret is not configured");
+assert(health.data.aiConfigured === true, "Workers AI binding is not configured");
+assert(health.data.aiProvider === "workers_ai", `unexpected AI provider ${health.data.aiProvider || "missing"}`);
+assert(Boolean(health.data.aiModel), "Workers AI model is missing");
 assert(
   health.response.headers.get("access-control-allow-origin") === appOrigin,
   "health CORS origin does not match GitHub Pages",
@@ -81,4 +84,6 @@ console.log(JSON.stringify({
   cache: cacheHeader,
   untrustedOrigin: blocked.status,
   aiConfigured: Boolean(health.data.aiConfigured),
+  aiProvider: health.data.aiProvider || "none",
+  aiModel: health.data.aiModel || "",
 }, null, 2));

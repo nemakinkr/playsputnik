@@ -8,8 +8,9 @@ frontend host. The Worker exposes:
   six hours. The shared `rawg-inference-v1` normalizer derives a conservative
   taste/session profile with per-field evidence and capped confidence. Prices,
   subscription state, and languages are intentionally not claimed.
-- `POST /api/narrative` — optional locale-aware Anthropic copy from structured
-  game/taste facts. Personalized responses are never cached at the edge.
+- `POST /api/narrative` — locale-aware AI copy from structured game/taste
+  facts. Cloudflare Workers AI is the free prototype default; Anthropic remains
+  an optional provider. Personalized responses are never cached at the edge.
 
 The public Worker deliberately does **not** expose `/api/psn`. NPSSO is a
 sensitive account token; PSN import stays local until PlaySputnik has accounts,
@@ -21,7 +22,8 @@ security review.
 - Worker: `https://playsputnik-api.playsputnik.workers.dev`
 - GitHub Pages variable: `PLAYSPUTNIK_API_ORIGIN`
 - RAWG search: active through a Cloudflare encrypted secret
-- AI narratives: inactive until `ANTHROPIC_API_KEY` is added
+- AI narratives: active through the `AI` Workers AI binding; no browser key
+  and no Anthropic key are required
 - Automatic Worker deployment: active through the scoped
   `CLOUDFLARE_API_TOKEN` GitHub Actions secret
 - Backend monitor: active every six hours with incident issue lifecycle
@@ -40,15 +42,20 @@ No custom domain is required. Cloudflare provides a `workers.dev` HTTPS URL.
    npx wrangler@4 login
    ```
 
-3. Store provider keys as Worker secrets:
+3. Store the RAWG provider key as a Worker secret:
 
    ```sh
    npx wrangler@4 secret put RAWG_API_KEY --config backend/wrangler.toml
-   npx wrangler@4 secret put ANTHROPIC_API_KEY --config backend/wrangler.toml
    ```
 
-   `ANTHROPIC_API_KEY` is optional. Search works without it; AI narratives use
-   the deterministic client fallback.
+   The `[ai]` binding in `backend/wrangler.toml` makes Workers AI available
+   without another secret. `AI_PROVIDER=workers_ai` and `WORKERS_AI_MODEL`
+   select the model. The browser still keeps its deterministic localized
+   narrative as an instant fallback if AI is unavailable.
+
+   Anthropic is optional. To use it later, add `ANTHROPIC_API_KEY` as a Worker
+   secret and set `AI_PROVIDER=anthropic` plus `ANTHROPIC_MODEL` in
+   `backend/wrangler.toml`. The endpoint contract does not change.
 
 4. Deploy:
 
@@ -92,8 +99,8 @@ It expects:
 
 The account variable and scoped **Edit Cloudflare Workers** token are configured
 for the live project. Do not replace this with Wrangler's broad local OAuth
-token. The workflow deploys code only; RAWG/Anthropic secrets remain stored in
-Cloudflare.
+token. The workflow deploys code and the Workers AI binding only; RAWG and any
+optional paid-provider secrets remain stored in Cloudflare.
 
 ## Monitoring
 
@@ -101,6 +108,7 @@ Cloudflare.
 triggered manually. It verifies:
 
 - health contract and configured RAWG secret;
+- selected AI provider and model (without spending inference quota);
 - allowed GitHub Pages CORS origin;
 - live RAWG search with a cover candidate, structured inference provenance,
   and no invented price or subscription state;
@@ -119,6 +127,6 @@ its local catalog and deterministic narratives during an outage.
 
 The normal gate runs `scripts/backend-worker-test.mjs` and
 `scripts/rawg-enrichment-test.mjs`, covering CORS, health, title matching,
-provenance-aware RAWG normalization, confidence caps, cache hits, narrative
-secrets, input validation, store-data honesty, and the absence of a public PSN
-endpoint.
+provenance-aware RAWG normalization, confidence caps, cache hits, provider
+selection and fallback, input validation, store-data honesty, and the absence
+of a public PSN endpoint.

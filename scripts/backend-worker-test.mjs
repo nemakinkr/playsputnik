@@ -18,6 +18,7 @@ globalThis.caches = {
 
 let rawgCalls = 0;
 let anthropicCalls = 0;
+let workersAiCalls = 0;
 globalThis.fetch = async (url, options = {}) => {
   const target = String(url);
   if (target.startsWith("https://api.rawg.io/")) {
@@ -47,6 +48,17 @@ globalThis.fetch = async (url, options = {}) => {
 const env = {
   RAWG_API_KEY: "rawg-secret",
   ANTHROPIC_API_KEY: "anthropic-secret",
+  AI_PROVIDER: "workers_ai",
+  WORKERS_AI_MODEL: "@cf/zai-org/glm-4.7-flash",
+  AI: {
+    async run(model, payload) {
+      workersAiCalls += 1;
+      assert.equal(model, "@cf/zai-org/glm-4.7-flash");
+      assert.equal(payload.messages[0].role, "system");
+      assert.match(payload.messages[0].content, /natural Russian/);
+      return { choices: [{ message: { content: "Русский ответ Workers AI." } }] };
+    },
+  },
   ALLOWED_ORIGINS: "https://nemakinkr.github.io",
 };
 const context = { waitUntil: (promise) => promise };
@@ -60,6 +72,8 @@ assert.deepEqual(await health.json(), {
   version: "playsputnik-api-v2",
   searchConfigured: true,
   aiConfigured: true,
+  aiProvider: "workers_ai",
+  aiModel: "@cf/zai-org/glm-4.7-flash",
   aiNarrativeVersion: "ai-narrative-v2",
 });
 
@@ -97,8 +111,21 @@ const narrative = await handleRequest(new Request("https://api.example/api/narra
   body: JSON.stringify({ kind: "game_detail", locale: "ru", game: { title: "Stray", atoms: ["story"] } }),
 }), env, context);
 assert.equal(narrative.status, 200);
-assert.equal((await narrative.json()).locale, "ru");
-assert.equal(anthropicCalls, 1);
+const narrativePayload = await narrative.json();
+assert.equal(narrativePayload.locale, "ru");
+assert.equal(narrativePayload.provider, "workers_ai");
+assert.equal(narrativePayload.text, "Русский ответ Workers AI.");
+assert.equal(workersAiCalls, 1);
+assert.equal(anthropicCalls, 0, "Workers AI should be the default when both providers exist");
+
+const anthropicNarrative = await handleRequest(new Request("https://api.example/api/narrative", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({ kind: "game_detail", locale: "en", game: { title: "Stray", atoms: ["story"] } }),
+}), { ...env, AI: undefined, AI_PROVIDER: "anthropic" }, context);
+assert.equal(anthropicNarrative.status, 200);
+assert.equal((await anthropicNarrative.json()).provider, "anthropic");
+assert.equal(anthropicCalls, 1, "Anthropic should remain a provider-neutral fallback");
 
 const noPsn = await handleRequest(new Request("https://api.example/api/psn", {
   method: "POST",

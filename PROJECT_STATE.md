@@ -32,7 +32,7 @@ reviews, catalogs, sale pages, and announcements.
   Pages configure/upload/deploy `v6/v5/v5`). A local + CI runtime-policy gate
   prevents deprecated action majors or `node-version: 20` from returning.
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v142 (cache-first static assets / network-first navigation and
+- Service worker v145 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -80,9 +80,11 @@ reviews, catalogs, sale pages, and announcements.
   mobile first-pick confirmation toast is width-constrained and wraps instead
   of covering the viewport.
 - Production API foundation: `backend/worker.mjs` is a deployable Cloudflare
-  Worker for `/api/health`, cached RAWG `/api/search`, and optional Anthropic
-  `/api/narrative`. Secrets stay in Cloudflare; Pages receives only the public
-  origin via `PLAYSPUTNIK_API_ORIGIN` and generated `runtime-config.js`.
+  Worker for `/api/health`, cached RAWG `/api/search`, and provider-neutral
+  `/api/narrative`. Cloudflare Workers AI is the free prototype default;
+  Anthropic remains an optional fallback. Secrets stay in Cloudflare; Pages
+  receives only the public origin via `PLAYSPUTNIK_API_ORIGIN` and generated
+  `runtime-config.js`.
   The public backend intentionally rejects PSN import until account-token
   security exists.
 - RAWG search enrichment now uses one shared production/local normalizer.
@@ -103,8 +105,8 @@ reviews, catalogs, sale pages, and announcements.
 - Production API is live at
   `https://playsputnik-api.playsputnik.workers.dev`. Pages receives this origin
   through the `PLAYSPUTNIK_API_ORIGIN` repository variable. RAWG search and
-  attributed cover candidates are live and edge-cached; Anthropic narratives
-  remain disabled because no `ANTHROPIC_API_KEY` has been configured.
+  attributed cover candidates are live and edge-cached. AI narratives use the
+  Cloudflare Workers AI binding and do not require an Anthropic key.
 - Backend operations: a six-hour GitHub Actions monitor covers health, CORS,
   live RAWG normalization, cover presence, edge-cache hits, and untrusted-origin
   rejection, with a single incident issue that closes on recovery. Backend
@@ -114,9 +116,9 @@ reviews, catalogs, sale pages, and announcements.
 - AI Narrative Layer: `/api/narrative` can rewrite the main recommendation and
   produce a short game description/personal take directly in the selected
   language. Results are cached by locale + kind + taste-context fingerprint;
-  deterministic narratives remain the instant fallback. The local proxy is
-  implemented and gated. Enabling it publicly now requires deploying the Worker,
-  adding its secrets, and setting the GitHub repository variable.
+  deterministic narratives remain the instant fallback. Provider selection is
+  hidden behind one endpoint: Workers AI is the free default and a paid provider
+  can be introduced later without changing the client.
 - Companion Intelligence 2.0 phase 1 is local and free: every candidate gets a
   reliable/promising/polarizing/cautious/exploratory taste verdict. Strong pull
   plus strong caution now creates an explicit contradiction penalty, caps
@@ -430,8 +432,9 @@ smoke, Discover/search visual polish, mobile navigation, first-session payoff,
 core journey, demo Today/Discover continuity, demo review-mode polish, TLOU
 Part II edition decision, detail-drawer visual hierarchy, data-health issue
 triage, Today/Library/detail recommendation coherence, architecture gates, and
-final visual tightening are now strengthened. Top next candidates are real-user
-onboarding dogfood, expanded catalog/data trust polish, Library queue
-dogfooding, shareable investor/demo flow, and AI narrative activation when the
-project is ready to spend paid tokens. See NEXT_TASKS.md and HANDOFF.md
-"Backlog".
+final visual tightening are now strengthened. The product strategy is now
+explicit in `PRODUCT_STRATEGY.md`: onboarding is only one optional input path,
+while the core is a recurring decision companion for play / buy / wait /
+let-go decisions. The next AI priority is a reviewable parser for arbitrary
+rankings and notes, followed by bounded AI reranking and explanations over
+sourced facts. See NEXT_TASKS.md and HANDOFF.md "Backlog".

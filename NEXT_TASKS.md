@@ -109,7 +109,7 @@ both audiences. This is a deliberate large project, done in phases with a commit
 
 ## Track: AI Narrative Layer
 
-Status: local architecture done. `src/app-ai.js` now generates/cache-isolates
+Status: provider-neutral production architecture done. `src/app-ai.js` now generates/cache-isolates
 localized narratives by language, kind, and taste-context fingerprint.
 `POST /api/narrative` rewrites the main companion recommendation and generates
 a short description + personal fit explanation in the game drawer. Prompts
@@ -118,13 +118,20 @@ platform, language, release, and ranking claims. Existing deterministic EN/RU
 copy is the instant fallback. `ai-narrative-test.mjs` prevents locale-cache
 leaks and stale-context reuse.
 
-Production foundation and RAWG activation are done. The live Cloudflare Worker
-protects provider secrets, caches public search, validates CORS/input, and
-excludes PSN tokens; Pages is connected through `PLAYSPUTNIK_API_ORIGIN`.
-Remaining backend activation: add `ANTHROPIC_API_KEY` when paid AI narratives
-are ready. Monitoring and automatic backend deploys are active: the six-hour
-monitor manages incident issues, and backend changes run contract tests,
-Cloudflare deploy, and a live post-deploy probe.
+Production foundation, RAWG activation, and the free AI path are done. The
+Cloudflare Worker uses a Workers AI binding by default, supports Anthropic as an
+optional provider without changing the client, protects secrets, caches public
+search, validates CORS/input, and excludes PSN tokens. Pages is connected
+through `PLAYSPUTNIK_API_ORIGIN`. Deterministic localized narratives remain the
+instant fallback. Monitoring reads AI readiness without consuming inference
+quota, and backend changes run contract tests, Cloudflare deploy, and a live
+post-deploy probe.
+
+Next AI-core task: accept an arbitrary pasted ranking, game list, or free-form
+note; extract titles and taste evidence into a reviewable structured draft;
+resolve titles through the existing RAWG queue; and save only user-confirmed
+facts. The model may interpret taste, but it must never invent current prices,
+subscription status, platforms, languages, or release dates.
 
 ## Track: Companion Intelligence 2.0
 
