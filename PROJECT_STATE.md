@@ -208,9 +208,11 @@ reviews, catalogs, sale pages, and announcements.
   than core mechanics; EN/RU explanations localize them without exposing
   machine keys. A catalog-wide gate now runs the same production normalizer
   over all 461 games: difficulty resolves to 28 low / 349 medium / 84 high,
-  while intensity resolves to 35 low / 300 medium / 126 high. Eighteen
+  while intensity resolves to 36 low / 299 medium / 126 high. Twenty
   high-impact recommendation/onboarding records now carry an explicit curated
-  intensity, reducing low-confidence profiles from 292 to 274; the detail
+  intensity, reducing low-confidence profiles from 292 to 272; all 37 exact
+  catalog records exposed by onboarding, synthetic evaluation, or the founder
+  wishlist are now protected from low-confidence intensity by an automated gate. The detail
   cockpit shows difficulty, intensity, confidence, source, and evidence without
   adding this diagnostic layer to the main recommendation surface. The taste
   profile now derives an honest calm/intense/balanced preference from positive
@@ -236,6 +238,13 @@ reviews, catalogs, sale pages, and announcements.
   Onboarding now treats calm/intense as a bipolar diagnostic axis and asks an
   opposite-pole counterpoint after learning only one side. Its first three
   deterministic questions cover both poles and all six broad taste axes.
+  The taste engine also learns 17 curated atom-pair motifs (for example
+  story + choice, systems + turn-based, and cozy + routine). Motifs improve
+  discrimination without generating arbitrary pairs or leaking technical keys
+  into explanations. Onboarding rewards new motif coverage and now tests seven
+  motifs in its first five deterministic questions. Full synthetic NDCG is
+  0.93 with seven of eight unique top choices; contradictory profiles gate
+  0.87 full, 0.76 five-signal, and 0.82 random-stress NDCG.
   Top recommendations now receive a controlled diversity rerank: the strongest
   game is fixed at #1, only candidates within 12 score points may trade places,
   and atom/session/tone similarity breaks near-ties. The gate proves that this

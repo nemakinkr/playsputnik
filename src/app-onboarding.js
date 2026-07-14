@@ -4,12 +4,14 @@
   if (!window.PlaySputnikConfig) throw new Error("app-config must load before app-onboarding");
   if (!window.PlaySputnikSearch) throw new Error("app-search must load before app-onboarding");
   if (!window.PlaySputnikEnrichment) throw new Error("app-enrichment must load before app-onboarding");
+  if (!window.PlaySputnikScore) throw new Error("app-score must load before app-onboarding");
 
   const {
     QUICK_TASTE_FIRST_TARGET,
     QUICK_TASTE_USABLE_TARGET,
     QUICK_TASTE_SHARP_TARGET,
   } = window.PlaySputnikConfig;
+  const { tasteMotifsForGame } = window.PlaySputnikScore;
 
   const DIAGNOSTIC_AXIS_GROUPS = [
     { id: "story", labelKey: "settings.onboarding.axisStory", atoms: ["story", "cinematic", "choice", "reading", "linear"] },
@@ -69,6 +71,34 @@
         (game.atoms || []).forEach((atom) => atoms.add(atom));
       });
       return atoms;
+    }
+
+    function quickAnsweredMotifs() {
+      const motifs = new Set();
+      profileGames.forEach((game) => {
+        const reaction = quickReaction(game.title);
+        if (!reaction || reaction === "unplayed") return;
+        tasteMotifsForGame(game).forEach((motif) => motifs.add(motif));
+      });
+      return motifs;
+    }
+
+    function quickTasteMotifReactionStats() {
+      const stats = {};
+      profileGames.forEach((game) => {
+        const reaction = quickReaction(game.title);
+        if (!reaction || reaction === "unplayed") return;
+        const direction = reaction === "not_for_me" ? "negative" : "positive";
+        tasteMotifsForGame(game).forEach((motif) => {
+          if (!stats[motif]) stats[motif] = { positive: 0, negative: 0 };
+          stats[motif][direction] += 1;
+        });
+      });
+      return stats;
+    }
+
+    function diagnosticMotifNeedScore(game, answeredMotifs = quickAnsweredMotifs()) {
+      return tasteMotifsForGame(game).filter((motif) => !answeredMotifs.has(motif)).length * 180;
     }
 
     function uncoveredDiagnosticAtoms() {
@@ -208,6 +238,7 @@
       atomStats = quickTasteAtomReactionStats(),
       axisStats = quickTasteAxisReactionStats(),
       intensityStats = quickIntensityReactionStats(),
+      motifStats = quickTasteMotifReactionStats(),
     ) {
       const axisGain = diagnosticAxisHits(game)
         .map((axis) => expectedBinaryInformationGain(
@@ -232,7 +263,15 @@
           intensityStats[pole]?.negative || 0,
         )
         : 0;
-      return Math.round((axisGain * 1200 + atomGain * 300 + intensityGain * 900) * 100) / 100;
+      const motifGain = tasteMotifsForGame(game)
+        .map((motif) => expectedBinaryInformationGain(
+          motifStats[motif]?.positive || 0,
+          motifStats[motif]?.negative || 0,
+        ))
+        .sort((a, b) => b - a)
+        .slice(0, 2)
+        .reduce((sum, value) => sum + value, 0);
+      return Math.round((axisGain * 1200 + atomGain * 300 + intensityGain * 900 + motifGain * 500) * 100) / 100;
     }
 
     function conflictResolutionScore(game, conflict = quickTasteConflictReport(), answeredAtoms = quickAnsweredAtoms()) {
@@ -255,6 +294,8 @@
         axisStats: quickTasteAxisReactionStats(),
         intensityStats: quickIntensityReactionStats(),
         answeredIntensityPoles: quickAnsweredIntensityPoles(),
+        motifStats: quickTasteMotifReactionStats(),
+        answeredMotifs: quickAnsweredMotifs(),
         conflict: quickTasteConflictReport(),
       };
     }
@@ -268,8 +309,9 @@
         context.missingAxes,
         context.answeredAxes,
       )
-        + diagnosticInformationGain(game, context.atomStats, context.axisStats, context.intensityStats)
-        + intensityContrastNeedScore(game, context.answeredIntensityPoles);
+        + diagnosticInformationGain(game, context.atomStats, context.axisStats, context.intensityStats, context.motifStats)
+        + intensityContrastNeedScore(game, context.answeredIntensityPoles)
+        + diagnosticMotifNeedScore(game, context.answeredMotifs);
       const focusedScore = context.conflict.hasConflict && conflictScore ? 10000 + conflictScore : baseScore;
       return focusedScore - Math.min(Math.max(index, 0), 24) * 40;
     }
@@ -533,6 +575,9 @@
       quickTasteSignalCount,
       quickTasteSignalAtoms,
       quickAnsweredAtoms,
+      quickAnsweredMotifs,
+      quickTasteMotifReactionStats,
+      diagnosticMotifNeedScore,
       uncoveredDiagnosticAtoms,
       diagnosticAxisHits,
       diagnosticIntensityPole,

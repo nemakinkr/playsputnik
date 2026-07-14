@@ -35,7 +35,10 @@ function titleKey(title) {
 const signalSandbox = { window: { PlaySputnikI18n: { t: (key) => key } }, Math, Set };
 vm.createContext(signalSandbox);
 vm.runInContext(scoreSource, signalSandbox, { filename: "src/app-score.js" });
-const gameSignals = signalSandbox.window.PlaySputnikScore.gameSignalsForGame;
+const {
+  gameSignalsForGame: gameSignals,
+  tasteMotifsForGame,
+} = signalSandbox.window.PlaySputnikScore;
 
 function normalizeCandidate(record, source) {
   const atoms = record.atoms || [];
@@ -105,8 +108,8 @@ function loadScoreTools(state, pool, referencePool, { profileGames = [], quickRe
     const negative = new Set();
     profileGames.forEach((game) => {
       const reaction = quickReactions[titleKey(game.title)];
-      if (reaction === "loved") gameSignals(game).forEach((signal) => positive.add(signal));
-      if (reaction === "not_for_me") gameSignals(game).forEach((signal) => negative.add(signal));
+      if (reaction === "loved") gameSignals(game).filter((signal) => !signal.startsWith("motif:")).forEach((signal) => positive.add(signal));
+      if (reaction === "not_for_me") gameSignals(game).filter((signal) => !signal.startsWith("motif:")).forEach((signal) => negative.add(signal));
     });
     return [...positive].filter((signal) => negative.has(signal));
   })();
@@ -137,6 +140,10 @@ const candidateRows = fixture.candidatePool.map((title) => {
 });
 const candidates = candidateRows.filter((row) => row.game).map((row) => row.game);
 const referencePool = [...byKey.values()].map(({ record }) => record);
+assert(
+  tasteMotifsForGame({ atoms: ["story", "choice", "cinematic"] }).join("|") === "motif:story+choice|motif:story+cinematic",
+  "Curated taste motifs should preserve supported pairs without combinatorial expansion",
+);
 const gain = (label) => ({ ideal: 3, strong: 2, stretch: 1, avoid: 0 }[label] ?? 0);
 const round = (value) => Math.round(value * 100) / 100;
 const average = (rows) => rows.length ? rows.reduce((sum, row) => sum + row.score, 0) / rows.length : 0;
@@ -182,6 +189,13 @@ function evaluateProfile(profile, ratings, mode = "import") {
   const tools = loadScoreTools(state, candidates, referencePool, {
     profileGames: quickProfileGames,
     quickReactions,
+  });
+  candidates.forEach((game) => {
+    const visible = tools.tasteEngineGameSignals(game);
+    assert(
+      [...visible.positive, ...visible.negative, ...visible.mixed].every((signal) => !signal.startsWith("motif:")),
+      `${game.title} leaked an internal taste motif into user-facing evidence`,
+    );
   });
   const ranked = candidateRows
     .filter((row) => row.game)
@@ -553,10 +567,12 @@ contradictoryFullProfiles.forEach((profile) => {
 });
 contradictoryStarterProfiles.forEach((profile) => {
   assert(profile.ratingCount === 5 && profile.signalMode === "quick", `${profile.name} contradictory starter bypassed the five-signal path`);
-  assert(profile.metrics.ndcgAt6 >= 0.7, `${profile.name} contradictory five-signal NDCG@6 is too low: ${profile.metrics.ndcgAt6}`);
+  assert(profile.metrics.ndcgAt6 >= 0.75, `${profile.name} contradictory five-signal NDCG@6 is too low: ${profile.metrics.ndcgAt6}`);
   assert(profile.metrics.highFitPrecisionAt3 >= 0.67, `${profile.name} contradictory five-signal precision@3 is too low`);
   assert(profile.metrics.avoidIntrusionsAt3 === 0, `${profile.name} contradictory five-signal profile surfaced an avoid title`);
 });
+assert(contradictoryStarterAggregate.meanNdcgAt6 >= 0.76, `Contradictory five-signal mean NDCG regressed: ${contradictoryStarterAggregate.meanNdcgAt6}`);
+assert(contradictoryStressAggregate.meanNdcgAt6 >= 0.82, `Contradictory stress mean NDCG regressed: ${contradictoryStressAggregate.meanNdcgAt6}`);
 contradictoryStressAggregate.profiles.forEach((profile) => {
   assert(profile.meanNdcgAt6 >= 0.75, `${profile.name} contradictory stress NDCG is too low: ${profile.meanNdcgAt6}`);
   assert(profile.highFitTopChoiceRate >= 0.85, `${profile.name} contradictory stress high-fit winner rate is too low`);

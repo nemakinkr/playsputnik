@@ -919,6 +919,8 @@ function checkSelectors() {
   assert(/function tasteEngineProfile/.test(appScoreSource), "Taste Engine v2 profile builder is missing");
   assert(/function tasteEngineGameSignals/.test(appScoreSource), "Taste Engine v2 should expose per-game pull/caution/mixed signals");
   assert(/function tasteEngineScore/.test(appScoreSource), "Taste Engine v2 score adapter is missing");
+  assert(/TASTE_MOTIF_PAIRS/.test(appScoreSource) && /function tasteMotifsForGame/.test(appScoreSource), "Taste Engine should preserve bounded atom-pair motifs");
+  assert(/!signal\.startsWith\("motif:"\)/.test(appLibrarySource), "Internal taste motifs must stay out of visible taste memory");
   assert(/function classifyTasteVerdict/.test(appScoreSource), "Companion Intelligence should classify reliable and polarizing taste fit");
   assert(/tensionPenalty/.test(appScoreSource), "Companion Intelligence should penalize simultaneous strong pull and caution");
   assert(/function tasteCalibrationProfile/.test(appScoreSource), "Companion Intelligence should calibrate against personal ratings");

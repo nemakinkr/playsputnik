@@ -33,6 +33,7 @@ function topEntries(counts, limit = 4) {
 }
 
 const appSource = await readFile(new URL("app.js", ROOT), "utf8");
+const scoreSource = await readFile(new URL("src/app-score.js", ROOT), "utf8");
 const onboardingSource = await readFile(new URL("src/app-onboarding.js", ROOT), "utf8");
 const profileGames = extractConstArray(appSource, "profileGames");
 const diagnosticOnboardingAtoms = extractConstArray(appSource, "DIAGNOSTIC_ONBOARDING_ATOMS");
@@ -46,6 +47,7 @@ const context = {
     },
     PlaySputnikSearch: {},
     PlaySputnikEnrichment: {},
+    PlaySputnikI18n: { t: (key) => key },
   },
   t: (key, values = {}) => Object.entries(values).reduce(
     (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
@@ -54,6 +56,7 @@ const context = {
   labelAtom: (atom) => atom,
   labelAtoms: (atoms) => atoms.join(", "),
 };
+vm.runInNewContext(scoreSource, context);
 vm.runInNewContext(onboardingSource, context);
 
 function createTools(state) {
@@ -117,6 +120,16 @@ assert(
   firstThreeIntensityPoles.has("calm") && firstThreeIntensityPoles.has("intense"),
   `Expected first three onboarding games to contrast calm and intense play, got ${[...firstThreeIntensityPoles].join(", ")}`,
 );
+const firstFive = [
+  ...firstThree,
+  answerNext(broadState, broadTools),
+  answerNext(broadState, broadTools),
+];
+const firstFiveMotifs = new Set(firstFive.flatMap((game) => context.window.PlaySputnikScore.tasteMotifsForGame(game)));
+assert(
+  firstFiveMotifs.size >= 3,
+  `Expected five onboarding questions to test at least 3 distinct taste motifs, got ${[...firstFiveMotifs].join(", ")}`,
+);
 const broadNext = broadTools.nextDiagnosticGame();
 const unansweredScores = profileGames
   .filter((game) => !broadTools.quickReaction(game.title))
@@ -151,4 +164,4 @@ assert(
   "Opposite intensity pole should receive a larger diagnostic bonus",
 );
 
-console.log(`✅ onboarding diagnostics gate honest 5/10/20 confidence, contrasts calm/intense play in the first 3 questions (${firstThree.map((game) => game.title).join(" / ")}), covers ${firstThreeAxes.length} axes, and resolves mixed choice signals with ${followUp.title}`);
+console.log(`✅ onboarding diagnostics gate honest 5/10/20 confidence, contrasts calm/intense play in the first 3 questions (${firstThree.map((game) => game.title).join(" / ")}), tests ${firstFiveMotifs.size} motifs in five questions, covers ${firstThreeAxes.length} axes, and resolves mixed choice signals with ${followUp.title}`);

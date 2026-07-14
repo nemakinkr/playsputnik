@@ -5,6 +5,9 @@ import vm from "node:vm";
 const ROOT = new URL("../", import.meta.url);
 const games = JSON.parse(await readFile(new URL("data/games.json", ROOT), "utf8"));
 const source = await readFile(new URL("src/app-score.js", ROOT), "utf8");
+const appSource = await readFile(new URL("app.js", ROOT), "utf8");
+const syntheticFixture = JSON.parse(await readFile(new URL("test/fixtures/synthetic-recommendation-profiles.json", ROOT), "utf8"));
+const founderFixture = JSON.parse(await readFile(new URL("test/fixtures/founder-recommendation-gold.json", ROOT), "utf8"));
 const context = {
   window: { PlaySputnikI18n: { t: (key) => key } },
   Math,
@@ -33,6 +36,7 @@ const HIGH_IMPACT_EXPLICIT_TITLES = [
   "God of War Ragnarok",
   "Gran Turismo 7",
   "Grand Theft Auto V",
+  "Ghost of Tsushima",
   "Hades",
   "It Takes Two",
   "Mafia: The Old Country",
@@ -40,7 +44,18 @@ const HIGH_IMPACT_EXPLICIT_TITLES = [
   "Overcooked! 2",
   "The Alters",
   "The Last of Us Part I",
+  "What Remains of Edith Finch",
 ];
+
+function extractConstArray(sourceText, name) {
+  const marker = `const ${name} = `;
+  const start = sourceText.indexOf(marker);
+  assert(start >= 0, `Missing ${name}`);
+  const arrayStart = start + marker.length;
+  const arrayEnd = sourceText.indexOf("];", arrayStart);
+  assert(arrayEnd > arrayStart, `Could not parse ${name}`);
+  return vm.runInNewContext(sourceText.slice(arrayStart, arrayEnd + 1));
+}
 
 assert(games.length >= 450, `Expected the full managed catalog, got ${games.length} games`);
 games.forEach((game) => {
@@ -68,6 +83,19 @@ HIGH_IMPACT_EXPLICIT_TITLES.forEach((title) => {
   assert.equal(profile.source, "catalog", `${title} should expose catalog-backed intensity`);
   assert.equal(profile.confidence, "high", `${title} explicit intensity should be high confidence`);
 });
+const profileGames = extractConstArray(appSource, "profileGames");
+const exposedTitles = new Set([
+  ...profileGames.map(({ title }) => title),
+  ...(syntheticFixture.candidatePool || []),
+  ...(founderFixture.wishlist || []).map(({ title }) => title),
+]);
+const exposedGames = [...exposedTitles].map((title) => byTitle.get(title)).filter(Boolean);
+const lowConfidenceExposure = exposedGames.filter((game) => profileFor(game.title).confidence === "low");
+assert.equal(
+  lowConfidenceExposure.length,
+  0,
+  `Onboarding/evaluation exposure still has low-confidence intensity: ${lowConfidenceExposure.map(({ title }) => title).join(", ")}`,
+);
 assert.deepEqual(
   { difficulty: profileFor("DOOM Eternal").difficulty, intensity: profileFor("DOOM Eternal").intensity },
   { difficulty: "medium", intensity: "high" },
@@ -83,5 +111,5 @@ Object.entries(difficultyCounts).forEach(([band, count]) => assert(count > 0, `D
 Object.entries(intensityCounts).forEach(([band, count]) => assert(count > 0, `Intensity band ${band} is empty`));
 
 console.log(
-  `✅ Difficulty/intensity audit: ${games.length} games normalized; difficulty ${JSON.stringify(difficultyCounts)}, intensity ${JSON.stringify(intensityCounts)}, confidence ${JSON.stringify(confidenceCounts)}`,
+  `✅ Difficulty/intensity audit: ${games.length} games normalized; ${exposedGames.length} onboarding/evaluation exposures curated; difficulty ${JSON.stringify(difficultyCounts)}, intensity ${JSON.stringify(intensityCounts)}, confidence ${JSON.stringify(confidenceCounts)}`,
 );

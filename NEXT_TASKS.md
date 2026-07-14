@@ -369,6 +369,17 @@ Systems worst-case NDCG improved 0.37→0.76; open-world mean stress improved
 high-confidence overclaiming. Onboarding explicitly contrasts calm and intense
 games within its first three questions instead of treating intensity as a
 one-sided action tag.
+The next diagnostic pass added 17 bounded atom-pair motifs to preserve useful
+co-occurrence (story + choice, systems + turn-based, cozy + routine) without a
+combinatorial feature explosion. Internal motif keys are excluded from visible
+recommendation evidence. Onboarding now rewards unseen motif coverage and its
+first five deterministic questions span seven motifs. Full synthetic NDCG rose
+0.92→0.93, unique top choices 6→7, contradictory full NDCG 0.85→0.87, and
+contradictory random-stress NDCG 0.81→0.82; these floors are automated gates.
+The intensity audit now prioritizes actual product exposure: all 37 exact seed
+records used by onboarding, the synthetic candidate pool, or founder wishlist
+must have non-low confidence. Ghost of Tsushima and What Remains of Edith Finch
+were curated, reducing the catalog-wide low-confidence remainder 274→272.
 New aliases were added for high-value
 Russian/variant titles already present in the corpus: The Witcher 3,
 The Last of Us Part II, Assassin's Creed Odyssey, Detroit, Spider-Man,

@@ -270,12 +270,15 @@
         ...completedGames.map((game) => game.adultTimeFit).filter(Boolean),
         ...libraryGames.map((game) => game.adultTimeFit).filter(Boolean),
       ]);
+      const visibleTasteWeights = (weights) => Object.fromEntries(
+        Object.entries(weights).filter(([signal]) => !signal.startsWith("motif:")),
+      );
       return {
         confidence: tasteProfile.confidence,
         evidenceCount: tasteProfile.evidenceCount,
         feedbackCount: tasteProfile.sources.quick + tasteProfile.sources.feedback,
-        likes: getTopAtomEntries(tasteProfile.positiveWeights, 5),
-        cautions: getTopAtomEntries(tasteProfile.negativeWeights, 4),
+        likes: getTopAtomEntries(visibleTasteWeights(tasteProfile.positiveWeights), 5),
+        cautions: getTopAtomEntries(visibleTasteWeights(tasteProfile.negativeWeights), 4),
         mixed: tasteProfile.mixedAtoms,
         session: topEntries(sessionCounts, 2),
         timeFit: topEntries(timeCounts, 2),

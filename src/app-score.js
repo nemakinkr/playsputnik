@@ -10,6 +10,17 @@
   const LOW_INTENSITY_SUPPORT_ATOMS = [
     "creative", "logic", "management", "puzzle",
   ];
+  // Curated co-occurrences preserve the shape of a taste signal without
+  // generating every possible atom pair. They are internal scoring features,
+  // never user-facing taxonomy labels.
+  const TASTE_MOTIF_PAIRS = [
+    ["story", "choice"], ["story", "cinematic"], ["story", "horror"], ["story", "slow"],
+    ["open-world", "exploration"], ["open-world", "rpg"], ["survival", "exploration"],
+    ["systems", "turn-based"], ["systems", "strategy"], ["systems", "management"],
+    ["action", "shooter"], ["action", "horror"], ["action", "challenge"],
+    ["cozy", "routine"], ["multiplayer", "competitive"], ["service", "competitive"],
+    ["short", "roguelike"],
+  ];
   const FEEDBACK_ACTION_KEYS = {
     playing: "taste.actionPlaying", want_to_finish: "taste.actionFinish", paused: "taste.actionPaused",
     completed: "taste.actionCompleted", good_fit: "taste.actionLiked", saved: "taste.actionSaved",
@@ -79,10 +90,19 @@
     return gameDifficultyIntensityProfile(game).intensity;
   }
 
+  function tasteMotifsForGame(game = {}) {
+    const atoms = new Set(game.atoms || []);
+    return TASTE_MOTIF_PAIRS
+      .filter(([left, right]) => atoms.has(left) && atoms.has(right))
+      .map(([left, right]) => `motif:${left}+${right}`);
+  }
+
   function gameSignalsForGame(game = {}) {
     const profile = gameDifficultyIntensityProfile(game);
+    const motifs = tasteMotifsForGame(game);
     return [
       ...(game.atoms || []),
+      ...motifs,
       game.tone,
       game.content,
       game.adultTimeFit,
@@ -358,17 +378,29 @@
 
     function tasteEngineGameSignals(game, profile = tasteEngineProfile()) {
       const signals = gameSignals(game);
-      const positive = signals
+      const visibleSignals = signals.filter((signal) => !signal.startsWith("motif:"));
+      const motifSignals = signals.filter((signal) => signal.startsWith("motif:"));
+      const positive = visibleSignals
         .filter((signal) => profile.positiveWeights[signal] > 0)
         .sort((a, b) => profile.positiveWeights[b] - profile.positiveWeights[a]);
-      const negative = signals
+      const negative = visibleSignals
         .filter((signal) => profile.negativeWeights[signal] > 0)
         .sort((a, b) => profile.negativeWeights[b] - profile.negativeWeights[a]);
-      const mixed = signals.filter((signal) => profile.mixedAtoms.includes(signal));
+      const mixed = visibleSignals.filter((signal) => profile.mixedAtoms.includes(signal));
+      const motifPositive = motifSignals
+        .filter((signal) => profile.positiveWeights[signal] > 0)
+        .sort((a, b) => profile.positiveWeights[b] - profile.positiveWeights[a]);
+      const motifNegative = motifSignals
+        .filter((signal) => profile.negativeWeights[signal] > 0)
+        .sort((a, b) => profile.negativeWeights[b] - profile.negativeWeights[a]);
       return {
         positive: [...new Set(positive)],
         negative: [...new Set(negative)],
         mixed: [...new Set(mixed)],
+        motifs: {
+          positive: [...new Set(motifPositive)],
+          negative: [...new Set(motifNegative)],
+        },
       };
     }
 
@@ -381,6 +413,7 @@
       const atomSet = new Set(game.atoms || []);
       const signalImportance = (signal) => {
         if (atomSet.has(signal)) return 1;
+        if (signal.startsWith("motif:")) return 0.75;
         if (signal === game.tone) return 0.35;
         if (signal === game.content) return 0.3;
         if (signal === game.adultTimeFit) return 0.4;
@@ -397,11 +430,11 @@
           + (profile.sources?.legacyLikes || 0),
       );
       const evidenceScale = Math.max(1, Math.sqrt(learningEvidence / QUICK_TASTE_FIRST_TARGET));
-      const pullRaw = signals.positive.reduce(
+      const pullRaw = [...signals.positive, ...signals.motifs.positive].reduce(
         (sum, signal) => sum + profile.positiveWeights[signal] * signalImportance(signal),
         0,
       ) / evidenceScale;
-      const cautionRaw = signals.negative.reduce(
+      const cautionRaw = [...signals.negative, ...signals.motifs.negative].reduce(
         (sum, signal) => sum + profile.negativeWeights[signal] * signalImportance(signal),
         0,
       ) / evidenceScale;
@@ -1029,6 +1062,7 @@
     createScoreTools,
     classifyTasteVerdict,
     gameSignalsForGame,
+    tasteMotifsForGame,
     gameDifficultyIntensityProfile,
     normalizeDifficultyBand,
     gameIntensityBand,
