@@ -108,7 +108,9 @@ optional paid-provider secrets remain stored in Cloudflare.
 triggered manually. It verifies:
 
 - health contract and configured RAWG secret;
-- selected AI provider/model and one small Russian narrative probe;
+- selected AI provider/model and one small Russian-locale narrative probe;
+  a non-Russian first answer is retried once before the deterministic client
+  fallback takes over;
 - allowed GitHub Pages CORS origin;
 - live RAWG search with a cover candidate, structured inference provenance,
   and no invented price or subscription state;

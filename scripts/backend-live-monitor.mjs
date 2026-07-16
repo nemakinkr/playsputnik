@@ -53,7 +53,10 @@ const narrative = await request("/api/narrative", {
 assert(narrative.response.ok, `AI narrative returned ${narrative.response.status}`);
 assert(narrative.data.provider === "workers_ai", `AI narrative used ${narrative.data.provider || "no provider"}`);
 assert(narrative.data.locale === "ru", `AI narrative locale is ${narrative.data.locale || "missing"}`);
-assert(/[А-Яа-яЁё]/.test(String(narrative.data.text || "")), "AI narrative returned no Russian text");
+const narrativeText = String(narrative.data.text || "").trim();
+assert(narrativeText.length >= 20, "AI narrative returned no usable text");
+const aiRussian = /[А-Яа-яЁё]/.test(narrativeText);
+assert(aiRussian, "AI narrative locale contract returned no Russian text");
 
 const query = `Stray`;
 const first = await request(`/api/search?q=${encodeURIComponent(query)}`);
@@ -100,5 +103,6 @@ console.log(JSON.stringify({
   aiConfigured: Boolean(health.data.aiConfigured),
   aiProvider: health.data.aiProvider || "none",
   aiModel: health.data.aiModel || "",
-  aiNarrativeLength: narrative.data.text.length,
+  aiNarrativeLength: narrativeText.length,
+  aiRussian,
 }, null, 2));

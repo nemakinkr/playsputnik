@@ -55,10 +55,14 @@ const env = {
       workersAiCalls += 1;
       assert.equal(model, "@cf/zai-org/glm-4.7-flash");
       assert.equal(payload.messages[0].role, "system");
-      assert.match(payload.messages[0].content, /natural Russian/);
+      assert.match(payload.messages[0].content, /русском языке/);
       assert.equal(payload.max_completion_tokens, 220);
       assert.deepEqual(payload.chat_template_kwargs, { enable_thinking: false });
       assert.equal(payload.max_tokens, undefined);
+      if (workersAiCalls === 1) {
+        return { choices: [{ message: { content: "An incorrect English first answer." } }] };
+      }
+      assert.match(payload.messages.at(-1).content, /кириллицей/);
       return { choices: [{ message: { content: "Русский ответ Workers AI." } }] };
     },
   },
@@ -118,7 +122,7 @@ const narrativePayload = await narrative.json();
 assert.equal(narrativePayload.locale, "ru");
 assert.equal(narrativePayload.provider, "workers_ai");
 assert.equal(narrativePayload.text, "Русский ответ Workers AI.");
-assert.equal(workersAiCalls, 1);
+assert.equal(workersAiCalls, 2, "Russian requests should retry one non-Cyrillic provider answer");
 assert.equal(anthropicCalls, 0, "Workers AI should be the default when both providers exist");
 
 const anthropicNarrative = await handleRequest(new Request("https://api.example/api/narrative", {
