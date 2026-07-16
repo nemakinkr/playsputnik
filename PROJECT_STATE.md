@@ -127,7 +127,8 @@ reviews, catalogs, sale pages, and announcements.
   only the top eight deterministic Today candidates and only inside a 12-score
   quality window, enforced independently by Worker and client. Other views and
   long-term personal ranking remain deterministic; both paths retain local
-  fallbacks.
+  fallbacks. Cloudflare uses multilingual GLM for prose and the documented
+  JSON-Mode-compatible Llama fast model for structured responses.
 - Companion Intelligence 2.0 phase 1 is local and free: every candidate gets a
   reliable/promising/polarizing/cautious/exploratory taste verdict. Strong pull
   plus strong caution now creates an explicit contradiction penalty, caps

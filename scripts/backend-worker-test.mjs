@@ -53,12 +53,12 @@ const env = {
   AI: {
     async run(model, payload) {
       workersAiCalls += 1;
-      assert.equal(model, "@cf/zai-org/glm-4.7-flash");
       assert.equal(payload.messages[0].role, "system");
-      const schemaName = payload.response_format?.json_schema?.name;
-      if (schemaName === "playsputnik_taste_import") {
+      const responseSchema = payload.response_format?.json_schema;
+      if (responseSchema?.properties?.entries) {
+        assert.equal(model, "@cf/meta/llama-3.1-8b-instruct-fast");
         assert.equal(payload.max_completion_tokens, 3000);
-        return { choices: [{ message: { content: JSON.stringify({
+        return { response: {
           entries: [
             { title: "Red Dead Redemption 2", rating: 10, rank: 1, status: "completed", sentiment: "loved", confidence: "high" },
             { title: "red dead redemption 2", rating: 9, rank: 2, status: "unknown", sentiment: "liked", confidence: "medium" },
@@ -67,9 +67,10 @@ const env = {
           ],
           summary: "Понятен сюжетный вкус.",
           warnings: ["Одна строка не содержит сигнала."],
-        }) } }] };
+        } };
       }
-      if (schemaName === "playsputnik_rerank") {
+      if (responseSchema?.properties?.order) {
+        assert.equal(model, "@cf/meta/llama-3.1-8b-instruct-fast");
         assert.equal(payload.max_completion_tokens, 1800);
         return { choices: [{ message: { content: JSON.stringify({
           order: ["Low Score", "Unknown Game", "Close Fit"],
@@ -80,6 +81,7 @@ const env = {
           summary: "Session-aware order.",
         }) } }] };
       }
+      assert.equal(model, "@cf/zai-org/glm-4.7-flash");
       assert.match(payload.messages[0].content, /русском языке/);
       assert.equal(payload.max_completion_tokens, 220);
       assert.deepEqual(payload.chat_template_kwargs, { enable_thinking: false });
@@ -101,11 +103,12 @@ assert.equal(health.status, 200);
 assert.deepEqual(await health.json(), {
   status: "ok",
   service: "playsputnik-api",
-  version: "playsputnik-api-v3",
+  version: "playsputnik-api-v4",
   searchConfigured: true,
   aiConfigured: true,
   aiProvider: "workers_ai",
   aiModel: "@cf/zai-org/glm-4.7-flash",
+  aiStructuredModel: "@cf/meta/llama-3.1-8b-instruct-fast",
   aiNarrativeVersion: "ai-narrative-v2",
   aiTasteImportVersion: "ai-taste-import-v1",
   aiRerankVersion: "ai-rerank-v1",

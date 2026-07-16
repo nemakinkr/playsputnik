@@ -1,7 +1,8 @@
 import { SEARCH_RESULT_VERSION, normalizeRawgResult, normalizeSearchTitle } from "./rawg-normalize.mjs";
 
-const API_VERSION = "playsputnik-api-v3";
+const API_VERSION = "playsputnik-api-v4";
 const DEFAULT_WORKERS_AI_MODEL = "@cf/zai-org/glm-4.7-flash";
+const DEFAULT_WORKERS_AI_JSON_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 const DEFAULT_ANTHROPIC_MODEL = "claude-haiku-4-5";
 const DEFAULT_ORIGINS = [
   "https://nemakinkr.github.io",
@@ -36,6 +37,9 @@ export async function handleRequest(request, env = {}, ctx = {}) {
       aiConfigured: Boolean(ai),
       aiProvider: ai?.id || "none",
       aiModel: ai?.model || "",
+      aiStructuredModel: ai?.id === "workers_ai"
+        ? env.WORKERS_AI_JSON_MODEL || DEFAULT_WORKERS_AI_JSON_MODEL
+        : ai?.model || "",
       aiNarrativeVersion: "ai-narrative-v2",
       aiTasteImportVersion: "ai-taste-import-v1",
       aiRerankVersion: "ai-rerank-v1",
@@ -377,24 +381,30 @@ async function generateAiText(provider, prompt, env) {
 
 async function generateAiJson(provider, prompt, env) {
   let text = "";
+  let value = null;
+  let model = provider.model;
   if (provider.id === "workers_ai") {
-    const result = await withPromiseTimeout(env.AI.run(provider.model, {
+    model = env.WORKERS_AI_JSON_MODEL || DEFAULT_WORKERS_AI_JSON_MODEL;
+    const result = await withPromiseTimeout(env.AI.run(model, {
       messages: [
         { role: "system", content: prompt.system },
         { role: "user", content: prompt.prompt },
       ],
       response_format: {
         type: "json_schema",
-        json_schema: { name: prompt.schemaName, schema: prompt.schema, strict: true },
+        json_schema: prompt.schema,
       },
       max_completion_tokens: prompt.maxTokens,
       chat_template_kwargs: { enable_thinking: false },
       temperature: 0.1,
     }), 20000);
     const content = result?.response ?? result?.choices?.[0]?.message?.content ?? result?.result?.response;
-    text = Array.isArray(content)
-      ? content.map((item) => typeof item === "string" ? item : item?.text || item?.content || "").join("")
-      : String(content || "");
+    if (content && typeof content === "object" && !Array.isArray(content)) value = content;
+    else {
+      text = Array.isArray(content)
+        ? content.map((item) => typeof item === "string" ? item : item?.text || item?.content || "").join("")
+        : String(content || "");
+    }
   } else {
     const upstream = await fetchWithTimeout("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -414,7 +424,7 @@ async function generateAiJson(provider, prompt, env) {
     if (!upstream.ok) throw new Error("Anthropic request failed");
     text = String(data.content?.[0]?.text || "");
   }
-  return { provider: provider.id, model: provider.model, value: parseAiJson(text) };
+  return { provider: provider.id, model, value: value || parseAiJson(text) };
 }
 
 function parseAiJson(text) {

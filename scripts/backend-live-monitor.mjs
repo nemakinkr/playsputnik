@@ -10,13 +10,14 @@ function assert(condition, message) {
 }
 
 async function request(path, options = {}) {
+  const { timeoutMs = 10000, ...fetchOptions } = options;
   const response = await fetch(`${origin}${path}`, {
-    ...options,
+    ...fetchOptions,
     headers: {
       Origin: appOrigin,
       ...(options.headers || {}),
     },
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   const text = await response.text();
   let data = {};
@@ -28,14 +29,23 @@ async function request(path, options = {}) {
   return { response, data };
 }
 
-const health = await request("/api/health");
+let health;
+for (let attempt = 0; attempt < 8; attempt += 1) {
+  health = await request("/api/health");
+  if (health.data.version === "playsputnik-api-v4") break;
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+}
 assert(health.response.ok, `health returned ${health.response.status}`);
 assert(health.data.status === "ok", `health status is ${health.data.status || "missing"}`);
 assert(health.data.service === "playsputnik-api", `unexpected service ${health.data.service || "missing"}`);
+assert(health.data.version === "playsputnik-api-v4", `deployed Worker version is ${health.data.version || "missing"}`);
 assert(health.data.searchConfigured === true, "RAWG search secret is not configured");
 assert(health.data.aiConfigured === true, "Workers AI binding is not configured");
 assert(health.data.aiProvider === "workers_ai", `unexpected AI provider ${health.data.aiProvider || "missing"}`);
 assert(Boolean(health.data.aiModel), "Workers AI model is missing");
+assert(Boolean(health.data.aiStructuredModel), "Workers AI structured-output model is missing");
+assert(health.data.aiTasteImportVersion === "ai-taste-import-v1", "deployed Worker has no structured taste-import contract");
+assert(health.data.aiRerankVersion === "ai-rerank-v1", "deployed Worker has no guarded rerank contract");
 assert(
   health.response.headers.get("access-control-allow-origin") === appOrigin,
   "health CORS origin does not match GitHub Pages",
@@ -66,6 +76,7 @@ const tasteImport = await request("/api/taste-import", {
     locale: "en",
     text: "1. Stray - played and loved\n2. Control - wishlist",
   }),
+  timeoutMs: 25000,
 });
 assert(tasteImport.response.ok, `AI taste import returned ${tasteImport.response.status}`);
 assert(tasteImport.data.schemaVersion === "ai-taste-import-v1", "AI taste import schema is missing");
@@ -87,6 +98,7 @@ const rerank = await request("/api/rerank", {
     context: { mood: "story", sessionMinutes: 45 },
     candidates: rerankCandidates,
   }),
+  timeoutMs: 25000,
 });
 assert(rerank.response.ok, `AI Today rerank returned ${rerank.response.status}`);
 assert(rerank.data.schemaVersion === "ai-rerank-v1", "AI Today rerank schema is missing");
@@ -138,6 +150,7 @@ console.log(JSON.stringify({
   aiConfigured: Boolean(health.data.aiConfigured),
   aiProvider: health.data.aiProvider || "none",
   aiModel: health.data.aiModel || "",
+  aiStructuredModel: health.data.aiStructuredModel || "",
   aiNarrativeLength: narrativeText.length,
   aiRussian,
   aiTasteImportCount: tasteImport.data.entries.length,

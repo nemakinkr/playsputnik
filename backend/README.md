@@ -31,6 +31,9 @@ security review.
 - RAWG search: active through a Cloudflare encrypted secret
 - AI narratives: active through the `AI` Workers AI binding; no browser key
   and no Anthropic key are required
+- Structured import/reranking: the same binding uses Cloudflare's
+  JSON-Mode-compatible `@cf/meta/llama-3.1-8b-instruct-fast`; narrative copy
+  continues to use multilingual GLM. Both stay provider-neutral to the client.
 - Automatic Worker deployment: active through the scoped
   `CLOUDFLARE_API_TOKEN` GitHub Actions secret
 - Backend monitor: active every six hours with incident issue lifecycle
