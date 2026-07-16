@@ -130,7 +130,12 @@ live post-deploy probe.
 Structured AI taste import: done. Arbitrary pasted rankings, game lists, and
 free-form notes become a persisted review draft; only checked, explicitly
 confirmed rows reach taste/library memory, and unknown titles use the existing
-RAWG queue. Deterministic parsing remains the outage fallback.
+RAWG queue. Deterministic parsing remains the outage fallback. Production
+dogfood now covers the full 111-title founder ranking, mixed status/rating
+notes, ambiguous discussion, and contradictory sentiment. Obvious ordered
+lists use a free deterministic path, long prose is chunked, and unsupported
+model claims are stripped by source-evidence validation. Re-run
+`scripts/ai-import-dogfood.mjs --write` after changing models or prompts.
 
 Guarded Today reranking: done. AI receives at most eight candidates already
 scored by the local engine. Server and client independently prevent candidates

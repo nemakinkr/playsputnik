@@ -57,6 +57,16 @@ const env = {
       const responseSchema = payload.response_format?.json_schema;
       if (responseSchema?.properties?.entries) {
         assert.equal(model, "@cf/meta/llama-3.1-8b-instruct-fast");
+        if (payload.messages.at(-1).content.includes("Цена 40 евро")) {
+          return { response: {
+            entries: [
+              { title: "Control", rating: 5, rank: 1, status: "owned", sentiment: "loved", confidence: "high" },
+              { title: "Alan Wake 2", rating: null, rank: 2, status: "unknown", sentiment: "unknown", confidence: "low" },
+            ],
+            summary: "Обсуждение двух игр.",
+            warnings: ["Цена Alan Wake 2 не указана."],
+          } };
+        }
         assert.equal(payload.max_completion_tokens, 3000);
         return { response: {
           entries: [
@@ -103,7 +113,7 @@ assert.equal(health.status, 200);
 assert.deepEqual(await health.json(), {
   status: "ok",
   service: "playsputnik-api",
-  version: "playsputnik-api-v4",
+  version: "playsputnik-api-v5",
   searchConfigured: true,
   aiConfigured: true,
   aiProvider: "workers_ai",
@@ -176,6 +186,46 @@ assert.equal(tastePayload.entries.length, 2, "AI import should dedupe titles and
 assert.equal(tastePayload.entries[0].title, "Red Dead Redemption 2");
 assert.equal(tastePayload.entries[1].status, "completed");
 assert.equal(tastePayload.provider, "workers_ai");
+
+const callsBeforeOrderedImport = workersAiCalls;
+const orderedImport = await handleRequest(new Request("https://api.example/api/taste-import", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    locale: "ru",
+    context: { orderedRanking: true },
+    text: "4️⃣5️⃣Red Dead Redemption 2\n5️⃣Control\n5️⃣007 First Light",
+  }),
+}), { ...env, AI: undefined, ANTHROPIC_API_KEY: "", AI_PROVIDER: "" }, context);
+const orderedPayload = await orderedImport.json();
+assert.equal(orderedImport.status, 200);
+assert.equal(orderedPayload.provider, "hybrid_parser");
+assert.deepEqual(orderedPayload.entries.map((entry) => [entry.title, entry.rank, entry.rating]), [
+  ["Red Dead Redemption 2", 1, null],
+  ["Control", 2, null],
+  ["007 First Light", 3, null],
+]);
+assert.equal(workersAiCalls, callsBeforeOrderedImport, "obvious ordered lists should not spend an AI request");
+
+const ambiguousImport = await handleRequest(new Request("https://api.example/api/taste-import", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    locale: "ru",
+    text: "В Control я играл и люблю ее, а Alan Wake 2 только советовали друзья. Цена 40 евро относилась к ужину.",
+  }),
+}), env, context);
+const ambiguousPayload = await ambiguousImport.json();
+assert.equal(ambiguousImport.status, 200);
+assert.deepEqual(ambiguousPayload.entries, [{
+  title: "Control",
+  rating: null,
+  rank: null,
+  status: "unknown",
+  sentiment: "loved",
+  confidence: "low",
+}], "unsupported ratings, ranks, and ownership must be stripped from AI output");
+assert.deepEqual(ambiguousPayload.warnings, [], "missing-price warnings should not enter the review draft");
 
 const rerank = await handleRequest(new Request("https://api.example/api/rerank", {
   method: "POST",

@@ -14,7 +14,9 @@ frontend host. The Worker exposes:
 - `POST /api/taste-import` — turns an arbitrary pasted ranking or game note
   into a reviewable structured draft. Nothing enters taste or library memory
   until the user confirms individual rows; unknown titles then use the existing
-  RAWG resolution queue.
+  RAWG resolution queue. Obvious ordered lists use a free deterministic parser;
+  long free-form notes are chunked, and model-proposed ratings, ranks, states,
+  and sentiment are removed unless the source contains matching local evidence.
 - `POST /api/rerank` — may reorder at most eight already-scored Today
   candidates. Server and client both keep weak candidates outside a 12-point
   deterministic quality window; all other views remain deterministic.
@@ -143,3 +145,12 @@ The normal gate runs `scripts/backend-worker-test.mjs` and
 provenance-aware RAWG normalization, confidence caps, cache hits, provider
 selection and fallback, input validation, store-data honesty, and the absence
 of a public PSN endpoint.
+
+For a bounded live quality audit after changing the structured model or prompt:
+
+```sh
+node scripts/ai-import-dogfood.mjs --write
+```
+
+It checks the real 111-game founder ranking plus mixed, ambiguous, and
+contradictory notes without requiring a browser or exposing secrets.

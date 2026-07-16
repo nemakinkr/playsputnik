@@ -128,7 +128,13 @@ reviews, catalogs, sale pages, and announcements.
   quality window, enforced independently by Worker and client. Other views and
   long-term personal ranking remain deterministic; both paths retain local
   fallbacks. Cloudflare uses multilingual GLM for prose and the documented
-  JSON-Mode-compatible Llama fast model for structured responses.
+  JSON-Mode-compatible Llama fast model for structured responses. Production
+  dogfood found and closed three failure classes: 100+ line rankings no longer
+  exceed one model response because explicit ordered lists use a zero-cost
+  deterministic path; long free-form notes are chunked; and server-side source
+  evidence removes invented ratings, mention-order ranks, ownership, status,
+  and sentiment even when the model proposes them. A four-case live audit lives
+  in `scripts/ai-import-dogfood.mjs`.
 - Companion Intelligence 2.0 phase 1 is local and free: every candidate gets a
   reliable/promising/polarizing/cautious/exploratory taste verdict. Strong pull
   plus strong caution now creates an explicit contradiction penalty, caps

@@ -2736,7 +2736,7 @@ async function analyzeAiImportDraft() {
   saveState();
   renderTasteImportPreview();
   try {
-    const draft = await parseTasteImportWithAi(text);
+    const draft = await parseTasteImportWithAi(text, { orderedRanking: tasteImportPreview().mode === "ranked" });
     if (aiImportSourceFingerprint(els.ratingImport.value) !== sourceFingerprint) return;
     state.aiImportDraft = {
       ...draft,

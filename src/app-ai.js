@@ -272,13 +272,14 @@
       return request;
     }
 
-    async function parseTasteImport(text) {
+    async function parseTasteImport(text, { orderedRanking = false } = {}) {
       const sourceText = String(text || "").trim();
       if (sourceText.length < 3) throw new Error("Taste import text is empty");
       const data = await postJson(TASTE_IMPORT_ENDPOINT, {
         schemaVersion: IMPORT_SCHEMA,
         locale: getLocale(),
         text: sourceText.slice(0, 20000),
+        context: { orderedRanking: Boolean(orderedRanking) },
       }, 25000);
       if (data.schemaVersion !== IMPORT_SCHEMA || !Array.isArray(data.entries)) {
         throw new Error("AI provider returned an invalid taste draft");
