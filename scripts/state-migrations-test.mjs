@@ -29,6 +29,8 @@ assert.deepEqual(Object.keys(migrated.providerSearchCache), ["current"]);
 assert.equal(migrated.providerSearch.query, "");
 assert.equal(migrated.importLookupItems["alan wake 2"].status, "resolved");
 assert.equal(migrated.importLookupItems["alan wake 2"].kind, "lookup");
+assert.equal(migrated.aiImportDraft, null);
+assert.equal(migrated.aiTodayRerank, null);
 assert.equal(legacy.stateVersion, undefined, "migration must not mutate stored input");
 assert.deepEqual(
   JSON.parse(JSON.stringify(migrateState(migrated))),

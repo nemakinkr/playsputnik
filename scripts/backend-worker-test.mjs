@@ -55,6 +55,31 @@ const env = {
       workersAiCalls += 1;
       assert.equal(model, "@cf/zai-org/glm-4.7-flash");
       assert.equal(payload.messages[0].role, "system");
+      const schemaName = payload.response_format?.json_schema?.name;
+      if (schemaName === "playsputnik_taste_import") {
+        assert.equal(payload.max_completion_tokens, 3000);
+        return { choices: [{ message: { content: JSON.stringify({
+          entries: [
+            { title: "Red Dead Redemption 2", rating: 10, rank: 1, status: "completed", sentiment: "loved", confidence: "high" },
+            { title: "red dead redemption 2", rating: 9, rank: 2, status: "unknown", sentiment: "liked", confidence: "medium" },
+            { title: "Stray", rating: null, rank: null, status: "completed", sentiment: "liked", confidence: "high" },
+            { title: "Unknown line", rating: null, rank: null, status: "unknown", sentiment: "unknown", confidence: "low" },
+          ],
+          summary: "Понятен сюжетный вкус.",
+          warnings: ["Одна строка не содержит сигнала."],
+        }) } }] };
+      }
+      if (schemaName === "playsputnik_rerank") {
+        assert.equal(payload.max_completion_tokens, 1800);
+        return { choices: [{ message: { content: JSON.stringify({
+          order: ["Low Score", "Unknown Game", "Close Fit"],
+          reasons: [
+            { title: "Low Score", reason: "Mood fit" },
+            { title: "Unknown Game", reason: "Must be discarded" },
+          ],
+          summary: "Session-aware order.",
+        }) } }] };
+      }
       assert.match(payload.messages[0].content, /русском языке/);
       assert.equal(payload.max_completion_tokens, 220);
       assert.deepEqual(payload.chat_template_kwargs, { enable_thinking: false });
@@ -76,12 +101,14 @@ assert.equal(health.status, 200);
 assert.deepEqual(await health.json(), {
   status: "ok",
   service: "playsputnik-api",
-  version: "playsputnik-api-v2",
+  version: "playsputnik-api-v3",
   searchConfigured: true,
   aiConfigured: true,
   aiProvider: "workers_ai",
   aiModel: "@cf/zai-org/glm-4.7-flash",
   aiNarrativeVersion: "ai-narrative-v2",
+  aiTasteImportVersion: "ai-taste-import-v1",
+  aiRerankVersion: "ai-rerank-v1",
 });
 
 const blocked = await handleRequest(new Request("https://api.example/api/search?q=Stray", {
@@ -133,6 +160,40 @@ const anthropicNarrative = await handleRequest(new Request("https://api.example/
 assert.equal(anthropicNarrative.status, 200);
 assert.equal((await anthropicNarrative.json()).provider, "anthropic");
 assert.equal(anthropicCalls, 1, "Anthropic should remain a provider-neutral fallback");
+
+const tasteImport = await handleRequest(new Request("https://api.example/api/taste-import", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({ locale: "ru", text: "1. Red Dead Redemption 2 — любимая\nStray — прошел, понравилась" }),
+}), env, context);
+assert.equal(tasteImport.status, 200);
+const tastePayload = await tasteImport.json();
+assert.equal(tastePayload.schemaVersion, "ai-taste-import-v1");
+assert.equal(tastePayload.entries.length, 2, "AI import should dedupe titles and remove entries without evidence");
+assert.equal(tastePayload.entries[0].title, "Red Dead Redemption 2");
+assert.equal(tastePayload.entries[1].status, "completed");
+assert.equal(tastePayload.provider, "workers_ai");
+
+const rerank = await handleRequest(new Request("https://api.example/api/rerank", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    locale: "en",
+    taste: { topAtoms: ["story"] },
+    context: { session: "short" },
+    candidates: [
+      { title: "Baseline", score: 100, atoms: ["story"] },
+      { title: "Close Fit", score: 96, atoms: ["story", "short"] },
+      { title: "Low Score", score: 70, atoms: ["short"] },
+    ],
+  }),
+}), env, context);
+assert.equal(rerank.status, 200);
+const rerankPayload = await rerank.json();
+assert.deepEqual(rerankPayload.order, ["Baseline", "Close Fit", "Low Score"]);
+assert.equal(rerankPayload.guardrails.qualityGuardApplied, true, "AI must not promote a candidate outside the score floor");
+assert.equal(rerankPayload.reasons.length, 1, "Unknown candidate reasons must be discarded");
+assert.equal(rerankPayload.provider, "workers_ai");
 
 const noPsn = await handleRequest(new Request("https://api.example/api/psn", {
   method: "POST",

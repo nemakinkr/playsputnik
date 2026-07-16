@@ -1040,6 +1040,13 @@ function checkSelectors() {
   assert(/CACHE_SCHEMA = "ai-narrative-v2"/.test(appAiSource), "AI cache schema version is missing");
   assert(/getLocale/.test(appAiSource) && /fingerprint/.test(appAiSource), "AI cache must include locale and context fingerprinting");
   assert(/PlaySputnikAi/.test(appAiSource), "AI module must export PlaySputnikAi");
+  assert(/function parseTasteImport/.test(appAiSource) && /ai-taste-import-v1/.test(appAiSource), "AI taste import must expose a structured review draft");
+  assert(/confirmAiImportDraft/.test(appSource) && /id="confirm-ai-import"/.test(html), "AI taste import must require explicit confirmation");
+  assert(/preservesRanking/.test(appSource), "AI taste import confirmation must preserve ordinal ranking semantics");
+  assert(/aiImportDraft/.test(appStateSource), "AI taste import draft must persist separately from confirmed memory");
+  assert(/function applyTodayRerank/.test(appAiSource) && /slice\(0, 8\)/.test(appAiSource), "Today AI rerank must stay bounded to a shortlist");
+  assert(/topScore - Number\(game\.score/.test(appAiSource), "Today AI rerank must enforce the deterministic quality window on the client");
+  assert(/state\.activeView === "today"[\s\S]*applyTodayRerank/.test(appSource), "AI reranking must only affect the Today view");
   assert(/PlaySputnikAi/.test(appSource), "app.js must reference PlaySputnikAi");
   assert(/fetchExplanation/.test(appSource), "app.js must wire fetchExplanation into detail drawer");
   assert(/fetchNarrative\("companion"/.test(appSource), "app.js must hydrate the main companion answer with AI narrative");

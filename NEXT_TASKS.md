@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-07-13. Pick the next task here without rereading the
+Last updated: 2026-07-16. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 ARCHITECTURE.md (generated ownership map), CLAUDE.md (dev workflow + perf
 rules). The user's decision remains **polish before showing the product to
@@ -127,11 +127,16 @@ instant fallback. Monitoring verifies AI readiness plus one small Russian
 narrative, and backend changes run contract tests, Cloudflare deploy, and a
 live post-deploy probe.
 
-Next AI-core task: accept an arbitrary pasted ranking, game list, or free-form
-note; extract titles and taste evidence into a reviewable structured draft;
-resolve titles through the existing RAWG queue; and save only user-confirmed
-facts. The model may interpret taste, but it must never invent current prices,
-subscription status, platforms, languages, or release dates.
+Structured AI taste import: done. Arbitrary pasted rankings, game lists, and
+free-form notes become a persisted review draft; only checked, explicitly
+confirmed rows reach taste/library memory, and unknown titles use the existing
+RAWG queue. Deterministic parsing remains the outage fallback.
+
+Guarded Today reranking: done. AI receives at most eight candidates already
+scored by the local engine. Server and client independently prevent candidates
+more than 12 score points behind the deterministic leader from moving upward.
+Library, Discover, Wishlist, Deals, and long-term personal ranking remain local
+and deterministic.
 
 ## Track: Companion Intelligence 2.0
 

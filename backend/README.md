@@ -11,6 +11,13 @@ frontend host. The Worker exposes:
 - `POST /api/narrative` — locale-aware AI copy from structured game/taste
   facts. Cloudflare Workers AI is the free prototype default; Anthropic remains
   an optional provider. Personalized responses are never cached at the edge.
+- `POST /api/taste-import` — turns an arbitrary pasted ranking or game note
+  into a reviewable structured draft. Nothing enters taste or library memory
+  until the user confirms individual rows; unknown titles then use the existing
+  RAWG resolution queue.
+- `POST /api/rerank` — may reorder at most eight already-scored Today
+  candidates. Server and client both keep weak candidates outside a 12-point
+  deterministic quality window; all other views remain deterministic.
 
 The public Worker deliberately does **not** expose `/api/psn`. NPSSO is a
 sensitive account token; PSN import stays local until PlaySputnik has accounts,
@@ -111,6 +118,7 @@ triggered manually. It verifies:
 - selected AI provider/model and one small Russian-locale narrative probe;
   a non-Russian first answer is retried once before the deterministic client
   fallback takes over;
+- structured taste-import and guarded Today-rerank contracts;
 - allowed GitHub Pages CORS origin;
 - live RAWG search with a cover candidate, structured inference provenance,
   and no invented price or subscription state;

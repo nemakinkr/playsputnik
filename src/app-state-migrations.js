@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 6;
+  const CURRENT_STATE_VERSION = 7;
 
   const migrations = {
     1(state) {
@@ -104,6 +104,17 @@
         importLookupItems,
         importLookupBatchSummary: state.importLookupBatchSummary && typeof state.importLookupBatchSummary === "object"
           ? state.importLookupBatchSummary
+          : null,
+      };
+    },
+    7(state) {
+      return {
+        ...state,
+        aiImportDraft: state.aiImportDraft && typeof state.aiImportDraft === "object" && !Array.isArray(state.aiImportDraft)
+          ? state.aiImportDraft
+          : null,
+        aiTodayRerank: state.aiTodayRerank && typeof state.aiTodayRerank === "object" && !Array.isArray(state.aiTodayRerank)
+          ? state.aiTodayRerank
           : null,
       };
     },

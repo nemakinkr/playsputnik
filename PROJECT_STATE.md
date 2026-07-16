@@ -1,6 +1,6 @@
 # PlaySputnik Project State
 
-Last updated: 2026-07-14 (Codex resumed after Claude polish/architecture
+Last updated: 2026-07-16 (Codex resumed after Claude polish/architecture
 series; see HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
 performance rules).
 
@@ -32,7 +32,7 @@ reviews, catalogs, sale pages, and announcements.
   Pages configure/upload/deploy `v6/v5/v5`). A local + CI runtime-policy gate
   prevents deprecated action majors or `node-version: 20` from returning.
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v145 (cache-first static assets / network-first navigation and
+- Service worker v146 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -120,6 +120,14 @@ reviews, catalogs, sale pages, and announcements.
   deterministic narratives remain the instant fallback. Provider selection is
   hidden behind one endpoint: Workers AI is the free default and a paid provider
   can be introduced later without changing the client.
+- AI Interpretation Layer: `/api/taste-import` turns arbitrary pasted rankings
+  and notes into a persisted, editable review draft. Drafting is side-effect
+  free: only checked rows enter memory after explicit confirmation, and missing
+  titles continue through the bounded RAWG resolver. `/api/rerank` can reorder
+  only the top eight deterministic Today candidates and only inside a 12-score
+  quality window, enforced independently by Worker and client. Other views and
+  long-term personal ranking remain deterministic; both paths retain local
+  fallbacks.
 - Companion Intelligence 2.0 phase 1 is local and free: every candidate gets a
   reliable/promising/polarizing/cautious/exploratory taste verdict. Strong pull
   plus strong caution now creates an explicit contradiction penalty, caps

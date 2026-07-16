@@ -7,6 +7,8 @@
     || window.PlaySputnikConfig.API_ORIGIN
     || `http://127.0.0.1:${window.__playsputnikSearchPort || 4191}`;
   const NARRATIVE_ENDPOINT = `${providerOrigin}/api/narrative`;
+  const TASTE_IMPORT_ENDPOINT = `${providerOrigin}/api/taste-import`;
+  const RERANK_ENDPOINT = `${providerOrigin}/api/rerank`;
   const HEALTH_ENDPOINT = `${providerOrigin}/api/health`;
   // Only probe the backend when it's actually configured: a deployed Worker
   // (API_MODE "production") or an explicit dev/test override. Otherwise — a plain
@@ -16,7 +18,10 @@
     window.__playsputnikAiOrigin || window.PlaySputnikConfig.API_MODE === "production",
   );
   const CACHE_SCHEMA = "ai-narrative-v2";
+  const IMPORT_SCHEMA = "ai-taste-import-v1";
+  const RERANK_SCHEMA = "ai-rerank-v1";
   const CACHE_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+  const RERANK_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
   function createAiTools({
     getState,
@@ -169,6 +174,20 @@
       };
     }
 
+    async function postJson(endpoint, payload, timeoutMs = 20000) {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ error: response.statusText }));
+        throw new Error(error.error || `HTTP ${response.status}`);
+      }
+      return response.json();
+    }
+
     function persistedEntry(cacheId) {
       const entry = getState().aiExplanations?.[cacheId];
       if (!entry || entry.schemaVersion !== CACHE_SCHEMA) return null;
@@ -253,6 +272,144 @@
       return request;
     }
 
+    async function parseTasteImport(text) {
+      const sourceText = String(text || "").trim();
+      if (sourceText.length < 3) throw new Error("Taste import text is empty");
+      const data = await postJson(TASTE_IMPORT_ENDPOINT, {
+        schemaVersion: IMPORT_SCHEMA,
+        locale: getLocale(),
+        text: sourceText.slice(0, 20000),
+      }, 25000);
+      if (data.schemaVersion !== IMPORT_SCHEMA || !Array.isArray(data.entries)) {
+        throw new Error("AI provider returned an invalid taste draft");
+      }
+      const seen = new Set();
+      const entries = data.entries.map((entry) => {
+        const title = String(entry?.title || "").trim().slice(0, 120);
+        const key = titleKey(title);
+        if (title.length < 2 || !key || seen.has(key)) return null;
+        seen.add(key);
+        const rating = Number.isFinite(Number(entry.rating)) ? Math.max(0, Math.min(10, Number(entry.rating))) : null;
+        const rank = Number.isInteger(Number(entry.rank)) && Number(entry.rank) > 0 ? Number(entry.rank) : null;
+        return {
+          title,
+          rating,
+          rank,
+          status: ["completed", "playing", "owned", "wishlist", "dropped"].includes(entry.status) ? entry.status : "unknown",
+          sentiment: ["loved", "liked", "mixed", "disliked"].includes(entry.sentiment) ? entry.sentiment : "unknown",
+          confidence: ["high", "medium", "low"].includes(entry.confidence) ? entry.confidence : "low",
+        };
+      }).filter(Boolean).slice(0, 120);
+      if (!entries.length) throw new Error("AI provider found no reviewable games");
+      return {
+        schemaVersion: IMPORT_SCHEMA,
+        entries,
+        summary: String(data.summary || "").trim().slice(0, 600),
+        warnings: (data.warnings || []).map((item) => String(item || "").trim()).filter(Boolean).slice(0, 8),
+        provider: data.provider || "",
+        model: data.model || "",
+      };
+    }
+
+    function todayRerankDescriptor(candidates, context = {}) {
+      const shortlist = (candidates || []).slice(0, 8).map((game) => ({
+        title: game.title,
+        score: Math.round(Number(game.score || 0) * 10) / 10,
+        atoms: (game.atoms || []).slice(0, 8),
+        session: game.session || "",
+        length: game.length || "",
+        difficulty: game.difficulty || "",
+        commitment: game.commitment || "",
+        access: context.accessByTitle?.[titleKey(game.title)] || "",
+      }));
+      const payload = {
+        schemaVersion: RERANK_SCHEMA,
+        locale: getLocale(),
+        taste: tasteContext(),
+        context: {
+          mood: context.mood || "",
+          session: context.session || "",
+          sessionMinutes: Number(context.sessionMinutes) || 0,
+          difficulty: context.difficulty || "",
+        },
+        candidates: shortlist,
+      };
+      return { payload, fingerprint: fingerprint(payload) };
+    }
+
+    function cachedTodayRerank(candidates, context = {}) {
+      const descriptor = todayRerankDescriptor(candidates, context);
+      const entry = getState().aiTodayRerank;
+      if (!entry || entry.schemaVersion !== RERANK_SCHEMA || entry.fingerprint !== descriptor.fingerprint) return null;
+      const fetchedAt = Date.parse(entry.fetchedAt || "");
+      if (Number.isNaN(fetchedAt) || Date.now() - fetchedAt > RERANK_MAX_AGE_MS) return null;
+      return entry;
+    }
+
+    function applyTodayRerank(candidates, context = {}) {
+      const entry = cachedTodayRerank(candidates, context);
+      if (!entry) return candidates || [];
+      const head = (candidates || []).slice(0, 8);
+      const topScore = Number(head[0]?.score || 0);
+      const flexible = head.filter((game) => topScore - Number(game.score || 0) <= 12);
+      const fixed = head.slice(flexible.length);
+      const byKey = new Map(flexible.map((game) => [titleKey(game.title), game]));
+      const used = new Set();
+      const ordered = (entry.order || []).map((title) => {
+        const key = titleKey(title);
+        if (!byKey.has(key) || used.has(key)) return null;
+        used.add(key);
+        return byKey.get(key);
+      }).filter(Boolean);
+      flexible.forEach((game) => {
+        const key = titleKey(game.title);
+        if (!used.has(key)) ordered.push(game);
+      });
+      return [...ordered, ...fixed, ...(candidates || []).slice(8)];
+    }
+
+    async function fetchTodayRerank(candidates, context = {}) {
+      const cached = cachedTodayRerank(candidates, context);
+      if (cached) return cached;
+      const descriptor = todayRerankDescriptor(candidates, context);
+      if (descriptor.payload.candidates.length < 2) return null;
+      const flightKey = `rerank:${descriptor.fingerprint}`;
+      if (inFlight.has(flightKey)) return inFlight.get(flightKey);
+      const request = (async () => {
+        const data = await postJson(RERANK_ENDPOINT, descriptor.payload, 25000);
+        if (data.schemaVersion !== RERANK_SCHEMA || !Array.isArray(data.order)) {
+          throw new Error("AI provider returned an invalid rerank");
+        }
+        const allowed = new Map(descriptor.payload.candidates.map((candidate) => [titleKey(candidate.title), candidate.title]));
+        const seen = new Set();
+        const order = data.order.map((title) => {
+          const key = titleKey(title);
+          if (!allowed.has(key) || seen.has(key)) return null;
+          seen.add(key);
+          return allowed.get(key);
+        }).filter(Boolean);
+        descriptor.payload.candidates.forEach((candidate) => {
+          const key = titleKey(candidate.title);
+          if (!seen.has(key)) order.push(candidate.title);
+        });
+        const entry = {
+          schemaVersion: RERANK_SCHEMA,
+          fingerprint: descriptor.fingerprint,
+          order,
+          reasons: Array.isArray(data.reasons) ? data.reasons.slice(0, 8) : [],
+          summary: String(data.summary || "").trim().slice(0, 600),
+          provider: data.provider || "",
+          model: data.model || "",
+          guardrails: data.guardrails || {},
+          fetchedAt: new Date().toISOString(),
+        };
+        getState().aiTodayRerank = entry;
+        return entry;
+      })().finally(() => inFlight.delete(flightKey));
+      inFlight.set(flightKey, request);
+      return request;
+    }
+
     function cachedExplanation(title, context = {}) {
       return cachedNarrative("game_detail", title, context);
     }
@@ -280,6 +437,10 @@
       cachedExplanation,
       fetchExplanation,
       clearExplanationCache,
+      parseTasteImport,
+      cachedTodayRerank,
+      applyTodayRerank,
+      fetchTodayRerank,
       topAtoms,
       topTasteSignals,
       narrativeFingerprint: fingerprint,

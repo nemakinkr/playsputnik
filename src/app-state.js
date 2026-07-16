@@ -99,6 +99,8 @@
         dropDecisions: {},
         sessionLog: [],
         aiExplanations: {},
+        aiImportDraft: null,
+        aiTodayRerank: null,
         lastUndo: null,
       };
     }
@@ -283,6 +285,8 @@
           dropDecisions: saved.dropDecisions || {},
           sessionLog: saved.sessionLog || [],
           aiExplanations: saved.aiExplanations || {},
+          aiImportDraft: saved.aiImportDraft && typeof saved.aiImportDraft === "object" ? saved.aiImportDraft : null,
+          aiTodayRerank: saved.aiTodayRerank && typeof saved.aiTodayRerank === "object" ? saved.aiTodayRerank : null,
           lastUndo: saved.lastUndo || null,
         };
       } catch {

@@ -58,6 +58,41 @@ assert(narrativeText.length >= 20, "AI narrative returned no usable text");
 const aiRussian = /[А-Яа-яЁё]/.test(narrativeText);
 assert(aiRussian, "AI narrative locale contract returned no Russian text");
 
+const tasteImport = await request("/api/taste-import", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    schemaVersion: "ai-taste-import-v1",
+    locale: "en",
+    text: "1. Stray - played and loved\n2. Control - wishlist",
+  }),
+});
+assert(tasteImport.response.ok, `AI taste import returned ${tasteImport.response.status}`);
+assert(tasteImport.data.schemaVersion === "ai-taste-import-v1", "AI taste import schema is missing");
+assert(Array.isArray(tasteImport.data.entries) && tasteImport.data.entries.length >= 2, "AI taste import returned no reviewable games");
+assert(tasteImport.data.entries.every((entry) => entry.title && entry.confidence), "AI taste import returned an invalid row");
+
+const rerankCandidates = [
+  { title: "Control", score: 90, atoms: ["story", "action"], session: "medium" },
+  { title: "Stray", score: 86, atoms: ["story", "exploration"], session: "short" },
+  { title: "Weak Candidate", score: 50, atoms: ["service"], session: "long" },
+];
+const rerank = await request("/api/rerank", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    schemaVersion: "ai-rerank-v1",
+    locale: "en",
+    taste: { topAtoms: ["story", "exploration"] },
+    context: { mood: "story", sessionMinutes: 45 },
+    candidates: rerankCandidates,
+  }),
+});
+assert(rerank.response.ok, `AI Today rerank returned ${rerank.response.status}`);
+assert(rerank.data.schemaVersion === "ai-rerank-v1", "AI Today rerank schema is missing");
+assert(Array.isArray(rerank.data.order) && rerank.data.order.length === rerankCandidates.length, "AI Today rerank lost candidates");
+assert(rerank.data.order.indexOf("Weak Candidate") === 2, "AI Today rerank moved a weak candidate through the quality guard");
+
 const query = `Stray`;
 const first = await request(`/api/search?q=${encodeURIComponent(query)}`);
 assert(first.response.ok, `search returned ${first.response.status}`);
@@ -105,4 +140,6 @@ console.log(JSON.stringify({
   aiModel: health.data.aiModel || "",
   aiNarrativeLength: narrativeText.length,
   aiRussian,
+  aiTasteImportCount: tasteImport.data.entries.length,
+  aiRerankGuarded: rerank.data.order.indexOf("Weak Candidate") === 2,
 }, null, 2));

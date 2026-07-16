@@ -65,6 +65,40 @@ const server = http.createServer(async (request, response) => {
     return;
   }
 
+  if (forceFixture && url.pathname === "/api/taste-import" && request.method === "POST") {
+    const body = await readJsonBody(request);
+    const source = String(body.text || "");
+    const entries = source.trim() === "Control - 9/10\nStray - completed"
+      ? [
+          { title: "Control", rating: 9, rank: 1, status: "completed", sentiment: "loved", confidence: "high" },
+          { title: "Stray", rating: null, rank: 2, status: "completed", sentiment: "liked", confidence: "high" },
+        ]
+      : [];
+    sendJson(response, {
+      schemaVersion: "ai-taste-import-v1",
+      entries,
+      summary: "Deterministic review draft for browser QA.",
+      warnings: [],
+      provider: "fixture",
+      model: "fixture",
+    });
+    return;
+  }
+
+  if (forceFixture && url.pathname === "/api/rerank" && request.method === "POST") {
+    const body = await readJsonBody(request);
+    const candidates = Array.isArray(body.candidates) ? body.candidates : [];
+    sendJson(response, {
+      schemaVersion: "ai-rerank-v1",
+      order: candidates.map((candidate) => candidate.title),
+      reasons: [],
+      summary: "Deterministic Today order for browser QA.",
+      provider: "fixture",
+      model: "fixture",
+    });
+    return;
+  }
+
   if (["/api/narrative", "/api/explain"].includes(url.pathname) && request.method === "POST") {
     if (!anthropicApiKey) {
       sendJson(response, { error: "ANTHROPIC_API_KEY not configured in .env.local" }, 503);

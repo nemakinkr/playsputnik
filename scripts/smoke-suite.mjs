@@ -20,6 +20,7 @@ import { fileURLToPath } from "node:url";
 const NODE = process.execPath;
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const SMOKES = [
+  { id: "ai-memory-smoke", script: "ai-memory-smoke-test.mjs" },
   { id: "app-view-smoke", script: "app-view-smoke-test.mjs" },
   { id: "core-journey-smoke", script: "core-journey-smoke-test.mjs" },
   { id: "demo-profile-smoke", script: "demo-profile-smoke-test.mjs" },

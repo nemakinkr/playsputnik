@@ -997,6 +997,11 @@ const {
   cachedExplanation,
   fetchExplanation,
   clearExplanationCache,
+  parseTasteImport: parseTasteImportWithAi,
+  cachedTodayRerank,
+  applyTodayRerank,
+  fetchTodayRerank,
+  narrativeFingerprint,
 } = window.PlaySputnikAi.createAiTools({
   getState: () => state,
   getSourceGames: () => sourceGames(),
@@ -1027,6 +1032,8 @@ const els = {
   sampleRatings: document.querySelector("#sample-ratings"),
   demoRatings: document.querySelector("#demo-ratings"),
   analyzeRatings: document.querySelector("#analyze-ratings"),
+  confirmAiImport: document.querySelector("#confirm-ai-import"),
+  discardAiImport: document.querySelector("#discard-ai-import"),
   notebookImport: document.querySelector("#notebook-import"),
   notebookSummary: document.querySelector("#notebook-summary"),
   notebookPills: document.querySelector("#notebook-pills"),
@@ -2607,8 +2614,212 @@ function tasteImportPreview() {
   };
 }
 
+function aiImportSourceFingerprint(text = state.ratingImport || "") {
+  return narrativeFingerprint(String(text || "").trim());
+}
+
+function aiDraftStatusLabel(status) {
+  const keys = {
+    completed: "settings.tasteImport.statusCompleted",
+    playing: "settings.tasteImport.statusPlaying",
+    owned: "settings.tasteImport.statusOwned",
+    wishlist: "settings.tasteImport.statusWishlist",
+    dropped: "settings.tasteImport.statusDropped",
+  };
+  return keys[status] ? t(keys[status]) : "";
+}
+
+function aiDraftSentimentLabel(sentiment) {
+  const keys = {
+    loved: "settings.tasteImport.sentimentLoved",
+    liked: "settings.tasteImport.sentimentLiked",
+    mixed: "settings.tasteImport.sentimentMixed",
+    disliked: "settings.tasteImport.sentimentDisliked",
+  };
+  return keys[sentiment] ? t(keys[sentiment]) : "";
+}
+
+function aiDraftEntryDetail(entry) {
+  const details = [];
+  if (Number.isFinite(Number(entry.rating))) details.push(t("settings.tasteImport.draftRating", { rating: entry.rating }));
+  if (Number.isInteger(Number(entry.rank)) && Number(entry.rank) > 0) details.push(t("settings.tasteImport.draftRank", { rank: entry.rank }));
+  const status = aiDraftStatusLabel(entry.status);
+  const sentiment = aiDraftSentimentLabel(entry.sentiment);
+  if (status) details.push(t("settings.tasteImport.draftStatus", { status }));
+  if (sentiment) details.push(t("settings.tasteImport.draftSentiment", { sentiment }));
+  return details.join(" · ") || t("settings.tasteImport.draftNoDetail");
+}
+
+function renderAiImportDraft() {
+  const draft = state.aiImportDraft;
+  const matchesInput = draft?.sourceFingerprint === aiImportSourceFingerprint();
+  if (!draft || !matchesInput) {
+    els.confirmAiImport.hidden = true;
+    els.discardAiImport.hidden = true;
+    els.analyzeRatings.disabled = false;
+    els.analyzeRatings.textContent = t("settings.tasteImport.analyze");
+    return false;
+  }
+  const ready = draft.status === "ready" && Array.isArray(draft.entries);
+  const includedCount = ready ? draft.entries.filter((entry) => entry.included !== false).length : 0;
+  els.confirmAiImport.hidden = !ready;
+  els.discardAiImport.hidden = !ready;
+  els.confirmAiImport.disabled = !includedCount;
+  els.confirmAiImport.textContent = ready
+    ? `${t("settings.tasteImport.confirmDraft")} · ${includedCount}`
+    : t("settings.tasteImport.confirmDraft");
+  els.analyzeRatings.disabled = draft.status === "loading";
+  els.analyzeRatings.textContent = draft.status === "loading"
+    ? t("settings.tasteImport.analyzing")
+    : t("settings.tasteImport.analyze");
+
+  if (draft.status === "loading") {
+    els.tasteImportPreview.innerHTML = `<div class="ai-import-draft is-loading"><strong>${t("settings.tasteImport.analyzing")}</strong><span>${t("settings.tasteImport.draftPending")}</span></div>`;
+    return true;
+  }
+  if (!ready) {
+    els.tasteImportPreview.innerHTML = `<div class="ai-import-draft is-error"><strong>${t("settings.tasteImport.draftError")}</strong><span>${detailAttr(draft.error || "")}</span></div>`;
+    return true;
+  }
+
+  const warning = draft.warnings?.[0]
+    ? `<span class="ai-import-draft-foot">${t("settings.tasteImport.draftWarning", { warning: detailAttr(draft.warnings[0]) })}</span>`
+    : `<span class="ai-import-draft-foot">${t("settings.tasteImport.draftPending")}</span>`;
+  els.tasteImportPreview.innerHTML = `
+    <div class="ai-import-draft" data-ai-import-draft>
+      <div class="ai-import-draft-head">
+        <span>${t("settings.tasteImport.draftEyebrow")}</span>
+        <strong>${t("settings.tasteImport.draftTitle", { count: draft.entries.length })}</strong>
+        <small>${detailAttr(draft.summary || t("settings.tasteImport.draftSummaryFallback"))}</small>
+      </div>
+      <div class="ai-import-draft-list">
+        ${draft.entries.map((entry, index) => `
+          <label class="ai-import-draft-row">
+            <span><input type="checkbox" data-ai-import-entry="${index}" ${entry.included === false ? "" : "checked"}> <strong>${detailAttr(entry.title)}</strong></span>
+            <small>${detailAttr(aiDraftEntryDetail(entry))}</small>
+          </label>
+        `).join("")}
+      </div>
+      ${warning}
+    </div>
+  `;
+  els.tasteImportPreview.querySelectorAll("[data-ai-import-entry]").forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+      const entry = state.aiImportDraft?.entries?.[Number(checkbox.dataset.aiImportEntry)];
+      if (!entry) return;
+      entry.included = checkbox.checked;
+      saveState();
+      renderAiImportDraft();
+    });
+  });
+  return true;
+}
+
+function localAiImportDraft() {
+  const parsed = parsedTasteImportEntries();
+  return parsed.entries.map((entry) => ({
+    title: entry.title,
+    rating: Number.isFinite(Number(entry.rating)) ? Number(entry.rating) : null,
+    rank: Number.isInteger(Number(entry.rank)) ? Number(entry.rank) : null,
+    status: "unknown",
+    sentiment: "unknown",
+    confidence: "medium",
+    included: true,
+  }));
+}
+
+async function analyzeAiImportDraft() {
+  const text = String(els.ratingImport.value || "").trim();
+  state.ratingImport = text;
+  const sourceFingerprint = aiImportSourceFingerprint(text);
+  state.aiImportDraft = { status: "loading", sourceFingerprint, entries: [], warnings: [] };
+  saveState();
+  renderTasteImportPreview();
+  try {
+    const draft = await parseTasteImportWithAi(text);
+    if (aiImportSourceFingerprint(els.ratingImport.value) !== sourceFingerprint) return;
+    state.aiImportDraft = {
+      ...draft,
+      status: "ready",
+      sourceFingerprint,
+      entries: draft.entries.map((entry) => ({ ...entry, included: true })),
+      createdAt: new Date().toISOString(),
+    };
+  } catch (error) {
+    const entries = localAiImportDraft();
+    state.aiImportDraft = entries.length
+      ? {
+          status: "ready",
+          sourceFingerprint,
+          entries,
+          summary: t("settings.tasteImport.draftSummaryFallback"),
+          warnings: [String(error?.message || error || "AI unavailable")],
+          provider: "local_fallback",
+          createdAt: new Date().toISOString(),
+        }
+      : { status: "error", sourceFingerprint, entries: [], error: String(error?.message || error || "AI unavailable") };
+  }
+  saveState();
+  renderTasteImportPreview();
+}
+
+function aiEntryRating(entry, rankedEntries) {
+  if (Number.isFinite(Number(entry.rating))) return Number(entry.rating);
+  const sentimentRatings = { loved: 9.5, liked: 8, mixed: 6, disliked: 3 };
+  if (sentimentRatings[entry.sentiment]) return sentimentRatings[entry.sentiment];
+  if (Number.isInteger(Number(entry.rank)) && rankedEntries.length) {
+    const ordered = [...rankedEntries].sort((a, b) => a.rank - b.rank);
+    const position = ordered.indexOf(entry) + 1;
+    if (position > 0) return derivedRatingFromRank(position, ordered.length);
+  }
+  return null;
+}
+
+function aiStatusToUserState(status) {
+  return { completed: "completed", playing: "playing", owned: "owned", wishlist: "saved", dropped: "dropped" }[status] || "";
+}
+
+function confirmAiImportDraft() {
+  const draft = state.aiImportDraft;
+  if (!draft || draft.status !== "ready") return;
+  const entries = draft.entries.filter((entry) => entry.included !== false);
+  const rankedEntries = entries.filter((entry) => Number.isInteger(Number(entry.rank)) && Number(entry.rank) > 0);
+  const canonicalRatings = entries.map((entry) => ({ ...entry, resolvedRating: aiEntryRating(entry, rankedEntries) }))
+    .filter((entry) => Number.isFinite(entry.resolvedRating));
+  const preservesRanking = rankedEntries.length >= 8 && rankedEntries.length >= entries.length * 0.6;
+  state.ratingImport = preservesRanking
+    ? [...rankedEntries].sort((a, b) => a.rank - b.rank).map((entry) => `${entry.rank}. ${entry.title}`).join("\n")
+    : canonicalRatings.map((entry) => `${entry.title} - ${entry.resolvedRating}/10`).join("\n");
+  analyzeTasteImport();
+
+  const unresolved = [];
+  entries.forEach((entry) => {
+    const resolution = importResolutionForTitle(entry.title);
+    const userState = aiStatusToUserState(entry.status);
+    const rating = aiEntryRating(entry, rankedEntries);
+    if (resolution.status !== "missing") {
+      if (userState) setGameState(resolution.title, userState);
+      return;
+    }
+    unresolved.push({
+      title: entry.title,
+      kind: "rating",
+      rating,
+      rank: entry.rank,
+      total: entries.length,
+      userState,
+    });
+  });
+  state.aiImportDraft = null;
+  state.entryPath = entries.length >= 8 ? "deep" : state.entryPath;
+  state.entryResult = t("settings.tasteImport.draftConfirmed", { count: entries.length });
+  render();
+  if (unresolved.length) startAutomaticImportResolution(unresolved);
+}
+
 function renderTasteImportPreview() {
   if (!els.tasteImportPreview) return;
+  if (renderAiImportDraft()) return;
   const preview = tasteImportPreview();
   renderTasteImportReport(preview);
   if (preview.empty) {
@@ -4082,15 +4293,15 @@ function handleImportResolutionProgress(event) {
 }
 
 function applyResolvedImportEntry(entry, result) {
-  if (entry.kind === "rating") {
-    const title = rememberSearchResultWithoutState(result);
-    const remembered = explicitUserGame(title) || searchResultMemoryRecord(result);
+  const title = rememberSearchResultWithoutState(result);
+  const remembered = explicitUserGame(title) || searchResultMemoryRecord(result);
+  if (Number.isFinite(Number(entry.rating))) {
     rememberImportedRating(remembered, entry.rating);
-    return;
   }
-  const resolvedState = entry.userState || "owned";
-  const record = applySearchResultState(result, resolvedState);
-  if (record && entry.hoursPlayed != null) record.hoursPlayed = entry.hoursPlayed;
+  if (entry.userState) {
+    const record = applySearchResultState(result, entry.userState);
+    if (record && entry.hoursPlayed != null) record.hoursPlayed = entry.hoursPlayed;
+  }
 }
 
 function handleImportResolutionComplete() {
@@ -7599,6 +7810,52 @@ function openAppView(viewId) {
   render();
 }
 
+function todayRerankContext(ranked) {
+  return {
+    mood: state.mood,
+    session: state.session,
+    sessionMinutes: state.sessionMinutes,
+    difficulty: state.difficulty,
+    accessByTitle: Object.fromEntries(
+      (ranked || []).slice(0, 8).map((game) => [titleKey(game.title), effectiveGameState(game)]),
+    ),
+  };
+}
+
+let todayRerankPending = false;
+let todayRerankAttempt = { key: "", attemptedAt: 0 };
+
+function maybeRefreshTodayRerank(ranked, context) {
+  if (state.activeView !== "today" || todayRerankPending || cachedTodayRerank(ranked, context)) return;
+  const signalCount = Math.max(
+    quickTasteSignalCount(),
+    state.importedRatings?.length || 0,
+    state.notebook?.ranked?.length || 0,
+  );
+  if (signalCount < 5 || (ranked || []).length < 2) return;
+
+  const attemptKey = narrativeFingerprint({
+    locale: window.PlaySputnikI18n.getLocale(),
+    context,
+    candidates: ranked.slice(0, 8).map((game) => [game.title, Math.round(Number(game.score || 0) * 10)]),
+  });
+  if (todayRerankAttempt.key === attemptKey && Date.now() - todayRerankAttempt.attemptedAt < 5 * 60 * 1000) return;
+  todayRerankAttempt = { key: attemptKey, attemptedAt: Date.now() };
+  todayRerankPending = true;
+  void (async () => {
+    try {
+      if (!await narrativeAvailable()) return;
+      await fetchTodayRerank(ranked, context);
+      saveState();
+      if (state.activeView === "today") render();
+    } catch (error) {
+      console.warn("PlaySputnik Today rerank kept the deterministic fallback:", error);
+    } finally {
+      todayRerankPending = false;
+    }
+  })();
+}
+
 function render() {
   // Clear per-render memo caches so state changes are picked up, but the
   // expensive taste profile and game ranking are each computed only once per
@@ -7629,7 +7886,11 @@ function render() {
     button.classList.toggle("is-active", button.dataset.cluster === state.activeCluster);
   });
 
-  const ranked = rankedGames();
+  const deterministicRanked = rankedGames();
+  const rerankContext = todayRerankContext(deterministicRanked);
+  const ranked = state.activeView === "today"
+    ? applyTodayRerank(deterministicRanked, rerankContext)
+    : deterministicRanked;
   const clusters = clusterGames(ranked);
   const primaryGame = primaryDecisionGame(ranked);
   renderValueStats(ranked);
@@ -7667,6 +7928,7 @@ function render() {
   }
   scheduleDeferredRender(ranked, primaryGame);
   saveState();
+  maybeRefreshTodayRerank(deterministicRanked, rerankContext);
 }
 
 els.appViewTabs.forEach((button) => {
@@ -7864,6 +8126,7 @@ els.budget.addEventListener("input", () => {
 });
 els.ratingImport.addEventListener("input", () => {
   state.ratingImport = els.ratingImport.value;
+  if (state.aiImportDraft?.sourceFingerprint !== aiImportSourceFingerprint()) state.aiImportDraft = null;
   saveState();
   renderTasteImportPreview();
 });
@@ -7877,11 +8140,12 @@ els.demoRatings?.addEventListener("click", () => {
   analyzeTasteImport();
   openAppView("today");
 });
-els.analyzeRatings.addEventListener("click", () => {
-  state.ratingImport = els.ratingImport.value;
-  analyzeTasteImport();
-  render();
-  queueTasteImportResolution();
+els.analyzeRatings.addEventListener("click", () => void analyzeAiImportDraft());
+els.confirmAiImport?.addEventListener("click", confirmAiImportDraft);
+els.discardAiImport?.addEventListener("click", () => {
+  state.aiImportDraft = null;
+  saveState();
+  renderTasteImportPreview();
 });
 els.notebookImport.addEventListener("input", () => {
   state.notebookImport = els.notebookImport.value;

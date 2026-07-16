@@ -2271,6 +2271,74 @@ body[data-app-view-current="today"] .hero-primary-cta small {
   box-shadow: var(--shadow-sm);
 }
 
+.ai-import-draft {
+  display: grid;
+  gap: 12px;
+}
+
+.ai-import-draft-head {
+  display: grid;
+  gap: 4px;
+}
+
+.ai-import-draft-head > span,
+.ai-import-draft-row small,
+.ai-import-draft-foot {
+  color: var(--text-mid);
+  font-size: 12px;
+}
+
+.ai-import-draft-head > span {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.ai-import-draft-list {
+  display: grid;
+  gap: 6px;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.ai-import-draft-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ps-border);
+}
+
+.ai-import-draft-row:last-child {
+  border-bottom: 0;
+}
+
+.ai-import-draft-row strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ai-import-draft-row small {
+  text-align: right;
+}
+
+.ai-import-draft.is-loading,
+.ai-import-draft.is-error {
+  min-height: 76px;
+  align-content: center;
+}
+
+@media (max-width: 560px) {
+  .ai-import-draft-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ai-import-draft-row small {
+    padding-left: 24px;
+    text-align: left;
+  }
+}
+
 .taste-import-preview-empty {
   display: grid;
   gap: 3px;

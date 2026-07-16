@@ -8,6 +8,7 @@ const state = {
   liked: new Set(["Disco Elysium"]),
   importedRatings: [{ title: "Control", rating: 9 }],
   aiExplanations: {},
+  aiTodayRerank: null,
 };
 let locale = "en";
 const requests = [];
@@ -33,6 +34,31 @@ const context = {
     }
     const payload = JSON.parse(options.body);
     requests.push(payload);
+    if (String(url).endsWith("/api/taste-import")) {
+      return {
+        ok: true,
+        json: async () => ({
+          schemaVersion: "ai-taste-import-v1",
+          entries: [
+            { title: "Control", rating: 9, status: "completed", sentiment: "loved", confidence: "high" },
+            { title: "CONTROL", rating: 8, status: "unknown", sentiment: "liked", confidence: "medium" },
+          ],
+          summary: "Review before import",
+          warnings: [],
+        }),
+      };
+    }
+    if (String(url).endsWith("/api/rerank")) {
+      return {
+        ok: true,
+        json: async () => ({
+          schemaVersion: "ai-rerank-v1",
+          order: ["Low Score", "Close Fit", "Unknown Game", "Baseline"],
+          reasons: [],
+          summary: "Session-aware order",
+        }),
+      };
+    }
     return {
       ok: true,
       json: async () => ({ text: payload.locale === "ru" ? "Русский ответ" : "English answer" }),
@@ -79,4 +105,28 @@ assert.equal(Object.keys(state.aiExplanations).length, 2, "cache should be parti
 assert(requests.every((request) => request.schemaVersion === "ai-narrative-v2"));
 assert(requests.every((request) => request.game.title === "Stray"));
 
-console.log("✅ AI narrative cache isolates locale and invalidates changed context");
+const memoryBeforeDraft = JSON.stringify({ importedRatings: state.importedRatings, userGames: state.userGames });
+const draft = await tools.parseTasteImport("Control - 9/10");
+assert.equal(draft.entries.length, 1, "AI import should deduplicate titles before review");
+assert.equal(draft.entries[0].status, "completed");
+assert.equal(
+  JSON.stringify({ importedRatings: state.importedRatings, userGames: state.userGames }),
+  memoryBeforeDraft,
+  "creating an AI import draft must not mutate confirmed taste memory",
+);
+
+const rerankCandidates = [
+  { title: "Baseline", score: 90, atoms: ["story"] },
+  { title: "Close Fit", score: 84, atoms: ["choice"] },
+  { title: "Low Score", score: 55, atoms: ["action"] },
+];
+const rerankContext = { mood: "story", session: "medium", sessionMinutes: 45, difficulty: "normal" };
+await tools.fetchTodayRerank(rerankCandidates, rerankContext);
+assert.equal(
+  tools.applyTodayRerank(rerankCandidates, rerankContext).map((game) => game.title).join("|"),
+  "Close Fit|Baseline|Low Score",
+  "client quality guard must keep a weak candidate outside the flexible AI window",
+);
+assert.equal(tools.cachedTodayRerank(rerankCandidates, { ...rerankContext, sessionMinutes: 90 }), null, "Today rerank cache must invalidate when session context changes");
+
+console.log("✅ AI narratives, review-only import, and guarded Today rerank are valid");

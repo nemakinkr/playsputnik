@@ -226,7 +226,9 @@ async function runFounderRankingScenario(page) {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   }));
   await page.evaluate(() => document.querySelector("#analyze-ratings")?.click());
-  await page.waitForTimeout(800);
+  await page.waitForSelector("#confirm-ai-import:not([hidden])", { timeout: 15000 });
+  await page.evaluate(() => document.querySelector("#confirm-ai-import")?.click());
+  await page.waitForFunction(() => /\d+/.test(document.querySelector("#taste-summary")?.textContent || ""), null, { timeout: 15000 });
   const taste = await page.evaluate(() => ({
     summary: document.querySelector("#taste-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",
     profile: document.querySelector("#taste-profile-summary")?.textContent?.replace(/\s+/g, " ").trim() || "",

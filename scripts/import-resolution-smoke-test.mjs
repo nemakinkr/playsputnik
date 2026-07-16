@@ -74,6 +74,8 @@ try {
   await page.waitForFunction(() => window.__playsputnikBoot?.coreRenderedAt, null, { timeout: 10000 });
   await page.locator("#rating-import").fill("Codex Test Adventure - 9/10");
   await page.locator("#analyze-ratings").click();
+  await page.waitForSelector("#confirm-ai-import:not([hidden])", { timeout: 15000 });
+  await page.locator("#confirm-ai-import").click();
   await page.waitForFunction((key) => {
     const state = JSON.parse(localStorage.getItem(key) || "{}");
     return Object.values(state.userGames || {}).some((game) => game.title === "Codex Test Adventure" && game.rating === 90);
@@ -90,7 +92,7 @@ try {
     };
   }, STORAGE_KEY);
   assert(errors.length === 0, `page errors: ${errors.join(" | ")}`);
-  assert(result.stateVersion === 6, `expected schema v6, got ${result.stateVersion}`);
+  assert(result.stateVersion === 7, `expected schema v7, got ${result.stateVersion}`);
   assert(result.summary?.status === "complete", `expected complete batch, got ${result.summary?.status}`);
   assert(result.game?.providerImport?.provider === "rawg", "expected RAWG passport to persist");
   assert(result.game?.rating === 90, "expected imported rating semantics to persist");
