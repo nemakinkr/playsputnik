@@ -1,0 +1,49 @@
+{
+  "mode": "ai-import-production-dogfood",
+  "generatedAt": "2026-07-16T12:47:58.096Z",
+  "origin": "https://playsputnik-api.playsputnik.workers.dev",
+  "summary": {
+    "cases": 4,
+    "passed": 4,
+    "failed": 0,
+    "maxDurationMs": 1708
+  },
+  "results": [
+    {
+      "id": "founder-111",
+      "status": 200,
+      "durationMs": 179,
+      "provider": "hybrid_parser",
+      "model": "ordered-list-parser-v1",
+      "entryCount": 111,
+      "failures": []
+    },
+    {
+      "id": "mixed-memory",
+      "status": 200,
+      "durationMs": 1708,
+      "provider": "workers_ai",
+      "model": "@cf/meta/llama-3.1-8b-instruct-fast",
+      "entryCount": 4,
+      "failures": []
+    },
+    {
+      "id": "ambiguous-discussion",
+      "status": 200,
+      "durationMs": 876,
+      "provider": "workers_ai",
+      "model": "@cf/meta/llama-3.1-8b-instruct-fast",
+      "entryCount": 1,
+      "failures": []
+    },
+    {
+      "id": "contradictory-sentiment",
+      "status": 200,
+      "durationMs": 1093,
+      "provider": "workers_ai",
+      "model": "@cf/meta/llama-3.1-8b-instruct-fast",
+      "entryCount": 1,
+      "failures": []
+    }
+  ]
+}

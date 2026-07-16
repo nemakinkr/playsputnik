@@ -110,7 +110,12 @@ assert(Array.isArray(rerank.data.order) && rerank.data.order.length === rerankCa
 assert(rerank.data.order.indexOf("Weak Candidate") === 2, "AI Today rerank moved a weak candidate through the quality guard");
 
 const query = `Stray`;
-const first = await request(`/api/search?q=${encodeURIComponent(query)}`);
+let first;
+for (let attempt = 0; attempt < 4; attempt += 1) {
+  if (attempt) await new Promise((resolve) => setTimeout(resolve, 1500));
+  first = await request(`/api/search?q=${encodeURIComponent(query)}`);
+  if (first.response.ok && first.data.mode === "provider_live") break;
+}
 assert(first.response.ok, `search returned ${first.response.status}`);
 assert(first.data.mode === "provider_live", `search mode is ${first.data.mode || "missing"}`);
 assert(first.data.provider === "rawg", `search provider is ${first.data.provider || "missing"}`);
