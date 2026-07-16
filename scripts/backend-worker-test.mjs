@@ -56,6 +56,9 @@ const env = {
       assert.equal(model, "@cf/zai-org/glm-4.7-flash");
       assert.equal(payload.messages[0].role, "system");
       assert.match(payload.messages[0].content, /natural Russian/);
+      assert.equal(payload.max_completion_tokens, 220);
+      assert.deepEqual(payload.chat_template_kwargs, { enable_thinking: false });
+      assert.equal(payload.max_tokens, undefined);
       return { choices: [{ message: { content: "Русский ответ Workers AI." } }] };
     },
   },

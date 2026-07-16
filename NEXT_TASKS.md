@@ -123,9 +123,9 @@ Cloudflare Worker uses a Workers AI binding by default, supports Anthropic as an
 optional provider without changing the client, protects secrets, caches public
 search, validates CORS/input, and excludes PSN tokens. Pages is connected
 through `PLAYSPUTNIK_API_ORIGIN`. Deterministic localized narratives remain the
-instant fallback. Monitoring reads AI readiness without consuming inference
-quota, and backend changes run contract tests, Cloudflare deploy, and a live
-post-deploy probe.
+instant fallback. Monitoring verifies AI readiness plus one small Russian
+narrative, and backend changes run contract tests, Cloudflare deploy, and a
+live post-deploy probe.
 
 Next AI-core task: accept an arbitrary pasted ranking, game list, or free-form
 note; extract titles and taste evidence into a reviewable structured draft;

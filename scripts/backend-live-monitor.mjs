@@ -41,6 +41,20 @@ assert(
   "health CORS origin does not match GitHub Pages",
 );
 
+const narrative = await request("/api/narrative", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    kind: "game_description",
+    locale: "ru",
+    game: { title: "Stray", atoms: ["story", "exploration"], length: "short" },
+  }),
+});
+assert(narrative.response.ok, `AI narrative returned ${narrative.response.status}`);
+assert(narrative.data.provider === "workers_ai", `AI narrative used ${narrative.data.provider || "no provider"}`);
+assert(narrative.data.locale === "ru", `AI narrative locale is ${narrative.data.locale || "missing"}`);
+assert(/[А-Яа-яЁё]/.test(String(narrative.data.text || "")), "AI narrative returned no Russian text");
+
 const query = `Stray`;
 const first = await request(`/api/search?q=${encodeURIComponent(query)}`);
 assert(first.response.ok, `search returned ${first.response.status}`);
@@ -86,4 +100,5 @@ console.log(JSON.stringify({
   aiConfigured: Boolean(health.data.aiConfigured),
   aiProvider: health.data.aiProvider || "none",
   aiModel: health.data.aiModel || "",
+  aiNarrativeLength: narrative.data.text.length,
 }, null, 2));

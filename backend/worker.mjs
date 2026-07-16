@@ -193,7 +193,8 @@ async function generateAiText(provider, prompt, env) {
         { role: "system", content: prompt.system },
         { role: "user", content: prompt.prompt },
       ],
-      max_tokens: prompt.maxTokens,
+      max_completion_tokens: prompt.maxTokens,
+      chat_template_kwargs: { enable_thinking: false },
       temperature: 0.25,
     }), 12000);
     const content = result?.response ?? result?.choices?.[0]?.message?.content ?? result?.result?.response;

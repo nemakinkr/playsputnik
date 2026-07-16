@@ -107,9 +107,10 @@ reviews, catalogs, sale pages, and announcements.
   through the `PLAYSPUTNIK_API_ORIGIN` repository variable. RAWG search and
   attributed cover candidates are live and edge-cached. AI narratives use the
   Cloudflare Workers AI binding and do not require an Anthropic key.
-- Backend operations: a six-hour GitHub Actions monitor covers health, CORS,
-  live RAWG normalization, cover presence, edge-cache hits, and untrusted-origin
-  rejection, with a single incident issue that closes on recovery. Backend
+- Backend operations: a six-hour GitHub Actions monitor covers health, one
+  small Russian AI narrative, CORS, live RAWG normalization, cover presence,
+  edge-cache hits, and untrusted-origin rejection, with a single incident issue
+  that closes on recovery. Backend
   changes have an active automatic contract-test/deploy/live-smoke workflow.
   The non-secret Account ID variable and scoped `CLOUDFLARE_API_TOKEN` secret
   are configured; a manual production deploy has passed end to end.

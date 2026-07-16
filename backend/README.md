@@ -108,7 +108,7 @@ optional paid-provider secrets remain stored in Cloudflare.
 triggered manually. It verifies:
 
 - health contract and configured RAWG secret;
-- selected AI provider and model (without spending inference quota);
+- selected AI provider/model and one small Russian narrative probe;
 - allowed GitHub Pages CORS origin;
 - live RAWG search with a cover candidate, structured inference provenance,
   and no invented price or subscription state;
