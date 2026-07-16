@@ -30,7 +30,7 @@ async function request(path, options = {}) {
 }
 
 let health;
-for (let attempt = 0; attempt < 8; attempt += 1) {
+for (let attempt = 0; attempt < 30; attempt += 1) {
   health = await request("/api/health");
   if (health.data.version === "playsputnik-api-v4") break;
   await new Promise((resolve) => setTimeout(resolve, 2000));
