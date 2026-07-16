@@ -135,7 +135,7 @@ assert.equal(health.status, 200);
 assert.deepEqual(await health.json(), {
   status: "ok",
   service: "playsputnik-api",
-  version: "playsputnik-api-v6",
+  version: "playsputnik-api-v7",
   searchConfigured: true,
   aiConfigured: true,
   aiProvider: "workers_ai",

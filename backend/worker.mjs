@@ -1,6 +1,6 @@
 import { SEARCH_RESULT_VERSION, normalizeRawgResult, normalizeSearchTitle } from "./rawg-normalize.mjs";
 
-const API_VERSION = "playsputnik-api-v6";
+const API_VERSION = "playsputnik-api-v7";
 const DEFAULT_WORKERS_AI_MODEL = "@cf/zai-org/glm-4.7-flash";
 const DEFAULT_WORKERS_AI_JSON_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 const DEFAULT_ANTHROPIC_MODEL = "claude-haiku-4-5";
@@ -571,8 +571,8 @@ function sourceStatus(window) {
 function sourceSentiment(window) {
   const negative = /(?:^|[\s,;])(?:не\s+понрав|не\s+мо[её]|ненавиж|разочаров|dislik|didn['’]?t\s+like|not\s+for\s+me)/iu.test(window);
   const positiveWindow = window.replace(/(^|[\s,;])не\s+понрав\w*/giu, "$1");
-  const positive = /(?:любим|люблю|обож|шедевр|понрав|нравит|\blove\b|favorite|favourite|\bliked?\b|enjoy)/iu.test(positiveWindow);
-  const strongPositive = /(?:любим|люблю|обож|шедевр|\blove\b|favorite|favourite)/iu.test(positiveWindow);
+  const positive = /(?:любим|люблю|обож|шедевр|понрав|нравит|\bloved?\b|favorite|favourite|\bliked?\b|enjoy)/iu.test(positiveWindow);
+  const strongPositive = /(?:любим|люблю|обож|шедевр|\bloved?\b|favorite|favourite)/iu.test(positiveWindow);
   if ((positive && negative) || /(?:смешан|неоднознач|mixed)/iu.test(window)) return "mixed";
   if (negative) return "disliked";
   if (strongPositive) return "loved";
