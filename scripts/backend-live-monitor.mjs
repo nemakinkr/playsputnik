@@ -32,13 +32,13 @@ async function request(path, options = {}) {
 let health;
 for (let attempt = 0; attempt < 30; attempt += 1) {
   health = await request("/api/health");
-  if (health.data.version === "playsputnik-api-v5") break;
+  if (health.data.version === "playsputnik-api-v6") break;
   await new Promise((resolve) => setTimeout(resolve, 2000));
 }
 assert(health.response.ok, `health returned ${health.response.status}`);
 assert(health.data.status === "ok", `health status is ${health.data.status || "missing"}`);
 assert(health.data.service === "playsputnik-api", `unexpected service ${health.data.service || "missing"}`);
-assert(health.data.version === "playsputnik-api-v5", `deployed Worker version is ${health.data.version || "missing"}`);
+assert(health.data.version === "playsputnik-api-v6", `deployed Worker version is ${health.data.version || "missing"}`);
 assert(health.data.searchConfigured === true, "RAWG search secret is not configured");
 assert(health.data.aiConfigured === true, "Workers AI binding is not configured");
 assert(health.data.aiProvider === "workers_ai", `unexpected AI provider ${health.data.aiProvider || "missing"}`);
@@ -74,7 +74,7 @@ const tasteImport = await request("/api/taste-import", {
   body: JSON.stringify({
     schemaVersion: "ai-taste-import-v1",
     locale: "en",
-    text: "1. Stray - played and loved\n2. Control - wishlist",
+    text: "Stray - completed, loved, rated 9/10\nControl - wishlist",
   }),
   timeoutMs: 25000,
 });
@@ -82,6 +82,10 @@ assert(tasteImport.response.ok, `AI taste import returned ${tasteImport.response
 assert(tasteImport.data.schemaVersion === "ai-taste-import-v1", "AI taste import schema is missing");
 assert(Array.isArray(tasteImport.data.entries) && tasteImport.data.entries.length >= 2, "AI taste import returned no reviewable games");
 assert(tasteImport.data.entries.every((entry) => entry.title && entry.confidence), "AI taste import returned an invalid row");
+const importedStray = tasteImport.data.entries.find((entry) => entry.title === "Stray");
+const importedControl = tasteImport.data.entries.find((entry) => entry.title === "Control");
+assert(importedStray?.rating === 9 && importedStray?.status === "completed" && importedStray?.sentiment === "loved", "AI taste import lost explicit Stray facts");
+assert(importedControl?.status === "wishlist" && importedControl?.rank === null, "AI taste import lost Control wishlist or invented a rank");
 
 const rerankCandidates = [
   { title: "Control", score: 90, atoms: ["story", "action"], session: "medium" },

@@ -1,6 +1,6 @@
 import { SEARCH_RESULT_VERSION, normalizeRawgResult, normalizeSearchTitle } from "./rawg-normalize.mjs";
 
-const API_VERSION = "playsputnik-api-v5";
+const API_VERSION = "playsputnik-api-v6";
 const DEFAULT_WORKERS_AI_MODEL = "@cf/zai-org/glm-4.7-flash";
 const DEFAULT_WORKERS_AI_JSON_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 const DEFAULT_ANTHROPIC_MODEL = "claude-haiku-4-5";
@@ -530,23 +530,34 @@ function sourceShowsExplicitRanking(sourceText) {
 
 function sourceEvidenceWindow(sourceText, title) {
   const source = String(sourceText || "");
-  const index = source.toLocaleLowerCase().indexOf(String(title || "").toLocaleLowerCase());
-  if (index < 0) return "";
-  const before = source.slice(0, index);
-  const after = source.slice(index + String(title).length);
-  const startBoundary = Math.max(before.lastIndexOf("."), before.lastIndexOf("!"), before.lastIndexOf("?"), before.lastIndexOf("\n"));
-  const afterBoundaries = [after.indexOf("."), after.indexOf("!"), after.indexOf("?"), after.indexOf("\n")].filter((value) => value >= 0);
-  const endOffset = afterBoundaries.length ? Math.min(...afterBoundaries) + 1 : Math.min(after.length, 180);
-  return source.slice(Math.max(0, startBoundary + 1), index + String(title).length + endOffset).toLocaleLowerCase();
+  const needle = String(title || "").trim().toLocaleLowerCase();
+  if (!needle) return "";
+  return source
+    .split(/(?<=[.!?])\s+|\n+/u)
+    .flatMap((part) => part.split(/[,;]\s+а\s+/iu))
+    .filter((part) => part.toLocaleLowerCase().includes(needle))
+    .join(" ")
+    .slice(0, 720)
+    .toLocaleLowerCase();
 }
 
-function sourceHasRatingEvidence(window) {
-  return /(?:^|\s)(?:10|[0-9](?:[.,]\d+)?)\s*\/\s*(?:5|10)(?:\s|$)/u.test(window)
-    || /(?:оцен(?:ка|ил[аи]?|ю)|rating|rated)\s*(?::|=|-)?\s*(?:10|[0-9](?:[.,]\d+)?)/iu.test(window)
-    || /(?:10|[0-9](?:[.,]\d+)?)\s*(?:из\s*10|зв[её]зд|stars?)/iu.test(window);
+function sourceRating(window) {
+  const fraction = window.match(/(?:^|\s)(10|[0-9](?:[.,]\d+)?)\s*\/\s*(5|10)(?:\s|[.,;!?]|$)/u);
+  if (fraction) {
+    const value = Number(fraction[1].replace(",", "."));
+    const scale = Number(fraction[2]);
+    return Math.max(0, Math.min(10, Math.round((value / scale) * 100) / 10));
+  }
+  const stated = window.match(/(?:оцен(?:ка|ил[аи]?|ю)|rating|rated)\s*(?::|=|-)?\s*(10|[0-9](?:[.,]\d+)?)/iu)
+    || window.match(/(10|[0-9](?:[.,]\d+)?)\s*(?:из\s*10|зв[её]зд|stars?)/iu);
+  if (!stated) return null;
+  return Math.max(0, Math.min(10, Number(stated[1].replace(",", "."))));
 }
 
-function sourceHasStatusEvidence(window, status) {
+function sourceStatus(window) {
+  const evidence = window
+    .replace(/(?:не|not|never)\s+(?:прош[её]л|прошла|закончил|finished|completed|играл[аи]?|played|купил[аи]?|bought|purchased)/giu, "")
+    .replace(/(?:не\s+покупал[аи]?|didn['’]?t\s+buy|not\s+owned)/giu, "");
   const patterns = {
     completed: /(?:прош[её]л|прошла|пройден|закончил|finished|completed|\bbeat\b)/iu,
     playing: /(?:сейчас\s+игра|играю|прохожу|currently\s+playing|\bplaying\b)/iu,
@@ -554,18 +565,19 @@ function sourceHasStatusEvidence(window, status) {
     wishlist: /(?:вишлист|спис(?:ок|ке)\s+жела|хочу\s+купить|wishlist|want\s+to\s+buy)/iu,
     dropped: /(?:бросил|бросила|забросил|забросила|дропнул|дропнула|\bdropped\b|abandoned|gave\s+up)/iu,
   };
-  return status === "unknown" || Boolean(patterns[status]?.test(window));
+  return ["dropped", "completed", "playing", "wishlist", "owned"].find((status) => patterns[status].test(evidence)) || "unknown";
 }
 
-function sourceHasSentimentEvidence(window, sentiment) {
-  if (sentiment === "unknown") return true;
-  const negative = /(?:не\s+понрав|не\s+мо[её]|ненавиж|разочаров|dislik|didn['’]?t\s+like|not\s+for\s+me)/iu.test(window);
-  const positiveWindow = window.replace(/не\s+понрав\w*/giu, "");
+function sourceSentiment(window) {
+  const negative = /(?:^|[\s,;])(?:не\s+понрав|не\s+мо[её]|ненавиж|разочаров|dislik|didn['’]?t\s+like|not\s+for\s+me)/iu.test(window);
+  const positiveWindow = window.replace(/(^|[\s,;])не\s+понрав\w*/giu, "$1");
   const positive = /(?:любим|люблю|обож|шедевр|понрав|нравит|\blove\b|favorite|favourite|\bliked?\b|enjoy)/iu.test(positiveWindow);
-  if (sentiment === "mixed") return (positive && negative) || /(?:смешан|неоднознач|mixed)/iu.test(window);
-  if (sentiment === "disliked") return negative;
-  if (sentiment === "loved") return /(?:любим|люблю|обож|шедевр|\blove\b|favorite|favourite)/iu.test(positiveWindow);
-  return positive;
+  const strongPositive = /(?:любим|люблю|обож|шедевр|\blove\b|favorite|favourite)/iu.test(positiveWindow);
+  if ((positive && negative) || /(?:смешан|неоднознач|mixed)/iu.test(window)) return "mixed";
+  if (negative) return "disliked";
+  if (strongPositive) return "loved";
+  if (positive) return "liked";
+  return "unknown";
 }
 
 function sanitizeTasteWarnings(warnings) {
@@ -588,18 +600,16 @@ function sanitizeTasteEntries(entries, { sourceText = "", allowRank = false } = 
     const key = normalizeSearchTitle(title);
     if (title.length < 2 || !key || seen.has(key)) return null;
     seen.add(key);
-    const ratingValue = Number(entry.rating);
     const rankValue = Number(entry.rank);
     const evidence = sourceEvidenceWindow(sourceText, title);
-    const rating = entry.rating !== null && Number.isFinite(ratingValue) && sourceHasRatingEvidence(evidence)
-      ? Math.max(0, Math.min(10, Math.round(ratingValue * 10) / 10))
-      : null;
+    const rating = sourceRating(evidence);
     const rank = allowRank && entry.rank !== null && Number.isInteger(rankValue) && rankValue > 0 ? Math.min(rankValue, 10000) : null;
     const proposedStatus = statuses.has(entry.status) ? entry.status : "unknown";
-    const status = sourceHasStatusEvidence(evidence, proposedStatus) ? proposedStatus : "unknown";
+    const status = sourceStatus(evidence);
     const proposedSentiment = sentiments.has(entry.sentiment) ? entry.sentiment : "unknown";
-    const sentiment = sourceHasSentimentEvidence(evidence, proposedSentiment) ? proposedSentiment : "unknown";
-    const strippedEvidence = rating !== entry.rating || status !== proposedStatus || sentiment !== proposedSentiment || (!allowRank && entry.rank !== null);
+    const sentiment = sourceSentiment(evidence);
+    const proposedRating = entry.rating === null ? null : Number(entry.rating);
+    const strippedEvidence = rating !== proposedRating || status !== proposedStatus || sentiment !== proposedSentiment || (!allowRank && entry.rank !== null);
     const confidence = strippedEvidence ? "low" : confidences.has(entry.confidence) ? entry.confidence : "low";
     if (rating === null && rank === null && status === "unknown" && sentiment === "unknown") return null;
     return { title, rating, rank, status, sentiment, confidence };

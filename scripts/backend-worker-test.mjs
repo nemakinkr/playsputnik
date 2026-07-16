@@ -57,6 +57,28 @@ const env = {
       const responseSchema = payload.response_format?.json_schema;
       if (responseSchema?.properties?.entries) {
         assert.equal(model, "@cf/meta/llama-3.1-8b-instruct-fast");
+        if (payload.messages.at(-1).content.includes("Прошел Control")) {
+          return { response: {
+            entries: [
+              { title: "Control", rating: 2, rank: 1, status: "owned", sentiment: "disliked", confidence: "high" },
+              { title: "Stray", rating: null, rank: 2, status: "completed", sentiment: "loved", confidence: "high" },
+              { title: "Baldur's Gate 3", rating: 10, rank: 3, status: "owned", sentiment: "loved", confidence: "high" },
+              { title: "Death Stranding", rating: null, rank: 4, status: "playing", sentiment: "loved", confidence: "high" },
+            ],
+            summary: "Смешанная заметка.",
+            warnings: [],
+          } };
+        }
+        if (payload.messages.at(-1).content.includes("Cyberpunk 2077")) {
+          return { response: {
+            entries: [
+              { title: "Cyberpunk 2077", rating: 10, rank: 1, status: "completed", sentiment: "loved", confidence: "high" },
+              { title: "Elden Ring", rating: 9, rank: 2, status: "owned", sentiment: "liked", confidence: "high" },
+            ],
+            summary: "Противоречивый отзыв.",
+            warnings: [],
+          } };
+        }
         if (payload.messages.at(-1).content.includes("Цена 40 евро")) {
           return { response: {
             entries: [
@@ -113,7 +135,7 @@ assert.equal(health.status, 200);
 assert.deepEqual(await health.json(), {
   status: "ok",
   service: "playsputnik-api",
-  version: "playsputnik-api-v5",
+  version: "playsputnik-api-v6",
   searchConfigured: true,
   aiConfigured: true,
   aiProvider: "workers_ai",
@@ -226,6 +248,35 @@ assert.deepEqual(ambiguousPayload.entries, [{
   confidence: "low",
 }], "unsupported ratings, ranks, and ownership must be stripped from AI output");
 assert.deepEqual(ambiguousPayload.warnings, [], "missing-price warnings should not enter the review draft");
+
+const mixedImport = await handleRequest(new Request("https://api.example/api/taste-import", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    locale: "ru",
+    text: "Прошел Control, очень понравилось, 9/10. Сейчас играю в Stray. Baldur's Gate 3 лежит в вишлисте, но пока не покупал. Death Stranding бросил, не мое.",
+  }),
+}), env, context);
+assert.equal(mixedImport.status, 200);
+assert.deepEqual((await mixedImport.json()).entries.map(({ title, rating, rank, status, sentiment }) => ({ title, rating, rank, status, sentiment })), [
+  { title: "Control", rating: 9, rank: null, status: "completed", sentiment: "liked" },
+  { title: "Stray", rating: null, rank: null, status: "playing", sentiment: "unknown" },
+  { title: "Baldur's Gate 3", rating: null, rank: null, status: "wishlist", sentiment: "unknown" },
+  { title: "Death Stranding", rating: null, rank: null, status: "dropped", sentiment: "disliked" },
+], "source evidence must override invented structured fields without losing explicit facts");
+
+const contradictoryImport = await handleRequest(new Request("https://api.example/api/taste-import", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    locale: "ru",
+    text: "В Cyberpunk 2077 мне понравилась история, но не понравился геймплей; оценку не ставлю. Elden Ring не играл.",
+  }),
+}), env, context);
+assert.equal(contradictoryImport.status, 200);
+assert.deepEqual((await contradictoryImport.json()).entries.map(({ title, rating, rank, status, sentiment }) => ({ title, rating, rank, status, sentiment })), [
+  { title: "Cyberpunk 2077", rating: null, rank: null, status: "unknown", sentiment: "mixed" },
+], "contradictory sentiment must survive while unplayed titles and invented facts are discarded");
 
 const rerank = await handleRequest(new Request("https://api.example/api/rerank", {
   method: "POST",
