@@ -106,4 +106,42 @@ await Promise.all([oldRun, newRun]);
 assert.deepEqual([...replacementState.importLookupQueue], ["New import"]);
 assert.deepEqual(replacementHits, ["New import"], "a replacement batch must supersede in-flight provider work");
 
-console.log("✅ imported titles resolve through a bounded, resumable provider queue");
+let clock = "2026-07-13T12:00:00.000Z";
+let budgetCalls = 0;
+const budgetState = {
+  providerQueue: [], providerResolved: {}, providerItems: {}, providerSummary: null,
+  providerBudget: { date: "", used: 0, cap: 2 },
+  importLookupQueue: ["must stay isolated"],
+};
+const budgetTools = context.window.PlaySputnikImportResolution.createImportResolutionTools({
+  getState: () => budgetState,
+  titleKey,
+  titleMatches: (a, b) => titleKey(a) === titleKey(b),
+  fetchProvider: async (query) => {
+    budgetCalls += 1;
+    if (query === "Retry me" && budgetCalls === 1) throw new Error("temporary");
+    return { results: [{ title: query, sourceId: "rawg_provider_hook", matchConfidence: "high", matchKind: "exact" }] };
+  },
+  normalizeProviderResult: (record) => record,
+  onResolved: async () => {},
+  now: () => clock,
+  dailyRequestCap: 2,
+  maxAttempts: 2,
+  retryBaseMs: 1_000,
+  stateKeys: {
+    queue: "providerQueue", resolved: "providerResolved", items: "providerItems",
+    summary: "providerSummary", budget: "providerBudget",
+  },
+});
+budgetTools.queueEntries([{ title: "Retry me" }, { title: "Second" }, { title: "Deferred" }]);
+const capped = await budgetTools.runBatch();
+assert.equal(budgetCalls, 2, "daily request budget must bound provider calls");
+assert.equal(capped.budgetRemaining, 0);
+assert.deepEqual(budgetState.importLookupQueue, ["must stay isolated"], "custom queues must not overwrite import state");
+clock = "2026-07-14T12:00:00.000Z";
+await budgetTools.resumeBatch();
+assert.equal(budgetState.providerItems["retry me"].status, "resolved", "due failures should retry on the next budget window");
+assert.equal(budgetState.providerItems.deferred.status, "resolved");
+assert.equal(budgetState.providerItems["retry me"].attempts, 2, "retries must respect maxAttempts");
+
+console.log("✅ provider queues are isolated, budgeted, retry-bounded, and resumable");

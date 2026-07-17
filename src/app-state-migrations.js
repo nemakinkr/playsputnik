@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 7;
+  const CURRENT_STATE_VERSION = 8;
 
   const migrations = {
     1(state) {
@@ -116,6 +116,35 @@
         aiTodayRerank: state.aiTodayRerank && typeof state.aiTodayRerank === "object" && !Array.isArray(state.aiTodayRerank)
           ? state.aiTodayRerank
           : null,
+      };
+    },
+    8(state) {
+      const userGames = Object.fromEntries(Object.entries(state.userGames || {}).map(([key, record]) => {
+        if (!record || typeof record !== "object" || Array.isArray(record)) return [key, record];
+        const progress = record.playProgress && typeof record.playProgress === "object" && !Array.isArray(record.playProgress)
+          ? record.playProgress
+          : {};
+        return [key, {
+          ...record,
+          playProgress: {
+            sessionCount: Math.max(0, Math.floor(Number(progress.sessionCount) || 0)),
+            totalMinutes: Math.max(0, Math.round(Number(progress.totalMinutes) || 0)),
+            lastSessionMinutes: Math.max(0, Math.round(Number(progress.lastSessionMinutes) || 0)),
+            lastPlayedAt: progress.lastPlayedAt || null,
+            lastOutcome: progress.lastOutcome || "",
+          },
+        }];
+      }));
+      return {
+        ...state,
+        userGames,
+        providerEnrichmentQueue: Array.isArray(state.providerEnrichmentQueue) ? state.providerEnrichmentQueue : [],
+        providerEnrichmentResolved: state.providerEnrichmentResolved && typeof state.providerEnrichmentResolved === "object" ? state.providerEnrichmentResolved : {},
+        providerEnrichmentItems: state.providerEnrichmentItems && typeof state.providerEnrichmentItems === "object" ? state.providerEnrichmentItems : {},
+        providerEnrichmentSummary: state.providerEnrichmentSummary && typeof state.providerEnrichmentSummary === "object" ? state.providerEnrichmentSummary : null,
+        providerEnrichmentBudget: state.providerEnrichmentBudget && typeof state.providerEnrichmentBudget === "object"
+          ? state.providerEnrichmentBudget
+          : { date: "", used: 0, cap: 20 },
       };
     },
   };

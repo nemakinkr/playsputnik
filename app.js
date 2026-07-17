@@ -148,6 +148,9 @@ if (!window.PlaySputnikDev) {
 if (!window.PlaySputnikSession) {
   throw new Error("PlaySputnikSession must load before app.js");
 }
+if (!window.PlaySputnikContinuity) {
+  throw new Error("PlaySputnikContinuity must load before app.js");
+}
 if (!window.PlaySputnikHltb) {
   throw new Error("PlaySputnikHltb must load before app.js");
 }
@@ -361,6 +364,7 @@ const {
   applyStateToUserGame,
   titleStateSnapshot: titleStateSnapshotForState,
   restoreSetMembership,
+  canonicalizeUserGameKeys,
 } = window.PlaySputnikState.createStateTools({
   config: window.PlaySputnikConfig,
   profileGames,
@@ -374,6 +378,12 @@ const {
 
 let state = loadState();
 let selectedGameTitle = "";
+const {
+  continuityFocus,
+  ensurePlaying,
+  applyPlaySession,
+  continuitySnapshot,
+} = window.PlaySputnikContinuity;
 
 const {
   quickReaction,
@@ -487,8 +497,8 @@ const {
   getSelectedAtoms: () => selectedAtoms(),
   getSourceGames: () => sourceGames(),
   getSourceStatus: () => sourceStatus,
-  tasteRadar,
-  monthlyDrop,
+  getTasteRadar: () => tasteRadar,
+  getMonthlyDrop: () => monthlyDrop,
   normalizeTitle,
   titleMatches,
   titleIncludes,
@@ -712,6 +722,34 @@ const {
   onComplete: () => handleImportResolutionComplete(),
   concurrency: 2,
   maxBatchSize: 120,
+});
+
+const {
+  queueEntries: queueProviderEnrichmentEntries,
+  runBatch: runProviderEnrichmentBatch,
+  resumeBatch: resumeProviderEnrichmentBatch,
+  progress: providerEnrichmentProgress,
+} = window.PlaySputnikImportResolution.createImportResolutionTools({
+  getState: () => state,
+  titleKey,
+  titleMatches,
+  fetchProvider: (query) => fetchProviderForImport(query),
+  normalizeProviderResult: (record, query) => searchResultFromProvider(record, query),
+  onResolved: (entry, result) => applyProviderEnrichmentResult(entry, result),
+  onProgress: () => saveState(),
+  onComplete: () => render(),
+  concurrency: 1,
+  maxBatchSize: 40,
+  dailyRequestCap: 20,
+  maxAttempts: 3,
+  retryBaseMs: 60_000,
+  stateKeys: {
+    queue: "providerEnrichmentQueue",
+    resolved: "providerEnrichmentResolved",
+    items: "providerEnrichmentItems",
+    summary: "providerEnrichmentSummary",
+    budget: "providerEnrichmentBudget",
+  },
 });
 
 const {
@@ -1065,6 +1103,9 @@ const els = {
   tasteUnderstoodPanel: document.querySelector("#taste-understood-panel"),
   tasteUnderstoodStatus: document.querySelector("#taste-understood-status"),
   tasteUnderstoodBody: document.querySelector("#taste-understood-body"),
+  continuityPanel: document.querySelector("#continuity-panel"),
+  continuityStatus: document.querySelector("#continuity-status"),
+  continuityBody: document.querySelector("#continuity-body"),
   firstRunStatus: document.querySelector("#first-run-status"),
   firstRunGrid: document.querySelector("#first-run-grid"),
   firstRunBridge: document.querySelector("#first-run-bridge"),
@@ -1244,6 +1285,7 @@ const els = {
   getDevHealth: () => devHealth,
   getCatalogBackbone: () => catalogBackbone,
   getCatalogWorkbench: () => catalogWorkbench,
+  getProviderEnrichmentProgress: () => providerEnrichmentProgress(),
   devHealthStatusClass,
   catalogStatusClass,
   compactStatus,
@@ -1302,6 +1344,7 @@ function setGameState(title, userState) {
   }
   const existingGame = explicitUserGame(title);
   const userGame = applyStateToUserGame(existingGame || userStateToUserGame(title, ""), userState);
+  if (userState === "playing") Object.assign(userGame, ensurePlaying(userGame, new Date().toISOString()));
   userGame.title = existingGame?.title || title;
   if (existingGame?.provider || existingGame?.catalogStatus || existingGame?.sourceUrl || existingGame?.coverUrl) {
     userGame.source = existingGame.source || userGame.source;
@@ -1319,6 +1362,58 @@ function setGameState(title, userState) {
     hidden: userGame.hidden,
   });
   recordFeedback(userState, title);
+  scheduleUserGameEnrichment(title);
+}
+
+function logGameSession(title, minutes) {
+  const key = titleKey(title);
+  const existing = explicitUserGame(title) || userStateToUserGame(title, "playing");
+  const next = applyPlaySession(existing, minutes);
+  next.title = existing.title || title;
+  state.userGames[key] = normalizeUserGameRecord(next, title);
+  state.userStates[key] = { title, state: "playing", updatedAt: next.updatedAt };
+  recordUserEvent("game_session_logged", title, { minutes: Math.round(Number(minutes) || 0) });
+  recordFeedback("continue_playing", title);
+}
+
+function userGameNeedsProviderEnrichment(record) {
+  if (!record?.title || record.provider || record.sourceUrl || record.coverUrl) return false;
+  if (knownSeedGame(record.title)) return false;
+  if ((catalogBackbone?.records || []).some((item) => titleMatches(item.title, record.title))) return false;
+  return true;
+}
+
+function applyProviderEnrichmentResult(entry, result) {
+  const existing = explicitUserGame(entry.title);
+  const memoryTitle = rememberSearchResultWithoutState(result);
+  const key = titleKey(memoryTitle);
+  const enriched = state.userGames[key];
+  if (!enriched || !existing) return;
+  Object.assign(enriched, {
+    access: existing.access,
+    completionStatus: existing.completionStatus,
+    saved: existing.saved,
+    hidden: existing.hidden,
+    rating: existing.rating,
+    hoursPlayed: existing.hoursPlayed,
+    playProgress: existing.playProgress,
+    startedAt: existing.startedAt,
+    completedAt: existing.completedAt,
+    lastActivityAt: existing.lastActivityAt,
+    updatedAt: new Date().toISOString(),
+  });
+  if (titleKey(entry.title) !== key) delete state.userGames[titleKey(entry.title)];
+  state.userStates[key] = { title: memoryTitle, state: legacyStateFromUserGame(enriched), updatedAt: enriched.updatedAt };
+  recordUserEvent("provider_enrichment_resolved", memoryTitle, { query: entry.title, source: result.sourceId });
+}
+
+function scheduleUserGameEnrichment(title = "") {
+  if (!searchSources?.sources?.length) return;
+  const records = title ? [explicitUserGame(title)] : Object.values(state.userGames || {});
+  const entries = records.filter(userGameNeedsProviderEnrichment).map((record) => ({ title: record.title, kind: "memory_enrichment" }));
+  if (!entries.length) return;
+  queueProviderEnrichmentEntries(entries, { replace: false });
+  runProviderEnrichmentBatch();
 }
 
 function setGameRating(title, rating) {
@@ -7340,22 +7435,106 @@ function renderTasteRadar() {
       const row = document.createElement("div");
       row.className = "radar-row";
       const atoms = (item.atoms || []).slice(0, 3).map((atom) => `<span class="fact tone">${labelAtom(atom)}</span>`).join("");
+      const matched = (item.evidence?.matchedAtoms || []).map(labelAtom);
+      const fitReason = matched.length
+        ? t("discover.radarFitMatched", { signals: matched.join(" / ") })
+        : t("discover.radarFitExplore");
+      const releaseDate = item.releaseDate
+        ? new Intl.DateTimeFormat(document.documentElement.lang || "en", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${item.releaseDate}T00:00:00`))
+        : item.window;
+      const isSaved = gameUserState(item.title) === "saved";
       row.innerHTML = `
-        <div>
-          <strong>${item.title}</strong>
+        ${item.coverUrl ? `<img class="radar-cover" src="${detailAttr(item.coverUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}
+        <div class="radar-main">
+          <strong>${detailAttr(item.title)}</strong>
           <span>${t("discover.radarMeta", {
-            window: item.window,
+            window: releaseDate,
             freshness: discoverAssetStatus(item.freshnessState),
             confidence: discoverConfidenceLabel(item.confidence),
           })}</span>
+          <p>${fitReason}</p>
+          <div class="facts">${atoms}<span class="fact time">${libraryAdultFitLabel(item.adultTimeFit)}</span></div>
         </div>
-        <p>${item.reason}</p>
-        <div class="facts">${atoms}<span class="fact time">${libraryAdultFitLabel(item.adultTimeFit)}</span></div>
-        <span class="score">${Math.max(item.score, 0)}</span>
+        <div class="radar-trust">
+          <span>${t("discover.radarReleaseConfidence")}</span>
+          <a href="${detailAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">RAWG</a>
+          <small>${t("discover.radarVerifyDate")}</small>
+        </div>
+        <div class="radar-actions">
+          <span class="score">${Math.max(item.score, 0)}</span>
+          <button data-radar-save type="button" ${isSaved ? "disabled" : ""}>${isSaved ? t("discover.radarSaved") : t("discover.radarSave")}</button>
+        </div>
       `;
+      row.querySelector("[data-radar-save]")?.addEventListener("click", () => {
+        addSearchResultToWishlist({
+          title: item.title,
+          sourceId: "rawg_provider_hook",
+          provider: "rawg",
+          sourceUrl: item.sourceUrl,
+          coverUrl: item.coverUrl,
+          platforms: item.platforms || [],
+          atoms: item.atoms || [],
+          inferredAtoms: item.atoms || [],
+          catalogStatus: "provider_candidate",
+          matchConfidence: item.identityConfidence || "high",
+          matchKind: "exact",
+          coverStatus: "candidate",
+          priceStatus: "missing",
+          freshnessState: item.freshnessState,
+        });
+        render();
+      });
       return row;
     }),
   );
+}
+
+function renderContinuityPanel() {
+  const record = continuityFocus(state.userGames);
+  if (!record) {
+    els.continuityPanel.hidden = true;
+    els.continuityBody.replaceChildren();
+    return;
+  }
+  const source = sourceGames().find((game) => titleMatches(game.title, record.title));
+  const snapshot = continuitySnapshot(record, source?.hltbHours);
+  const sessionMinutes = Number(state.sessionMinutes) || 60;
+  const lastPlayed = snapshot.lastPlayedAt
+    ? new Intl.DateTimeFormat(document.documentElement.lang || "en", { day: "numeric", month: "short" }).format(new Date(snapshot.lastPlayedAt))
+    : t("today.continuity.notLogged");
+  const progressText = snapshot.percent === null
+    ? t("today.continuity.hours", { hours: snapshot.hoursPlayed.toFixed(snapshot.hoursPlayed % 1 ? 1 : 0) })
+    : t("today.continuity.progress", { hours: snapshot.hoursPlayed.toFixed(snapshot.hoursPlayed % 1 ? 1 : 0), percent: snapshot.percent });
+
+  els.continuityPanel.hidden = false;
+  els.continuityStatus.textContent = t("today.continuity.sessions", { count: snapshot.sessionCount });
+  els.continuityBody.innerHTML = `
+    <div class="continuity-copy">
+      <span>${t("today.continuity.eyebrow")}</span>
+      <strong>${detailAttr(snapshot.title)}</strong>
+      <p>${progressText} · ${t("today.continuity.lastPlayed", { date: lastPlayed })}</p>
+      ${snapshot.percent === null ? "" : `<div class="continuity-progress" aria-label="${t("today.continuity.progressAria", { percent: snapshot.percent })}"><i style="width:${snapshot.percent}%"></i></div>`}
+    </div>
+    <div class="continuity-actions">
+      <button class="primary-action" data-continuity-log type="button">${t("today.continuity.log", { minutes: sessionMinutes })}</button>
+      <button class="secondary-action" data-continuity-detail type="button">${t("today.continuity.details")}</button>
+      <button class="secondary-action" data-continuity-pause type="button">${t("today.continuity.pause")}</button>
+      <button class="secondary-action" data-continuity-finish type="button">${t("today.continuity.finish")}</button>
+    </div>
+  `;
+  els.continuityBody.querySelector("[data-continuity-log]")?.addEventListener("click", () => {
+    logGameSession(snapshot.title, sessionMinutes);
+    render();
+  });
+  els.continuityBody.querySelector("[data-continuity-detail]")?.addEventListener("click", () => openGameDetail(snapshot.title));
+  els.continuityBody.querySelector("[data-continuity-pause]")?.addEventListener("click", () => {
+    setGameState(snapshot.title, "paused");
+    render();
+  });
+  els.continuityBody.querySelector("[data-continuity-finish]")?.addEventListener("click", () => {
+    setGameState(snapshot.title, "completed");
+    render();
+  });
 }
 
 function renderWishlistDashboard(ranked, records) {
@@ -7981,6 +8160,7 @@ function render() {
   if (inView("today", "taste")) renderTasteUnderstoodPanel(ranked);
   if (inView("today", "taste")) renderFirstRunFlow(ranked);
   if (inView("today")) renderTonightTime();
+  if (inView("today")) renderContinuityPanel();
   if (inView("today")) renderCompanionAnswer(ranked);
   if (inView("today")) renderBacklogAmnesty(ranked);
   if (inView("today", "taste")) renderFirstValueReceipt(ranked);
@@ -8742,6 +8922,8 @@ async function hydrateDeferredData() {
       await new Promise((resolve) => window.setTimeout(resolve, 0));
     }
     resumeImportResolutionBatch();
+    scheduleUserGameEnrichment();
+    resumeProviderEnrichmentBatch();
   } catch (error) {
     if (!searchSources?.sources?.length || !Array.isArray(globalSearchFixtures?.records)) {
       searchIndexStatus = "failed";
@@ -8774,6 +8956,7 @@ async function init() {
     titleAliases = nextTitleAliases;
     // titleKey results computed before the alias table arrived are stale
     invalidateTitleKeys();
+    canonicalizeUserGameKeys(state);
     priceSnapshots = nextPriceSnapshots;
     subscriptionAvailability = nextSubscriptionAvailability;
     coverSnapshots = nextCoverSnapshots;

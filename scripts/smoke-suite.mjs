@@ -23,6 +23,7 @@ const SMOKES = [
   { id: "ai-memory-smoke", script: "ai-memory-smoke-test.mjs" },
   { id: "app-view-smoke", script: "app-view-smoke-test.mjs" },
   { id: "core-journey-smoke", script: "core-journey-smoke-test.mjs" },
+  { id: "continuity-radar-smoke", script: "continuity-radar-smoke-test.mjs" },
   { id: "demo-profile-smoke", script: "demo-profile-smoke-test.mjs" },
   { id: "design-smoke", script: "design-smoke-test.mjs" },
   { id: "game-detail-smoke", script: "game-detail-smoke-test.mjs" },

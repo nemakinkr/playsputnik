@@ -10,8 +10,10 @@
     getSelectedAtoms,
     getSourceGames,
     getSourceStatus,
-    tasteRadar,
-    monthlyDrop,
+    tasteRadar = [],
+    monthlyDrop = [],
+    getTasteRadar = () => tasteRadar,
+    getMonthlyDrop = () => monthlyDrop,
     // from search module
     normalizeTitle,
     titleMatches,
@@ -112,9 +114,22 @@
       return Math.round(atomScore + importedScore + timeScore);
     }
 
+    function radarEvidence(item) {
+      const selected = new Set(getSelectedAtoms());
+      const matchedAtoms = (item.atoms || []).filter((atom) => selected.has(atom) || combinedTasteWeight(atom) > 0).slice(0, 3);
+      const avoidedAtoms = (item.atoms || []).filter((atom) => combinedTasteWeight(atom) < -1).slice(0, 2);
+      return {
+        matchedAtoms,
+        avoidedAtoms,
+        fitConfidence: matchedAtoms.length >= 2 ? "high" : matchedAtoms.length ? "medium" : "exploratory",
+      };
+    }
+
     function rankedRadar() {
-      return tasteRadar
-        .map((item) => ({ ...item, score: radarScore(item) }))
+      const today = new Date().toISOString().slice(0, 10);
+      return getTasteRadar()
+        .filter((item) => !item.releaseDate || item.releaseDate >= today)
+        .map((item) => ({ ...item, score: radarScore(item), evidence: radarEvidence(item) }))
         .sort((a, b) => b.score - a.score);
     }
 
@@ -128,7 +143,7 @@
     }
 
     function rankedMonthlyDrop() {
-      return monthlyDrop
+      return getMonthlyDrop()
         .map((item) => ({ ...item, score: dropScore(item) }))
         .sort((a, b) => b.score - a.score);
     }
@@ -152,6 +167,7 @@
       findRatedGame,
       importedTasteScore,
       radarScore,
+      radarEvidence,
       rankedRadar,
       dropScore,
       rankedMonthlyDrop,

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T06:39:41.789Z",
+  "generatedAt": "2026-07-17T07:16:24.127Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -10,7 +10,7 @@
   ],
   "status": "needs_attention",
   "companionLayers": {
-    "tasteRadarCount": 5,
+    "tasteRadarCount": 24,
     "monthlyDropCount": 4,
     "dropCalendarCount": 2,
     "catalogProviderCount": 5,
@@ -204,7 +204,7 @@
     ]
   },
   "refreshDigest": {
-    "generatedAt": "2026-07-17T06:39:41.781Z",
+    "generatedAt": "2026-07-17T07:16:24.122Z",
     "priceSnapshotCount": 1844,
     "subscriptionRecordCount": 509,
     "latestPriceCheckedAt": "2026-07-16T09:20:42.466Z",

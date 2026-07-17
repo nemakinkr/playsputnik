@@ -73,6 +73,11 @@
         importLookupResolved: {},
         importLookupItems: {},
         importLookupBatchSummary: null,
+        providerEnrichmentQueue: [],
+        providerEnrichmentResolved: {},
+        providerEnrichmentItems: {},
+        providerEnrichmentSummary: null,
+        providerEnrichmentBudget: { date: "", used: 0, cap: 20 },
         focusedMemoryTitle: "",
         focusedMemorySurface: "",
         catalogSearch: "",
@@ -181,6 +186,9 @@
         hidden: Boolean(record.hidden || legacyRecord.hidden),
         rating: typeof record.rating === "number" ? record.rating : null,
         hoursPlayed: typeof record.hoursPlayed === "number" ? record.hoursPlayed : null,
+        playProgress: window.PlaySputnikContinuity
+          ? window.PlaySputnikContinuity.normalizePlayProgress(record.playProgress)
+          : (normalizePlainObject(record.playProgress) || null),
         startedAt: record.startedAt || null,
         completedAt: record.completedAt || null,
         lastActivityAt: record.lastActivityAt || null,
@@ -234,7 +242,7 @@
       const records = {};
       Object.entries(savedState.userGames || {}).forEach(([key, record]) => {
         const normalized = normalizeUserGameRecord(record);
-        if (normalized) records[key] = normalized;
+        if (normalized) records[titleKey(normalized.title) || key] = normalized;
       });
 
       Object.values(savedState.userStates || {}).forEach((entry) => {
@@ -367,6 +375,18 @@
       else collection.delete(title);
     }
 
+    function canonicalizeUserGameKeys(state) {
+      state.userGames = hydrateUserGames(state);
+      state.userStates = Object.fromEntries(Object.values(state.userGames)
+        .map((record) => [titleKey(record.title), {
+          title: record.title,
+          state: legacyStateFromUserGame(record),
+          updatedAt: record.updatedAt,
+        }])
+        .filter(([, entry]) => entry.state));
+      return state.userGames;
+    }
+
     return {
       makeQuickReactions,
       makeQuickReactionMap,
@@ -382,6 +402,7 @@
       applyStateToUserGame,
       titleStateSnapshot,
       restoreSetMembership,
+      canonicalizeUserGameKeys,
     };
   }
 

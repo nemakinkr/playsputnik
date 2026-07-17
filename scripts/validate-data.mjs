@@ -254,6 +254,13 @@ if (!Array.isArray(tasteRadar) || tasteRadar.length === 0) {
     if (!item.title) radarIssues.push("Taste radar item is missing title");
     if (!item.window) radarIssues.push(`Taste radar item is missing window: ${item.title || "Untitled"}`);
     if (!item.reason) radarIssues.push(`Taste radar item is missing reason: ${item.title || "Untitled"}`);
+    if (item.source !== "rawg") radarIssues.push(`Taste radar item needs RAWG source: ${item.title || "Untitled"}`);
+    if (!/^https:\/\/rawg\.io\/games\//.test(item.sourceUrl || "")) radarIssues.push(`Taste radar item is missing RAWG sourceUrl: ${item.title || "Untitled"}`);
+    if (!item.coverUrl) radarIssues.push(`Taste radar item is missing coverUrl: ${item.title || "Untitled"}`);
+    if (!item.releaseDate) radarIssues.push(`Taste radar item is missing releaseDate: ${item.title || "Untitled"}`);
+    if (!item.checkedAt) radarIssues.push(`Taste radar item is missing checkedAt: ${item.title || "Untitled"}`);
+    if (!item.confidence || !item.releaseConfidence) radarIssues.push(`Taste radar item is missing confidence: ${item.title || "Untitled"}`);
+    if (item.source === "sample_future_catalog") radarIssues.push(`Taste radar contains a sample title: ${item.title || "Untitled"}`);
     if (!Array.isArray(item.atoms) || item.atoms.length === 0) {
       radarIssues.push(`Taste radar item is missing atoms: ${item.title || "Untitled"}`);
     } else {

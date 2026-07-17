@@ -52,6 +52,7 @@ The order below is executable boot order and offline-cache order.
 | 2 | `src/app-radar.js` | `PlaySputnikRadar` | Taste radar calculations |
 | 2 | `src/app-recommend.js` | `PlaySputnikRecommend` | Recommendation evidence and forecasts |
 | 2 | `src/app-session.js` | `PlaySputnikSession` | Session tracking |
+| 2 | `src/app-continuity.js` | `PlaySputnikContinuity` | Started-game progress and return loop |
 | 2 | `src/app-hltb.js` | `PlaySputnikHltb` | Time and value calculations |
 | 2 | `src/app-ai.js` | `PlaySputnikAi` | Optional AI narrative client and cache |
 | 3 | `src/app-entry.js` | `PlaySputnikEntry` | Entry-route decisions |

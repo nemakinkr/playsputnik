@@ -16,9 +16,52 @@
     now = () => new Date().toISOString(),
     concurrency = 2,
     maxBatchSize = 120,
+    stateKeys = {},
+    dailyRequestCap = Infinity,
+    maxAttempts = 3,
+    retryBaseMs = 60_000,
   }) {
+    const keys = {
+      queue: "importLookupQueue",
+      resolved: "importLookupResolved",
+      items: "importLookupItems",
+      summary: "importLookupBatchSummary",
+      budget: "",
+      ...stateKeys,
+    };
     let activeRun = null;
     let runGeneration = 0;
+
+    function nowIso() {
+      return String(now());
+    }
+
+    function requestBudget() {
+      if (!keys.budget || !Number.isFinite(dailyRequestCap)) {
+        return { date: nowIso().slice(0, 10), used: 0, cap: Infinity, remaining: Infinity };
+      }
+      const state = getState();
+      const date = nowIso().slice(0, 10);
+      const current = state[keys.budget] && typeof state[keys.budget] === "object" ? state[keys.budget] : {};
+      const cap = Math.max(0, Number(current.cap) || Number(dailyRequestCap) || 0);
+      const used = current.date === date ? Math.max(0, Number(current.used) || 0) : 0;
+      state[keys.budget] = { date, used, cap };
+      return { date, used, cap, remaining: Math.max(0, cap - used) };
+    }
+
+    function reserveRequest() {
+      const budget = requestBudget();
+      if (budget.remaining <= 0) return false;
+      if (keys.budget && Number.isFinite(budget.cap)) {
+        getState()[keys.budget] = { date: budget.date, used: budget.used + 1, cap: budget.cap };
+      }
+      return true;
+    }
+
+    function retryAt(attempts) {
+      const timestamp = Date.parse(nowIso()) || Date.now();
+      return new Date(timestamp + retryBaseMs * (2 ** Math.max(0, attempts - 1))).toISOString();
+    }
 
     function normalizeEntry(entry) {
       const title = String(entry?.title || "").trim();
@@ -36,16 +79,17 @@
         resolvedTitle: entry.resolvedTitle || "",
         sourceId: entry.sourceId || "",
         error: entry.error || "",
-        updatedAt: entry.updatedAt || now(),
+        nextRetryAt: entry.nextRetryAt || null,
+        updatedAt: entry.updatedAt || nowIso(),
       };
     }
 
     function itemMap() {
       const state = getState();
-      if (!state.importLookupItems || typeof state.importLookupItems !== "object" || Array.isArray(state.importLookupItems)) {
-        state.importLookupItems = {};
+      if (!state[keys.items] || typeof state[keys.items] !== "object" || Array.isArray(state[keys.items])) {
+        state[keys.items] = {};
       }
-      return state.importLookupItems;
+      return state[keys.items];
     }
 
     function queueEntries(entries, { replace = true } = {}) {
@@ -69,7 +113,8 @@
           status: previous?.status === "resolved" ? "resolved" : "pending",
           attempts: previous?.attempts || 0,
           error: "",
-          updatedAt: now(),
+          nextRetryAt: previous?.nextRetryAt || null,
+          updatedAt: nowIso(),
         });
         orderedKeys.push(key);
       });
@@ -78,9 +123,9 @@
           if (!orderedKeys.includes(key)) orderedKeys.push(key);
         });
       }
-      state.importLookupItems = nextItems;
-      state.importLookupQueue = orderedKeys.map((key) => nextItems[key]?.title).filter(Boolean);
-      state.importLookupResolved = Object.fromEntries(orderedKeys.map((key) => [key, nextItems[key]?.status === "resolved"]));
+      state[keys.items] = nextItems;
+      state[keys.queue] = orderedKeys.map((key) => nextItems[key]?.title).filter(Boolean);
+      state[keys.resolved] = Object.fromEntries(orderedKeys.map((key) => [key, nextItems[key]?.status === "resolved"]));
       updateSummary("queued");
       onProgress(progress(), { phase: "queued" });
       return progress();
@@ -88,22 +133,23 @@
 
     function progress() {
       const state = getState();
-      const queue = (state.importLookupQueue || []).filter(Boolean);
+      const queue = (state[keys.queue] || []).filter(Boolean);
       const items = itemMap();
       const counts = { pending: 0, searching: 0, resolved: 0, review: 0, failed: 0 };
       queue.forEach((title) => {
-        const status = items[titleKey(title)]?.status || (state.importLookupResolved?.[titleKey(title)] ? "resolved" : "pending");
+        const status = items[titleKey(title)]?.status || (state[keys.resolved]?.[titleKey(title)] ? "resolved" : "pending");
         if (Object.hasOwn(counts, status)) counts[status] += 1;
       });
       const done = counts.resolved;
       const remaining = Math.max(0, queue.length - done);
-      return { total: queue.length, done, remaining, ...counts };
+      const budget = requestBudget();
+      return { total: queue.length, done, remaining, ...counts, budgetUsed: budget.used, budgetRemaining: budget.remaining, dailyCap: budget.cap };
     }
 
     function updateSummary(status = "") {
       const state = getState();
       const snapshot = progress();
-      const kinds = [...new Set((state.importLookupQueue || [])
+      const kinds = [...new Set((state[keys.queue] || [])
         .map((title) => itemMap()[titleKey(title)]?.kind)
         .filter(Boolean))];
       const settled = snapshot.resolved + snapshot.review + snapshot.failed;
@@ -113,7 +159,7 @@
             ? snapshot.remaining ? "partial" : "complete"
             : "queued"
       );
-      state.importLookupBatchSummary = {
+      state[keys.summary] = {
         status: finalStatus,
         kind: kinds.length === 1 ? kinds[0] : kinds.length ? "mixed" : "",
         saved: snapshot.resolved,
@@ -122,37 +168,39 @@
         failed: snapshot.failed,
         total: snapshot.total,
         remaining: snapshot.remaining,
-        updatedAt: now(),
+        budgetUsed: snapshot.budgetUsed,
+        budgetRemaining: snapshot.budgetRemaining,
+        updatedAt: nowIso(),
       };
-      return state.importLookupBatchSummary;
+      return state[keys.summary];
     }
 
     function activeTitle(query = getState().gameSearchQuery || "") {
       const state = getState();
-      const queue = (state.importLookupQueue || []).filter(Boolean);
+      const queue = (state[keys.queue] || []).filter(Boolean);
       return queue.find((title) => titleMatches(title, query))
-        || queue.find((title) => !state.importLookupResolved?.[titleKey(title)])
+        || queue.find((title) => !state[keys.resolved]?.[titleKey(title)])
         || queue[0]
         || "";
     }
 
     function nextTitle(currentTitle = activeTitle()) {
       const state = getState();
-      const queue = (state.importLookupQueue || []).filter(Boolean);
+      const queue = (state[keys.queue] || []).filter(Boolean);
       if (!queue.length) return "";
       const currentIndex = Math.max(0, queue.findIndex((title) => titleMatches(title, currentTitle)));
       const ordered = [...queue.slice(currentIndex + 1), ...queue.slice(0, currentIndex + 1)];
-      return ordered.find((title) => !state.importLookupResolved?.[titleKey(title)]) || "";
+      return ordered.find((title) => !state[keys.resolved]?.[titleKey(title)]) || "";
     }
 
     function markResolved(title) {
       const state = getState();
-      const matched = (state.importLookupQueue || []).find((item) => titleMatches(item, title));
+      const matched = (state[keys.queue] || []).find((item) => titleMatches(item, title));
       if (!matched) return false;
       const key = titleKey(matched);
       const item = normalizeEntry(itemMap()[key] || { title: matched });
-      itemMap()[key] = { ...item, status: "resolved", resolvedTitle: title, error: "", updatedAt: now() };
-      state.importLookupResolved = { ...(state.importLookupResolved || {}), [key]: true };
+      itemMap()[key] = { ...item, status: "resolved", resolvedTitle: title, error: "", nextRetryAt: null, updatedAt: nowIso() };
+      state[keys.resolved] = { ...(state[keys.resolved] || {}), [key]: true };
       updateSummary();
       return true;
     }
@@ -160,10 +208,10 @@
     function clearQueue() {
       runGeneration += 1;
       const state = getState();
-      state.importLookupQueue = [];
-      state.importLookupResolved = {};
-      state.importLookupItems = {};
-      state.importLookupBatchSummary = null;
+      state[keys.queue] = [];
+      state[keys.resolved] = {};
+      state[keys.items] = {};
+      state[keys.summary] = null;
       activeRun = null;
       onProgress(progress(), { phase: "cleared" });
     }
@@ -183,14 +231,19 @@
       const state = getState();
       const key = titleKey(item.title);
       const current = normalizeEntry(itemMap()[key] || item);
-      itemMap()[key] = { ...current, status: "searching", attempts: current.attempts + 1, error: "", updatedAt: now() };
+      if (!reserveRequest()) {
+        itemMap()[key] = { ...current, status: "pending", error: "daily_request_cap", updatedAt: nowIso() };
+        updateSummary("rate_limited");
+        return;
+      }
+      itemMap()[key] = { ...current, status: "searching", attempts: current.attempts + 1, error: "", nextRetryAt: null, updatedAt: nowIso() };
       updateSummary("running");
       try {
         const payload = await fetchProvider(current.title);
         if (generation !== runGeneration) return;
         const result = bestProviderResult(payload, current.title);
         if (!result) {
-          itemMap()[key] = { ...itemMap()[key], status: "review", error: "no_confident_match", updatedAt: now() };
+          itemMap()[key] = { ...itemMap()[key], status: "review", error: "no_confident_match", updatedAt: nowIso() };
         } else {
           await onResolved(current, result, payload);
           itemMap()[key] = {
@@ -199,9 +252,10 @@
             resolvedTitle: result.title,
             sourceId: result.sourceId || payload?.provider || "",
             error: "",
-            updatedAt: now(),
+            nextRetryAt: null,
+            updatedAt: nowIso(),
           };
-          state.importLookupResolved = { ...(state.importLookupResolved || {}), [key]: true };
+          state[keys.resolved] = { ...(state[keys.resolved] || {}), [key]: true };
         }
       } catch (error) {
         if (generation !== runGeneration) return;
@@ -209,7 +263,8 @@
           ...itemMap()[key],
           status: "failed",
           error: String(error?.message || error || "provider_failed").slice(0, 240),
-          updatedAt: now(),
+          nextRetryAt: retryAt(itemMap()[key].attempts),
+          updatedAt: nowIso(),
         };
       }
       updateSummary();
@@ -220,12 +275,19 @@
       if (activeRun) return activeRun;
       const items = itemMap();
       const state = getState();
-      const pending = (state.importLookupQueue || [])
+      const currentTime = Date.parse(nowIso()) || Date.now();
+      const pending = (state[keys.queue] || [])
         .map((title) => items[titleKey(title)])
         .filter(Boolean)
-        .filter((item) => retryUnresolved ? RETRYABLE_STATUSES.has(item.status) : ["pending", "searching"].includes(item.status));
+        .filter((item) => item.attempts < maxAttempts)
+        .filter((item) => {
+          if (retryUnresolved) return RETRYABLE_STATUSES.has(item.status);
+          if (["pending", "searching"].includes(item.status)) return true;
+          return item.status === "failed" && (!item.nextRetryAt || Date.parse(item.nextRetryAt) <= currentTime);
+        })
+        .slice(0, requestBudget().remaining);
       if (!pending.length) {
-        updateSummary();
+        updateSummary(progress().budgetRemaining <= 0 && progress().remaining ? "rate_limited" : "");
         onComplete(progress());
         return Promise.resolve(progress());
       }
@@ -258,7 +320,11 @@
     }
 
     function resumeBatch() {
-      const pending = Object.values(itemMap()).some((item) => ["pending", "searching"].includes(item?.status));
+      const currentTime = Date.parse(nowIso()) || Date.now();
+      const pending = Object.values(itemMap()).some((item) => item?.attempts < maxAttempts && (
+        ["pending", "searching"].includes(item?.status)
+        || (item?.status === "failed" && (!item.nextRetryAt || Date.parse(item.nextRetryAt) <= currentTime))
+      ));
       return pending ? runBatch() : Promise.resolve(progress());
     }
 
@@ -273,6 +339,7 @@
       markResolved,
       updateSummary,
       bestProviderResult,
+      requestBudget,
     };
   }
 

@@ -92,7 +92,7 @@ try {
     };
   }, STORAGE_KEY);
   assert(errors.length === 0, `page errors: ${errors.join(" | ")}`);
-  assert(result.stateVersion === 7, `expected schema v7, got ${result.stateVersion}`);
+  assert(result.stateVersion === 8, `expected schema v8, got ${result.stateVersion}`);
   assert(result.summary?.status === "complete", `expected complete batch, got ${result.summary?.status}`);
   assert(result.game?.providerImport?.provider === "rawg", "expected RAWG passport to persist");
   assert(result.game?.rating === 90, "expected imported rating semantics to persist");

@@ -14,6 +14,7 @@
     getDevHealth,
     getCatalogBackbone,
     getCatalogWorkbench,
+    getProviderEnrichmentProgress = () => null,
     devHealthStatusClass,
     catalogStatusClass,
     compactStatus,
@@ -515,6 +516,13 @@
       const missingPrice = records.filter((record) => (record.providerImport?.priceStatus || record.priceStatus) === "missing").length;
       els.providerImportStatus.textContent = t("data.providerImportStatus", { count: records.length, missing: missingPrice });
       const controls = providerImportFilterBar(records);
+      const auto = getProviderEnrichmentProgress() || {};
+      const automation = document.createElement("div");
+      automation.className = "provider-enrichment-summary";
+      automation.innerHTML = `
+        <div><strong>${t("data.providerEnrichmentTitle")}</strong><span>${t("data.providerEnrichmentDetail")}</span></div>
+        <div><strong>${t("data.providerEnrichmentProgress", { done: auto.done || 0, total: auto.total || 0 })}</strong><span>${t("data.providerEnrichmentBudget", { remaining: Number.isFinite(auto.budgetRemaining) ? auto.budgetRemaining : "∞" })}</span></div>
+      `;
       if (!records.length) {
         const empty = document.createElement("div");
         empty.className = "catalog-import-row is-empty";
@@ -524,7 +532,7 @@
             <span>${t("data.providerImportEmptyDetail")}</span>
           </div>
         `;
-        els.providerImportList.replaceChildren(controls, empty);
+        els.providerImportList.replaceChildren(automation, controls, empty);
         return;
       }
       const filteredRecords = records.filter((record) => providerImportFilterMatches(record, providerImportFilter));
@@ -537,10 +545,11 @@
             <span>${t("data.providerImportFilterEmptyDetail")}</span>
           </div>
         `;
-        els.providerImportList.replaceChildren(controls, empty);
+        els.providerImportList.replaceChildren(automation, controls, empty);
         return;
       }
       els.providerImportList.replaceChildren(
+        automation,
         controls,
         ...filteredRecords.slice(0, 12).map((record) => {
           const row = document.createElement("div");
