@@ -103,6 +103,7 @@
         userEvents: [],
         dropDecisions: {},
         sessionLog: [],
+        continuityFocusTitle: "",
         aiExplanations: {},
         aiImportDraft: null,
         aiImportReceipt: null,

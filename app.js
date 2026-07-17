@@ -151,6 +151,9 @@ if (!window.PlaySputnikSession) {
 if (!window.PlaySputnikContinuity) {
   throw new Error("PlaySputnikContinuity must load before app.js");
 }
+if (!window.PlaySputnikBriefing) {
+  throw new Error("PlaySputnikBriefing must load before app.js");
+}
 if (!window.PlaySputnikHltb) {
   throw new Error("PlaySputnikHltb must load before app.js");
 }
@@ -379,11 +382,13 @@ const {
 let state = loadState();
 let selectedGameTitle = "";
 const {
+  activeContinuityRecords,
   continuityFocus,
   ensurePlaying,
   applyPlaySession,
   continuitySnapshot,
 } = window.PlaySputnikContinuity;
+const { buildDailyBriefing } = window.PlaySputnikBriefing;
 
 const {
   quickReaction,
@@ -1106,6 +1111,9 @@ const els = {
   continuityPanel: document.querySelector("#continuity-panel"),
   continuityStatus: document.querySelector("#continuity-status"),
   continuityBody: document.querySelector("#continuity-body"),
+  dailyBriefingPanel: document.querySelector("#daily-briefing-panel"),
+  dailyBriefingStatus: document.querySelector("#daily-briefing-status"),
+  dailyBriefingBody: document.querySelector("#daily-briefing-body"),
   firstRunStatus: document.querySelector("#first-run-status"),
   firstRunGrid: document.querySelector("#first-run-grid"),
   firstRunBridge: document.querySelector("#first-run-bridge"),
@@ -1340,6 +1348,7 @@ function setGameState(title, userState) {
     delete state.userGames[key];
     recordUserEvent("user_game_cleared", title, { from: previousState });
     recordFeedback("clear_state", title);
+    if (titleMatches(state.continuityFocusTitle, title)) state.continuityFocusTitle = "";
     return;
   }
   const existingGame = explicitUserGame(title);
@@ -1362,6 +1371,11 @@ function setGameState(title, userState) {
     hidden: userGame.hidden,
   });
   recordFeedback(userState, title);
+  if (["playing", "paused", "want_to_finish"].includes(userState)) {
+    state.continuityFocusTitle = userGame.title;
+  } else if (titleMatches(state.continuityFocusTitle, userGame.title)) {
+    state.continuityFocusTitle = "";
+  }
   scheduleUserGameEnrichment(title);
 }
 
@@ -1371,6 +1385,7 @@ function logGameSession(title, minutes) {
   const next = applyPlaySession(existing, minutes);
   next.title = existing.title || title;
   state.userGames[key] = normalizeUserGameRecord(next, title);
+  state.continuityFocusTitle = next.title;
   state.userStates[key] = { title, state: "playing", updatedAt: next.updatedAt };
   recordUserEvent("game_session_logged", title, { minutes: Math.round(Number(minutes) || 0) });
   recordFeedback("continue_playing", title);
@@ -7466,22 +7481,7 @@ function renderTasteRadar() {
         </div>
       `;
       row.querySelector("[data-radar-save]")?.addEventListener("click", () => {
-        addSearchResultToWishlist({
-          title: item.title,
-          sourceId: "rawg_provider_hook",
-          provider: "rawg",
-          sourceUrl: item.sourceUrl,
-          coverUrl: item.coverUrl,
-          platforms: item.platforms || [],
-          atoms: item.atoms || [],
-          inferredAtoms: item.atoms || [],
-          catalogStatus: "provider_candidate",
-          matchConfidence: item.identityConfidence || "high",
-          matchKind: "exact",
-          coverStatus: "candidate",
-          priceStatus: "missing",
-          freshnessState: item.freshnessState,
-        });
+        addSearchResultToWishlist(radarSearchResult(item));
         render();
       });
       return row;
@@ -7489,13 +7489,121 @@ function renderTasteRadar() {
   );
 }
 
+function radarSearchResult(item) {
+  return {
+    title: item.title,
+    sourceId: "rawg_provider_hook",
+    provider: "rawg",
+    sourceUrl: item.sourceUrl,
+    coverUrl: item.coverUrl,
+    platforms: item.platforms || [],
+    atoms: item.atoms || [],
+    inferredAtoms: item.atoms || [],
+    catalogStatus: "provider_candidate",
+    matchConfidence: item.identityConfidence || "high",
+    matchKind: "exact",
+    coverStatus: "candidate",
+    priceStatus: "missing",
+    freshnessState: item.freshnessState,
+  };
+}
+
+function briefingKindLabel(kind) {
+  if (kind === "continue") return t("today.briefing.kind.continue");
+  if (kind === "library") return t("today.briefing.kind.library");
+  if (kind === "radar") return t("today.briefing.kind.radar");
+  return t("today.briefing.kind.wishlist");
+}
+
+function briefingActionLabel(kind) {
+  if (kind === "continue") return t("today.briefing.action.continue");
+  if (kind === "library") return t("today.briefing.action.library");
+  if (kind === "radar") return t("today.briefing.action.radar");
+  return t("today.briefing.action.wishlist");
+}
+
+function renderDailyBriefing(ranked) {
+  const activeRecords = activeContinuityRecords(state.userGames);
+  const focusRecord = continuityFocus(state.userGames, state.continuityFocusTitle);
+  const wishlistRecords = wishlistIntentRecords(ranked).map((record) => ({
+    ...record,
+    briefingDecision: wishlistDecision(record),
+  }));
+  const briefing = buildDailyBriefing({
+    date: new Date().toISOString().slice(0, 10),
+    activeRecords,
+    focusRecord,
+    libraryCandidates: ranked.filter((game) => isAlreadyAvailable(game)),
+    radarItems: rankedRadar(),
+    wishlistRecords,
+    sessionMinutes: Number(state.sessionMinutes) || 60,
+    titleKey,
+  });
+  const locale = document.documentElement.lang || "en";
+  const dateLabel = new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short" })
+    .format(new Date(`${briefing.date}T12:00:00`));
+  els.dailyBriefingStatus.textContent = t("today.briefing.status", { date: dateLabel, count: briefing.itemCount });
+
+  if (!briefing.items.length) {
+    els.dailyBriefingBody.replaceChildren();
+    els.dailyBriefingPanel.classList.add("is-empty");
+    return;
+  }
+  els.dailyBriefingPanel.classList.remove("is-empty");
+  els.dailyBriefingBody.replaceChildren(...briefing.items.map((item, index) => {
+    const row = document.createElement("div");
+    row.className = `daily-briefing-row kind-${item.kind} ${index === 0 ? "is-primary" : ""}`;
+    let detail = "";
+    if (item.kind === "continue") detail = t("today.briefing.continueDetail", { minutes: item.sessionMinutes, sessions: item.sessionCount });
+    if (item.kind === "library") detail = t("today.briefing.libraryDetail", { session: librarySessionLabel(item.session || "medium") });
+    if (item.kind === "radar") {
+      const date = item.releaseDate
+        ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${item.releaseDate}T12:00:00`))
+        : t("today.briefing.dateUnknown");
+      detail = t("today.briefing.radarDetail", { date, matches: item.matchCount });
+    }
+    if (item.kind === "wishlist") detail = item.decisionDetail || t("today.briefing.wishlistDetail");
+    row.innerHTML = `
+      <span class="daily-briefing-index">${index + 1}</span>
+      <div class="daily-briefing-copy">
+        <span>${briefingKindLabel(item.kind)}</span>
+        <strong>${detailAttr(item.title)}</strong>
+        <p>${detail}</p>
+      </div>
+      <div class="daily-briefing-action">
+        ${item.decisionLabel ? `<small>${item.decisionLabel}</small>` : ""}
+        <button type="button" data-briefing-action="${item.kind}" data-briefing-title="${detailAttr(item.title)}">${briefingActionLabel(item.kind)}</button>
+      </div>
+    `;
+    row.querySelector("[data-briefing-action]")?.addEventListener("click", () => {
+      if (item.kind === "continue") {
+        state.continuityFocusTitle = item.title;
+        render();
+        window.setTimeout(() => els.continuityPanel?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+      }
+      if (item.kind === "library") {
+        setGameState(item.title, "playing");
+        render();
+      }
+      if (item.kind === "radar") {
+        addSearchResultToWishlist(radarSearchResult(item.sourceItem));
+        render();
+      }
+      if (item.kind === "wishlist") openGameDetail(item.title);
+    });
+    return row;
+  }));
+}
+
 function renderContinuityPanel() {
-  const record = continuityFocus(state.userGames);
+  const activeRecords = activeContinuityRecords(state.userGames);
+  const record = continuityFocus(state.userGames, state.continuityFocusTitle);
   if (!record) {
     els.continuityPanel.hidden = true;
     els.continuityBody.replaceChildren();
     return;
   }
+  state.continuityFocusTitle = record.title;
   const source = sourceGames().find((game) => titleMatches(game.title, record.title));
   const snapshot = continuitySnapshot(record, source?.hltbHours);
   const sessionMinutes = Number(state.sessionMinutes) || 60;
@@ -7507,12 +7615,23 @@ function renderContinuityPanel() {
     : t("today.continuity.progress", { hours: snapshot.hoursPlayed.toFixed(snapshot.hoursPlayed % 1 ? 1 : 0), percent: snapshot.percent });
 
   els.continuityPanel.hidden = false;
-  els.continuityStatus.textContent = t("today.continuity.sessions", { count: snapshot.sessionCount });
+  els.continuityStatus.textContent = t("today.continuity.active", { count: activeRecords.length });
+  const focusButtons = activeRecords.map((active) => `
+    <button class="${titleMatches(active.title, snapshot.title) ? "is-active" : ""}" data-continuity-select="${detailAttr(active.title)}" type="button">
+      <strong>${detailAttr(active.title)}</strong><span>${libraryStateLabel(active.completionStatus)}</span>
+    </button>
+  `).join("");
+  const history = snapshot.sessions.slice(0, 5).map((session) => {
+    const date = new Intl.DateTimeFormat(document.documentElement.lang || "en", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
+      .format(new Date(session.playedAt));
+    return `<li><span>${date}</span><strong>${t("today.continuity.sessionMinutes", { minutes: session.minutes })}</strong></li>`;
+  }).join("");
   els.continuityBody.innerHTML = `
+    ${activeRecords.length > 1 ? `<div class="continuity-switcher" aria-label="${t("today.continuity.switchAria")}">${focusButtons}</div>` : ""}
     <div class="continuity-copy">
       <span>${t("today.continuity.eyebrow")}</span>
       <strong>${detailAttr(snapshot.title)}</strong>
-      <p>${progressText} · ${t("today.continuity.lastPlayed", { date: lastPlayed })}</p>
+      <p>${progressText} · ${t("today.continuity.sessions", { count: snapshot.sessionCount })} · ${t("today.continuity.lastPlayed", { date: lastPlayed })}</p>
       ${snapshot.percent === null ? "" : `<div class="continuity-progress" aria-label="${t("today.continuity.progressAria", { percent: snapshot.percent })}"><i style="width:${snapshot.percent}%"></i></div>`}
     </div>
     <div class="continuity-actions">
@@ -7521,7 +7640,17 @@ function renderContinuityPanel() {
       <button class="secondary-action" data-continuity-pause type="button">${t("today.continuity.pause")}</button>
       <button class="secondary-action" data-continuity-finish type="button">${t("today.continuity.finish")}</button>
     </div>
+    <div class="continuity-history">
+      <span>${t("today.continuity.historyTitle")}</span>
+      ${history ? `<ul>${history}</ul>` : `<p>${t("today.continuity.historyEmpty")}</p>`}
+    </div>
   `;
+  els.continuityBody.querySelectorAll("[data-continuity-select]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.continuityFocusTitle = button.dataset.continuitySelect || "";
+      render();
+    });
+  });
   els.continuityBody.querySelector("[data-continuity-log]")?.addEventListener("click", () => {
     logGameSession(snapshot.title, sessionMinutes);
     render();
@@ -8160,6 +8289,7 @@ function render() {
   if (inView("today", "taste")) renderTasteUnderstoodPanel(ranked);
   if (inView("today", "taste")) renderFirstRunFlow(ranked);
   if (inView("today")) renderTonightTime();
+  if (inView("today")) renderDailyBriefing(ranked);
   if (inView("today")) renderContinuityPanel();
   if (inView("today")) renderCompanionAnswer(ranked);
   if (inView("today")) renderBacklogAmnesty(ranked);

@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 8;
+  const CURRENT_STATE_VERSION = 9;
 
   const migrations = {
     1(state) {
@@ -145,6 +145,27 @@
         providerEnrichmentBudget: state.providerEnrichmentBudget && typeof state.providerEnrichmentBudget === "object"
           ? state.providerEnrichmentBudget
           : { date: "", used: 0, cap: 20 },
+      };
+    },
+    9(state) {
+      const userGames = Object.fromEntries(Object.entries(state.userGames || {}).map(([key, record]) => {
+        if (!record || typeof record !== "object" || Array.isArray(record)) return [key, record];
+        const progress = record.playProgress && typeof record.playProgress === "object" && !Array.isArray(record.playProgress)
+          ? record.playProgress
+          : {};
+        const sessions = (Array.isArray(progress.sessions) ? progress.sessions : [])
+          .map((session) => ({
+            minutes: Math.max(1, Math.round(Number(session?.minutes) || 0)),
+            playedAt: session?.playedAt || null,
+          }))
+          .filter((session) => session.playedAt)
+          .slice(0, 30);
+        return [key, { ...record, playProgress: { ...progress, sessions } }];
+      }));
+      return {
+        ...state,
+        userGames,
+        continuityFocusTitle: String(state.continuityFocusTitle || ""),
       };
     },
   };

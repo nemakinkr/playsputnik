@@ -16,36 +16,56 @@ try {
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
   await page.evaluate(() => {
     localStorage.setItem("playsputnik.prototype.state.v2", JSON.stringify({
-      stateVersion: 8, activeView: "today", liked: [], hidden: [], saved: [], snoozed: [], userStates: {},
+      stateVersion: 9, activeView: "today", liked: [], hidden: [], saved: [], snoozed: [], userStates: {},
       userGames: {
         control: {
           title: "Control", completionStatus: "playing", hoursPlayed: 1, startedAt: "2026-07-17T10:00:00.000Z",
           lastActivityAt: "2026-07-17T10:00:00.000Z", playProgress: { sessionCount: 1, totalMinutes: 60, lastSessionMinutes: 60 },
+        },
+        "alan wake 2": {
+          title: "Alan Wake 2", completionStatus: "paused", hoursPlayed: 2, startedAt: "2026-07-16T10:00:00.000Z",
+          lastActivityAt: "2026-07-16T10:00:00.000Z", playProgress: { sessionCount: 0, totalMinutes: 0, lastSessionMinutes: 0, sessions: [] },
         },
       },
     }));
   });
   await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
   await page.waitForSelector("#continuity-panel:not([hidden]) [data-continuity-log]", { timeout: 10000 });
+  const initial = await page.evaluate(() => ({
+    activeGames: document.querySelectorAll("[data-continuity-select]").length,
+    briefingKinds: [...document.querySelectorAll("[data-briefing-action]")].map((button) => button.dataset.briefingAction),
+  }));
+  assert(initial.activeGames === 2, `expected two manageable active games, got ${initial.activeGames}`);
+  assert(initial.briefingKinds[0] === "continue", `daily briefing should lead with active play: ${initial.briefingKinds}`);
+
+  await page.click('[data-continuity-select="Alan Wake 2"]');
   await page.click("[data-continuity-log]");
   await page.waitForFunction(() => {
     const state = JSON.parse(localStorage.getItem("playsputnik.prototype.state.v2") || "{}");
-    return Object.values(state.userGames || {}).some((record) => record.title === "Control" && record.playProgress?.sessionCount === 2);
+    return Object.values(state.userGames || {}).some((record) => record.title === "Alan Wake 2" && record.playProgress?.sessionCount === 1);
   }, null, { timeout: 5000 });
   const afterSession = await page.evaluate(() => {
     const state = JSON.parse(localStorage.getItem("playsputnik.prototype.state.v2") || "{}");
-    return Object.values(state.userGames || {}).find((record) => record.title === "Control");
+    return {
+      game: Object.values(state.userGames || {}).find((record) => record.title === "Alan Wake 2"),
+      historyRows: document.querySelectorAll(".continuity-history li").length,
+    };
   });
-  assert(afterSession.playProgress.sessionCount === 2, "continuity check-in should increment session count");
-  assert(afterSession.hoursPlayed > 1, "continuity check-in should increment hours played");
+  assert(afterSession.game.playProgress.sessionCount === 1, "selected game check-in should increment its session count");
+  assert(afterSession.game.hoursPlayed > 2, "selected game check-in should increment its hours played");
+  assert(afterSession.game.playProgress.sessions.length === 1 && afterSession.historyRows === 1, "session history should persist and render");
 
   await page.click("[data-continuity-finish]");
-  const afterFinish = await page.evaluate(() => ({
+  const afterFirstFinish = await page.evaluate(() => ({
     hidden: document.querySelector("#continuity-panel")?.hidden,
     status: Object.values(JSON.parse(localStorage.getItem("playsputnik.prototype.state.v2") || "{}").userGames || {})
-      .find((record) => record.title === "Control")?.completionStatus,
+      .find((record) => record.title === "Alan Wake 2")?.completionStatus,
+    focus: document.querySelector(".continuity-copy strong")?.textContent,
   }));
-  assert(afterFinish.hidden && afterFinish.status === "completed", "finished game should leave the active continuity slot");
+  assert(!afterFirstFinish.hidden && afterFirstFinish.status === "completed" && /Control/.test(afterFirstFinish.focus), "finishing one game should hand focus to the next active game");
+  await page.click("[data-continuity-finish]");
+  const allFinished = await page.evaluate(() => document.querySelector("#continuity-panel")?.hidden);
+  assert(allFinished, "continuity panel should close after the final active game is completed");
 
   await page.click('[data-app-view="discover"]');
   await page.waitForTimeout(2500);
@@ -64,7 +84,7 @@ try {
   assert(radarMemory?.saved, "radar watch action should persist wishlist intent");
   assert(radarMemory?.provider === "rawg" && radarMemory?.sourceUrl, "radar memory should retain RAWG source passport");
   assert(errors.length === 0, `Page errors: ${errors.join("; ")}`);
-  console.log("✅ continuity check-in, completion handoff, and sourced radar save work in browser");
+  console.log("✅ multi-game continuity, session history, daily briefing, and sourced radar save work in browser");
 } finally {
   await browser.close();
 }

@@ -27,6 +27,7 @@
     [3, "src/app-cover.js", "PlaySputnikCover", "Cover resolution and attribution"],
     [3, "src/app-dev.js", "PlaySputnikDev", "Diagnostics and development health"],
     [4, "src/app-library.js", "PlaySputnikLibrary", "Library queues and decisions"],
+    [4, "src/app-briefing.js", "PlaySputnikBriefing", "Unified daily companion agenda"],
     [4, "src/app-visual.js", "PlaySputnikVisual", "Catalog filtering and visual state"],
     [4, "src/app-provider-import.js", "PlaySputnikProviderImport", "Provider import metadata and review actions"],
     [4, "src/app-search-memory.js", "PlaySputnikSearchMemory", "Search-result memory workflows"],
