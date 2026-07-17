@@ -256,6 +256,71 @@ async function runFounderRankingScenario(page) {
   return { preview, taste, calibration, wishlist };
 }
 
+async function runAiImportJourneyScenario(page) {
+  await clearStoredState(page);
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.reload({ waitUntil: "domcontentloaded", timeout: 15000 });
+  await waitForAppReady(page);
+  await page.evaluate(() => window.PlaySputnikI18n?.setLocale("en"));
+  await page.evaluate(() => document.querySelector('[data-app-view="taste"]')?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "taste", null, { timeout: 5000 });
+  await page.evaluate(() => document.querySelector("[data-profile-action='import']")?.click());
+  await page.waitForFunction(() => document.querySelector("#setup-panel")?.classList.contains("is-open"), null, { timeout: 5000 });
+  const mobileEntry = await page.evaluate(() => ({
+    panelOpen: document.querySelector("#setup-panel")?.classList.contains("is-open") || false,
+    expanded: document.querySelector("#settings-toggle")?.getAttribute("aria-expanded") || "",
+    focused: document.activeElement?.id || "",
+  }));
+
+  await page.evaluate(() => {
+    const input = document.querySelector("#rating-import");
+    input.value = "Control - 9/10\nStray - completed\nProject Orion QA - wishlist";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    document.querySelector("#analyze-ratings")?.click();
+  });
+  await page.waitForSelector("#confirm-ai-import:not([hidden])", { timeout: 15000 });
+  const draft = await page.evaluate(() => ({
+    rows: document.querySelectorAll("[data-ai-import-entry]").length,
+    text: document.querySelector("#taste-import-preview")?.textContent?.replace(/\s+/g, " ").trim() || "",
+  }));
+  await page.evaluate(() => document.querySelector("#confirm-ai-import")?.click());
+  await page.waitForFunction(() => !document.querySelector("#ai-import-outcome")?.classList.contains("is-hidden"), null, { timeout: 5000 });
+  await page.waitForFunction((key) => {
+    const state = JSON.parse(localStorage.getItem(key) || "{}");
+    return state.importLookupBatchSummary?.status === "complete";
+  }, STORAGE_KEY, { timeout: 15000 });
+  await page.waitForTimeout(300);
+
+  const completed = await page.evaluate((key) => {
+    const state = JSON.parse(localStorage.getItem(key) || "{}");
+    const project = Object.values(state.userGames || {}).find((record) => record.title === "Project Orion QA");
+    const control = Object.values(state.userGames || {}).find((record) => record.title === "Control");
+    const stray = Object.values(state.userGames || {}).find((record) => record.title === "Stray");
+    return {
+      activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
+      panelOpen: document.querySelector("#setup-panel")?.classList.contains("is-open") || false,
+      outcome: document.querySelector("#ai-import-outcome")?.textContent?.replace(/\s+/g, " ").trim() || "",
+      imported: state.aiImportReceipt?.imported || 0,
+      lookupStatus: state.importLookupBatchSummary?.status || "",
+      projectSaved: Boolean(project?.saved),
+      projectProvider: project?.providerImport?.provider || project?.provider || "",
+      projectPriceStatus: project?.providerImport?.priceStatus || project?.priceStatus || "",
+      controlRating: control?.rating ?? null,
+      strayStatus: stray?.completionStatus || "",
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  }, STORAGE_KEY);
+
+  await page.evaluate(() => document.querySelector("[data-ai-import-outcome-action='today']")?.click());
+  await page.waitForFunction(() => document.querySelector("[data-app-view].is-active")?.dataset.appView === "today", null, { timeout: 5000 });
+  const payoff = await page.evaluate(() => ({
+    activeView: document.querySelector("[data-app-view].is-active")?.dataset.appView || "",
+    topPick: document.querySelector("#top-pick")?.textContent?.replace(/\s+/g, " ").trim() || "",
+  }));
+  await page.setViewportSize({ width: 1280, height: 900 });
+  return { mobileEntry, draft, completed, payoff };
+}
+
 const { chromium } = await loadPlaywright();
 const browser = await chromium.launch({
   headless: true,
@@ -399,9 +464,10 @@ try {
   }));
 
   const afterBuy = await markBoughtThroughAppMemory(page, beforeBuyTitle);
+  const aiImportJourney = await runAiImportJourneyScenario(page);
   const founderRanking = await runFounderRankingScenario(page);
 
-  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, libraryCommandFiltered, wishlistBefore, priceAlertTitle, wishlistTargetSet, wishlistTargetCleared, wishlistFiltered, afterBuy, founderRanking, errors };
+  const result = { mode: "library-wishlist-smoke", url: targetUrl, library, libraryFiltered, libraryCommandFiltered, wishlistBefore, priceAlertTitle, wishlistTargetSet, wishlistTargetCleared, wishlistFiltered, afterBuy, aiImportJourney, founderRanking, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(library.activeView === "library", `Expected Library view, got ${library.activeView}`);
@@ -437,6 +503,16 @@ try {
   assert(wishlistBefore.actionButtons >= wishlistBefore.rows * 3, "Wishlist rows should expose quick state actions");
   assert(afterBuy.access === "owned_forever", `Expected ${afterBuy.title} to be saved as owned_forever, got ${afterBuy.access}`);
   assert(afterBuy.saved === false, "Bought games should leave the wishlist saved flag");
+  assert(aiImportJourney.mobileEntry.panelOpen && aiImportJourney.mobileEntry.expanded === "true", "Taste import entry must open the mobile settings panel");
+  assert(aiImportJourney.draft.rows === 3, `Expected three reviewable AI rows, got ${aiImportJourney.draft.rows}`);
+  assert(aiImportJourney.completed.activeView === "taste" && !aiImportJourney.completed.panelOpen, "Confirming AI import should close settings and reveal the Taste payoff");
+  assert(aiImportJourney.completed.imported === 3 && aiImportJourney.completed.lookupStatus === "complete", "AI import receipt and provider queue should complete");
+  assert(aiImportJourney.completed.projectSaved && aiImportJourney.completed.projectProvider === "rawg", "Unknown wishlist title should retain state through RAWG resolution");
+  assert(aiImportJourney.completed.projectPriceStatus === "missing", "Provider resolution must not invent a store price");
+  assert(aiImportJourney.completed.controlRating === 90 && aiImportJourney.completed.strayStatus === "completed", "Explicit rating and completion state should persist");
+  assert(/3 games now shape|3 игры уже влияют/i.test(aiImportJourney.completed.outcome), `Expected concrete post-import payoff, got: ${aiImportJourney.completed.outcome}`);
+  assert(aiImportJourney.completed.overflow <= 1, "AI import outcome should not overflow at 390px");
+  assert(aiImportJourney.payoff.activeView === "today" && aiImportJourney.payoff.topPick.length > 20, "Post-import CTA should open a recalculated Today pick");
   assert(/найдено (?:8\d|9\d|1\d\d)\/111|matched (?:8\d|9\d|1\d\d)\/111/i.test(founderRanking.preview.text), `Expected founder preview to recognize 80+ scoring matches, got: ${founderRanking.preview.text}`);
   assert(/Опоры вкуса|Taste anchors/.test(founderRanking.preview.text), `Expected founder preview to show trusted taste anchors, got: ${founderRanking.preview.text}`);
   assert(/известно в источниках: 111\/111|known (?:in|to) sources: 111\/111|111\/111 known in sources/i.test(founderRanking.preview.text), `Expected founder preview to show full known-source coverage, got: ${founderRanking.preview.text}`);

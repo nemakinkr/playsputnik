@@ -1,6 +1,6 @@
 # PlaySputnik Project State
 
-Last updated: 2026-07-16 (Codex resumed after Claude polish/architecture
+Last updated: 2026-07-17 (Codex resumed after Claude polish/architecture
 series; see HANDOFF.md for the full narrative and CLAUDE.md for dev workflow +
 performance rules).
 
@@ -32,7 +32,7 @@ reviews, catalogs, sale pages, and announcements.
   Pages configure/upload/deploy `v6/v5/v5`). A local + CI runtime-policy gate
   prevents deprecated action majors or `node-version: 20` from returning.
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v146 (cache-first static assets / network-first navigation and
+- Service worker v148 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -102,6 +102,11 @@ reviews, catalogs, sale pages, and announcements.
   a library state. Uncertain or failed matches remain explicit review items.
   The reusable workflow lives in `src/app-import-resolution.js`; schema v6 and
   deterministic unit/browser gates protect it.
+- Pasted AI taste imports now finish on a visible payoff instead of ending in
+  setup: mobile entry opens correctly, review/confirm returns to Taste, a
+  receipt reports accepted/known/provider-found records, and Today is one
+  action away. The smoke suite verifies unknown-title RAWG resolution while
+  preserving rating, completion state, and `priceStatus: missing`.
 - Production API is live at
   `https://playsputnik-api.playsputnik.workers.dev`. Pages receives this origin
   through the `PLAYSPUTNIK_API_ORIGIN` repository variable. RAWG search and
@@ -392,7 +397,7 @@ the active view.
 
 ## Data And Catalog
 
-- `data/games.json`: 456 games, deduped (alias-aware via titleKey), 100%
+- `data/games.json`: 461 games, deduped (alias-aware via titleKey), 100%
   cover coverage and discount snapshots; regional price coverage is ~95-96%
   with honest missing-price issues for delisted/edge-case games.
 - Prices: ITAD, 4 regions (US/GB/DE/TR), per-record source + `checkedAt` +
@@ -400,6 +405,10 @@ the active view.
 - PS Plus: live Extra list from PS Store category pages; Premium category id
   unknown (3 manual records).
 - Covers: RAWG candidates with attribution (`sourceUrl`, `licenseNote`).
+- Eight priority backbone games also have exact RAWG identity, attributed
+  cover candidates, compact provider metadata, and no fabricated price or
+  subscription state. `scripts/enrich-backbone-provider.mjs` reproduces the
+  package; its data-contract test runs in the standard gate.
 - Provider-backed search coverage: the live RAWG layer can resolve all 111
   titles in the founder ranking when aliases are applied, while prices and
   subscription status remain separate store-backed freshness signals.

@@ -1,6 +1,6 @@
 {
   "mode": "pre-mvp-catalog-backbone",
-  "updatedAt": "2026-07-13T12:30:00Z",
+  "updatedAt": "2026-07-17T12:00:00Z",
   "goal": "Provide a structured growth queue from the 24-game seed catalog toward a 150-game private-demo catalog without requiring full price or cover ingestion for every title.",
   "target": {
     "seedTarget": 150,
@@ -2451,7 +2451,7 @@
       "title": "Ghost of Yotei",
       "lane": "upcoming_watch",
       "priority": 1,
-      "status": "blocked_identity",
+      "status": "ready_for_atom_review",
       "source": "wishlist_note",
       "platforms": [
         "PS5"
@@ -2465,10 +2465,92 @@
       "session": "medium",
       "commitment": "medium",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "needs_review",
       "priceNeed": "warm",
-      "reason": "Needs alias/platform review before promotion."
+      "reason": "Needs alias/platform review before promotion.",
+      "provider": "rawg",
+      "providerRecordId": "989329",
+      "providerTitle": "Ghost of Yotei",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/ghost-of-yotei",
+      "coverUrl": "https://media.rawg.io/media/games/30b/30b195c2321d763f807366967ffad793.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PlayStation",
+        "PlayStation 5"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "low",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 3,
+        "rawSignals": {
+          "genres": [
+            "Action",
+            "RPG"
+          ],
+          "tags": [],
+          "playtimeHours": null,
+          "esrb": "Adults Only",
+          "released": "2025-10-02",
+          "rating": 4.2,
+          "ratingsCount": 42,
+          "metacritic": 0
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action",
+              "rpg",
+              "choice",
+              "systems"
+            ],
+            "confidence": "medium"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "length": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "difficulty": {
+            "value": "normal",
+            "confidence": "low"
+          },
+          "commitment": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "tone": {
+            "value": "neutral",
+            "confidence": "low"
+          },
+          "content": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "reviewBurden": {
+            "value": "high",
+            "confidence": "low"
+          },
+          "adultTimeFit": {
+            "value": "evening",
+            "confidence": "medium"
+          }
+        }
+      }
     },
     {
       "title": "Death Stranding 2",
@@ -2641,7 +2723,7 @@
       "title": "Kingdom Come: Deliverance II",
       "lane": "open_world_rpg",
       "priority": 1,
-      "status": "candidate",
+      "status": "ready_for_seed",
       "source": "ranking_dogfood",
       "platforms": [
         "PS5",
@@ -2657,16 +2739,123 @@
       "session": "long",
       "commitment": "high",
       "adultTimeFit": "vacation",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "complete",
       "priceNeed": "hot",
-      "reason": "Founder ranking top-3 favorite; needs full seed promotion path once cover and price trust are resolved."
+      "reason": "Founder ranking top-3 favorite; needs full seed promotion path once cover and price trust are resolved.",
+      "provider": "rawg",
+      "providerRecordId": "980502",
+      "providerTitle": "Kingdom Come: Deliverance II",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/kingdom-come-deliverance-ii",
+      "coverUrl": "https://media.rawg.io/media/games/d84/d842fec4ae7bbd782d330f678c980f7f.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "PlayStation 5",
+        "Xbox Series S/X"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "medium",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 6,
+        "rawSignals": {
+          "genres": [
+            "Adventure",
+            "Action",
+            "RPG"
+          ],
+          "tags": [
+            "Singleplayer",
+            "Для одного игрока",
+            "Экшен",
+            "Приключение",
+            "Steam Achievements",
+            "Full controller support",
+            "Steam Cloud",
+            "Atmospheric",
+            "Глубокий сюжет",
+            "RPG",
+            "Ролевая игра",
+            "Story Rich",
+            "Открытый мир",
+            "Open World",
+            "От первого лица",
+            "First-Person"
+          ],
+          "playtimeHours": 28,
+          "esrb": "Adults Only",
+          "released": "2025-02-03",
+          "rating": 4.39,
+          "ratingsCount": 169,
+          "metacritic": 0
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action",
+              "exploration",
+              "story",
+              "choice",
+              "rpg",
+              "systems",
+              "open-world",
+              "atmosphere"
+            ],
+            "confidence": "medium"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "length": {
+            "value": "long",
+            "confidence": "medium"
+          },
+          "difficulty": {
+            "value": "normal",
+            "confidence": "low"
+          },
+          "commitment": {
+            "value": "high",
+            "confidence": "medium"
+          },
+          "tone": {
+            "value": "moody",
+            "confidence": "medium"
+          },
+          "content": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "reviewBurden": {
+            "value": "high",
+            "confidence": "low"
+          },
+          "adultTimeFit": {
+            "value": "weekend",
+            "confidence": "medium"
+          }
+        }
+      }
     },
     {
       "title": "Days Gone",
       "lane": "open_world_rpg",
       "priority": 1,
-      "status": "candidate",
+      "status": "ready_for_seed",
       "source": "ranking_dogfood",
       "platforms": [
         "PS4",
@@ -2681,16 +2870,121 @@
       "session": "medium",
       "commitment": "high",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "complete",
       "priceNeed": "hot",
-      "reason": "Founder ranking top-10 favorite; useful for open-world survival-action taste scoring before seed promotion."
+      "reason": "Founder ranking top-10 favorite; useful for open-world survival-action taste scoring before seed promotion.",
+      "provider": "rawg",
+      "providerRecordId": "29338",
+      "providerTitle": "Days Gone",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/days-gone",
+      "coverUrl": "https://media.rawg.io/media/games/a79/a79d2fc90c4dbf07a8580b19600fd61d.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PC",
+        "PlayStation",
+        "PlayStation 4"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "medium",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 7,
+        "rawSignals": {
+          "genres": [
+            "Action"
+          ],
+          "tags": [
+            "Singleplayer",
+            "Для одного игрока",
+            "Экшен",
+            "Приключение",
+            "Steam Achievements",
+            "Multiplayer",
+            "Full controller support",
+            "Steam Cloud",
+            "Atmospheric",
+            "Для нескольких игроков",
+            "Глубокий сюжет",
+            "RPG",
+            "Story Rich",
+            "Открытый мир",
+            "Open World",
+            "От третьего лица"
+          ],
+          "playtimeHours": 10,
+          "esrb": "Mature",
+          "released": "2019-04-26",
+          "rating": 3.97,
+          "ratingsCount": 1404,
+          "metacritic": 74
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action",
+              "exploration",
+              "story",
+              "choice",
+              "rpg",
+              "systems",
+              "shooter",
+              "horror",
+              "tension",
+              "multiplayer"
+            ],
+            "confidence": "medium"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "length": {
+            "value": "short",
+            "confidence": "medium"
+          },
+          "difficulty": {
+            "value": "normal",
+            "confidence": "low"
+          },
+          "commitment": {
+            "value": "high",
+            "confidence": "medium"
+          },
+          "tone": {
+            "value": "dark",
+            "confidence": "medium"
+          },
+          "content": {
+            "value": "graphic-violence",
+            "confidence": "low"
+          },
+          "reviewBurden": {
+            "value": "high",
+            "confidence": "low"
+          },
+          "adultTimeFit": {
+            "value": "weekend",
+            "confidence": "medium"
+          }
+        }
+      }
     },
     {
       "title": "Atomic Heart",
       "lane": "action_challenge",
       "priority": 1,
-      "status": "candidate",
+      "status": "ready_for_seed",
       "source": "ranking_dogfood",
       "platforms": [
         "PS5",
@@ -2707,16 +3001,123 @@
       "session": "medium",
       "commitment": "medium",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "complete",
       "priceNeed": "hot",
-      "reason": "Founder ranking top-15 favorite; covers stylized sci-fi shooter taste better than generic action candidates."
+      "reason": "Founder ranking top-15 favorite; covers stylized sci-fi shooter taste better than generic action candidates.",
+      "provider": "rawg",
+      "providerRecordId": "50576",
+      "providerTitle": "Atomic Heart",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/atomic-heart",
+      "coverUrl": "https://media.rawg.io/media/games/6ee/6ee5cbe30c6b6c299a3288337d40a0f3.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "PlayStation 5",
+        "Xbox One",
+        "PlayStation 4",
+        "Xbox Series S/X"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "medium",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 7,
+        "rawSignals": {
+          "genres": [
+            "Shooter",
+            "Adventure",
+            "Action"
+          ],
+          "tags": [
+            "Singleplayer",
+            "Для одного игрока",
+            "Экшен",
+            "Приключение",
+            "Атмосфера",
+            "Открытый мир",
+            "От первого лица",
+            "Научная фантастика",
+            "Partial Controller Support",
+            "Horror",
+            "Шутер от первого лица",
+            "Мясо",
+            "Хоррор на выживание",
+            "Пост-апокалипсис",
+            "Сюрреалистичная",
+            "Роботы"
+          ],
+          "playtimeHours": 12,
+          "esrb": "Mature",
+          "released": "2023-02-21",
+          "rating": 3.85,
+          "ratingsCount": 624,
+          "metacritic": 73
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action",
+              "exploration",
+              "story",
+              "shooter",
+              "horror",
+              "tension"
+            ],
+            "confidence": "medium"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "length": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "difficulty": {
+            "value": "normal",
+            "confidence": "low"
+          },
+          "commitment": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "tone": {
+            "value": "dark",
+            "confidence": "medium"
+          },
+          "content": {
+            "value": "horror-themes",
+            "confidence": "medium"
+          },
+          "reviewBurden": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "adultTimeFit": {
+            "value": "evening",
+            "confidence": "medium"
+          }
+        }
+      }
     },
     {
       "title": "Dispatch",
       "lane": "cinematic_story",
       "priority": 1,
-      "status": "candidate",
+      "status": "ready_for_seed",
       "source": "ranking_dogfood",
       "platforms": [
         "PS5",
@@ -2731,16 +3132,116 @@
       "session": "short",
       "commitment": "medium",
       "adultTimeFit": "weeknight",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "complete",
       "priceNeed": "warm",
-      "reason": "Founder ranking top-15 favorite; keeps choice-led narrative taste visible outside the external search layer."
+      "reason": "Founder ranking top-15 favorite; keeps choice-led narrative taste visible outside the external search layer.",
+      "provider": "rawg",
+      "providerRecordId": "337273",
+      "providerTitle": "Dispatch",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/dispatch-2",
+      "coverUrl": "https://media.rawg.io/media/games/2f6/2f6c45362818859574ac0e37edf3d3c4.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PC",
+        "PlayStation",
+        "PlayStation 5"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "medium",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 8,
+        "rawSignals": {
+          "genres": [
+            "Adventure",
+            "Action",
+            "Casual",
+            "Strategy",
+            "Indie"
+          ],
+          "tags": [
+            "Atmospheric",
+            "Horror",
+            "Pixel Graphics",
+            "Dark",
+            "creepy",
+            "8-Bit",
+            "ascii",
+            "glitch"
+          ],
+          "playtimeHours": null,
+          "esrb": "Adults Only",
+          "released": "2025-10-22",
+          "rating": 4.46,
+          "ratingsCount": 218,
+          "metacritic": 0
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action",
+              "exploration",
+              "story",
+              "strategy",
+              "systems",
+              "horror",
+              "tension",
+              "indie",
+              "atmosphere"
+            ],
+            "confidence": "medium"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "length": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "difficulty": {
+            "value": "low",
+            "confidence": "medium"
+          },
+          "commitment": {
+            "value": "low",
+            "confidence": "medium"
+          },
+          "tone": {
+            "value": "dark",
+            "confidence": "medium"
+          },
+          "content": {
+            "value": "horror-themes",
+            "confidence": "medium"
+          },
+          "reviewBurden": {
+            "value": "low",
+            "confidence": "medium"
+          },
+          "adultTimeFit": {
+            "value": "evening",
+            "confidence": "medium"
+          }
+        }
+      }
     },
     {
       "title": "Marvel's Guardians of the Galaxy",
       "lane": "cinematic_story",
       "priority": 1,
-      "status": "candidate",
+      "status": "ready_for_seed",
       "source": "ranking_dogfood",
       "platforms": [
         "PS5",
@@ -2757,10 +3258,122 @@
       "session": "medium",
       "commitment": "medium",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "complete",
       "priceNeed": "warm",
-      "reason": "Founder ranking top-20 favorite; resolves the Russian title alias into a managed story-action catalog candidate."
+      "reason": "Founder ranking top-20 favorite; resolves the Russian title alias into a managed story-action catalog candidate.",
+      "provider": "rawg",
+      "providerRecordId": "616765",
+      "providerTitle": "Marvel's Guardians of the Galaxy",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/guardians-of-the-galaxy",
+      "coverUrl": "https://media.rawg.io/media/games/708/7080e6c87e0825cb02888bf3c44b3889.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "Nintendo",
+        "PlayStation 5",
+        "Xbox One",
+        "PlayStation 4",
+        "Xbox Series S/X"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "medium",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 7,
+        "rawSignals": {
+          "genres": [
+            "Shooter",
+            "Adventure",
+            "Action"
+          ],
+          "tags": [
+            "Singleplayer",
+            "Для одного игрока",
+            "Экшен",
+            "Приключение",
+            "Steam Achievements",
+            "Full controller support",
+            "Steam Cloud",
+            "Atmospheric",
+            "Глубокий сюжет",
+            "RPG",
+            "Ролевая игра",
+            "Story Rich",
+            "Открытый мир",
+            "Open World",
+            "Шутер",
+            "Научная фантастика"
+          ],
+          "playtimeHours": 10,
+          "esrb": "Teen",
+          "released": "2021-10-26",
+          "rating": 4.29,
+          "ratingsCount": 905,
+          "metacritic": 0
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action",
+              "exploration",
+              "story",
+              "choice",
+              "rpg",
+              "systems",
+              "shooter",
+              "open-world",
+              "atmosphere",
+              "sci-fi"
+            ],
+            "confidence": "medium"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "length": {
+            "value": "short",
+            "confidence": "medium"
+          },
+          "difficulty": {
+            "value": "normal",
+            "confidence": "low"
+          },
+          "commitment": {
+            "value": "high",
+            "confidence": "medium"
+          },
+          "tone": {
+            "value": "dark",
+            "confidence": "medium"
+          },
+          "content": {
+            "value": "graphic-violence",
+            "confidence": "low"
+          },
+          "reviewBurden": {
+            "value": "high",
+            "confidence": "low"
+          },
+          "adultTimeFit": {
+            "value": "weekend",
+            "confidence": "medium"
+          }
+        }
+      }
     },
     {
       "title": "Metro Exodus",
@@ -3202,7 +3815,7 @@
       "title": "Assassin's Creed Shadows",
       "lane": "open_world_rpg",
       "priority": 1,
-      "status": "candidate",
+      "status": "ready_for_seed",
       "source": "founder_wishlist",
       "platforms": [
         "PS5",
@@ -3219,16 +3832,102 @@
       "session": "medium",
       "commitment": "high",
       "adultTimeFit": "weekend",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "complete",
       "priceNeed": "hot",
-      "reason": "Explicit two-heart founder wishlist candidate; local metadata supports offline taste evaluation while store facts remain unverified."
+      "reason": "Explicit two-heart founder wishlist candidate; local metadata supports offline taste evaluation while store facts remain unverified.",
+      "provider": "rawg",
+      "providerRecordId": "981791",
+      "providerTitle": "Assassin's Creed Shadows",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/assassins-creed-shadows",
+      "coverUrl": "https://media.rawg.io/media/games/526/526881e0f5f8c1550e51df3801f96ea3.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "Apple Macintosh",
+        "PlayStation 5",
+        "Xbox Series S/X",
+        "macOS"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "low",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 3,
+        "rawSignals": {
+          "genres": [
+            "Adventure",
+            "Action"
+          ],
+          "tags": [],
+          "playtimeHours": null,
+          "esrb": "Rating Pending",
+          "released": "2025-03-20",
+          "rating": 3.21,
+          "ratingsCount": 75,
+          "metacritic": 0
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action",
+              "exploration",
+              "story"
+            ],
+            "confidence": "low"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "medium"
+          },
+          "length": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "difficulty": {
+            "value": "normal",
+            "confidence": "low"
+          },
+          "commitment": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "tone": {
+            "value": "neutral",
+            "confidence": "low"
+          },
+          "content": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "reviewBurden": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "adultTimeFit": {
+            "value": "evening",
+            "confidence": "medium"
+          }
+        }
+      }
     },
     {
       "title": "Senua's Saga: Hellblade II",
       "lane": "cinematic_story",
       "priority": 1,
-      "status": "candidate",
+      "status": "ready_for_seed",
       "source": "founder_wishlist",
       "platforms": [
         "PS5",
@@ -3245,10 +3944,89 @@
       "session": "medium",
       "commitment": "low",
       "adultTimeFit": "weeknight",
-      "coverStatus": "missing",
+      "coverStatus": "candidate",
       "atomStatus": "complete",
       "priceNeed": "hot",
-      "reason": "Explicit two-heart founder wishlist candidate; compact cinematic-story metadata is available without asserting live price or subscription facts."
+      "reason": "Explicit two-heart founder wishlist candidate; compact cinematic-story metadata is available without asserting live price or subscription facts.",
+      "provider": "rawg",
+      "providerRecordId": "398401",
+      "providerTitle": "Senua's Saga: Hellblade II",
+      "providerMatchConfidence": "high",
+      "providerMatchKind": "exact",
+      "providerCheckedAt": "2026-07-17T12:00:00Z",
+      "sourceUrl": "https://rawg.io/games/senuas-saga-hellblade-ii",
+      "coverUrl": "https://media.rawg.io/media/games/b5c/b5ced2e44396160e62ff8d70e3adda71.jpg",
+      "coverLicenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+      "priceStatus": "missing",
+      "providerPlatforms": [
+        "PC",
+        "Xbox",
+        "Xbox Series S/X"
+      ],
+      "providerInferenceProfile": {
+        "version": "rawg-inference-v1",
+        "status": "inferred",
+        "confidence": "low",
+        "limitations": [
+          "price_requires_store_source",
+          "subscription_requires_store_source",
+          "languages_not_verified",
+          "playtime_is_provider_average"
+        ],
+        "evidenceCount": 1,
+        "rawSignals": {
+          "genres": [
+            "Action"
+          ],
+          "tags": [],
+          "playtimeHours": null,
+          "esrb": "Mature",
+          "released": "2024-05-21",
+          "rating": 3.93,
+          "ratingsCount": 194,
+          "metacritic": 0
+        },
+        "fields": {
+          "atoms": {
+            "value": [
+              "action"
+            ],
+            "confidence": "low"
+          },
+          "session": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "length": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "difficulty": {
+            "value": "normal",
+            "confidence": "low"
+          },
+          "commitment": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "tone": {
+            "value": "neutral",
+            "confidence": "low"
+          },
+          "content": {
+            "value": "unknown",
+            "confidence": "low"
+          },
+          "reviewBurden": {
+            "value": "medium",
+            "confidence": "low"
+          },
+          "adultTimeFit": {
+            "value": "evening",
+            "confidence": "low"
+          }
+        }
+      }
     }
   ]
 }

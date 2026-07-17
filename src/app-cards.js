@@ -398,10 +398,17 @@
     }
 
     function focusTasteImport() {
+      const setupPanel = document.querySelector("#setup-panel");
+      const settingsToggle = document.querySelector("#settings-toggle");
+      setupPanel?.classList.add("is-open");
+      settingsToggle?.setAttribute("aria-expanded", "true");
+      if (settingsToggle) settingsToggle.textContent = "✕";
       const panel = document.querySelector("#rating-import");
       if (!panel) return;
-      panel.scrollIntoView({ behavior: "smooth", block: "center" });
-      panel.focus();
+      window.setTimeout(() => {
+        panel.scrollIntoView({ behavior: "smooth", block: "center" });
+        panel.focus();
+      }, 0);
     }
 
     return {

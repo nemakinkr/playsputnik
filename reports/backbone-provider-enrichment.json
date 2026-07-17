@@ -1,0 +1,226 @@
+{
+  "mode": "backbone-provider-enrichment-write",
+  "checkedAt": "2026-07-17T12:00:00Z",
+  "provider": "rawg",
+  "keySource": ".env.local",
+  "requested": 8,
+  "matched": 8,
+  "unresolved": 0,
+  "dataPolicy": {
+    "covers": "attributed RAWG candidates",
+    "metadata": "provider inference kept separately from curated atoms",
+    "prices": "missing until a store-backed source is available",
+    "subscriptions": "not asserted"
+  },
+  "results": [
+    {
+      "title": "Ghost of Yotei",
+      "status": "matched",
+      "providerTitle": "Ghost of Yotei",
+      "providerRecordId": "989329",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/ghost-of-yotei",
+      "platforms": [
+        "PlayStation",
+        "PlayStation 5"
+      ],
+      "inferredAtoms": [
+        "action",
+        "rpg",
+        "choice",
+        "systems"
+      ],
+      "priceStatus": "missing"
+    },
+    {
+      "title": "Kingdom Come: Deliverance II",
+      "status": "matched",
+      "providerTitle": "Kingdom Come: Deliverance II",
+      "providerRecordId": "980502",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/kingdom-come-deliverance-ii",
+      "platforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "PlayStation 5",
+        "Xbox Series S/X"
+      ],
+      "inferredAtoms": [
+        "action",
+        "exploration",
+        "story",
+        "choice",
+        "rpg",
+        "systems",
+        "open-world",
+        "atmosphere"
+      ],
+      "priceStatus": "missing"
+    },
+    {
+      "title": "Days Gone",
+      "status": "matched",
+      "providerTitle": "Days Gone",
+      "providerRecordId": "29338",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/days-gone",
+      "platforms": [
+        "PC",
+        "PlayStation",
+        "PlayStation 4"
+      ],
+      "inferredAtoms": [
+        "action",
+        "exploration",
+        "story",
+        "choice",
+        "rpg",
+        "systems",
+        "shooter",
+        "horror",
+        "tension",
+        "multiplayer"
+      ],
+      "priceStatus": "missing"
+    },
+    {
+      "title": "Atomic Heart",
+      "status": "matched",
+      "providerTitle": "Atomic Heart",
+      "providerRecordId": "50576",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/atomic-heart",
+      "platforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "PlayStation 5",
+        "Xbox One",
+        "PlayStation 4",
+        "Xbox Series S/X"
+      ],
+      "inferredAtoms": [
+        "action",
+        "exploration",
+        "story",
+        "shooter",
+        "horror",
+        "tension"
+      ],
+      "priceStatus": "missing"
+    },
+    {
+      "title": "Dispatch",
+      "status": "matched",
+      "providerTitle": "Dispatch",
+      "providerRecordId": "337273",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/dispatch-2",
+      "platforms": [
+        "PC",
+        "PlayStation",
+        "PlayStation 5"
+      ],
+      "inferredAtoms": [
+        "action",
+        "exploration",
+        "story",
+        "strategy",
+        "systems",
+        "horror",
+        "tension",
+        "indie",
+        "atmosphere"
+      ],
+      "priceStatus": "missing"
+    },
+    {
+      "title": "Marvel's Guardians of the Galaxy",
+      "status": "matched",
+      "providerTitle": "Marvel's Guardians of the Galaxy",
+      "providerRecordId": "616765",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/guardians-of-the-galaxy",
+      "platforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "Nintendo",
+        "PlayStation 5",
+        "Xbox One",
+        "PlayStation 4",
+        "Xbox Series S/X"
+      ],
+      "inferredAtoms": [
+        "action",
+        "exploration",
+        "story",
+        "choice",
+        "rpg",
+        "systems",
+        "shooter",
+        "open-world",
+        "atmosphere",
+        "sci-fi"
+      ],
+      "priceStatus": "missing"
+    },
+    {
+      "title": "Assassin's Creed Shadows",
+      "status": "matched",
+      "providerTitle": "Assassin's Creed Shadows",
+      "providerRecordId": "981791",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/assassins-creed-shadows",
+      "platforms": [
+        "PC",
+        "PlayStation",
+        "Xbox",
+        "Apple Macintosh",
+        "PlayStation 5",
+        "Xbox Series S/X",
+        "macOS"
+      ],
+      "inferredAtoms": [
+        "action",
+        "exploration",
+        "story"
+      ],
+      "priceStatus": "missing"
+    },
+    {
+      "title": "Senua's Saga: Hellblade II",
+      "status": "matched",
+      "providerTitle": "Senua's Saga: Hellblade II",
+      "providerRecordId": "398401",
+      "matchConfidence": "high",
+      "matchKind": "exact",
+      "coverStatus": "candidate",
+      "sourceUrl": "https://rawg.io/games/senuas-saga-hellblade-ii",
+      "platforms": [
+        "PC",
+        "Xbox",
+        "Xbox Series S/X"
+      ],
+      "inferredAtoms": [
+        "action"
+      ],
+      "priceStatus": "missing"
+    }
+  ]
+}

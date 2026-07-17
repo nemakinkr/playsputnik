@@ -68,7 +68,13 @@ const server = http.createServer(async (request, response) => {
   if (forceFixture && url.pathname === "/api/taste-import" && request.method === "POST") {
     const body = await readJsonBody(request);
     const source = String(body.text || "");
-    const entries = source.trim() === "Control - 9/10\nStray - completed"
+    const entries = source.trim() === "Control - 9/10\nStray - completed\nProject Orion QA - wishlist"
+      ? [
+          { title: "Control", rating: 9, rank: null, status: "unknown", sentiment: "liked", confidence: "high" },
+          { title: "Stray", rating: null, rank: null, status: "completed", sentiment: "unknown", confidence: "high" },
+          { title: "Project Orion QA", rating: null, rank: null, status: "wishlist", sentiment: "unknown", confidence: "high" },
+        ]
+      : source.trim() === "Control - 9/10\nStray - completed"
       ? [
           { title: "Control", rating: 9, rank: 1, status: "completed", sentiment: "loved", confidence: "high" },
           { title: "Stray", rating: null, rank: 2, status: "completed", sentiment: "liked", confidence: "high" },
@@ -464,6 +470,36 @@ function providerFailureInfo(error) {
 }
 
 function fixtureSearch(query) {
+  if (forceFixture && titleKey(query) === titleKey("Project Orion QA")) {
+    return [withReconciliation({
+      title: "Project Orion QA",
+      sourceId: "rawg_provider_hook",
+      sourceLabel: "RAWG provider fixture",
+      catalogStatus: "provider_result",
+      matchConfidence: "high",
+      coverStatus: "candidate",
+      priceStatus: "missing",
+      provider: "rawg",
+      providerRecordId: "qa-orion",
+      sourceUrl: "https://rawg.io/",
+      coverUrl: "https://media.rawg.io/media/games/qa-orion-fixture.jpg",
+      platforms: ["PlayStation 5", "PC"],
+      atoms: ["story", "sci-fi", "action"],
+      inferredAtoms: ["story", "sci-fi", "action"],
+      session: "medium",
+      length: "medium",
+      difficulty: "normal",
+      commitment: "medium",
+      tone: "strange",
+      content: "unknown",
+      reviewBurden: "medium",
+      adultTimeFit: "evening",
+      vibe: "QA provider fixture",
+      reason: "Test-only attributed provider result.",
+      score: 96,
+      matchKind: "exact",
+    })];
+  }
   return (fixtures.records || [])
     .map((record) => {
       const blob = searchTextBlob([record.title, record.vibe, record.reason, ...(record.atoms || []), ...(record.platforms || [])]);

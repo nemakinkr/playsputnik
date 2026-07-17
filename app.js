@@ -66,6 +66,7 @@ let priceSnapshots = [];
 let priceHistory = [];
 let subscriptionAvailability = [];
 let coverSnapshots = [];
+let coverSnapshotIndex = new Map();
 let refreshPolicy = null;
 let tasteRadar = [];
 let monthlyDrop = [];
@@ -1073,6 +1074,7 @@ const els = {
   amnestyStatus: document.querySelector("#amnesty-status"),
   amnestyCard: document.querySelector("#amnesty-card"),
   receiptSummary: document.querySelector("#receipt-summary"),
+  aiImportOutcome: document.querySelector("#ai-import-outcome"),
   receiptGrid: document.querySelector("#receipt-grid"),
   topPick: document.querySelector("#top-pick"),
   planSummary: document.querySelector("#plan-summary"),
@@ -1922,6 +1924,7 @@ function backboneContent(record) {
 function backboneTasteGameFromRecord(record) {
   const session = record.session || "medium";
   const commitment = record.commitment || (session === "long" ? "high" : "medium");
+  const cover = coverSnapshotIndex.get(titleKey(record.title));
   return {
     title: record.title,
     atoms: record.atoms || [],
@@ -1948,19 +1951,23 @@ function backboneTasteGameFromRecord(record) {
     subscriptionMeta: {},
     coverMeta: {
       title: record.title,
-      status: record.coverStatus || "fallback",
-      source: record.source || "catalog_backbone",
-      sourceUrl: "local://catalog-backbone",
-      checkedAt: catalogBackbone?.updatedAt || new Date().toISOString(),
-      licenseNote: "Catalog backbone candidate; cover and store facts need promotion before price use.",
-      url: "",
+      status: cover?.status || record.coverStatus || "fallback",
+      source: cover?.source || record.provider || record.source || "catalog_backbone",
+      sourceUrl: cover?.sourceUrl || record.sourceUrl || "local://catalog-backbone",
+      checkedAt: cover?.checkedAt || record.providerCheckedAt || catalogBackbone?.updatedAt || new Date().toISOString(),
+      licenseNote: cover?.licenseNote || record.coverLicenseNote || "Catalog backbone candidate; cover and store facts need promotion before price use.",
+      url: cover?.url || record.coverUrl || "",
     },
     externalMeta: {
-      provider: "catalog_backbone",
+      provider: record.provider || "catalog_backbone",
       source: record.source || "manual_backbone",
+      sourceUrl: record.sourceUrl || "local://catalog-backbone",
       catalogStatus: record.status || "backbone",
       platforms: record.platforms || [],
+      providerPlatforms: record.providerPlatforms || [],
       priceNeed: record.priceNeed || "missing",
+      priceStatus: record.priceStatus || "missing",
+      inferenceProfile: record.providerInferenceProfile || null,
     },
   };
 }
@@ -2811,9 +2818,18 @@ function confirmAiImportDraft() {
     });
   });
   state.aiImportDraft = null;
+  state.aiImportReceipt = {
+    imported: entries.length,
+    known: Math.max(0, entries.length - unresolved.length),
+    lookupTotal: unresolved.length,
+    createdAt: new Date().toISOString(),
+  };
+  if (unresolved.length) state.importLookupBatchSummary = null;
   state.entryPath = entries.length >= 8 ? "deep" : state.entryPath;
   state.entryResult = t("settings.tasteImport.draftConfirmed", { count: entries.length });
-  render();
+  setSettingsPanelOpen(false);
+  openAppView("taste");
+  window.setTimeout(() => els.aiImportOutcome?.scrollIntoView({ behavior: "smooth", block: "center" }), 0);
   if (unresolved.length) startAutomaticImportResolution(unresolved);
 }
 
@@ -4273,6 +4289,14 @@ function openDiscoverForTitle(title) {
   }, 0);
 }
 
+function setSettingsPanelOpen(open) {
+  const panel = document.querySelector("#setup-panel");
+  const toggle = document.querySelector("#settings-toggle");
+  panel?.classList.toggle("is-open", Boolean(open));
+  toggle?.setAttribute("aria-expanded", String(Boolean(open)));
+  if (toggle) toggle.textContent = open ? "✕" : "⚙";
+}
+
 function openDiscoverForImportQueue(titles) {
   const queue = [...new Set((titles || []).map((title) => String(title || "").trim()).filter(Boolean))];
   if (!queue.length) return;
@@ -4907,6 +4931,7 @@ function renderFirstValueReceipt(ranked) {
     entry: entryLabel(),
     confidence: localizedConfidence(memory.confidence),
   });
+  renderAiImportOutcome();
   els.receiptGrid.replaceChildren(
     ...cards.map((card) => {
       const item = document.createElement("div");
@@ -4930,6 +4955,56 @@ function renderFirstValueReceipt(ranked) {
       return item;
     }),
   );
+}
+
+function renderAiImportOutcome() {
+  if (!els.aiImportOutcome) return;
+  const receipt = state.aiImportReceipt;
+  if (!receipt || !Number.isFinite(Number(receipt.imported)) || Number(receipt.imported) < 1) {
+    els.aiImportOutcome.classList.add("is-hidden");
+    els.aiImportOutcome.replaceChildren();
+    return;
+  }
+  const imported = Number(receipt.imported);
+  const lookupTotal = Math.max(0, Number(receipt.lookupTotal) || 0);
+  const batch = lookupTotal ? state.importLookupBatchSummary : null;
+  const resolved = Math.min(lookupTotal, Math.max(0, Number(batch?.resolved) || 0));
+  const review = Math.max(0, Number(batch?.review) || 0);
+  const failed = Math.max(0, Number(batch?.failed) || 0);
+  const pending = Math.max(0, lookupTotal - resolved - review - failed);
+  const statusKey = pending
+    ? "taste.importOutcomeResolving"
+    : review || failed
+      ? "taste.importOutcomeReview"
+      : "taste.importOutcomeComplete";
+  const detailKey = pending
+    ? "taste.importOutcomeResolvingDetail"
+    : review || failed
+      ? "taste.importOutcomeReviewDetail"
+      : "taste.importOutcomeCompleteDetail";
+  els.aiImportOutcome.classList.remove("is-hidden");
+  els.aiImportOutcome.innerHTML = `
+    <div class="ai-import-outcome-copy">
+      <span>${t("taste.importOutcomeEyebrow")}</span>
+      <strong>${t("taste.importOutcomeTitle", { count: imported })}</strong>
+      <p>${t(detailKey, { resolved, total: lookupTotal, review: review + failed })}</p>
+    </div>
+    <div class="ai-import-outcome-metrics" aria-label="${t("taste.importOutcomeMetricsAria")}">
+      <div><span>${t("taste.importOutcomeImported")}</span><strong>${imported}</strong></div>
+      <div><span>${t("taste.importOutcomeKnown")}</span><strong>${Math.max(0, Number(receipt.known) || 0)}</strong></div>
+      <div><span>${t("taste.importOutcomeEnriched")}</span><strong>${resolved}</strong></div>
+      <div><span>${t("taste.importOutcomeStatus")}</span><strong>${t(statusKey)}</strong></div>
+    </div>
+    <div class="ai-import-outcome-actions">
+      <button class="primary-action" data-ai-import-outcome-action="today" type="button">${t("taste.importOutcomeToday")}</button>
+      <button class="secondary-action" data-ai-import-outcome-action="edit" type="button">${t("taste.importOutcomeEdit")}</button>
+    </div>
+  `;
+  els.aiImportOutcome.querySelector("[data-ai-import-outcome-action='today']")?.addEventListener("click", () => {
+    openAppView("today");
+    window.setTimeout(() => els.topPick?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  });
+  els.aiImportOutcome.querySelector("[data-ai-import-outcome-action='edit']")?.addEventListener("click", focusTasteImport);
 }
 
 function libraryStateLabel(value) {
@@ -8589,9 +8664,7 @@ const settingsToggle = document.querySelector("#settings-toggle");
 const setupPanel = document.querySelector("#setup-panel");
 if (settingsToggle && setupPanel) {
   settingsToggle.addEventListener("click", () => {
-    const open = setupPanel.classList.toggle("is-open");
-    settingsToggle.setAttribute("aria-expanded", String(open));
-    settingsToggle.textContent = open ? "✕" : "⚙";
+    setSettingsPanelOpen(!setupPanel.classList.contains("is-open"));
   });
 }
 
@@ -8704,6 +8777,7 @@ async function init() {
     priceSnapshots = nextPriceSnapshots;
     subscriptionAvailability = nextSubscriptionAvailability;
     coverSnapshots = nextCoverSnapshots;
+    coverSnapshotIndex = new Map(coverSnapshots.map((record) => [titleKey(record.title), record]));
     games = mergeStoreData(catalog, priceSnapshots, subscriptionAvailability, coverSnapshots, priceHistory);
     render();
     hydrateDeferredData();

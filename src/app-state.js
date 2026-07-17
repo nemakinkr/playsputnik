@@ -100,6 +100,7 @@
         sessionLog: [],
         aiExplanations: {},
         aiImportDraft: null,
+        aiImportReceipt: null,
         aiTodayRerank: null,
         lastUndo: null,
       };

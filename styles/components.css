@@ -3039,6 +3039,97 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
   gap: 8px;
 }
 
+.ai-import-outcome {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.25fr) minmax(300px, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--accent-bg);
+  padding: 14px;
+}
+
+.ai-import-outcome.is-hidden {
+  display: none;
+}
+
+.ai-import-outcome-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.ai-import-outcome-copy span {
+  color: var(--blue);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.ai-import-outcome-copy strong {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.ai-import-outcome-copy p {
+  margin: 0;
+  color: var(--text-mid);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.ai-import-outcome-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(64px, 1fr));
+  gap: 6px;
+}
+
+.ai-import-outcome-metrics div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  border-left: 1px solid var(--line);
+  padding-left: 8px;
+}
+
+.ai-import-outcome-metrics span {
+  color: var(--text-mid);
+  font-size: 0.68rem;
+}
+
+.ai-import-outcome-metrics strong {
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 0.86rem;
+}
+
+.ai-import-outcome-actions {
+  display: grid;
+  gap: 6px;
+  min-width: 150px;
+}
+
+@media (max-width: 900px) {
+  .ai-import-outcome {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-import-outcome-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .ai-import-outcome-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ai-import-outcome-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .receipt-card {
   display: grid;
   gap: 7px;

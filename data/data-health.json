@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T12:48:16.026Z",
+  "generatedAt": "2026-07-17T06:39:41.789Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -17,7 +17,7 @@
     "catalogTierCount": 3,
     "catalogWorkbenchCount": 6,
     "catalogBackboneCount": 125,
-    "catalogBackboneReadyCount": 0,
+    "catalogBackboneReadyCount": 7,
     "catalogBackbonePromotedCount": 29,
     "searchSourceCount": 5,
     "globalSearchFixtureCount": 194,
@@ -85,10 +85,10 @@
     "seedTarget": 150,
     "currentSeed": 461,
     "promotedCount": 29,
-    "readyForSeedCount": 0,
-    "atomReviewCount": 0,
-    "blockedIdentityCount": 1,
-    "coverMissingCount": 96,
+    "readyForSeedCount": 7,
+    "atomReviewCount": 1,
+    "blockedIdentityCount": 0,
+    "coverMissingCount": 88,
     "hotPriceNeedCount": 9,
     "laneCounts": [
       {
@@ -97,7 +97,7 @@
         "target": 18,
         "count": 18,
         "promoted": 6,
-        "ready": 0
+        "ready": 3
       },
       {
         "id": "open_world_rpg",
@@ -105,7 +105,7 @@
         "target": 18,
         "count": 15,
         "promoted": 6,
-        "ready": 0
+        "ready": 3
       },
       {
         "id": "systems_rpg",
@@ -121,7 +121,7 @@
         "target": 16,
         "count": 13,
         "promoted": 2,
-        "ready": 0
+        "ready": 1
       },
       {
         "id": "horror_tension",
@@ -204,7 +204,7 @@
     ]
   },
   "refreshDigest": {
-    "generatedAt": "2026-07-16T12:48:16.024Z",
+    "generatedAt": "2026-07-17T06:39:41.781Z",
     "priceSnapshotCount": 1844,
     "subscriptionRecordCount": 509,
     "latestPriceCheckedAt": "2026-07-16T09:20:42.466Z",
@@ -280,9 +280,9 @@
   "coverCoverage": {
     "coverCount": 461,
     "coverage": 100,
-    "realImageCount": 461,
+    "realImageCount": 469,
     "fallbackCount": 0,
-    "candidateCount": 461,
+    "candidateCount": 469,
     "verifiedCount": 0
   },
   "adultSignals": {

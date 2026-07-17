@@ -5530,5 +5530,101 @@
     "providerGameId": 514896,
     "providerTitle": "The Dark Pictures Anthology: House of Ashes",
     "matchConfidence": "high"
+  },
+  {
+    "title": "Ghost of Yotei",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/ghost-of-yotei",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/30b/30b195c2321d763f807366967ffad793.jpg",
+    "providerGameId": 989329,
+    "providerTitle": "Ghost of Yotei",
+    "matchConfidence": "high"
+  },
+  {
+    "title": "Kingdom Come: Deliverance II",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/kingdom-come-deliverance-ii",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/d84/d842fec4ae7bbd782d330f678c980f7f.jpg",
+    "providerGameId": 980502,
+    "providerTitle": "Kingdom Come: Deliverance II",
+    "matchConfidence": "high"
+  },
+  {
+    "title": "Days Gone",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/days-gone",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/a79/a79d2fc90c4dbf07a8580b19600fd61d.jpg",
+    "providerGameId": 29338,
+    "providerTitle": "Days Gone",
+    "matchConfidence": "high"
+  },
+  {
+    "title": "Atomic Heart",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/atomic-heart",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/6ee/6ee5cbe30c6b6c299a3288337d40a0f3.jpg",
+    "providerGameId": 50576,
+    "providerTitle": "Atomic Heart",
+    "matchConfidence": "high"
+  },
+  {
+    "title": "Dispatch",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/dispatch-2",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/2f6/2f6c45362818859574ac0e37edf3d3c4.jpg",
+    "providerGameId": 337273,
+    "providerTitle": "Dispatch",
+    "matchConfidence": "high"
+  },
+  {
+    "title": "Marvel's Guardians of the Galaxy",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/guardians-of-the-galaxy",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/708/7080e6c87e0825cb02888bf3c44b3889.jpg",
+    "providerGameId": 616765,
+    "providerTitle": "Marvel's Guardians of the Galaxy",
+    "matchConfidence": "high"
+  },
+  {
+    "title": "Assassin's Creed Shadows",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/assassins-creed-shadows",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/526/526881e0f5f8c1550e51df3801f96ea3.jpg",
+    "providerGameId": 981791,
+    "providerTitle": "Assassin's Creed Shadows",
+    "matchConfidence": "high"
+  },
+  {
+    "title": "Senua's Saga: Hellblade II",
+    "status": "candidate",
+    "source": "rawg",
+    "sourceUrl": "https://rawg.io/games/senuas-saga-hellblade-ii",
+    "checkedAt": "2026-07-17T12:00:00Z",
+    "licenseNote": "RAWG API image candidate. Attribute RAWG and link to the source page wherever this image is displayed.",
+    "url": "https://media.rawg.io/media/games/b5c/b5ced2e44396160e62ff8d70e3adda71.jpg",
+    "providerGameId": 398401,
+    "providerTitle": "Senua's Saga: Hellblade II",
+    "matchConfidence": "high"
   }
 ]

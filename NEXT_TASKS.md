@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-07-16. Pick the next task here without rereading the
+Last updated: 2026-07-17. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 ARCHITECTURE.md (generated ownership map), CLAUDE.md (dev workflow + perf
 rules). The user's decision remains **polish before showing the product to
@@ -46,6 +46,16 @@ Run `./scripts/check.sh` before claiming any task done.
   Unknown titles run through a resumable, concurrency-bounded RAWG queue and
   keep their original rating/rank/library semantics; low-confidence and failed
   matches remain reviewable instead of being silently accepted.
+- Visible end-to-end AI import payoff: done. The Taste action opens the import
+  surface on mobile; confirmation returns to Taste with imported/known/online
+  counts and a direct route to the recalculated Today answer. Browser smoke
+  gates review, RAWG resolution, state persistence, honest missing prices, and
+  the 390px layout.
+- Priority backbone provider package: done. Eight high-value founder/wishlist
+  anchors carry exact RAWG identity, attributed cover candidates, compact
+  provider signals, and explicit `priceStatus: missing`. The reproducible
+  enrichment script and deterministic contract test prevent provenance drift
+  or invented store facts.
 
 ## Track: Localization (EN + RU) — ACTIVE, large multi-phase project
 

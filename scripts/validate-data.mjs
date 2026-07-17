@@ -78,6 +78,10 @@ function snapshotKey(title, region) {
 }
 
 const knownTitles = new Set(games.map((game) => titleKey(game.title)));
+const knownCoverTitles = new Set([
+  ...knownTitles,
+  ...(catalogBackbone.records || []).map((record) => titleKey(record.title)),
+]);
 const knownRegions = new Set(regions);
 const coverSnapshotStatusValues = new Set(["verified", "candidate", "fallback", "missing", "blocked"]);
 const priceIndex = new Map(priceSnapshots.map((snapshot) => [snapshotKey(snapshot.title || "", snapshot.region || ""), snapshot]));
@@ -218,7 +222,7 @@ const storeIssues = [
     .filter((record) => !record.tier || !record.source || !record.checkedAt)
     .map((record) => `Incomplete subscription record: ${record.title || "Untitled"} / ${record.region || "none"}`),
   ...coverSnapshots
-    .filter((record) => !knownTitles.has(titleKey(record.title || "")))
+    .filter((record) => !knownCoverTitles.has(titleKey(record.title || "")))
     .map((record) => `Orphan cover snapshot: ${record.title || "Untitled"}`),
 ];
 
