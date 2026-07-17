@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 10;
+  const CURRENT_STATE_VERSION = 11;
 
   const migrations = {
     1(state) {
@@ -202,6 +202,21 @@
           date: String(daily.date || ""),
           actions: Array.isArray(daily.actions) ? daily.actions.slice(0, 20) : [],
           completedAt: daily.completedAt || null,
+        },
+      };
+    },
+    11(state) {
+      const meta = state.syncMeta && typeof state.syncMeta === "object" ? state.syncMeta : {};
+      return {
+        ...state,
+        syncMeta: {
+          profileId: String(meta.profileId || ""),
+          revision: Math.max(0, Math.floor(Number(meta.revision) || 0)),
+          baseRevision: Math.max(0, Math.floor(Number(meta.baseRevision) || 0)),
+          updatedAt: meta.updatedAt || null,
+          lastPayloadHash: String(meta.lastPayloadHash || ""),
+          lastSyncedRevision: Math.max(0, Math.floor(Number(meta.lastSyncedRevision) || 0)),
+          lastSyncedAt: meta.lastSyncedAt || null,
         },
       };
     },

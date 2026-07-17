@@ -16,7 +16,7 @@ try {
   await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 15000 });
   await page.evaluate(() => {
     localStorage.setItem("playsputnik.prototype.state.v2", JSON.stringify({
-      stateVersion: 10, activeView: "today", liked: [], hidden: [], saved: [], snoozed: [], userStates: {},
+      stateVersion: 11, activeView: "today", liked: [], hidden: [], saved: [], snoozed: [], userStates: {},
       userGames: {
         control: {
           title: "Control", completionStatus: "playing", hoursPlayed: 1, startedAt: "2026-07-17T10:00:00.000Z",

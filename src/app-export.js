@@ -3,6 +3,7 @@
 (function () {
   if (!window.PlaySputnikImport) throw new Error("app-import must load before app-export");
   if (!window.PlaySputnikState) throw new Error("app-state must load before app-export");
+  if (!window.PlaySputnikSync) throw new Error("app-sync must load before app-export");
   const t = window.PlaySputnikI18n.t;
 
   const {
@@ -13,6 +14,7 @@
     parsePsnTrophyTitles,
     importSummaryLabel,
   } = window.PlaySputnikImport;
+  const { createProfileEnvelope, unwrapProfileEnvelope } = window.PlaySputnikSync;
 
   function createExportTools({
     getState,
@@ -24,6 +26,8 @@
     titleKey,
     applyStateToUserGame,
     userStateToUserGame,
+    stateMigrations,
+    getDeviceId = () => "",
     saveState,
     render,
     onLibraryEntriesImported = () => {},
@@ -34,15 +38,8 @@
     // ── JSON Export ───────────────────────────────────────────────────────────
     function exportStateJson() {
       const state = getState();
-      const snapshot = {
-        _exported: new Date().toISOString(),
-        _version: "1",
-        ...state,
-        liked: [...state.liked],
-        hidden: [...state.hidden],
-        saved: [...state.saved],
-        snoozed: [...state.snoozed],
-      };
+      const snapshot = createProfileEnvelope(state, { deviceId: getDeviceId() });
+      saveState();
       const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -50,7 +47,7 @@
       a.download = `playsputnik-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      els.exportStatus.textContent = `${t("data.jsonExported")} ✓`;
+      els.exportStatus.textContent = `${t("data.profileBackupExported")} ✓`;
       setTimeout(() => { els.exportStatus.textContent = ""; }, 3000);
     }
 
@@ -88,27 +85,30 @@
       reader.onload = (e) => {
         try {
           const parsed = JSON.parse(e.target.result);
-          if (!parsed || typeof parsed !== "object") throw new Error("Invalid JSON structure");
+          const unpacked = unwrapProfileEnvelope(parsed);
+          const migrated = stateMigrations?.migrateState
+            ? stateMigrations.migrateState(unpacked.profile)
+            : unpacked.profile;
           const imported = {
             ...defaultState(),
-            ...parsed,
-            liked: new Set(parsed.liked || []),
-            hidden: new Set(parsed.hidden || []),
-            saved: new Set(parsed.saved || []),
-            snoozed: new Set(parsed.snoozed || []),
-            userGames: hydrateUserGames(parsed),
-            quickReactions: parsed.quickReactions || {},
-            atomWeights: parsed.atomWeights || {},
-            importedRatings: parsed.importedRatings || [],
-            notebook: parsed.notebook || emptyNotebook(),
-            feedbackLog: parsed.feedbackLog || [],
-            userEvents: parsed.userEvents || [],
-            dropDecisions: parsed.dropDecisions || {},
+            ...migrated,
+            liked: new Set(migrated.liked || []),
+            hidden: new Set(migrated.hidden || []),
+            saved: new Set(migrated.saved || []),
+            snoozed: new Set(migrated.snoozed || []),
+            userGames: hydrateUserGames(migrated),
+            quickReactions: migrated.quickReactions || {},
+            atomWeights: migrated.atomWeights || {},
+            importedRatings: migrated.importedRatings || [],
+            notebook: migrated.notebook || emptyNotebook(),
+            feedbackLog: migrated.feedbackLog || [],
+            userEvents: migrated.userEvents || [],
+            dropDecisions: migrated.dropDecisions || {},
           };
           setState(imported);
           saveState();
           render();
-          els.exportStatus.textContent = `${t("data.gamesImported", { count: Object.keys(imported.userGames).length })} ✓`;
+          els.exportStatus.textContent = `${t(unpacked.legacy ? "data.legacyBackupImported" : "data.profileBackupImported", { count: Object.keys(imported.userGames).length })} ✓`;
           setTimeout(() => { els.exportStatus.textContent = ""; }, 4000);
         } catch (err) {
           els.exportStatus.textContent = t("data.importFailed", { message: err.message });

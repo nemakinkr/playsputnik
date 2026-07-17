@@ -54,8 +54,12 @@ try {
         myGamesVisible: visible(".my-games-panel"),
         priceWatchVisible: visible(".price-watch"),
         devHealthVisible: visible(".dev-health-panel"),
+        syncProfileVisible: visible("#sync-profile-status"),
+        syncProfileText: document.querySelector("#sync-profile-status")?.textContent?.replace(/\s+/g, " ").trim() || "",
         dropVisible: visible(".drop-panel"),
         persistedView: state.activeView || "",
+        profileId: state.syncMeta?.profileId || "",
+        profileRevision: state.syncMeta?.revision || 0,
       };
     });
 
@@ -95,6 +99,10 @@ try {
   assert(wishlist.activeCluster === "buy", `Expected Wishlist to open Buy cluster, got ${wishlist.activeCluster}`);
   assert(wishlist.priceWatchVisible, "Wishlist view should show price watch");
   assert(data.devHealthVisible, "Data view should show dev health");
+  assert(data.syncProfileVisible, "Data view should show the local profile identity");
+  assert(data.syncProfileText.length > 20, "Sync readiness card should explain the current profile status");
+  assert(data.profileId.startsWith("profile_"), "Persisted state should have a stable profile identity");
+  assert(data.profileRevision >= 1, "Persisted profile should have an initial revision");
   assert(!data.topPickVisible, "Data view should hide Today recommendation");
   assert(data.persistedView === "data", `Expected active view to persist, got ${data.persistedView}`);
   assert(errors.length === 0, `Page errors: ${errors.join("; ")}`);

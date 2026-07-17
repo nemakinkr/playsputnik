@@ -6450,6 +6450,37 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
   margin-bottom: 12px;
 }
 
+.sync-profile-status {
+  display: grid;
+  gap: 10px;
+  border-left: 3px solid var(--accent);
+  background: var(--card-bg-soft);
+  margin-bottom: 12px;
+  padding: 10px 12px;
+}
+
+.sync-profile-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sync-profile-heading > div { display: grid; gap: 2px; }
+.sync-profile-heading > div span { color: var(--text-mid); font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }
+.sync-profile-heading > div strong { color: var(--ink); }
+.sync-profile-cloud { border: 1px solid var(--line); background: var(--chip-bg); color: var(--text-mid); padding: 4px 7px; font-size: 0.7rem; font-weight: 750; }
+.sync-profile-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+.sync-profile-facts > span { display: grid; gap: 2px; min-width: 0; border-top: 1px solid var(--line); padding-top: 6px; }
+.sync-profile-facts small { color: var(--text-mid); font-size: 0.64rem; text-transform: uppercase; }
+.sync-profile-facts strong { overflow: hidden; color: var(--ink); font-size: 0.75rem; text-overflow: ellipsis; }
+.sync-profile-status p { margin: 0; color: var(--text-mid); font-size: 0.76rem; line-height: 1.4; }
+
+@media (max-width: 720px) {
+  .sync-profile-heading { align-items: flex-start; }
+  .sync-profile-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 .export-import-label {
   display: inline-flex;
   align-items: center;

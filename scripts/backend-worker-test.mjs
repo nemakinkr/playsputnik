@@ -135,7 +135,7 @@ assert.equal(health.status, 200);
 assert.deepEqual(await health.json(), {
   status: "ok",
   service: "playsputnik-api",
-  version: "playsputnik-api-v7",
+  version: "playsputnik-api-v8",
   searchConfigured: true,
   aiConfigured: true,
   aiProvider: "workers_ai",
@@ -144,7 +144,26 @@ assert.deepEqual(await health.json(), {
   aiNarrativeVersion: "ai-narrative-v2",
   aiTasteImportVersion: "ai-taste-import-v1",
   aiRerankVersion: "ai-rerank-v1",
+  syncConfigured: false,
+  profileEnvelopeVersion: 1,
 });
+
+const syncCapabilities = await handleRequest(new Request("https://api.example/api/sync/capabilities", { headers: originHeaders }), env, context);
+assert.equal(syncCapabilities.status, 200);
+assert.deepEqual(await syncCapabilities.json(), {
+  available: false,
+  auth: "not_configured",
+  storage: "not_configured",
+  acceptsProfileData: false,
+  profileEnvelopeVersion: 1,
+});
+const blockedSyncWrite = await handleRequest(new Request("https://api.example/api/sync/profile", {
+  method: "POST",
+  headers: { ...originHeaders, "Content-Type": "application/json" },
+  body: JSON.stringify({ profile: { private: true } }),
+}), env, context);
+assert.equal(blockedSyncWrite.status, 501);
+assert.equal((await blockedSyncWrite.json()).acceptsProfileData, false, "backend must reject profile data until auth and private storage exist");
 
 const blocked = await handleRequest(new Request("https://api.example/api/search?q=Stray", {
   headers: { Origin: "https://evil.example" },

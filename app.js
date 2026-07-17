@@ -91,6 +91,9 @@ if (!window.PlaySputnikConfig) {
 if (!window.PlaySputnikState) {
   throw new Error("PlaySputnikState must load before app.js");
 }
+if (!window.PlaySputnikSync) {
+  throw new Error("PlaySputnikSync must load before app.js");
+}
 
 if (!window.PlaySputnikSearch) {
   throw new Error("PlaySputnikSearch must load before app.js");
@@ -356,6 +359,13 @@ const {
 });
 
 const {
+  ensureSyncMeta,
+  getOrCreateDeviceId,
+  syncStatus,
+} = window.PlaySputnikSync;
+const profileStorage = window.PlaySputnikStorage.createStorageAdapter();
+
+const {
   makeQuickReactions,
   makeQuickReactionMap,
   defaultState,
@@ -377,11 +387,13 @@ const {
   titleKey,
   normalizeTitle,
   emptyNotebook,
-  storage: window.PlaySputnikStorage.createStorageAdapter(),
+  storage: profileStorage,
   stateMigrations: window.PlaySputnikStateMigrations || null,
 });
 
 let state = loadState();
+const localDeviceId = getOrCreateDeviceId(profileStorage);
+ensureSyncMeta(state);
 let selectedGameTitle = "";
 const {
   activeContinuityRecords,
@@ -1252,6 +1264,7 @@ const els = {
   exportJson: document.querySelector("#export-json"),
   exportCsv: document.querySelector("#export-csv"),
   exportStatus: document.querySelector("#export-status"),
+  syncProfileStatus: document.querySelector("#sync-profile-status"),
   exportPreview: document.querySelector("#export-preview"),
   importFile: document.querySelector("#import-file"),
   libraryImportFile: document.querySelector("#library-import-file"),
@@ -1328,7 +1341,9 @@ const { bindExportListeners } = window.PlaySputnikExport.createExportTools({
   titleKey,
   applyStateToUserGame,
   userStateToUserGame,
-  saveState: () => persistState(state),
+  saveState: () => saveState(),
+  stateMigrations: window.PlaySputnikStateMigrations || null,
+  getDeviceId: () => localDeviceId,
   render: () => render(),
   onLibraryEntriesImported: (entries) => queueLibraryImportResolution(entries),
   els,
@@ -1340,6 +1355,7 @@ function explicitUserGame(title) {
 }
 
 function saveState() {
+  ensureSyncMeta(state);
   persistState(state);
 }
 
@@ -8254,6 +8270,28 @@ function renderDeferredPanels(ranked, primaryGame, ticket) {
   }
 }
 
+function renderSyncProfileStatus() {
+  if (!els.syncProfileStatus) return;
+  const status = syncStatus(state, localDeviceId);
+  const locale = document.documentElement.lang || "en";
+  const updated = status.updatedAt
+    ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }).format(new Date(status.updatedAt))
+    : t("data.syncNeverUpdated");
+  els.syncProfileStatus.innerHTML = `
+    <div class="sync-profile-heading">
+      <div><span>${t("data.syncProfileTitle")}</span><strong>${t("data.syncLocalReady")}</strong></div>
+      <span class="sync-profile-cloud">${t("data.syncCloudOff")}</span>
+    </div>
+    <div class="sync-profile-facts">
+      <span><small>${t("data.syncProfileId")}</small><strong>${status.profileShortId}</strong></span>
+      <span><small>${t("data.syncDeviceId")}</small><strong>${status.deviceShortId}</strong></span>
+      <span><small>${t("data.syncRevision")}</small><strong>${status.revision}</strong></span>
+      <span><small>${t("data.syncUpdated")}</small><strong>${updated}</strong></span>
+    </div>
+    <p>${t("data.syncSafetyNote")}</p>
+  `;
+}
+
 function scheduleDeferredRender(ranked, primaryGame) {
   const ticket = ++deferredRenderTicket;
   const run = () => renderDeferredPanels(ranked, primaryGame, ticket);
@@ -8414,6 +8452,7 @@ function render() {
   if (inView("today")) renderCompanionPlan(ranked);
   if (inView("today", "library")) renderLibraryPlan(ranked);
   if (inView("stats")) renderStats();
+  if (inView("data")) renderSyncProfileStatus();
 
   if (inView("today", "library", "discover", "wishlist")) {
     renderVisualCatalog(ranked);

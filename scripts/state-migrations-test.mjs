@@ -41,6 +41,15 @@ assert.equal(migrated.userEvents[0].schemaVersion, 1);
 assert.equal(migrated.userEvents[0].occurredAt, "2026-07-16T20:00:00.000Z");
 assert.equal(migrated.userEvents[0].payload.minutes, 60);
 assert.deepEqual(JSON.parse(JSON.stringify(migrated.providerEnrichmentBudget)), { date: "", used: 0, cap: 20 });
+assert.deepEqual(JSON.parse(JSON.stringify(migrated.syncMeta)), {
+  profileId: "",
+  revision: 0,
+  baseRevision: 0,
+  updatedAt: null,
+  lastPayloadHash: "",
+  lastSyncedRevision: 0,
+  lastSyncedAt: null,
+});
 assert.equal(legacy.stateVersion, undefined, "migration must not mutate stored input");
 assert.deepEqual(
   JSON.parse(JSON.stringify(migrateState(migrated))),

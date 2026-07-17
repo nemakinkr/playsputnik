@@ -1,6 +1,7 @@
 import { SEARCH_RESULT_VERSION, normalizeRawgResult, normalizeSearchTitle } from "./rawg-normalize.mjs";
 
-const API_VERSION = "playsputnik-api-v7";
+const API_VERSION = "playsputnik-api-v8";
+const PROFILE_ENVELOPE_VERSION = 1;
 const DEFAULT_WORKERS_AI_MODEL = "@cf/zai-org/glm-4.7-flash";
 const DEFAULT_WORKERS_AI_JSON_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 const DEFAULT_ANTHROPIC_MODEL = "claude-haiku-4-5";
@@ -43,7 +44,27 @@ export async function handleRequest(request, env = {}, ctx = {}) {
       aiNarrativeVersion: "ai-narrative-v2",
       aiTasteImportVersion: "ai-taste-import-v1",
       aiRerankVersion: "ai-rerank-v1",
+      syncConfigured: false,
+      profileEnvelopeVersion: PROFILE_ENVELOPE_VERSION,
     }, 200, allowedOrigin);
+  }
+
+  if (url.pathname === "/api/sync/capabilities" && request.method === "GET") {
+    return json({
+      available: false,
+      auth: "not_configured",
+      storage: "not_configured",
+      acceptsProfileData: false,
+      profileEnvelopeVersion: PROFILE_ENVELOPE_VERSION,
+    }, 200, allowedOrigin, { "Cache-Control": "public, max-age=300" });
+  }
+
+  if (url.pathname === "/api/sync/profile") {
+    return json({
+      error: "Account sync is not enabled",
+      code: "sync_not_configured",
+      acceptsProfileData: false,
+    }, 501, allowedOrigin, { "Cache-Control": "no-store" });
   }
 
   if (url.pathname === "/api/search" && request.method === "GET") {

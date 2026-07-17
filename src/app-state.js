@@ -105,6 +105,10 @@
         sessionLog: [],
         continuityFocusTitle: "",
         dailyBriefing: { date: "", actions: [], completedAt: null },
+        syncMeta: {
+          profileId: "", revision: 0, baseRevision: 0, updatedAt: null,
+          lastPayloadHash: "", lastSyncedRevision: 0, lastSyncedAt: null,
+        },
         aiExplanations: {},
         aiImportDraft: null,
         aiImportReceipt: null,

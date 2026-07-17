@@ -32,13 +32,13 @@ async function request(path, options = {}) {
 let health;
 for (let attempt = 0; attempt < 30; attempt += 1) {
   health = await request("/api/health");
-  if (health.data.version === "playsputnik-api-v7") break;
+  if (health.data.version === "playsputnik-api-v8") break;
   await new Promise((resolve) => setTimeout(resolve, 2000));
 }
 assert(health.response.ok, `health returned ${health.response.status}`);
 assert(health.data.status === "ok", `health status is ${health.data.status || "missing"}`);
 assert(health.data.service === "playsputnik-api", `unexpected service ${health.data.service || "missing"}`);
-assert(health.data.version === "playsputnik-api-v7", `deployed Worker version is ${health.data.version || "missing"}`);
+assert(health.data.version === "playsputnik-api-v8", `deployed Worker version is ${health.data.version || "missing"}`);
 assert(health.data.searchConfigured === true, "RAWG search secret is not configured");
 assert(health.data.aiConfigured === true, "Workers AI binding is not configured");
 assert(health.data.aiProvider === "workers_ai", `unexpected AI provider ${health.data.aiProvider || "missing"}`);
@@ -46,10 +46,18 @@ assert(Boolean(health.data.aiModel), "Workers AI model is missing");
 assert(Boolean(health.data.aiStructuredModel), "Workers AI structured-output model is missing");
 assert(health.data.aiTasteImportVersion === "ai-taste-import-v1", "deployed Worker has no structured taste-import contract");
 assert(health.data.aiRerankVersion === "ai-rerank-v1", "deployed Worker has no guarded rerank contract");
+assert(health.data.syncConfigured === false, "prototype backend must not claim account sync is configured");
+assert(health.data.profileEnvelopeVersion === 1, "deployed Worker has no profile-envelope capability contract");
 assert(
   health.response.headers.get("access-control-allow-origin") === appOrigin,
   "health CORS origin does not match GitHub Pages",
 );
+
+const syncCapabilities = await request("/api/sync/capabilities");
+assert(syncCapabilities.response.ok, `sync capabilities returned ${syncCapabilities.response.status}`);
+assert(syncCapabilities.data.available === false, "prototype sync capability must remain disabled");
+assert(syncCapabilities.data.acceptsProfileData === false, "prototype backend must not accept profile data");
+assert(syncCapabilities.data.profileEnvelopeVersion === 1, "sync capability has the wrong profile envelope version");
 
 const narrative = await request("/api/narrative", {
   method: "POST",
@@ -164,4 +172,6 @@ console.log(JSON.stringify({
   aiRussian,
   aiTasteImportCount: tasteImport.data.entries.length,
   aiRerankGuarded: rerank.data.order.indexOf("Weak Candidate") === 2,
+  syncAvailable: syncCapabilities.data.available,
+  syncAcceptsProfileData: syncCapabilities.data.acceptsProfileData,
 }, null, 2));

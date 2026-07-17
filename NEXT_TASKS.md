@@ -40,6 +40,27 @@ unless the underlying fact satisfies its freshness/provenance contract.
   product task touches that area; keep DOM orchestration in the composition
   root and reusable decisions in `src/app-*.js`.
 
+## Track: Account and multi-device memory
+
+- Sync-ready profile identity and portable backup envelope: done. Schema v11
+  stores a stable profile id, durable-memory revision, base revision,
+  fingerprint, and future sync timestamps; device identity remains local.
+  Navigation-only changes do not create revisions.
+- Backward-compatible restore: done. Versioned envelopes and legacy raw JSON
+  both pass through the current migration pipeline before Sets and user-game
+  memory are rehydrated.
+- Conflict contract: done at domain level. Identical, local-ahead,
+  remote-ahead, divergent, and different-profile cases produce explicit safe
+  actions and have deterministic tests.
+- Honest backend boundary: done. The capability endpoint declares sync
+  unavailable and the profile endpoint rejects payloads until authentication
+  and private storage exist. Do not replace this with a public-id-only upload.
+- Remaining before real sync: choose an authentication provider, add
+  user-scoped encrypted-at-rest storage, define account deletion/export,
+  implement a reviewed conflict-resolution surface, and run two-device tests.
+  The conflict UI can be developed locally against the envelope contract
+  before committing to a vendor.
+
 ## Track: Catalog / Provider Coverage
 
 - Founder-ranking RAWG coverage audit: done.

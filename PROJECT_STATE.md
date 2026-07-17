@@ -32,7 +32,7 @@ reviews, catalogs, sale pages, and announcements.
   Pages configure/upload/deploy `v6/v5/v5`). A local + CI runtime-policy gate
   prevents deprecated action majors or `node-version: 20` from returning.
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v151 (cache-first static assets / network-first navigation and
+- Service worker v152 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -40,7 +40,7 @@ reviews, catalogs, sale pages, and announcements.
 
 - Static app, no build step: `index.html` + layered CSS in `styles/`
   (`foundation`, `components`, `polish`, `themes`, final `brand` overrides) +
-  `app.js` + 38 runtime entries in `src/module-manifest.js`.
+  `app.js` + 39 runtime entries in `src/module-manifest.js`.
   Runtime modules load through six dependency phases, parallel inside each
   phase. A visible boot overlay blocks interaction until handlers are ready.
   Comparison selection and the rate-later queue live in `app-decisions.js`;
@@ -94,6 +94,17 @@ reviews, catalogs, sale pages, and announcements.
   `runtime-config.js`.
   The public backend intentionally rejects PSN import until account-token
   security exists.
+- Account/sync foundation is local and deliberately security-first. Every
+  persisted profile now receives a stable profile identity, durable-memory
+  revision, content fingerprint, and a separate device identity. JSON backup
+  uses a versioned portable profile envelope; old raw backups still migrate
+  through the current schema. The sync contract can distinguish identical,
+  one-sided, conflicting, and different-profile revisions without silently
+  overwriting either side. Data view exposes the local profile/revision and
+  clearly says cloud sync is off. `/api/sync/capabilities` reports that auth
+  and private storage are not configured, while `/api/sync/profile` rejects
+  all profile data. Real multi-device sync remains blocked on authenticated,
+  user-scoped storage and a reviewed conflict UI.
 - RAWG search enrichment now uses one shared production/local normalizer.
   `search-result-v3` persists atoms, session, length, difficulty, commitment,
   tone, content, review burden, and adult-time fit with per-field RAWG evidence,
