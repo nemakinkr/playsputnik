@@ -186,14 +186,29 @@
         .slice(0, 8);
     }
 
+    function wishlistDecisionEvidence(record) {
+      const region = getState().activeRegion;
+      const snapshot = record?.game?.priceMeta?.[region] || {};
+      return {
+        region,
+        source: snapshot.source || "missing",
+        sourceUrl: snapshot.storeUrl || snapshot.sourceUrl || "",
+        checkedAt: snapshot.checkedAt || null,
+        freshness: record?.status?.state || snapshot.freshnessState || "missing",
+        confidence: snapshot.confidence || "unknown",
+        canConfirm: Boolean(record?.status?.canConfirm),
+      };
+    }
+
     function wishlistDecision(record) {
       const state = getState();
       const region = state.activeRegion;
+      const evidence = wishlistDecisionEvidence(record);
       if (!record.hasPrice) {
-        return { label: t("wishlist.decisionMissing"), tone: "missing", detail: t("wishlist.decisionMissingDetail") };
+        return { label: t("wishlist.decisionMissing"), tone: "missing", detail: t("wishlist.decisionMissingDetail"), evidence };
       }
       if (!record.status.canConfirm) {
-        return { label: t("wishlist.decisionVerify"), tone: "verify", detail: t("wishlist.decisionVerifyDetail") };
+        return { label: t("wishlist.decisionVerify"), tone: "verify", detail: t("wishlist.decisionVerifyDetail"), evidence };
       }
       if (record.watch?.isBelowTarget && record.risk < 24) {
         return {
@@ -203,6 +218,7 @@
             price: formatPrice(record.game, region),
             target: t(record.watch.hasCustomTarget ? "wishlist.targetCustom" : "wishlist.targetBudget"),
           }),
+          evidence,
         };
       }
       if ((record.game.prices[region] || 0) > (record.watch?.targetPrice ?? Number(state.budget)) || record.risk >= 24) {
@@ -214,6 +230,7 @@
               ? historicalLowCopy(record.watch, record.game.priceMeta?.[region]?.currency || "USD")
               : t("wishlist.watchNextSale"),
           }),
+          evidence,
         };
       }
       return {
@@ -224,6 +241,7 @@
           discount: record.game.discount[region] || 0,
           risk: record.risk,
         }),
+        evidence,
       };
     }
 
@@ -329,6 +347,7 @@
       historicalLowCopy,
       priceWatchRecords,
       wishlistIntentRecords,
+      wishlistDecisionEvidence,
       wishlistDecision,
       wishlistDashboardCards,
       wishlistFilterSummary,

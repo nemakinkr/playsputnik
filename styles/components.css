@@ -678,6 +678,42 @@ body[data-app-view-current="today"] .cluster-grid { order: 18; }
 .daily-briefing-action small { color: var(--text-mid); font-size: 0.7rem; }
 .daily-briefing-action button { min-height: 30px; }
 
+.daily-briefing-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+
+.daily-briefing-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text-mid);
+  font-size: 0.78rem;
+}
+
+.daily-briefing-progress button,
+.daily-briefing-receipt button {
+  min-height: 32px;
+}
+
+.daily-briefing-receipt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 16px;
+  align-items: center;
+  border-left: 3px solid var(--green);
+  background: var(--card-bg-soft);
+  padding: 10px 12px;
+}
+
+.daily-briefing-receipt > div { display: grid; gap: 2px; }
+.daily-briefing-receipt > div span { color: var(--green); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+.daily-briefing-receipt > div strong { color: var(--ink); }
+.daily-briefing-receipt ul { grid-column: 1 / -1; display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.daily-briefing-receipt li { display: flex; justify-content: space-between; gap: 12px; color: var(--text-mid); font-size: 0.75rem; }
+.daily-briefing-receipt li strong { color: var(--ink); text-align: right; }
+
 .continuity-panel {
   border: 1px solid var(--line);
   border-left: 4px solid var(--accent);
@@ -723,6 +759,8 @@ body[data-app-view-current="today"] .cluster-grid { order: 18; }
 @media (max-width: 720px) {
   .daily-briefing-row { grid-template-columns: 26px minmax(0, 1fr); }
   .daily-briefing-action { grid-column: 2; grid-auto-flow: column; justify-content: start; justify-items: start; align-items: center; }
+  .daily-briefing-receipt { grid-template-columns: 1fr; }
+  .daily-briefing-receipt button { justify-self: start; }
   #continuity-body { grid-template-columns: 1fr; }
   .continuity-actions { justify-content: flex-start; }
 }
@@ -4249,6 +4287,30 @@ body[data-app-view-current="discover"] .cluster-grid { order: 10; }
   background: #eaf0ff;
   color: var(--blue);
 }
+
+.wishlist-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.wishlist-evidence > span {
+  display: grid;
+  gap: 1px;
+  min-width: 88px;
+  border: 1px solid var(--line);
+  background: var(--card-bg-soft);
+  padding: 5px 7px;
+}
+
+.wishlist-evidence small { color: var(--text-mid); font-size: 0.62rem; text-transform: uppercase; }
+.wishlist-evidence strong { color: var(--ink); font-size: 0.7rem; }
+.wishlist-evidence a { align-self: center; color: var(--accent); font-size: 0.72rem; font-weight: 750; }
+.wishlist-evidence.is-compact { margin-top: 5px; }
+.wishlist-evidence.is-compact > span { min-width: 70px; padding: 3px 5px; }
+.wishlist-evidence.is-compact > span:nth-child(n+3) { display: none; }
+.wishlist-evidence.is-compact a { display: none; }
 
 .wishlist-actions {
   display: grid;

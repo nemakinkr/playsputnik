@@ -104,6 +104,7 @@
         dropDecisions: {},
         sessionLog: [],
         continuityFocusTitle: "",
+        dailyBriefing: { date: "", actions: [], completedAt: null },
         aiExplanations: {},
         aiImportDraft: null,
         aiImportReceipt: null,

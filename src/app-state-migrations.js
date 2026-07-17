@@ -1,7 +1,7 @@
 /* PlaySputnik State Migrations — deterministic upgrades for persisted user profiles */
 "use strict";
 (function () {
-  const CURRENT_STATE_VERSION = 9;
+  const CURRENT_STATE_VERSION = 10;
 
   const migrations = {
     1(state) {
@@ -166,6 +166,43 @@
         ...state,
         userGames,
         continuityFocusTitle: String(state.continuityFocusTitle || ""),
+      };
+    },
+    10(state) {
+      const userEvents = (Array.isArray(state.userEvents) ? state.userEvents : [])
+        .filter((event) => event && typeof event === "object")
+        .map((event, index) => {
+          const occurredAt = event.occurredAt || event.at || new Date(0).toISOString();
+          const detail = event.payload && typeof event.payload === "object"
+            ? event.payload
+            : event.detail && typeof event.detail === "object" ? event.detail : {};
+          return {
+            schemaVersion: 1,
+            id: event.id || `legacy:${event.type || "event"}:${index}:${occurredAt}`,
+            type: event.type || "memory.updated",
+            category: event.category || "memory",
+            title: String(event.title || ""),
+            occurredAt,
+            at: occurredAt,
+            source: event.source && typeof event.source === "object"
+              ? event.source
+              : { kind: "user", name: "", url: "", checkedAt: null },
+            payload: detail,
+            detail,
+            action: event.action && typeof event.action === "object" ? event.action : null,
+            delivery: event.delivery || "internal",
+          };
+        })
+        .slice(0, 100);
+      const daily = state.dailyBriefing && typeof state.dailyBriefing === "object" ? state.dailyBriefing : {};
+      return {
+        ...state,
+        userEvents,
+        dailyBriefing: {
+          date: String(daily.date || ""),
+          actions: Array.isArray(daily.actions) ? daily.actions.slice(0, 20) : [],
+          completedAt: daily.completedAt || null,
+        },
       };
     },
   };

@@ -32,7 +32,7 @@ reviews, catalogs, sale pages, and announcements.
   Pages configure/upload/deploy `v6/v5/v5`). A local + CI runtime-policy gate
   prevents deprecated action majors or `node-version: 20` from returning.
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v148 (cache-first static assets / network-first navigation and
+- Service worker v151 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -40,7 +40,7 @@ reviews, catalogs, sale pages, and announcements.
 
 - Static app, no build step: `index.html` + layered CSS in `styles/`
   (`foundation`, `components`, `polish`, `themes`, final `brand` overrides) +
-  `app.js` + 32 runtime entries in `src/module-manifest.js`.
+  `app.js` + 38 runtime entries in `src/module-manifest.js`.
   Runtime modules load through six dependency phases, parallel inside each
   phase. A visible boot overlay blocks interaction until handlers are ready.
   Comparison selection and the rate-later queue live in `app-decisions.js`;
@@ -53,6 +53,13 @@ reviews, catalogs, sale pages, and announcements.
   manifest and gives agents a compact change-routing map.
   `release-upgrade-test.mjs` protects mixed old-shell/new-code releases, while
   Service Worker navigations are network-first to avoid stale HTML shells.
+- The Today briefing is now a durable daily loop rather than a static list:
+  completed moves are replaced with the next relevant active/library/radar/
+  wishlist decision, the user can wrap the day into a saved receipt, and the
+  agenda resets on the next date. Wishlist decisions expose source, checked
+  date, freshness, confidence, and a source link. A schema-v1 companion event
+  contract records actions and prepares price-target, release, and subscription
+  facts for future notifications; stale or unsourced facts are delivery-blocked.
 - Product areas: Today, Library, Discover, Wishlist, Taste, Deals, Data, Stats.
   The consumer navigation now keeps Today, Library, Discover, Wishlist, and
   Taste primary; Deals, Stats, and Data live in a compact secondary menu.

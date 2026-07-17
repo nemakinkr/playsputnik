@@ -154,6 +154,9 @@ if (!window.PlaySputnikContinuity) {
 if (!window.PlaySputnikBriefing) {
   throw new Error("PlaySputnikBriefing must load before app.js");
 }
+if (!window.PlaySputnikEvents) {
+  throw new Error("PlaySputnikEvents must load before app.js");
+}
 if (!window.PlaySputnikHltb) {
   throw new Error("PlaySputnikHltb must load before app.js");
 }
@@ -363,7 +366,6 @@ const {
   legacyStateFromUserGame,
   hydrateUserGames,
   explicitUserGame: explicitUserGameForState,
-  recordUserEvent: recordUserEventForState,
   applyStateToUserGame,
   titleStateSnapshot: titleStateSnapshotForState,
   restoreSetMembership,
@@ -388,7 +390,17 @@ const {
   applyPlaySession,
   continuitySnapshot,
 } = window.PlaySputnikContinuity;
-const { buildDailyBriefing } = window.PlaySputnikBriefing;
+const {
+  normalizeDailyBriefingProgress,
+  recordBriefingAction,
+  finishDailyBriefing,
+  buildDailyBriefing,
+} = window.PlaySputnikBriefing;
+const {
+  createCompanionEvent,
+  appendCompanionEvent,
+  buildNotificationEvents,
+} = window.PlaySputnikEvents;
 
 const {
   quickReaction,
@@ -1114,6 +1126,7 @@ const els = {
   dailyBriefingPanel: document.querySelector("#daily-briefing-panel"),
   dailyBriefingStatus: document.querySelector("#daily-briefing-status"),
   dailyBriefingBody: document.querySelector("#daily-briefing-body"),
+  dailyBriefingFooter: document.querySelector("#daily-briefing-footer"),
   firstRunStatus: document.querySelector("#first-run-status"),
   firstRunGrid: document.querySelector("#first-run-grid"),
   firstRunBridge: document.querySelector("#first-run-bridge"),
@@ -1331,7 +1344,12 @@ function saveState() {
 }
 
 function recordUserEvent(type, title, detail = {}) {
-  recordUserEventForState(state, type, title, detail);
+  appendCompanionEvent(state, createCompanionEvent({
+    type,
+    title,
+    payload: detail,
+    source: { kind: "user" },
+  }));
 }
 
 function setGameState(title, userState) {
@@ -7522,7 +7540,57 @@ function briefingActionLabel(kind) {
   return t("today.briefing.action.wishlist");
 }
 
+function briefingOutcomeLabel(outcome) {
+  if (outcome === "continued") return t("today.briefing.outcome.continued");
+  if (outcome === "started") return t("today.briefing.outcome.started");
+  if (outcome === "watched") return t("today.briefing.outcome.watched");
+  return t("today.briefing.outcome.reviewed");
+}
+
+function wishlistEvidenceFreshnessLabel(value) {
+  if (value === "fresh") return t("wishlist.freshnessFresh");
+  if (value === "aging") return t("wishlist.freshnessAging");
+  if (value === "sample") return t("wishlist.freshnessSample");
+  if (value === "stale") return t("wishlist.freshnessStale");
+  if (value === "verify") return t("wishlist.freshnessVerify");
+  return t("wishlist.freshnessMissing");
+}
+
+function wishlistEvidenceConfidenceLabel(value) {
+  if (value === "high") return t("wishlist.confidenceHigh");
+  if (value === "medium") return t("wishlist.confidenceMedium");
+  if (value === "low") return t("wishlist.confidenceLow");
+  return t("wishlist.confidenceUnknown");
+}
+
+function wishlistDecisionEvidenceHtml(evidence, modifier = "") {
+  if (!evidence) return "";
+  const locale = document.documentElement.lang || "en";
+  const checked = evidence.checkedAt
+    ? new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(new Date(evidence.checkedAt))
+    : t("wishlist.evidenceMissing");
+  const source = evidence.source && evidence.source !== "missing"
+    ? evidence.source.toUpperCase()
+    : t("wishlist.evidenceMissing");
+  return `
+    <div class="wishlist-evidence ${modifier}" data-wishlist-evidence>
+      <span><small>${t("wishlist.evidenceSource")}</small><strong>${detailAttr(source)}</strong></span>
+      <span><small>${t("wishlist.evidenceChecked")}</small><strong>${checked}</strong></span>
+      <span><small>${t("wishlist.evidenceFreshness")}</small><strong>${wishlistEvidenceFreshnessLabel(evidence.freshness)}</strong></span>
+      <span><small>${t("wishlist.evidenceConfidence")}</small><strong>${wishlistEvidenceConfidenceLabel(evidence.confidence)}</strong></span>
+      ${evidence.sourceUrl ? `<a href="${detailAttr(evidence.sourceUrl)}" target="_blank" rel="noopener noreferrer">${t("wishlist.evidenceOpen")}</a>` : ""}
+    </div>
+  `;
+}
+
+function markDailyBriefingAction(item, outcome, date) {
+  state.dailyBriefing = recordBriefingAction(state.dailyBriefing, item, outcome, { date, titleKey });
+  recordUserEvent("briefing.item_completed", item.title, { kind: item.kind, outcome, date });
+}
+
 function renderDailyBriefing(ranked) {
+  const today = new Date().toISOString().slice(0, 10);
+  state.dailyBriefing = normalizeDailyBriefingProgress(state.dailyBriefing, today);
   const activeRecords = activeContinuityRecords(state.userGames);
   const focusRecord = continuityFocus(state.userGames, state.continuityFocusTitle);
   const wishlistRecords = wishlistIntentRecords(ranked).map((record) => ({
@@ -7530,22 +7598,34 @@ function renderDailyBriefing(ranked) {
     briefingDecision: wishlistDecision(record),
   }));
   const briefing = buildDailyBriefing({
-    date: new Date().toISOString().slice(0, 10),
+    date: today,
     activeRecords,
     focusRecord,
     libraryCandidates: ranked.filter((game) => isAlreadyAvailable(game)),
     radarItems: rankedRadar(),
     wishlistRecords,
+    progress: state.dailyBriefing,
     sessionMinutes: Number(state.sessionMinutes) || 60,
     titleKey,
   });
+  const notificationEvents = buildNotificationEvents({
+    wishlistRecords,
+    radarItems: rankedRadar(),
+    accessGames: ranked.filter((game) => game.subscriptionMeta?.[state.activeRegion]),
+    region: state.activeRegion,
+  });
+  els.dailyBriefingPanel.dataset.notificationCandidates = String(notificationEvents.length);
+  els.dailyBriefingPanel.dataset.notificationEligible = String(notificationEvents.filter((event) => event.delivery === "eligible").length);
   const locale = document.documentElement.lang || "en";
   const dateLabel = new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short" })
     .format(new Date(`${briefing.date}T12:00:00`));
-  els.dailyBriefingStatus.textContent = t("today.briefing.status", { date: dateLabel, count: briefing.itemCount });
+  els.dailyBriefingStatus.textContent = briefing.completedAt
+    ? t("today.briefing.statusDone", { date: dateLabel, count: briefing.completedCount })
+    : t("today.briefing.status", { date: dateLabel, count: briefing.itemCount, done: briefing.completedCount });
 
-  if (!briefing.items.length) {
+  if (!briefing.items.length && !briefing.receipt.length) {
     els.dailyBriefingBody.replaceChildren();
+    els.dailyBriefingFooter.replaceChildren();
     els.dailyBriefingPanel.classList.add("is-empty");
     return;
   }
@@ -7569,6 +7649,7 @@ function renderDailyBriefing(ranked) {
         <span>${briefingKindLabel(item.kind)}</span>
         <strong>${detailAttr(item.title)}</strong>
         <p>${detail}</p>
+        ${item.kind === "wishlist" ? wishlistDecisionEvidenceHtml(item.decisionEvidence, "is-compact") : ""}
       </div>
       <div class="daily-briefing-action">
         ${item.decisionLabel ? `<small>${item.decisionLabel}</small>` : ""}
@@ -7578,21 +7659,54 @@ function renderDailyBriefing(ranked) {
     row.querySelector("[data-briefing-action]")?.addEventListener("click", () => {
       if (item.kind === "continue") {
         state.continuityFocusTitle = item.title;
+        markDailyBriefingAction(item, "continued", briefing.date);
         render();
         window.setTimeout(() => els.continuityPanel?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
       }
       if (item.kind === "library") {
         setGameState(item.title, "playing");
+        markDailyBriefingAction(item, "started", briefing.date);
         render();
       }
       if (item.kind === "radar") {
         addSearchResultToWishlist(radarSearchResult(item.sourceItem));
+        markDailyBriefingAction(item, "watched", briefing.date);
         render();
       }
-      if (item.kind === "wishlist") openGameDetail(item.title);
+      if (item.kind === "wishlist") {
+        markDailyBriefingAction(item, "reviewed", briefing.date);
+        render();
+        openGameDetail(item.title);
+      }
     });
     return row;
   }));
+
+  const receiptRows = [...briefing.receipt].reverse().map((action) => `
+    <li><span>${briefingOutcomeLabel(action.outcome)}</span><strong>${detailAttr(action.title)}</strong></li>
+  `).join("");
+  els.dailyBriefingFooter.innerHTML = briefing.completedAt ? `
+    <div class="daily-briefing-receipt" role="status">
+      <div><span>${t("today.briefing.receiptTitle")}</span><strong>${t("today.briefing.receiptSummary", { count: briefing.completedCount })}</strong></div>
+      ${receiptRows ? `<ul>${receiptRows}</ul>` : ""}
+      <button type="button" data-briefing-reset>${t("today.briefing.reopen")}</button>
+    </div>
+  ` : `
+    <div class="daily-briefing-progress">
+      <span>${t("today.briefing.progress", { count: briefing.completedCount })}</span>
+      <button type="button" data-briefing-finish>${t("today.briefing.finish")}</button>
+    </div>
+  `;
+  els.dailyBriefingFooter.querySelector("[data-briefing-finish]")?.addEventListener("click", () => {
+    state.dailyBriefing = finishDailyBriefing(state.dailyBriefing, { date: briefing.date });
+    recordUserEvent("briefing.day_finished", "", { date: briefing.date, completed: briefing.completedCount });
+    render();
+  });
+  els.dailyBriefingFooter.querySelector("[data-briefing-reset]")?.addEventListener("click", () => {
+    state.dailyBriefing = normalizeDailyBriefingProgress(null, briefing.date);
+    recordUserEvent("briefing.day_reopened", "", { date: briefing.date });
+    render();
+  });
 }
 
 function renderContinuityPanel() {
@@ -7864,6 +7978,7 @@ function renderPriceWatch(ranked) {
         ? `<span class="anti-hype-guard guard-${guard.kind}"><strong>${guard.label}</strong> ${guard.detail}</span>`
         : "";
       const sourceNote = wishlistExternalSourceHtml(game, region);
+      const decisionEvidence = wishlistDecisionEvidenceHtml(decision.evidence);
       row.innerHTML = `
         <span class="wishlist-decision">${decision.label}</span>
         <div>
@@ -7871,6 +7986,7 @@ function renderPriceWatch(ranked) {
           ${focusedMemoryBadgeHtml(isFocused)}
           <span class="deal-price ${status.canConfirm ? "" : "needs-verify"}">${priceLine}</span>
           <span class="deal-reason">${decision.detail}${watchLine} / ${t("wishlist.lanesLine", { lanes })}</span>
+          ${decisionEvidence}
           ${guardLine}
           ${sourceNote}
           ${watch ? priceWatchControlHtml(game, { context: "row" }) : ""}

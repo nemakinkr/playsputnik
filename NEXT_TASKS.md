@@ -8,6 +8,16 @@ people**; architectural cleanup is now an active supporting track.
 
 Run `./scripts/check.sh` before claiming any task done.
 
+## 2026-07-17 daily companion truth loop
+
+Completed: the unified Today briefing now adapts after each completed move,
+persists a short daily receipt, and resets by date. Wishlist buy/wait/verify
+decisions show a four-part evidence passport (source, checked date, freshness,
+confidence) plus a source link when available. `app-events.js` defines the
+schema-v1 internal event stream and notification candidates for price targets,
+upcoming releases, and subscription availability; delivery remains blocked
+unless the underlying fact satisfies its freshness/provenance contract.
+
 ## Track: Architecture
 
 - Shared runtime manifest for browser boot and Service Worker cache: done.

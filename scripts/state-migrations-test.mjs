@@ -18,6 +18,7 @@ const legacy = {
   importLookupQueue: ["Alan Wake 2"],
   importLookupResolved: { "alan wake 2": true },
   userGames: { control: { title: "Control", completionStatus: "playing", hoursPlayed: 2 } },
+  userEvents: [{ type: "game_session_logged", title: "Control", detail: { minutes: 60 }, at: "2026-07-16T20:00:00.000Z" }],
 };
 const migrated = migrateState(legacy);
 
@@ -35,6 +36,10 @@ assert.equal(migrated.aiTodayRerank, null);
 assert.equal(migrated.userGames.control.playProgress.sessionCount, 0);
 assert.deepEqual([...migrated.userGames.control.playProgress.sessions], []);
 assert.equal(migrated.continuityFocusTitle, "");
+assert.deepEqual(JSON.parse(JSON.stringify(migrated.dailyBriefing)), { date: "", actions: [], completedAt: null });
+assert.equal(migrated.userEvents[0].schemaVersion, 1);
+assert.equal(migrated.userEvents[0].occurredAt, "2026-07-16T20:00:00.000Z");
+assert.equal(migrated.userEvents[0].payload.minutes, 60);
 assert.deepEqual(JSON.parse(JSON.stringify(migrated.providerEnrichmentBudget)), { date: "", used: 0, cap: 20 });
 assert.equal(legacy.stateVersion, undefined, "migration must not mutate stored input");
 assert.deepEqual(

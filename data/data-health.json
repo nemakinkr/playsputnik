@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T07:31:39.302Z",
+  "generatedAt": "2026-07-17T08:07:01.208Z",
   "mode": "no-paid-provider-p0",
   "gameCount": 461,
   "regions": [
@@ -204,7 +204,7 @@
     ]
   },
   "refreshDigest": {
-    "generatedAt": "2026-07-17T07:31:39.295Z",
+    "generatedAt": "2026-07-17T08:07:01.202Z",
     "priceSnapshotCount": 1844,
     "subscriptionRecordCount": 509,
     "latestPriceCheckedAt": "2026-07-16T09:20:42.466Z",
