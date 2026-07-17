@@ -14,7 +14,7 @@
     parsePsnTrophyTitles,
     importSummaryLabel,
   } = window.PlaySputnikImport;
-  const { createProfileEnvelope, unwrapProfileEnvelope } = window.PlaySputnikSync;
+  const { createProfileEnvelope, unwrapProfileEnvelope, compareProfileEnvelopes } = window.PlaySputnikSync;
 
   function createExportTools({
     getState,
@@ -34,6 +34,7 @@
     els,
   }) {
     let _pendingImportEntries = null;
+    let _pendingProfileImport = null;
 
     // ── JSON Export ───────────────────────────────────────────────────────────
     function exportStateJson() {
@@ -80,36 +81,99 @@
     }
 
     // ── PlaySputnik JSON Backup Import ────────────────────────────────────────
+    function hydrateImportedProfile(profile) {
+      const migrated = stateMigrations?.migrateState
+        ? stateMigrations.migrateState(profile)
+        : profile;
+      return {
+        ...defaultState(),
+        ...migrated,
+        liked: new Set(migrated.liked || []),
+        hidden: new Set(migrated.hidden || []),
+        saved: new Set(migrated.saved || []),
+        snoozed: new Set(migrated.snoozed || []),
+        userGames: hydrateUserGames(migrated),
+        quickReactions: migrated.quickReactions || {},
+        atomWeights: migrated.atomWeights || {},
+        importedRatings: migrated.importedRatings || [],
+        notebook: migrated.notebook || emptyNotebook(),
+        feedbackLog: migrated.feedbackLog || [],
+        userEvents: migrated.userEvents || [],
+        dropDecisions: migrated.dropDecisions || {},
+      };
+    }
+
+    function hideProfileConflict() {
+      _pendingProfileImport = null;
+      if (els.profileConflict) els.profileConflict.hidden = true;
+    }
+
+    function applyProfileImport(pending = _pendingProfileImport) {
+      if (!pending) return false;
+      const imported = hydrateImportedProfile(pending.unpacked.profile);
+      setState(imported);
+      saveState();
+      render();
+      hideProfileConflict();
+      els.exportStatus.textContent = `${t(pending.unpacked.legacy ? "data.legacyBackupImported" : "data.profileBackupImported", { count: Object.keys(imported.userGames).length })} ✓`;
+      setTimeout(() => { els.exportStatus.textContent = ""; }, 4000);
+      return true;
+    }
+
+    function profileConflictCopy(status) {
+      if (status === "legacy") return { title: t("data.syncLegacyTitle"), detail: t("data.syncLegacyDetail") };
+      if (status === "remote_ahead") return { title: t("data.syncRemoteAheadTitle"), detail: t("data.syncRemoteAheadDetail") };
+      if (status === "local_ahead") return { title: t("data.syncLocalAheadTitle"), detail: t("data.syncLocalAheadDetail") };
+      if (status === "different_profile") return { title: t("data.syncDifferentProfileTitle"), detail: t("data.syncDifferentProfileDetail") };
+      return { title: t("data.syncDivergedTitle"), detail: t("data.syncDivergedDetail") };
+    }
+
+    function showProfileConflict(unpacked, comparison) {
+      _pendingProfileImport = { unpacked, comparison };
+      if (!els.profileConflict) return applyProfileImport(_pendingProfileImport);
+      const localEnvelope = createProfileEnvelope(getState(), { deviceId: getDeviceId() });
+      const incoming = unpacked.envelope;
+      const copy = profileConflictCopy(comparison.status);
+      els.profileConflictTitle.textContent = copy.title;
+      els.profileConflictDetail.textContent = copy.detail;
+      els.profileConflictFacts.innerHTML = `
+        <span><small>${t("data.syncThisDevice")}</small><strong>${t("data.syncRevisionValue", { revision: localEnvelope.revision })}</strong></span>
+        <span><small>${t("data.syncBackupDevice")}</small><strong>${t("data.syncRevisionValue", { revision: incoming.revision })}</strong></span>
+      `;
+      els.profileConflict.hidden = false;
+      els.profileConflict.scrollIntoView?.({ behavior: "smooth", block: "nearest" });
+      els.profileConflictUse?.focus?.();
+      return false;
+    }
+
+    function resolveProfileImport(action) {
+      if (action === "use_backup") return applyProfileImport();
+      hideProfileConflict();
+      if (action === "keep_local") {
+        els.exportStatus.textContent = t("data.syncKeptDevice");
+        setTimeout(() => { els.exportStatus.textContent = ""; }, 3000);
+      }
+      return false;
+    }
+
     function importStateJson(file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
           const parsed = JSON.parse(e.target.result);
           const unpacked = unwrapProfileEnvelope(parsed);
-          const migrated = stateMigrations?.migrateState
-            ? stateMigrations.migrateState(unpacked.profile)
-            : unpacked.profile;
-          const imported = {
-            ...defaultState(),
-            ...migrated,
-            liked: new Set(migrated.liked || []),
-            hidden: new Set(migrated.hidden || []),
-            saved: new Set(migrated.saved || []),
-            snoozed: new Set(migrated.snoozed || []),
-            userGames: hydrateUserGames(migrated),
-            quickReactions: migrated.quickReactions || {},
-            atomWeights: migrated.atomWeights || {},
-            importedRatings: migrated.importedRatings || [],
-            notebook: migrated.notebook || emptyNotebook(),
-            feedbackLog: migrated.feedbackLog || [],
-            userEvents: migrated.userEvents || [],
-            dropDecisions: migrated.dropDecisions || {},
-          };
-          setState(imported);
-          saveState();
-          render();
-          els.exportStatus.textContent = `${t(unpacked.legacy ? "data.legacyBackupImported" : "data.profileBackupImported", { count: Object.keys(imported.userGames).length })} ✓`;
-          setTimeout(() => { els.exportStatus.textContent = ""; }, 4000);
+          if (unpacked.legacy) {
+            showProfileConflict(unpacked, { status: "legacy", safeAction: "confirm_replace" });
+            return;
+          }
+          const localEnvelope = createProfileEnvelope(getState(), { deviceId: getDeviceId() });
+          const comparison = compareProfileEnvelopes(localEnvelope, unpacked.envelope);
+          if (comparison.status === "identical") {
+            hideProfileConflict();
+            els.exportStatus.textContent = t("data.syncAlreadyCurrent");
+            return;
+          }
+          showProfileConflict(unpacked, comparison);
         } catch (err) {
           els.exportStatus.textContent = t("data.importFailed", { message: err.message });
         }
@@ -206,6 +270,9 @@
         if (e.target.files[0]) importStateJson(e.target.files[0]);
         e.target.value = "";
       });
+      els.profileConflictUse?.addEventListener("click", () => resolveProfileImport("use_backup"));
+      els.profileConflictKeep?.addEventListener("click", () => resolveProfileImport("keep_local"));
+      els.profileConflictCancel?.addEventListener("click", () => resolveProfileImport("cancel"));
 
       if (els.libraryImportFile) {
         els.libraryImportFile.addEventListener("change", (e) => {
@@ -298,6 +365,7 @@
       exportStateJson,
       exportLibraryCsv,
       importStateJson,
+      resolveProfileImport,
       applyLibraryImportEntries,
       showLibraryImportPreview,
       handleLibraryFileImport,

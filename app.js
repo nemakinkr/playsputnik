@@ -94,6 +94,9 @@ if (!window.PlaySputnikState) {
 if (!window.PlaySputnikSync) {
   throw new Error("PlaySputnikSync must load before app.js");
 }
+if (!window.PlaySputnikAccount) {
+  throw new Error("PlaySputnikAccount must load before app.js");
+}
 
 if (!window.PlaySputnikSearch) {
   throw new Error("PlaySputnikSearch must load before app.js");
@@ -364,6 +367,7 @@ const {
   syncStatus,
 } = window.PlaySputnikSync;
 const profileStorage = window.PlaySputnikStorage.createStorageAdapter();
+const accountCapabilities = window.PlaySputnikAccount.accountCapabilities();
 
 const {
   makeQuickReactions,
@@ -1265,6 +1269,13 @@ const els = {
   exportCsv: document.querySelector("#export-csv"),
   exportStatus: document.querySelector("#export-status"),
   syncProfileStatus: document.querySelector("#sync-profile-status"),
+  profileConflict: document.querySelector("#profile-conflict"),
+  profileConflictTitle: document.querySelector("#profile-conflict-title"),
+  profileConflictDetail: document.querySelector("#profile-conflict-detail"),
+  profileConflictFacts: document.querySelector("#profile-conflict-facts"),
+  profileConflictUse: document.querySelector("#profile-conflict-use"),
+  profileConflictKeep: document.querySelector("#profile-conflict-keep"),
+  profileConflictCancel: document.querySelector("#profile-conflict-cancel"),
   exportPreview: document.querySelector("#export-preview"),
   importFile: document.querySelector("#import-file"),
   libraryImportFile: document.querySelector("#library-import-file"),
@@ -8289,6 +8300,7 @@ function renderSyncProfileStatus() {
       <span><small>${t("data.syncUpdated")}</small><strong>${updated}</strong></span>
     </div>
     <p>${t("data.syncSafetyNote")}</p>
+    <p class="sync-account-plan"><strong>${t("data.syncAccountPlanLabel")}</strong> ${t(accountCapabilities.configured ? "data.syncAccountConfigured" : "data.syncAccountPending")}</p>
   `;
 }
 

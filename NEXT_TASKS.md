@@ -49,17 +49,23 @@ unless the underlying fact satisfies its freshness/provenance contract.
 - Backward-compatible restore: done. Versioned envelopes and legacy raw JSON
   both pass through the current migration pipeline before Sets and user-game
   memory are rehydrated.
-- Conflict contract: done at domain level. Identical, local-ahead,
+- Conflict contract and review UI: done. Identical, local-ahead,
   remote-ahead, divergent, and different-profile cases produce explicit safe
-  actions and have deterministic tests.
+  actions and have deterministic tests. Backup import never replaces divergent
+  memory before a visible keep/use decision; a browser smoke covers both paths.
 - Honest backend boundary: done. The capability endpoint declares sync
   unavailable and the profile endpoint rejects payloads until authentication
   and private storage exist. Do not replace this with a public-id-only upload.
-- Remaining before real sync: choose an authentication provider, add
-  user-scoped encrypted-at-rest storage, define account deletion/export,
-  implement a reviewed conflict-resolution surface, and run two-device tests.
-  The conflict UI can be developed locally against the envelope contract
-  before committing to a vendor.
+- Account architecture: chosen and scaffolded. Supabase Auth + Postgres RLS
+  owns user identity/private memory; Cloudflare remains the public RAWG/AI API.
+  `backend/supabase-profile-schema.sql` forces per-user RLS and exposes an
+  expected-revision RPC; `app-account.js` is a JWT-only transport that stays
+  off without explicit public project config. See
+  `docs/ACCOUNT_SYNC_ARCHITECTURE.md`.
+- Remaining before real sync: create the Supabase project, run the SQL, add
+  exact redirect URLs and magic-link/Google configuration, bundle the official
+  PKCE auth client, implement full account deletion, and run live two-browser
+  isolation/conflict tests. Do not enable runtime config before RLS verification.
 
 ## Track: Catalog / Provider Coverage
 

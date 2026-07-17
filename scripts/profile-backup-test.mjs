@@ -71,4 +71,62 @@ tools.importStateJson({ contents: JSON.stringify({ liked: [], hidden: [], saved:
 assert.equal(importedStates[1].stateVersion, 11, "legacy backup must also migrate");
 assert.match(els.exportStatus.textContent, /legacyBackupImported/);
 
-console.log("✅ versioned and legacy profile backups restore through the current state migration pipeline");
+const currentState = {
+  stateVersion: 11,
+  liked: new Set(["Control"]), hidden: new Set(), saved: new Set(), snoozed: new Set(),
+  userGames: { control: { title: "Control", rating: 80 } },
+  quickReactions: {}, importedRatings: [], notebook: {}, feedbackLog: [], userEvents: [],
+};
+const localEnvelope = context.window.PlaySputnikSync.createProfileEnvelope(currentState, {
+  deviceId: "device_local",
+  profileIdFactory: () => "profile_conflict",
+});
+const divergentEnvelope = {
+  ...localEnvelope,
+  revision: localEnvelope.revision + 1,
+  baseRevision: 0,
+  fingerprint: "fnv1a-other-device",
+  sourceDeviceId: "device_remote",
+  profile: {
+    ...localEnvelope.profile,
+    userGames: { control: { title: "Control", rating: 95 } },
+    syncMeta: { ...localEnvelope.profile.syncMeta, revision: localEnvelope.revision + 1 },
+  },
+};
+const conflictImports = [];
+const conflictEls = {
+  exportStatus: { textContent: "" },
+  profileConflict: { hidden: true, scrollIntoView() {} },
+  profileConflictTitle: { textContent: "" },
+  profileConflictDetail: { textContent: "" },
+  profileConflictFacts: { innerHTML: "" },
+  profileConflictUse: { focus() {} },
+};
+const conflictTools = context.window.PlaySputnikExport.createExportTools({
+  getState: () => currentState,
+  setState: (state) => conflictImports.push(state),
+  defaultState: () => ({ liked: new Set(), hidden: new Set(), saved: new Set(), snoozed: new Set(), userGames: {}, syncMeta: {} }),
+  hydrateUserGames: (profile) => profile.userGames || {},
+  emptyNotebook: () => ({}),
+  legacyStateFromUserGame: () => "",
+  titleKey: (title) => String(title || "").toLowerCase(),
+  applyStateToUserGame: (record) => record,
+  userStateToUserGame: (title) => ({ title }),
+  stateMigrations: { migrateState: (profile) => ({ ...profile, stateVersion: 11 }) },
+  getDeviceId: () => "device_local",
+  saveState: () => {}, render: () => {}, els: conflictEls,
+});
+conflictTools.importStateJson({ contents: JSON.stringify(divergentEnvelope) });
+assert.equal(conflictImports.length, 0, "divergent backup must never overwrite local memory before review");
+assert.equal(conflictEls.profileConflict.hidden, false);
+assert.match(conflictEls.profileConflictTitle.textContent, /syncDivergedTitle/);
+conflictTools.resolveProfileImport("keep_local");
+assert.equal(conflictImports.length, 0);
+assert.equal(conflictEls.profileConflict.hidden, true);
+
+conflictTools.importStateJson({ contents: JSON.stringify(divergentEnvelope) });
+conflictTools.resolveProfileImport("use_backup");
+assert.equal(conflictImports.length, 1, "explicit confirmation may replace the local profile");
+assert.equal(conflictImports[0].userGames.control.rating, 95);
+
+console.log("✅ backup restore migrates legacy data and blocks divergent device memory until explicit review");

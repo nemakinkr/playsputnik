@@ -26,6 +26,7 @@
     [3, "src/app-answer.js", "PlaySputnikAnswer", "Companion answer composition"],
     [3, "src/app-cover.js", "PlaySputnikCover", "Cover resolution and attribution"],
     [3, "src/app-dev.js", "PlaySputnikDev", "Diagnostics and development health"],
+    [3, "src/app-account.js", "PlaySputnikAccount", "Account capability and private profile transport"],
     [3, "src/app-sync.js", "PlaySputnikSync", "Portable profile envelopes and sync conflict contracts"],
     [4, "src/app-library.js", "PlaySputnikLibrary", "Library queues and decisions"],
     [4, "src/app-briefing.js", "PlaySputnikBriefing", "Unified daily companion agenda"],

@@ -32,7 +32,7 @@ reviews, catalogs, sale pages, and announcements.
   Pages configure/upload/deploy `v6/v5/v5`). A local + CI runtime-policy gate
   prevents deprecated action majors or `node-version: 20` from returning.
 - All app paths are RELATIVE (works under the /playsputnik/ subpath).
-- Service worker v152 (cache-first static assets / network-first navigation and
+- Service worker v153 (cache-first static assets / network-first navigation and
   data), **disabled on localhost**; bump `CACHE_VERSION` in sw.js when shipping
   runtime code or styles.
 
@@ -40,7 +40,7 @@ reviews, catalogs, sale pages, and announcements.
 
 - Static app, no build step: `index.html` + layered CSS in `styles/`
   (`foundation`, `components`, `polish`, `themes`, final `brand` overrides) +
-  `app.js` + 39 runtime entries in `src/module-manifest.js`.
+  `app.js` + 40 runtime entries in `src/module-manifest.js`.
   Runtime modules load through six dependency phases, parallel inside each
   phase. A visible boot overlay blocks interaction until handlers are ready.
   Comparison selection and the rate-later queue live in `app-decisions.js`;
@@ -103,8 +103,17 @@ reviews, catalogs, sale pages, and announcements.
   overwriting either side. Data view exposes the local profile/revision and
   clearly says cloud sync is off. `/api/sync/capabilities` reports that auth
   and private storage are not configured, while `/api/sync/profile` rejects
-  all profile data. Real multi-device sync remains blocked on authenticated,
-  user-scoped storage and a reviewed conflict UI.
+  all profile data. Real multi-device sync remains blocked on configured
+  authentication/storage and live account-isolation tests.
+  Backup import now exercises that review boundary visibly: newer, older,
+  divergent, and different-profile envelopes show both revisions and require
+  an explicit keep-local or use-backup decision. A two-device browser smoke
+  proves that no profile data changes before confirmation. The selected live
+  architecture is Supabase Auth plus one JSON-envelope row per user protected
+  by forced Postgres RLS. The checked-in SQL uses `auth.uid()`, a 2 MiB payload
+  cap, and an atomic expected-revision RPC; the browser transport requires a
+  user JWT and remains disabled until public project settings are configured.
+  Cloudflare remains the RAWG/AI API rather than becoming a custom OAuth server.
 - RAWG search enrichment now uses one shared production/local normalizer.
   `search-result-v3` persists atoms, session, length, difficulty, commitment,
   tone, content, review burden, and adult-time fit with per-field RAWG evidence,

@@ -811,6 +811,19 @@
             <span id="export-status"></span>
           </div>
           <div class="sync-profile-status" id="sync-profile-status" aria-live="polite"></div>
+          <div class="profile-conflict" id="profile-conflict" role="alert" aria-labelledby="profile-conflict-title" hidden>
+            <div class="profile-conflict-copy">
+              <span class="eyebrow" data-i18n="data.syncReviewKicker">Backup review</span>
+              <h3 id="profile-conflict-title"></h3>
+              <p id="profile-conflict-detail"></p>
+            </div>
+            <div class="profile-conflict-facts" id="profile-conflict-facts"></div>
+            <div class="action-row">
+              <button class="primary-action" id="profile-conflict-use" type="button" data-i18n="data.syncUseBackup">Use backup</button>
+              <button class="secondary-action" id="profile-conflict-keep" type="button" data-i18n="data.syncKeepDevice">Keep this device</button>
+              <button class="text-action" id="profile-conflict-cancel" type="button" data-i18n="data.syncCancel">Cancel</button>
+            </div>
+          </div>
           <p class="panel-note" data-i18n="data.exportNote">Save your library and taste profile, or restore from a previous backup.</p>
           <div class="export-actions">
             <button class="secondary-action" id="export-json" type="button" data-i18n="data.exportJson">Export JSON</button>

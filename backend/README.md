@@ -20,6 +20,14 @@ frontend host. The Worker exposes:
 - `POST /api/rerank` — may reorder at most eight already-scored Today
   candidates. Server and client both keep weak candidates outside a 12-point
   deterministic quality window; all other views remain deterministic.
+- `GET /api/sync/capabilities` — explicitly reports that profile sync is not
+  configured on the public Worker.
+- `/api/sync/profile` — rejects all profile payloads. Private account memory is
+  designed for Supabase Auth + RLS, not an unauthenticated Cloudflare endpoint.
+
+The selected account/storage contract is documented in
+`docs/ACCOUNT_SYNC_ARCHITECTURE.md`; its migration is
+`backend/supabase-profile-schema.sql`. It is intentionally not live yet.
 
 The public Worker deliberately does **not** expose `/api/psn`. NPSSO is a
 sensitive account token; PSN import stays local until PlaySputnik has accounts,

@@ -324,11 +324,17 @@ const noPsn = await handleRequest(new Request("https://api.example/api/psn", {
 }), env, context);
 assert.equal(noPsn.status, 404, "public backend must not accept PSN tokens");
 
-const runtimeTemplate = `// apiOrigin: "https://example.invalid"\nwindow.PlaySputnikRuntime = {\n  apiOrigin: "",\n};\n`;
-const configuredRuntime = configureRuntimeSource(runtimeTemplate, "https://playsputnik-api.example.workers.dev/");
+const runtimeTemplate = `// apiOrigin: "https://example.invalid"\nwindow.PlaySputnikRuntime = {\n  apiOrigin: "",\n  supabaseUrl: "",\n  supabaseAnonKey: "",\n};\n`;
+const configuredRuntime = configureRuntimeSource(runtimeTemplate, "https://playsputnik-api.example.workers.dev/", {
+  supabaseUrl: "https://playsputnik-test.supabase.co/",
+  supabaseAnonKey: "public-test-key-with-safe-length",
+});
 assert.match(configuredRuntime.next, /apiOrigin: "https:\/\/playsputnik-api\.example\.workers\.dev"/);
+assert.match(configuredRuntime.next, /supabaseUrl: "https:\/\/playsputnik-test\.supabase\.co"/);
+assert.match(configuredRuntime.next, /supabaseAnonKey: "public-test-key-with-safe-length"/);
 assert.match(configuredRuntime.next, /\/\/ apiOrigin: "https:\/\/example\.invalid"/, "runtime config should not rewrite comments");
 assert.throws(() => configureRuntimeSource(runtimeTemplate, "http://insecure.example"), /HTTPS origin/);
+assert.throws(() => configureRuntimeSource(runtimeTemplate, "", { supabaseUrl: "https://playsputnik-test.supabase.co" }), /configured together/);
 
 globalThis.fetch = originalFetch;
 globalThis.caches = originalCaches;

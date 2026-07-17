@@ -28,6 +28,7 @@ const SMOKES = [
   { id: "design-smoke", script: "design-smoke-test.mjs" },
   { id: "game-detail-smoke", script: "game-detail-smoke-test.mjs" },
   { id: "library-wishlist-smoke", script: "library-wishlist-smoke-test.mjs" },
+  { id: "profile-conflict-smoke", script: "profile-conflict-smoke-test.mjs" },
   { id: "search-memory-smoke", script: "search-memory-smoke-test.mjs" },
   {
     id: "rawg-lazy-import-smoke",
