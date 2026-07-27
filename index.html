@@ -393,6 +393,14 @@
           <div class="daily-briefing-footer" id="daily-briefing-footer"></div>
         </section>
 
+        <section class="recent-changes-panel" id="recent-changes-panel" aria-labelledby="recent-changes-title" data-view-section="today">
+          <div class="section-heading">
+            <h2 id="recent-changes-title" data-i18n="today.changes.title">What changed</h2>
+            <span id="recent-changes-status"></span>
+          </div>
+          <div class="recent-changes-list" id="recent-changes-list"></div>
+        </section>
+
         <section class="continuity-panel" id="continuity-panel" aria-labelledby="continuity-title" data-view-section="today" hidden>
           <div class="section-heading">
             <h2 id="continuity-title" data-i18n="today.continuity.title">Continue your game</h2>
@@ -879,6 +887,16 @@
           <div class="section-heading">
             <h2 id="stats-title" data-i18n="stats.title">My library stats</h2>
             <span id="stats-badge"></span>
+          </div>
+          <div class="weekly-report" id="weekly-report" aria-labelledby="weekly-report-title">
+            <div class="weekly-report-heading">
+              <div>
+                <span data-i18n="stats.weekly.eyebrow">Last 7 days</span>
+                <h3 id="weekly-report-title" data-i18n="stats.weekly.title">Your gaming week</h3>
+              </div>
+              <span id="weekly-report-period"></span>
+            </div>
+            <div id="weekly-report-body"></div>
           </div>
           <div class="stats-grid" id="stats-grid"></div>
           <div class="stats-calibration" id="stats-calibration"></div>

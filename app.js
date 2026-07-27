@@ -163,6 +163,9 @@ if (!window.PlaySputnikBriefing) {
 if (!window.PlaySputnikEvents) {
   throw new Error("PlaySputnikEvents must load before app.js");
 }
+if (!window.PlaySputnikActivity) {
+  throw new Error("PlaySputnikActivity must load before app.js");
+}
 if (!window.PlaySputnikHltb) {
   throw new Error("PlaySputnikHltb must load before app.js");
 }
@@ -417,6 +420,10 @@ const {
   appendCompanionEvent,
   buildNotificationEvents,
 } = window.PlaySputnikEvents;
+const {
+  buildRecentChanges,
+  buildWeeklyReport,
+} = window.PlaySputnikActivity;
 
 const {
   quickReaction,
@@ -1143,6 +1150,9 @@ const els = {
   dailyBriefingStatus: document.querySelector("#daily-briefing-status"),
   dailyBriefingBody: document.querySelector("#daily-briefing-body"),
   dailyBriefingFooter: document.querySelector("#daily-briefing-footer"),
+  recentChangesPanel: document.querySelector("#recent-changes-panel"),
+  recentChangesStatus: document.querySelector("#recent-changes-status"),
+  recentChangesList: document.querySelector("#recent-changes-list"),
   firstRunStatus: document.querySelector("#first-run-status"),
   firstRunGrid: document.querySelector("#first-run-grid"),
   firstRunBridge: document.querySelector("#first-run-bridge"),
@@ -1218,6 +1228,9 @@ const els = {
   statsAtoms: document.querySelector("#stats-atoms"),
   statsTimeline: document.querySelector("#stats-timeline"),
   statsBadge: document.querySelector("#stats-badge"),
+  weeklyReport: document.querySelector("#weekly-report"),
+  weeklyReportPeriod: document.querySelector("#weekly-report-period"),
+  weeklyReportBody: document.querySelector("#weekly-report-body"),
   priceWatchList: document.querySelector("#price-watch-list"),
   buyDecisionStatus: document.querySelector("#buy-decision-status"),
   buyDecisionList: document.querySelector("#buy-decision-list"),
@@ -3871,7 +3884,60 @@ function renderNotebookProfile() {
 
 // ── Stats page ────────────────────────────────────────────────────────────────
 
-function renderStats() {
+function weeklyDurationLabel(minutes) {
+  const total = Math.max(0, Math.round(Number(minutes) || 0));
+  if (total < 60) return t("stats.weekly.minutes", { minutes: total });
+  return t("stats.weekly.hoursMinutes", { hours: Math.floor(total / 60), minutes: total % 60 });
+}
+
+function renderWeeklyReport(ranked) {
+  if (!els.weeklyReportBody) return;
+  const recommendation = primaryDecisionGame(ranked);
+  const report = buildWeeklyReport({
+    events: state.userEvents,
+    recommendation,
+  });
+  const locale = document.documentElement.lang || "en";
+  const dateFormat = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" });
+  els.weeklyReportPeriod.textContent = `${dateFormat.format(new Date(report.fromAt))} – ${dateFormat.format(new Date(report.toAt))}`;
+
+  const metrics = [
+    [report.playedGameCount, t("stats.weekly.played")],
+    [weeklyDurationLabel(report.sessionMinutes), t("stats.weekly.time")],
+    [report.decisionCount, t("stats.weekly.decisions")],
+    [report.releasedBacklogCount, t("stats.weekly.released")],
+  ];
+  const topPlayed = report.topPlayed
+    ? t("stats.weekly.topPlayed", { title: report.topPlayed.title, time: weeklyDurationLabel(report.topPlayed.minutes) })
+    : t("stats.weekly.noSessions");
+  const closure = t("stats.weekly.closure", {
+    completed: report.completedCount,
+    rated: report.ratingCount,
+  });
+  const recommendationMarkup = report.recommendation ? `
+    <div class="weekly-report-next">
+      <div>
+        <span>${t("stats.weekly.nextEyebrow")}</span>
+        <strong>${detailAttr(report.recommendation.title)}</strong>
+        <p>${t("stats.weekly.nextDetail")}</p>
+      </div>
+      <button type="button" data-weekly-pick="${detailAttr(report.recommendation.title)}">${t("stats.weekly.open")}</button>
+    </div>
+  ` : "";
+
+  els.weeklyReportBody.innerHTML = `
+    <div class="weekly-report-metrics">
+      ${metrics.map(([value, label]) => `<div><strong>${value}</strong><span>${label}</span></div>`).join("")}
+    </div>
+    <p class="weekly-report-summary">${report.hasActivity ? `${topPlayed} ${closure}` : t("stats.weekly.empty")}</p>
+    ${recommendationMarkup}
+  `;
+  els.weeklyReportBody.querySelector("[data-weekly-pick]")?.addEventListener("click", () => {
+    openGameDetail(report.recommendation.title);
+  });
+}
+
+function renderStats(ranked) {
   if (!els.statsGrid) return;
 
   const pool = recommendationPool();
@@ -3884,6 +3950,7 @@ function renderStats() {
     signal: t("stats.calibrationModelSignal"),
     ensemble: t("stats.calibrationModelEnsemble"),
   };
+  renderWeeklyReport(ranked);
 
   // Library by status
   const byStatus = {
@@ -7615,31 +7682,126 @@ function markDailyBriefingAction(item, outcome, date) {
   recordUserEvent("briefing.item_completed", item.title, { kind: item.kind, outcome, date });
 }
 
-function renderDailyBriefing(ranked) {
-  const today = new Date().toISOString().slice(0, 10);
-  state.dailyBriefing = normalizeDailyBriefingProgress(state.dailyBriefing, today);
-  const activeRecords = activeContinuityRecords(state.userGames);
-  const focusRecord = continuityFocus(state.userGames, state.continuityFocusTitle);
+function buildTodayActivityContext(ranked) {
+  const radarItems = rankedRadar();
   const wishlistRecords = wishlistIntentRecords(ranked).map((record) => ({
     ...record,
     briefingDecision: wishlistDecision(record),
   }));
+  const notificationEvents = buildNotificationEvents({
+    wishlistRecords,
+    radarItems,
+    accessGames: ranked.filter((game) => game.subscriptionMeta?.[state.activeRegion]),
+    region: state.activeRegion,
+  });
+  return { radarItems, wishlistRecords, notificationEvents };
+}
+
+function activityAgeLabel(occurredAt) {
+  const elapsedDays = Math.max(0, Math.floor((Date.now() - Number(occurredAt || 0)) / 86400000));
+  if (elapsedDays === 0) return t("today.changes.today");
+  if (elapsedDays === 1) return t("today.changes.yesterday");
+  return t("today.changes.daysAgo", { count: elapsedDays });
+}
+
+function activityChangeDetail(change) {
+  const payload = change.payload || {};
+  if (change.kind === "progress") return t("today.changes.detail.progress", { minutes: payload.minutes || 0 });
+  if (change.kind === "rating") return t("today.changes.detail.rating", { rating: Math.max(1, Math.round((Number(payload.to) || 0) / 20)) });
+  if (change.kind === "backlog") return t("today.changes.detail.backlog");
+  if (change.kind === "completed") return t("today.changes.detail.completed");
+  if (change.kind === "started") return t("today.changes.detail.started");
+  if (change.kind === "saved") return t("today.changes.detail.saved");
+  if (change.kind === "recommendation") return t("today.changes.detail.recommendation");
+  if (change.kind === "price") {
+    return t("today.changes.detail.price", {
+      price: payload.price ?? "—",
+      currency: payload.currency || "",
+      target: payload.targetPrice ?? "—",
+    });
+  }
+  if (change.kind === "release") return t("today.changes.detail.release", { days: payload.daysAway ?? "—" });
+  if (change.kind === "subscription") return t("today.changes.detail.subscription", { tier: payload.tier || t("today.changes.subscriptionFallback") });
+  return "";
+}
+
+function activityKindLabel(kind) {
+  if (kind === "progress") return t("today.changes.kind.progress");
+  if (kind === "rating") return t("today.changes.kind.rating");
+  if (kind === "backlog") return t("today.changes.kind.backlog");
+  if (kind === "completed") return t("today.changes.kind.completed");
+  if (kind === "started") return t("today.changes.kind.started");
+  if (kind === "saved") return t("today.changes.kind.saved");
+  if (kind === "recommendation") return t("today.changes.kind.recommendation");
+  if (kind === "price") return t("today.changes.kind.price");
+  if (kind === "release") return t("today.changes.kind.release");
+  if (kind === "subscription") return t("today.changes.kind.subscription");
+  return "";
+}
+
+function renderRecentChanges(ranked, context) {
+  if (!els.recentChangesPanel || !els.recentChangesList) return;
+  const recommendation = primaryDecisionGame(ranked);
+  const changes = buildRecentChanges({
+    events: state.userEvents,
+    notificationEvents: context?.notificationEvents || [],
+    recommendation,
+  });
+  els.recentChangesStatus.textContent = changes.length
+    ? t("today.changes.status", { count: changes.length })
+    : t("today.changes.quiet");
+  if (!changes.length) {
+    els.recentChangesList.innerHTML = `
+      <div class="recent-changes-empty">
+        <strong>${t("today.changes.emptyTitle")}</strong>
+        <span>${t("today.changes.emptyDetail")}</span>
+      </div>
+    `;
+    return;
+  }
+  els.recentChangesList.replaceChildren(...changes.map((change) => {
+    const row = document.createElement("article");
+    row.className = `recent-change kind-${change.kind}`;
+    const source = change.source?.name || "";
+    const sourceMarkup = change.source?.url
+      ? `<a href="${detailAttr(change.source.url)}" target="_blank" rel="noreferrer">${t("today.changes.source", { source: source || t("today.changes.provider") })}</a>`
+      : source
+        ? `<span>${t("today.changes.source", { source })}</span>`
+        : "";
+    row.innerHTML = `
+      <span class="recent-change-marker" aria-hidden="true"></span>
+      <div class="recent-change-copy">
+        <span>${activityKindLabel(change.kind)}</span>
+        <strong>${detailAttr(change.title)}</strong>
+        <p>${activityChangeDetail(change)}</p>
+      </div>
+      <div class="recent-change-meta">
+        <time>${activityAgeLabel(change.occurredAt)}</time>
+        ${sourceMarkup}
+        ${change.title ? `<button type="button" data-change-title="${detailAttr(change.title)}">${t("today.changes.details")}</button>` : ""}
+      </div>
+    `;
+    row.querySelector("[data-change-title]")?.addEventListener("click", () => openGameDetail(change.title));
+    return row;
+  }));
+}
+
+function renderDailyBriefing(ranked, context = buildTodayActivityContext(ranked)) {
+  const today = new Date().toISOString().slice(0, 10);
+  state.dailyBriefing = normalizeDailyBriefingProgress(state.dailyBriefing, today);
+  const activeRecords = activeContinuityRecords(state.userGames);
+  const focusRecord = continuityFocus(state.userGames, state.continuityFocusTitle);
+  const { wishlistRecords, radarItems, notificationEvents } = context;
   const briefing = buildDailyBriefing({
     date: today,
     activeRecords,
     focusRecord,
     libraryCandidates: ranked.filter((game) => isAlreadyAvailable(game)),
-    radarItems: rankedRadar(),
+    radarItems,
     wishlistRecords,
     progress: state.dailyBriefing,
     sessionMinutes: Number(state.sessionMinutes) || 60,
     titleKey,
-  });
-  const notificationEvents = buildNotificationEvents({
-    wishlistRecords,
-    radarItems: rankedRadar(),
-    accessGames: ranked.filter((game) => game.subscriptionMeta?.[state.activeRegion]),
-    region: state.activeRegion,
   });
   els.dailyBriefingPanel.dataset.notificationCandidates = String(notificationEvents.length);
   els.dailyBriefingPanel.dataset.notificationEligible = String(notificationEvents.filter((event) => event.delivery === "eligible").length);
@@ -8450,12 +8612,14 @@ function render() {
   // ~1s wasted when sitting on Stats/Discover/etc. openAppView() always calls
   // render(), so a section is repopulated the moment its view becomes active.
   const inView = (...views) => views.includes(state.activeView);
+  const todayActivityContext = inView("today") ? buildTodayActivityContext(ranked) : null;
 
   if (inView("today", "discover")) renderDemoContinuity(ranked);
   if (inView("today", "taste")) renderTasteUnderstoodPanel(ranked);
   if (inView("today", "taste")) renderFirstRunFlow(ranked);
   if (inView("today")) renderTonightTime();
-  if (inView("today")) renderDailyBriefing(ranked);
+  if (inView("today")) renderDailyBriefing(ranked, todayActivityContext);
+  if (inView("today")) renderRecentChanges(ranked, todayActivityContext);
   if (inView("today")) renderContinuityPanel();
   if (inView("today")) renderCompanionAnswer(ranked);
   if (inView("today")) renderBacklogAmnesty(ranked);
@@ -8463,7 +8627,7 @@ function render() {
   if (inView("today")) renderHero(primaryGame, els.topPick);
   if (inView("today")) renderCompanionPlan(ranked);
   if (inView("today", "library")) renderLibraryPlan(ranked);
-  if (inView("stats")) renderStats();
+  if (inView("stats")) renderStats(ranked);
   if (inView("data")) renderSyncProfileStatus();
 
   if (inView("today", "library", "discover", "wishlist")) {

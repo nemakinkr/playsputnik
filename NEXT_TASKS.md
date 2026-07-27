@@ -1,6 +1,6 @@
 # PlaySputnik Backlog
 
-Last updated: 2026-07-17. Pick the next task here without rereading the
+Last updated: 2026-07-27. Pick the next task here without rereading the
 whole chat. Context: HANDOFF.md (what was done), PROJECT_STATE.md (state),
 ARCHITECTURE.md (generated ownership map), CLAUDE.md (dev workflow + perf
 rules). The user's decision remains **polish before showing the product to
@@ -17,6 +17,22 @@ confidence) plus a source link when available. `app-events.js` defines the
 schema-v1 internal event stream and notification candidates for price targets,
 upcoming releases, and subscription availability; delivery remains blocked
 unless the underlying fact satisfies its freshness/provenance contract.
+
+## 2026-07-27 return digest and weekly report
+
+Completed: Today now has a compact "What changed" digest for recent progress,
+ratings, starts/completions, saved games, backlog releases, and the current
+recommendation after a new taste signal. Price-target, release, and
+subscription rows appear only when their notification candidate is eligible
+and its provider check falls inside the recent window; stale/blocked facts are
+excluded by a deterministic test.
+
+Stats now opens with a seven-day gaming report: logged time and sessions,
+distinct played games, decisions, completions, ratings, released backlog, the
+most-played title, and the current next-week pick. The pure aggregation lives
+in `src/app-activity.js`; `activity-digest-test.mjs` protects source honesty and
+weekly arithmetic, while the app-view smoke proves both Today and Stats
+surfaces render in the real browser.
 
 ## Track: Architecture
 

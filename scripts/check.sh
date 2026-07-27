@@ -42,6 +42,7 @@ echo "── 2/7 i18n catalogs + usage ─────────────�
 "$NODE" scripts/continuity-loop-test.mjs
 "$NODE" scripts/daily-briefing-test.mjs
 "$NODE" scripts/companion-events-test.mjs
+"$NODE" scripts/activity-digest-test.mjs
 "$NODE" scripts/wishlist-evidence-test.mjs
 "$NODE" scripts/profile-sync-test.mjs
 "$NODE" scripts/profile-backup-test.mjs

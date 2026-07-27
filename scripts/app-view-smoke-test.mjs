@@ -50,6 +50,10 @@ try {
         activeCluster: document.querySelector("[data-cluster].is-active")?.dataset.cluster || "",
         status: document.querySelector("#app-view-status")?.textContent?.replace(/\s+/g, " ").trim() || "",
         topPickVisible: visible("#top-pick"),
+        recentChangesVisible: visible("#recent-changes-panel"),
+        recentChangesText: document.querySelector("#recent-changes-list")?.textContent?.replace(/\s+/g, " ").trim() || "",
+        weeklyReportVisible: visible("#weekly-report"),
+        weeklyReportText: document.querySelector("#weekly-report-body")?.textContent?.replace(/\s+/g, " ").trim() || "",
         searchVisible: visible(".game-search-panel"),
         myGamesVisible: visible(".my-games-panel"),
         priceWatchVisible: visible(".price-watch"),
@@ -78,15 +82,21 @@ try {
   const wishlist = await snapshot();
 
   await page.click("#app-view-more > summary");
+  await page.click('[data-app-view="stats"]');
+  await page.waitForFunction(() => document.querySelector('[data-app-view="stats"]')?.classList.contains("is-active"), null, { timeout: 5000 });
+  const stats = await snapshot();
+
+  await page.click("#app-view-more > summary");
   await page.click('[data-app-view="data"]');
   await page.waitForFunction(() => document.querySelector('[data-app-view="data"]')?.classList.contains("is-active"), null, { timeout: 5000 });
   const data = await snapshot();
 
-  const result = { mode: "app-view-smoke", url: targetUrl, today, library, discover, wishlist, data, errors };
+  const result = { mode: "app-view-smoke", url: targetUrl, today, library, discover, wishlist, stats, data, errors };
   console.log(JSON.stringify(result, null, 2));
 
   assert(today.activeView === "today", `Expected Today as default view, got ${today.activeView}`);
   assert(today.topPickVisible, "Today view should show the top pick");
+  assert(today.recentChangesVisible && today.recentChangesText.length > 20, "Today should render a compact recent-changes state");
   assert(library.activeView === "library", `Expected Library view, got ${library.activeView}`);
   assert(library.activeShelf === "library", `Expected Library shelf, got ${library.activeShelf}`);
   assert(library.activeCluster === "library", `Expected Library cluster, got ${library.activeCluster}`);
@@ -98,6 +108,8 @@ try {
   assert(wishlist.activeShelf === "wishlist", `Expected Wishlist shelf, got ${wishlist.activeShelf}`);
   assert(wishlist.activeCluster === "buy", `Expected Wishlist to open Buy cluster, got ${wishlist.activeCluster}`);
   assert(wishlist.priceWatchVisible, "Wishlist view should show price watch");
+  assert(stats.activeView === "stats", `Expected Stats view, got ${stats.activeView}`);
+  assert(stats.weeklyReportVisible && stats.weeklyReportText.length > 30, "Stats should render the weekly gaming report");
   assert(data.devHealthVisible, "Data view should show dev health");
   assert(data.syncProfileVisible, "Data view should show the local profile identity");
   assert(data.syncProfileText.length > 20, "Sync readiness card should explain the current profile status");

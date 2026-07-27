@@ -1477,6 +1477,61 @@
   gap: 20px;
 }
 
+.weekly-report {
+  display: grid;
+  gap: 14px;
+  border-top: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--card-border);
+  padding: 18px 0;
+}
+
+.weekly-report-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+}
+
+.weekly-report-heading > div { display: grid; gap: 3px; }
+.weekly-report-heading span {
+  color: var(--text-mid);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.weekly-report-heading > div > span { color: var(--accent); text-transform: uppercase; }
+.weekly-report-heading h3 { margin: 0; color: var(--ink); font-size: 1rem; }
+#weekly-report-body { display: grid; gap: 12px; }
+.weekly-report-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+}
+.weekly-report-metrics > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  border-left: 1px solid var(--card-border);
+  padding: 4px 12px;
+}
+.weekly-report-metrics > div:first-child { border-left: 0; padding-left: 0; }
+.weekly-report-metrics strong { color: var(--ink); font-size: 1.15rem; overflow-wrap: anywhere; }
+.weekly-report-metrics span { color: var(--text-mid); font-size: 0.7rem; }
+.weekly-report-summary { margin: 0; color: var(--text-mid); font-size: 0.8rem; line-height: 1.45; }
+.weekly-report-next {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  background: var(--card-bg-soft);
+  border-left: 3px solid var(--accent);
+  padding: 11px 12px;
+}
+.weekly-report-next > div { display: grid; gap: 2px; }
+.weekly-report-next span { color: var(--accent); font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }
+.weekly-report-next strong { color: var(--ink); }
+.weekly-report-next p { margin: 0; color: var(--text-mid); font-size: 0.76rem; }
+.weekly-report-next button { min-height: 32px; }
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1651,6 +1706,10 @@
 }
 
 @media (max-width: 640px) {
+  .weekly-report-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+  .weekly-report-metrics > div:nth-child(3) { border-left: 0; padding-left: 0; }
+  .weekly-report-next { grid-template-columns: 1fr; }
+  .weekly-report-next button { justify-self: start; }
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
